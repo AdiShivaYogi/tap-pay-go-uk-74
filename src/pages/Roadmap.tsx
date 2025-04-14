@@ -16,61 +16,63 @@ interface RoadmapItem {
 
 const roadmapItems: RoadmapItem[] = [
   {
-    title: "Autentificare și Autorizare",
-    description: "Sistem de login și gestionare roluri",
+    title: "Securitate și Confidențialitate",
+    description: "Protejarea datelor utilizatorilor prin design",
     status: "completed",
     details: [
-      "Implementare login/register cu Supabase",
-      "Creare tabelă user_roles",
-      "Implementare Row Level Security (RLS)",
-      "Hook useUserRole pentru verificarea rolurilor",
-      "Implementarea autentificării cu doi factori"
+      "Zero stocare de date sensibile",
+      "Delegarea procesării plăților către Stripe",
+      "Interfață securizată și transparentă",
+      "Experiență utilizator izolată pentru fiecare client",
+      "Monitorizare minimală, axată strict pe comisioane"
     ]
   },
   {
-    title: "Integrare Stripe pentru Plăți",
-    description: "Delegare completă a procesării plăților către Stripe",
+    title: "Integrare Stripe Complex",
+    description: "Delegare completă a procesării plăților",
     status: "in-progress",
     details: [
-      "Integrare Stripe pentru plăți fără stocarea datelor sensibile",
-      "Webhook pentru primirea notificărilor de plată",
-      "Dashboard pentru monitorizarea comisioanelor",
-      "Asigurarea conformității cu reglementările de plată (PSD2, SCA)",
-      "Experiență de checkout optimizată fără date sensibile stocate local"
+      "Utilizare webhook-uri Stripe pentru notificări",
+      "Management complet al plăților prin API Stripe",
+      "Fără stocare de informații de plată",
+      "Dashboard pentru urmărirea comisioanelor",
+      "Conformitate PSD2 și SCA prin Stripe"
     ]
   },
   {
-    title: "Raportare și Analiză",
-    description: "Vizualizare avansată a datelor nesensibile",
+    title: "UI/UX Personalizat",
+    description: "Experiență avansată fără compromiterea confidențialității",
     status: "in-progress",
     details: [
-      "Grafice pentru volumul de tranzacții pe perioade",
-      "Sumar al veniturilor și comisioanelor pe zi/săptămână/lună",
-      "Filtrare după dată, sumă și status fără acces la datele sensibile",
-      "Căutare după ID-ul tranzacției",
-      "Exportare rapoarte cu focus pe protecția datelor utilizatorilor"
+      "Design responsive și intuitiv",
+      "Vizualizare dinamică a tranzacțiilor prin API-ul Stripe",
+      "Dashboard personalizat pentru fiecare utilizator",
+      "Interfață simplă pentru gestionarea plăților",
+      "Transparență maximă în procesarea tranzacțiilor"
     ]
   },
   {
-    title: "UI/UX Avansat pentru Utilizatori",
-    description: "Experiență personalizată fără stocarea datelor sensibile",
+    title: "Raportare Avansată",
+    description: "Analiză și insights fără date sensibile",
     status: "pending",
     details: [
-      "Dashboard personalizat pentru fiecare utilizator bazat pe preferințe locale",
-      "Vizualizare detaliată a tranzacțiilor prin API Stripe",
-      "Managementul abonamentelor prin portal Stripe dedicat",
-      "Interfață intuitivă pentru interacțiunea cu serviciile Stripe"
+      "Grafice pentru volumul de tranzacții",
+      "Sumar de venituri pe diferite perioade",
+      "Filtrare și căutare sigură",
+      "Exporturi de rapoarte anonimizate",
+      "Monitorizare etică a performanței"
     ]
   },
   {
-    title: "Testare și Optimizare",
-    description: "Asigurarea calității și performanței",
+    title: "Testare și Optimizare Continuă",
+    description: "Asigurarea calității și securității",
     status: "pending",
     details: [
-      "Teste pentru diferite scenarii de plată fără date reale",
-      "Optimizarea performanței și a experienței utilizatorului",
-      "Teste de securitate și audit pentru protecția datelor",
-      "Monitorizare și alertare pentru evenimente importante"
+      "Teste de securitate regulate",
+      "Optimizarea performanței aplicației",
+      "Audit continuu al fluxurilor de plată",
+      "Monitorizare și alertare inteligentă",
+      "Actualizări bazate pe feedback și reglementări"
     ]
   }
 ];
@@ -113,17 +115,18 @@ const Roadmap = () => {
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Roadmap Aplicație</h1>
           <p className="text-muted-foreground">
-            Vizualizează progresul și pașii următori în dezvoltarea aplicației
+            Vizualizează progresul și angajamentul nostru pentru securitate și experiență utilizator
           </p>
         </div>
 
-        <Alert className="mb-8">
-          <AlertTitle>Principiu de Bază</AlertTitle>
+        <Alert className="mb-8 border-primary/50">
+          <AlertTitle className="text-primary">Principiu Fundamental</AlertTitle>
           <AlertDescription>
-            <p className="mt-2">
-              Aplicația noastră nu stochează informații sensibile ale utilizatorilor. Fiecare utilizator are o experiență unică și separată. 
-              Ca administratori, monitorizăm doar comisioanele și abonamentele primite prin Stripe, delegând gestionarea datelor sensibile către ei. 
-              Ne concentrăm pe furnizarea unei interfețe avansate și intuitive.
+            <p className="mt-2 text-foreground">
+              Aplicația noastră este proiectată cu un angajament ferm pentru protecția datelor utilizatorilor. 
+              Nu stocăm niciun fel de informații sensibile. Fiecare utilizator beneficiază de o experiență 
+              personalizată și complet izolată, cu Stripe gestionând în totalitate aspectele complexe ale 
+              procesării plăților. Rolul nostru este de a oferi o interfață inteligentă, simplă și sigură.
             </p>
           </AlertDescription>
         </Alert>
@@ -150,7 +153,7 @@ const Roadmap = () => {
 
         <div className="grid gap-6 md:grid-cols-2">
           {roadmapItems.map((item, index) => (
-            <Card key={index}>
+            <Card key={index} className="hover:shadow-lg transition-shadow">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-xl font-bold">{item.title}</CardTitle>
                 {getStatusIcon(item.status)}
