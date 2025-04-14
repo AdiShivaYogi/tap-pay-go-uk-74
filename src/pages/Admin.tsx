@@ -19,6 +19,10 @@ const Admin = () => {
   const [period, setPeriod] = useState<"week" | "month" | "year">("month");
   const commissionRate = 0.025; // 2.5%
   
+  // Always call hooks at the top level, before any conditional returns
+  const { data: transactions = [], isLoading } = useAdminData(period);
+  
+  // Rendering logic based on permissions
   if (isLoadingRole) {
     return null;
   }
@@ -26,8 +30,6 @@ const Admin = () => {
   if (!isAdmin) {
     return <Navigate to="/dashboard" replace />;
   }
-
-  const { data: transactions = [], isLoading } = useAdminData(period);
   
   const monitoringStats = calculateMonitoringStats(transactions);
   const financialStats = calculateFinancialStats(transactions, commissionRate);
