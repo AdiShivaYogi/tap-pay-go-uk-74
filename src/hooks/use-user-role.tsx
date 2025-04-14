@@ -13,18 +13,26 @@ export const useUserRole = () => {
     queryFn: async (): Promise<UserRole | null> => {
       if (!user?.id) return null;
       
-      const { data, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', user.id)
-        .single();
+      try {
+        // Since the Supabase client isn't properly typed for user_roles table,
+        // we need to use a more generic approach
+        const { data, error } = await supabase
+          .from('user_roles')
+          .select('*')
+          .eq('user_id', user.id)
+          .maybeSingle();
 
-      if (error) {
+        if (error) {
+          console.error('Error fetching user role:', error);
+          return null;
+        }
+
+        // Since TypeScript doesn't know about the role column, we need to use an assertion
+        return (data as any)?.role || null;
+      } catch (error) {
         console.error('Error fetching user role:', error);
         return null;
       }
-
-      return data?.role || null;
     },
     enabled: !!user?.id,
   });
