@@ -7,12 +7,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { ro } from "date-fns/locale";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ResponsiveBar } from "@nivo/bar";
-import { ResponsivePie } from "@nivo/pie";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { Navigate } from "react-router-dom";
+import { TransactionsBarChart } from "@/components/transactions/TransactionsBarChart";
+import { TransactionsPieChart } from "@/components/transactions/TransactionsPieChart";
 
 const Admin = () => {
   const { user } = useAuth();
@@ -50,6 +50,21 @@ const Admin = () => {
 
   // Pregătim date pentru grafice
   const monthlyData = prepareMonthlyData(transactions, commissionRate);
+  
+  // Pregătim datele pentru graficul pie
+  const pieChartData = [
+    { name: "Plăți reușite", value: successfulAmount, count: successfulTransactions.length },
+    { 
+      name: "Plăți eșuate", 
+      value: transactions.filter(t => t.status === 'failed').reduce((sum, t) => sum + t.amount, 0),
+      count: transactions.filter(t => t.status === 'failed').length
+    },
+    { 
+      name: "În așteptare", 
+      value: transactions.filter(t => t.status === 'pending').reduce((sum, t) => sum + t.amount, 0),
+      count: transactions.filter(t => t.status === 'pending').length
+    }
+  ];
 
   return (
     <Layout>
@@ -102,6 +117,37 @@ const Admin = () => {
                 {isLoading ? <Skeleton className="h-8 w-20" /> : `£${successfulCommission.toFixed(2)}`}
               </CardTitle>
             </CardHeader>
+          </Card>
+        </div>
+
+        {/* Grafice pentru vizualizări */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Distribuția tranzacțiilor</CardTitle>
+              <CardDescription>Status tranzacții după valoare totală</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {isLoading ? (
+                <Skeleton className="h-[300px] w-full" />
+              ) : (
+                <TransactionsPieChart data={pieChartData} />
+              )}
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Evoluția comisioanelor</CardTitle>
+              <CardDescription>Vizualizarea comisioanelor lunare</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {isLoading ? (
+                <Skeleton className="h-[300px] w-full" />
+              ) : (
+                <TransactionsBarChart data={monthlyData} />
+              )}
+            </CardContent>
           </Card>
         </div>
 
@@ -158,30 +204,6 @@ const Admin = () => {
             )}
           </CardContent>
         </Card>
-
-        {/* Grafic de comisioane lunare */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Evoluția comisioanelor</CardTitle>
-            <CardDescription>
-              Vizualizarea comisioanelor lunare
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-80">
-              {isLoading ? (
-                <Skeleton className="h-full w-full" />
-              ) : (
-                <div className="h-full">
-                  {/* Aici ar trebui să fie un grafic, dar folosim Recharts în aplicație */}
-                  <div className="flex h-full items-center justify-center">
-                    <p className="text-muted-foreground">Grafic disponibil cu datele lunare pentru comisioane</p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </Layout>
   );
@@ -198,17 +220,24 @@ const prepareMonthlyData = (transactions: any[], commissionRate: number) => {
     
     if (!monthMap.has(monthKey)) {
       monthMap.set(monthKey, { 
-        month: monthName, 
-        transactions: 0, 
-        amount: 0, 
-        commission: 0 
+        date: monthName, 
+        total: 0, 
+        completed: 0, 
+        failed: 0, 
+        pending: 0 
       });
     }
     
     const entry = monthMap.get(monthKey);
-    entry.transactions += 1;
-    entry.amount += t.amount;
-    entry.commission += t.amount * commissionRate;
+    entry.total += t.amount;
+    
+    if (t.status === 'completed') {
+      entry.completed += t.amount;
+    } else if (t.status === 'failed') {
+      entry.failed += t.amount;
+    } else {
+      entry.pending += t.amount;
+    }
   });
   
   return Array.from(monthMap.values());
