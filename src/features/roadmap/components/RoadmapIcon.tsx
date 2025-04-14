@@ -5,7 +5,9 @@ import {
   Shield, BarChart4, TestTube2,
   Check, AlertCircle, FileText,
   Banknote, Smartphone, Globe,
-  Users, Webhook, Database
+  Users, Webhook, Database,
+  Cloud, ServerCrash, Server, 
+  ServerCog, CloudCog
 } from 'lucide-react';
 import { IconType } from '../types';
 
@@ -52,6 +54,16 @@ export const RoadmapIcon = ({ iconType, iconColor = "text-gray-500" }: RoadmapIc
       return <Webhook {...iconProps} />;
     case "database":
       return <Database {...iconProps} />;
+    case "cloud":
+      return <Cloud {...iconProps} />;
+    case "server-crash":
+      return <ServerCrash {...iconProps} />;
+    case "server":
+      return <Server {...iconProps} />;
+    case "server-cog":
+      return <ServerCog {...iconProps} />;
+    case "cloud-cog":
+      return <CloudCog {...iconProps} />;
     default:
       return null;
   }

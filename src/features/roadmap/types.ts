@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 
 export type Status = "completed" | "in-progress" | "pending";
 export type Priority = "high" | "medium" | "low";
-export type IconType = "shield-check" | "info" | "clock" | "shield" | "bar-chart-4" | "test-tube-2" | "check" | "alert-circle" | "file-text" | "banknote" | "smartphone" | "globe" | "users" | "webhook" | "database";
+export type IconType = "shield-check" | "info" | "clock" | "shield" | "bar-chart-4" | "test-tube-2" | "check" | "alert-circle" | "file-text" | "banknote" | "smartphone" | "globe" | "users" | "webhook" | "database" | "cloud" | "server-crash" | "server" | "server-cog" | "cloud-cog";
 
 export interface TimeEstimate {
   total: number;
@@ -285,17 +285,17 @@ export const roadmapItems: RoadmapItem[] = [
   {
     title: "Infrastructură Redundantă",
     description: "Asigurarea disponibilității continue a serviciului",
-    status: "pending",
+    status: "in-progress",
     priority: "high",
-    iconType: "database",
+    iconType: "server-cog",
     iconColor: "text-red-500",
     timeEstimate: {
       total: 24,
-      spent: 0,
+      spent: 6,
       aiTotal: 16
     },
     details: [
-      "Arhitectură multi-regiune pentru disponibilitate ridicată",
+      "Arhitectură multi-regiune pentru disponibilitate ridicată ✓",
       "Backup automat și recuperare în caz de dezastru",
       "Failover automatizat pentru servicii critice",
       "Monitorizare continuă a infrastructurii",
