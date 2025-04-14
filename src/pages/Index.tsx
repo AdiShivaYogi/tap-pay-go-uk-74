@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { Layout } from "@/components/layout/layout";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowRight, Shield, CreditCard, Zap, CheckCircle, Users, PiggyBank, TestTube, Lock, Sparkles, Bank, Receipt } from "lucide-react";
+import { ArrowRight, Shield, CreditCard, Zap, CheckCircle, Users, PiggyBank, TestTube, Lock, Sparkles, Banknote, Receipt } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 const Index = () => {
@@ -103,7 +102,7 @@ const Index = () => {
             
             <Card className="bg-background/50 backdrop-blur-sm border-primary/10 hover:shadow-lg transition-all duration-300">
               <CardContent className="p-8 text-center">
-                <Bank className="h-10 w-10 text-primary mx-auto mb-4" />
+                <Banknote className="h-10 w-10 text-primary mx-auto mb-4" />
                 <h3 className="text-3xl font-bold mb-2">€0</h3>
                 <p className="text-muted-foreground">Total Tranzacții</p>
               </CardContent>
