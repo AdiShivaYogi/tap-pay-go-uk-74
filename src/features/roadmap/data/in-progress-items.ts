@@ -91,15 +91,35 @@ export const inProgressRoadmapItems: RoadmapItem[] = [
     iconColor: "text-red-500",
     timeEstimate: {
       total: 24,
-      spent: 6,
+      spent: 10,
       aiTotal: 16
     },
     details: [
       "Arhitectură multi-regiune pentru disponibilitate ridicată ✓",
-      "Backup automat și recuperare în caz de dezastru",
+      "Backup automat și recuperare în caz de dezastru ✓",
       "Failover automatizat pentru servicii critice",
-      "Monitorizare continuă a infrastructurii",
-      "Testare regulată a scenariilor de recuperare"
+      "Monitorizare avansată și alertare în timp real",
+      "Testare periodică a scenariilor de recuperare după dezastre"
+    ]
+  },
+  {
+    title: "Centru de Date Secundar",
+    description: "Implementare infrastructură redundantă completă",
+    status: "in-progress",
+    priority: "high",
+    iconType: "server",
+    iconColor: "text-blue-500",
+    timeEstimate: {
+      total: 30,
+      spent: 12,
+      aiTotal: 25
+    },
+    details: [
+      "Configurare centru de date secundar activ-pasiv",
+      "Replicare continuă a datelor între centre",
+      "Balansare automată a traficului în caz de avarie",
+      "Sistem de monitorizare unificat pentru ambele centre",
+      "Proceduri documentate pentru switching între centre"
     ]
   }
 ];
