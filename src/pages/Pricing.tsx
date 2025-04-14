@@ -2,74 +2,121 @@
 import { Layout } from "@/components/layout/layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check } from "lucide-react";
+import { 
+  Check, 
+  CreditCard, 
+  Wallet, 
+  BadgeDollarSign,
+  HelpCircle
+} from "lucide-react";
 import { Link } from "react-router-dom";
+import { 
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const PricingPage = () => {
   const plans = [
     {
       name: "Pay-as-you-go",
-      description: "For occasional use",
-      price: "Free",
+      description: "Pentru utilizare ocazională",
+      price: "Gratuit",
       features: [
-        "No monthly fee",
-        "1.5% + £0.20 per transaction",
-        "Unlimited payments",
-        "24/7 support"
+        "Fără taxă lunară",
+        "1.5% + 0.20 lei per tranzacție",
+        "Plăți nelimitate",
+        "Suport 24/7"
       ],
-      cta: "Start for Free",
-      popular: false
+      cta: "Începe Gratuit",
+      popular: false,
+      icon: CreditCard
     },
     {
-      name: "Monthly",
-      description: "For regular merchants",
-      price: "£14.99",
-      period: "per month",
+      name: "Lunar",
+      description: "Pentru comercianți regulați",
+      price: "14.99 lei",
+      period: "per lună",
       features: [
-        "No transaction fees (Stripe fees still apply)",
-        "Priority support",
-        "Transaction history",
-        "Analytics dashboard"
+        "Fără comisioane (se aplică doar taxele Stripe)",
+        "Suport prioritar",
+        "Istoric tranzacții",
+        "Panou de analiză"
       ],
-      cta: "Subscribe Now",
-      popular: true
+      cta: "Abonează-te Acum",
+      popular: true,
+      icon: Wallet
     },
     {
       name: "Lifetime",
-      description: "Best value for serious businesses",
-      price: "£149.99",
-      period: "one-time payment",
+      description: "Cea mai bună valoare pentru afaceri serioase",
+      price: "149.99 lei",
+      period: "plată unică",
       features: [
-        "All features from Monthly plan",
-        "No recurring payments",
-        "Free upgrades for life",
-        "Priority customer service"
+        "Toate funcționalitățile din planul Lunar",
+        "Fără plăți recurente",
+        "Actualizări gratuite pe viață",
+        "Serviciu clienți prioritar"
       ],
-      cta: "Get Lifetime Access",
-      popular: false
+      cta: "Obține Acces Lifetime",
+      popular: false,
+      icon: BadgeDollarSign
+    }
+  ];
+
+  const faqs = [
+    {
+      question: "Ce metode de plată acceptați?",
+      answer: "Acceptăm toate cardurile majore de credit și debit, inclusiv Visa, Mastercard și American Express. Plățile sunt procesate în siguranță prin Stripe."
+    },
+    {
+      question: "Pot să schimb planul mai târziu?",
+      answer: "Da, puteți upgrada sau downgrade planul în orice moment. Ajustările de facturare vor fi făcute proporțional."
+    },
+    {
+      question: "Există o perioadă de probă?",
+      answer: "Da, oferim o perioadă de probă de 14 zile pentru planul Lunar, fără obligații. Puteți anula oricând în această perioadă."
+    },
+    {
+      question: "Ce se întâmplă după ce mă abonez?",
+      answer: "Veți primi acces imediat la toate funcționalitățile incluse în planul ales. Veți primi și un email de confirmare cu detaliile contului."
     }
   ];
 
   return (
     <Layout>
       <div className="container py-12 px-4">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">Simple, Transparent Pricing</h1>
+        <div className="text-center mb-12 space-y-4">
+          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            Prețuri Simple și Transparente
+          </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Choose the plan that fits your business needs. No hidden fees.
+            Alegeți planul care se potrivește nevoilor afacerii dvs. Fără taxe ascunse.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {plans.map((plan) => (
-            <Card key={plan.name} className={`flex flex-col ${plan.popular ? 'border-primary shadow-lg' : ''}`}>
-              <CardHeader>
-                {plan.popular && (
-                  <div className="py-1 px-3 bg-primary text-primary-foreground text-xs font-semibold rounded-full mb-2 w-fit">
-                    MOST POPULAR
+            <Card 
+              key={plan.name} 
+              className={`flex flex-col transform transition-all duration-300 hover:scale-105 ${
+                plan.popular ? 'border-primary shadow-lg relative overflow-hidden' : ''
+              }`}
+            >
+              {plan.popular && (
+                <>
+                  <div className="absolute top-0 right-0 bg-primary text-primary-foreground px-4 py-1 rounded-bl-lg text-sm font-medium">
+                    Popular
                   </div>
-                )}
-                <CardTitle>{plan.name}</CardTitle>
+                  <div className="absolute -inset-[1px] rounded-lg bg-gradient-to-r from-primary/50 via-primary to-primary/50 opacity-20 blur-lg -z-10" />
+                </>
+              )}
+              <CardHeader>
+                <div className="flex items-center gap-2 mb-4">
+                  <plan.icon className="h-6 w-6 text-primary" />
+                  <CardTitle>{plan.name}</CardTitle>
+                </div>
                 <CardDescription>{plan.description}</CardDescription>
               </CardHeader>
               <CardContent className="flex-1">
@@ -100,6 +147,35 @@ const PricingPage = () => {
               </CardFooter>
             </Card>
           ))}
+        </div>
+
+        <div className="max-w-3xl mx-auto mt-24">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold mb-2">Întrebări Frecvente</h2>
+            <p className="text-muted-foreground">
+              Aici găsiți răspunsuri la cele mai comune întrebări
+            </p>
+          </div>
+          
+          <Card className="bg-card/50">
+            <CardContent className="pt-6">
+              <Accordion type="single" collapsible className="w-full">
+                {faqs.map((faq, index) => (
+                  <AccordionItem key={index} value={`item-${index}`}>
+                    <AccordionTrigger className="text-left">
+                      <div className="flex items-center gap-2">
+                        <HelpCircle className="h-5 w-5 text-primary" />
+                        {faq.question}
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground">
+                      {faq.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </CardContent>
+          </Card>
         </div>
 
         <div className="max-w-3xl mx-auto mt-12 bg-muted/50 p-8 rounded-lg text-center">
