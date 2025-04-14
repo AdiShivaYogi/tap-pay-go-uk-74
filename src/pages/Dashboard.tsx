@@ -9,11 +9,48 @@ import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { format } from "date-fns";
+
+interface Transaction {
+  id: string;
+  amount: number;
+  status: string;
+  created_at: string;
+}
 
 const Dashboard = () => {
   const [amount, setAmount] = useState<string>("");
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    loadTransactions();
+  }, []);
+
+  const loadTransactions = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('transactions')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (error) throw error;
+      setTransactions(data || []);
+    } catch (error) {
+      console.error('Error loading transactions:', error);
+      toast({
+        title: "Eroare",
+        description: "Nu am putut încărca tranzacțiile. Te rugăm să încerci din nou.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Check payment status from URL parameters
   useEffect(() => {
@@ -25,6 +62,7 @@ const Dashboard = () => {
         title: "Plată reușită",
         description: "Plata a fost procesată cu succes.",
       });
+      loadTransactions(); // Reîncarcă tranzacțiile după o plată reușită
     } else if (canceled === "true") {
       toast({
         title: "Plată anulată",
@@ -129,12 +167,50 @@ const Dashboard = () => {
               <CardDescription>Ultimele plăți procesate</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-muted-foreground text-center py-6">
-                Nu există tranzacții recente.
-              </div>
+              {isLoading ? (
+                <div className="text-muted-foreground text-center py-6">
+                  Se încarcă...
+                </div>
+              ) : transactions.length === 0 ? (
+                <div className="text-muted-foreground text-center py-6">
+                  Nu există tranzacții recente.
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Data</TableHead>
+                      <TableHead>Suma</TableHead>
+                      <TableHead>Status</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {transactions.map((transaction) => (
+                      <TableRow key={transaction.id}>
+                        <TableCell>
+                          {format(new Date(transaction.created_at), 'dd/MM/yyyy HH:mm')}
+                        </TableCell>
+                        <TableCell>£{transaction.amount.toFixed(2)}</TableCell>
+                        <TableCell>
+                          <Badge variant={transaction.status === 'completed' ? 'default' : 'secondary'}>
+                            {transaction.status === 'completed' ? 'Finalizată' : 'În așteptare'}
+                          </Badge>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
             </CardContent>
             <CardFooter className="border-t pt-4">
-              <Button variant="outline" className="w-full" disabled>Vezi toate tranzacțiile</Button>
+              <Button 
+                variant="outline" 
+                className="w-full" 
+                onClick={loadTransactions}
+                disabled={isLoading}
+              >
+                Reîmprospătează
+              </Button>
             </CardFooter>
           </Card>
 
