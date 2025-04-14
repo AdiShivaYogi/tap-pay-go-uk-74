@@ -1,4 +1,3 @@
-
 import { Layout } from "@/components/layout/layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,6 +13,8 @@ import { format } from "date-fns";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { DeviceCompatibilityAlert } from "@/components/device-compatibility-alert";
 import { useDeviceCompatibility } from "@/hooks/use-device-compatibility";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { ShieldCheck } from "lucide-react";
 
 interface Transaction {
   id: string;
@@ -44,7 +45,6 @@ const Dashboard = () => {
     }
   });
 
-  // Check payment status from URL parameters
   useEffect(() => {
     const success = searchParams.get("success");
     const canceled = searchParams.get("canceled");
@@ -74,7 +74,6 @@ const Dashboard = () => {
       return;
     }
 
-    // Verificăm compatibilitatea înainte de procesare
     if (deviceCompatibility.isCompatible !== 'compatible') {
       toast({
         title: "Dispozitiv incompatibil",
@@ -94,7 +93,6 @@ const Dashboard = () => {
       if (error) throw error;
       if (!data.url) throw new Error('Nu s-a putut obține URL-ul de plată');
 
-      // Redirect to Stripe Checkout
       window.location.href = data.url;
     } catch (error) {
       console.error('Eroare la procesarea plății:', error);
@@ -122,7 +120,16 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Alertă compatibilitate dispozitiv */}
+        <Alert className="mb-6 border-green-200 bg-green-50">
+          <ShieldCheck className="h-5 w-5 text-green-600" />
+          <AlertTitle className="text-green-800">Plăți Securizate prin Stripe</AlertTitle>
+          <AlertDescription className="text-green-700">
+            Nu stocăm niciodată informații sensibile despre carduri sau tranzacții. 
+            Toate plățile sunt procesate direct și securizat prin Stripe, iar noi 
+            menținem doar referințe minime necesare pentru afișarea istoricului tău.
+          </AlertDescription>
+        </Alert>
+
         <div className="mb-6">
           <DeviceCompatibilityAlert compatibility={deviceCompatibility} />
         </div>
@@ -180,7 +187,9 @@ const Dashboard = () => {
           <Card>
             <CardHeader>
               <CardTitle>Tranzacții recente</CardTitle>
-              <CardDescription>Ultimele plăți procesate</CardDescription>
+              <CardDescription>
+                Istoric tranzacții procesat prin Stripe
+              </CardDescription>
             </CardHeader>
             <CardContent>
               {isLoading ? (
@@ -188,8 +197,13 @@ const Dashboard = () => {
                   Se încarcă...
                 </div>
               ) : transactions.length === 0 ? (
-                <div className="text-muted-foreground text-center py-6">
-                  Nu există tranzacții recente.
+                <div className="text-center py-6">
+                  <p className="text-muted-foreground mb-2">
+                    Nu există tranzacții recente
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Tranzacțiile vor apărea aici după ce procesezi prima plată prin Stripe
+                  </p>
                 </div>
               ) : (
                 <Table>
@@ -233,13 +247,15 @@ const Dashboard = () => {
           <Card>
             <CardHeader>
               <CardTitle>Informații cont</CardTitle>
-              <CardDescription>Detaliile contului tău</CardDescription>
+              <CardDescription>
+                Contul tău este conectat direct la Stripe pentru procesarea plăților
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div>
                   <p className="text-sm font-medium">Cont Stripe</p>
-                  <p className="text-sm text-muted-foreground">Conectat</p>
+                  <p className="text-sm text-muted-foreground">Conectat și securizat</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium">Plan curent</p>
