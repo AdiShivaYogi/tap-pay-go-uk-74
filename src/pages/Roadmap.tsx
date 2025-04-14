@@ -7,8 +7,16 @@ import { RoadmapLegend } from "@/features/roadmap/components/RoadmapLegend";
 import { RoadmapProgress } from "@/features/roadmap/components/RoadmapProgress";
 import { AdvancedReporting } from "@/features/roadmap/components/AdvancedReporting";
 import { roadmapItems } from "@/features/roadmap/types";
+import { useUserRole } from "@/hooks/use-user-role";
+import { Navigate } from "react-router-dom";
 
 const Roadmap = () => {
+  const { isAdmin } = useUserRole();
+
+  if (!isAdmin) {
+    return <Navigate to="/404" replace />;
+  }
+
   return (
     <Layout>
       <div className="container py-8">

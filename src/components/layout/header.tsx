@@ -35,8 +35,8 @@ export function Header() {
           </Link>
           <nav className="hidden md:flex items-center space-x-6">
             {NAVIGATION.map((item) => {
-              // Hide admin items for non-admin users
-              if (item.adminOnly && !isAdmin) return null;
+              // Hide admin-only items for non-admin users
+              if ((item.adminOnly || item.href === "/roadmap") && !isAdmin) return null;
               
               return (
                 <Link key={item.href} to={item.href} className="hover:text-gray-600">
