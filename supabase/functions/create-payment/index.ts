@@ -17,6 +17,7 @@ serve(async (req) => {
     // Get the user from the authorization header
     const authHeader = req.headers.get('authorization')
     if (!authHeader) {
+      console.error('No authorization header provided')
       throw new Error('No authorization header')
     }
 
@@ -32,12 +33,18 @@ serve(async (req) => {
       authHeader.replace('Bearer ', '')
     )
     
-    if (userError || !user) throw new Error('Unauthorized')
+    if (userError || !user) {
+      console.error('User authentication failed:', userError)
+      throw new Error('Unauthorized')
+    }
+
+    console.log(`Processing payment creation for user: ${user.id}`)
 
     const { amount, description } = await req.json()
     
     // Validate amount
     if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
+      console.error('Invalid amount provided:', amount)
       throw new Error('Invalid amount. Please provide a positive number.')
     }
 
@@ -68,7 +75,7 @@ serve(async (req) => {
       console.log(`Created new Stripe customer: ${customerId}`)
     }
 
-    // Create a payment session
+    // Create a payment session with enhanced metadata
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       payment_method_types: ['card'],
@@ -78,6 +85,9 @@ serve(async (req) => {
             currency: 'gbp',
             product_data: {
               name: description || 'Payment',
+              metadata: {
+                user_id: user.id,
+              }
             },
             unit_amount: Math.round(parseFloat(amount) * 100), // Convert to pence
           },
@@ -87,9 +97,15 @@ serve(async (req) => {
       mode: 'payment',
       success_url: `${req.headers.get('origin')}/dashboard?success=true`,
       cancel_url: `${req.headers.get('origin')}/dashboard?canceled=true`,
+      metadata: {
+        user_id: user.id,
+        description: description || 'Payment'
+      }
     })
 
-    // Save transaction to database
+    console.log(`Created payment session: ${session.id}`)
+
+    // Save transaction to database with additional metadata
     const { error: insertError } = await supabaseAdmin
       .from('transactions')
       .insert({
@@ -100,9 +116,13 @@ serve(async (req) => {
         stripe_session_id: session.id,
       })
 
-    if (insertError) throw insertError
+    if (insertError) {
+      console.error('Error inserting transaction:', insertError)
+      throw insertError
+    }
 
-    console.log(`Created payment session: ${session.id} for user: ${user.id}`)
+    console.log(`Successfully created transaction record for session: ${session.id}`)
+
     return new Response(
       JSON.stringify({ 
         url: session.url,
