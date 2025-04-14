@@ -35,7 +35,7 @@ export const MonitoringStats = ({ isLoading, stats }: MonitoringStatsProps) => {
   const getAlertVariant = (type: 'warning' | 'error' | 'success') => {
     switch (type) {
       case 'warning':
-        return 'warning';
+        return 'outline'; // Changed from 'warning' to 'outline'
       case 'error':
         return 'destructive';
       case 'success':
