@@ -5,6 +5,7 @@ import { TransactionsBarChart } from "@/components/transactions/TransactionsBarC
 import { TransactionsPieChart } from "@/components/transactions/TransactionsPieChart";
 import { prepareChartData, preparePieData } from "@/utils/chart-utils";
 import { Transaction } from "@/types/transactions";
+import { ChartBar, PieChart } from "lucide-react";
 
 interface ReportChartsProps {
   transactions: Transaction[];
@@ -19,13 +20,16 @@ export const ReportCharts = ({ transactions, isLoading, period }: ReportChartsPr
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
       <Card className="w-full">
-        <CardHeader>
-          <CardTitle>Evoluția tranzacțiilor</CardTitle>
-          <CardDescription>
-            {period === "week" ? "Ultimele 7 zile" : 
-             period === "month" ? "Luna curentă" : 
-             "Toate tranzacțiile"}
-          </CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <div className="space-y-1">
+            <CardTitle>Evoluția tranzacțiilor</CardTitle>
+            <CardDescription>
+              {period === "week" ? "Ultimele 7 zile" : 
+               period === "month" ? "Luna curentă" : 
+               "Toate tranzacțiile"}
+            </CardDescription>
+          </div>
+          <ChartBar className="h-5 w-5 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -33,17 +37,22 @@ export const ReportCharts = ({ transactions, isLoading, period }: ReportChartsPr
               <Skeleton className="h-full w-full" />
             </div>
           ) : (
-            <TransactionsBarChart data={chartData} />
+            <div className="h-[300px]">
+              <TransactionsBarChart data={chartData} />
+            </div>
           )}
         </CardContent>
       </Card>
 
       <Card className="w-full">
-        <CardHeader>
-          <CardTitle>Distribuția statusurilor</CardTitle>
-          <CardDescription>
-            Vizualizarea tranzacțiilor după status
-          </CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <div className="space-y-1">
+            <CardTitle>Distribuția statusurilor</CardTitle>
+            <CardDescription>
+              Vizualizarea tranzacțiilor după status
+            </CardDescription>
+          </div>
+          <PieChart className="h-5 w-5 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -51,7 +60,9 @@ export const ReportCharts = ({ transactions, isLoading, period }: ReportChartsPr
               <Skeleton className="h-full w-full" />
             </div>
           ) : (
-            <TransactionsPieChart data={pieData} />
+            <div className="h-[300px]">
+              <TransactionsPieChart data={pieData} />
+            </div>
           )}
         </CardContent>
       </Card>

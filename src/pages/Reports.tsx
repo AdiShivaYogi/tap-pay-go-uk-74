@@ -10,6 +10,7 @@ import { ReportCharts } from "@/components/reports/ReportCharts";
 import { TransactionsTable } from "@/components/transactions/TransactionsTable";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDateRange } from "@/hooks/use-date-range";
+import { FileSpreadsheet } from "lucide-react";
 
 const Reports = () => {
   const [period, setPeriod] = useState<"week" | "month" | "all">("week");
@@ -36,22 +37,30 @@ const Reports = () => {
 
   return (
     <Layout>
-      <div className="container py-8 px-4">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold mb-1">Rapoarte tranzacții</h1>
-          <p className="text-muted-foreground">Vizualizează și analizează istoricul tranzacțiilor</p>
+      <div className="container py-8 px-4 max-w-7xl mx-auto">
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold mb-2">Rapoarte tranzacții</h1>
+          <p className="text-muted-foreground text-lg">
+            Vizualizează și analizează istoricul tranzacțiilor
+          </p>
         </div>
 
-        <DateRangeSelector period={period} onPeriodChange={setPeriod} />
+        <div className="mb-8">
+          <DateRangeSelector period={period} onPeriodChange={setPeriod} />
+        </div>
+
         <ReportStats transactions={transactions} isLoading={isLoading} />
         <ReportCharts transactions={transactions} isLoading={isLoading} period={period} />
 
         <Card>
-          <CardHeader>
-            <CardTitle>Tranzacții detaliate</CardTitle>
-            <CardDescription>
-              Lista completă a tranzacțiilor pentru perioada selectată
-            </CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <div className="space-y-1">
+              <CardTitle>Tranzacții detaliate</CardTitle>
+              <CardDescription>
+                Lista completă a tranzacțiilor pentru perioada selectată
+              </CardDescription>
+            </div>
+            <FileSpreadsheet className="h-5 w-5 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             {isLoading ? (
