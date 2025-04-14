@@ -12,6 +12,8 @@ import { prepareMonthlyData } from "@/utils/admin";
 import { useState } from "react";
 import { useAdminData } from "@/hooks/use-admin-data";
 import { calculateMonitoringStats, calculateFinancialStats, calculatePieChartData } from "@/utils/admin-calculations";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Loader2 } from "lucide-react";
 
 const Admin = () => {
   const { user } = useAuth();
@@ -22,15 +24,23 @@ const Admin = () => {
   // Always call hooks at the top level, before any conditional returns
   const { data: transactions = [], isLoading } = useAdminData(period);
   
-  // Rendering logic based on permissions
+  // Show loading state while checking role
   if (isLoadingRole) {
-    return null;
+    return (
+      <Layout>
+        <div className="container py-8 flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+      </Layout>
+    );
   }
 
+  // Redirect non-admin users
   if (!isAdmin) {
     return <Navigate to="/dashboard" replace />;
   }
   
+  // Prepare data for display
   const monitoringStats = calculateMonitoringStats(transactions);
   const financialStats = calculateFinancialStats(transactions, commissionRate);
   const monthlyData = prepareMonthlyData(transactions, commissionRate);
@@ -45,6 +55,14 @@ const Admin = () => {
             Monitorizează performanța platformei și comisioanele, fără acces la date sensibile
           </p>
         </div>
+
+        {!user && (
+          <Alert className="mb-6">
+            <AlertDescription>
+              You must be logged in and have admin privileges to access this dashboard.
+            </AlertDescription>
+          </Alert>
+        )}
 
         <div className="mb-6">
           <Tabs defaultValue="month" value={period} onValueChange={(v) => setPeriod(v as "week" | "month" | "year")}>
