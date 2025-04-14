@@ -28,38 +28,38 @@ const roadmapItems: RoadmapItem[] = [
     ]
   },
   {
-    title: "Managementul Tranzacțiilor",
-    description: "Sistem de plăți și gestionare tranzacții",
+    title: "Integrare Stripe pentru Plăți",
+    description: "Delegare completă a procesării plăților către Stripe",
     status: "in-progress",
     details: [
-      "Integrare Stripe pentru plăți",
-      "Tabelă transactions în Supabase",
-      "Webhook pentru procesarea plăților",
-      "Dashboard cu statistici tranzacții",
-      "Asigurarea conformității cu reglementările de plată (PSD2, SCA)"
+      "Integrare Stripe pentru plăți fără stocarea datelor sensibile",
+      "Webhook pentru primirea notificărilor de plată",
+      "Dashboard pentru monitorizarea comisioanelor",
+      "Asigurarea conformității cu reglementările de plată (PSD2, SCA)",
+      "Experiență de checkout optimizată fără date sensibile stocate local"
     ]
   },
   {
     title: "Raportare și Analiză",
-    description: "Sistem de raportare și vizualizare date",
+    description: "Vizualizare avansată a datelor nesensibile",
     status: "in-progress",
     details: [
       "Grafice pentru volumul de tranzacții pe perioade",
-      "Sumar al veniturilor pe zi/săptămână/lună",
-      "Filtrare după dată, sumă și status",
+      "Sumar al veniturilor și comisioanelor pe zi/săptămână/lună",
+      "Filtrare după dată, sumă și status fără acces la datele sensibile",
       "Căutare după ID-ul tranzacției",
-      "Exportare rapoarte"
+      "Exportare rapoarte cu focus pe protecția datelor utilizatorilor"
     ]
   },
   {
-    title: "Detalii și Gestionare Tranzacții",
-    description: "Vizualizare și management tranzacții",
+    title: "UI/UX Avansat pentru Utilizatori",
+    description: "Experiență personalizată fără stocarea datelor sensibile",
     status: "pending",
     details: [
-      "Vizualizare detaliată a informațiilor despre tranzacție",
-      "Opțiuni pentru rambursare (refund)",
-      "Istoric complet al tranzacției",
-      "Note și comentarii pentru tranzacții"
+      "Dashboard personalizat pentru fiecare utilizator bazat pe preferințe locale",
+      "Vizualizare detaliată a tranzacțiilor prin API Stripe",
+      "Managementul abonamentelor prin portal Stripe dedicat",
+      "Interfață intuitivă pentru interacțiunea cu serviciile Stripe"
     ]
   },
   {
@@ -67,10 +67,10 @@ const roadmapItems: RoadmapItem[] = [
     description: "Asigurarea calității și performanței",
     status: "pending",
     details: [
-      "Teste pentru diferite scenarii de plată",
+      "Teste pentru diferite scenarii de plată fără date reale",
       "Optimizarea performanței și a experienței utilizatorului",
-      "Teste de securitate și audit",
-      "Monitorizare și alertare"
+      "Teste de securitate și audit pentru protecția datelor",
+      "Monitorizare și alertare pentru evenimente importante"
     ]
   }
 ];
@@ -118,22 +118,35 @@ const Roadmap = () => {
         </div>
 
         <Alert className="mb-8">
-          <AlertTitle>Legendă Status</AlertTitle>
-          <AlertDescription className="flex items-center gap-4 mt-2">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="text-green-500" />
-              <span>Completat</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <ClockIcon className="text-blue-500" />
-              <span>În Lucru</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Circle className="text-gray-400" />
-              <span>În Așteptare</span>
-            </div>
+          <AlertTitle>Principiu de Bază</AlertTitle>
+          <AlertDescription>
+            <p className="mt-2">
+              Aplicația noastră nu stochează informații sensibile ale utilizatorilor. Fiecare utilizator are o experiență unică și separată. 
+              Ca administratori, monitorizăm doar comisioanele și abonamentele primite prin Stripe, delegând gestionarea datelor sensibile către ei. 
+              Ne concentrăm pe furnizarea unei interfețe avansate și intuitive.
+            </p>
           </AlertDescription>
         </Alert>
+
+        <div className="mb-8">
+          <Alert className="mb-4">
+            <AlertTitle>Legendă Status</AlertTitle>
+            <AlertDescription className="flex items-center gap-4 mt-2">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="text-green-500" />
+                <span>Completat</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <ClockIcon className="text-blue-500" />
+                <span>În Lucru</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Circle className="text-gray-400" />
+                <span>În Așteptare</span>
+              </div>
+            </AlertDescription>
+          </Alert>
+        </div>
 
         <div className="grid gap-6 md:grid-cols-2">
           {roadmapItems.map((item, index) => (
