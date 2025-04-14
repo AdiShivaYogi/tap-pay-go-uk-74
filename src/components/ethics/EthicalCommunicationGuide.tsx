@@ -61,6 +61,15 @@ export const EthicalCommunicationGuide: React.FC = () => {
       <h2 className="text-2xl font-bold text-foreground mb-4">
         Principii Etice de Comunicare
       </h2>
+      
+      <div className="bg-blue-50 p-4 rounded-lg mb-6 border border-blue-100">
+        <p className="text-blue-800">
+          Sistemul nostru de mesagerie este proiectat pentru a fi <strong>non-invaziv</strong>, 
+          respectând intimitatea și preferințele clienților. Comunicăm doar informații relevante, 
+          la momentul potrivit, fără a perturba sau a trimite mesaje excesive.
+        </p>
+      </div>
+      
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
         {ethicalPrinciples.map((principle, index) => (
           <Card key={index} className="hover:shadow-md transition-shadow">
@@ -86,4 +95,3 @@ export const EthicalCommunicationGuide: React.FC = () => {
     </div>
   );
 };
-
