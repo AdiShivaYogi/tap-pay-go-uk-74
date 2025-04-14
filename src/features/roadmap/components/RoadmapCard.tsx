@@ -14,7 +14,7 @@ export const RoadmapCard = ({ item }: RoadmapCardProps) => {
   const isHighPriority = item.priority === "high";
 
   return (
-    <Card className={`hover:shadow-lg transition-shadow ${isHighPriority ? 'border-primary' : ''}`}>
+    <Card className={`hover:shadow-lg transition-shadow ${isHighPriority ? 'border-primary border-2' : ''}`}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div className="flex items-center gap-2">
           {item.iconType && (
@@ -22,11 +22,11 @@ export const RoadmapCard = ({ item }: RoadmapCardProps) => {
               <RoadmapIcon iconType={item.iconType} iconColor={item.iconColor} />
             </span>
           )}
-          <CardTitle className="text-xl font-bold">
+          <CardTitle className="text-xl font-bold flex items-center gap-2">
             {item.title}
             {isHighPriority && (
-              <span className="inline-flex items-center ml-2">
-                <AlertTriangle className="h-4 w-4 text-primary" />
+              <span className="inline-flex items-center">
+                <AlertTriangle className="h-4 w-4 text-primary animate-pulse" />
               </span>
             )}
           </CardTitle>

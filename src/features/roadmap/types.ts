@@ -1,4 +1,3 @@
-
 import { ReactNode } from "react";
 
 export type Status = "completed" | "in-progress" | "pending";
@@ -29,7 +28,7 @@ export const roadmapItems: RoadmapItem[] = [
     status: "in-progress",
     priority: "high",
     iconType: "test-tube-2",
-    iconColor: "text-blue-600",
+    iconColor: "text-primary",  // Updated to use primary color for consistency
     timeEstimate: {
       total: 15,
       spent: 5,
@@ -41,6 +40,26 @@ export const roadmapItems: RoadmapItem[] = [
       "Colectare feedback pentru îmbunătățiri",
       "Monitorizare și suport pentru experiența utilizatorilor",
       "Validare model de business și flux de plăți"
+    ]
+  },
+  {
+    title: "Integrare și Securitate",
+    description: "Integrare completă cu sisteme de securitate și plăți",
+    status: "in-progress",
+    priority: "high",
+    iconType: "shield-check",
+    iconColor: "text-primary",
+    timeEstimate: {
+      total: 25,
+      spent: 15,
+      aiTotal: 10
+    },
+    details: [
+      "Integrare completă cu Stripe pentru plăți",
+      "Implementare măsuri de securitate avansate",
+      "Testare și audit de securitate",
+      "Monitorizare în timp real a tranzacțiilor",
+      "Sistem de backup și recuperare date"
     ]
   },
   {
@@ -163,4 +182,3 @@ export const roadmapItems: RoadmapItem[] = [
     ]
   }
 ];
-
