@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { useUserRole } from "@/hooks/use-user-role";
 import { Navigate } from "react-router-dom";
 import { AdminStats } from "@/components/admin/AdminStats";
 import { AdminCharts } from "@/components/admin/AdminCharts";
@@ -13,11 +14,14 @@ import { useState } from "react";
 
 const Admin = () => {
   const { user } = useAuth();
+  const { isAdmin, isLoading: isLoadingRole } = useUserRole();
   const [period, setPeriod] = useState<"week" | "month" | "year">("month");
   const commissionRate = 0.025; // 2.5%
   
-  const isAdmin = user?.email?.includes('admin');
-  
+  if (isLoadingRole) {
+    return null; // or a loading spinner
+  }
+
   if (!isAdmin) {
     return <Navigate to="/dashboard" replace />;
   }

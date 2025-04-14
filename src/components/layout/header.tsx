@@ -1,4 +1,3 @@
-
 import {
   Sheet,
   SheetContent,
@@ -11,22 +10,21 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
+import { useUserRole } from "@/hooks/use-user-role";
 
 const NAVIGATION = [
   { href: "/", label: "Acasă" },
   { href: "/dashboard", label: "Dashboard" },
   { href: "/reports", label: "Rapoarte" },
-  { href: "/admin", label: "Admin", admin: true },
+  { href: "/admin", label: "Admin", adminOnly: true },
   { href: "/pricing", label: "Prețuri" },
   { href: "/about", label: "Despre" },
 ];
 
 export function Header() {
   const { signOut, user } = useAuth();
+  const { isAdmin } = useUserRole();
   
-  // Verificăm dacă utilizatorul este admin (puteți personaliza această logică)
-  const isAdmin = user?.email?.includes('admin');
-
   return (
     <header className="bg-white py-4 shadow-sm">
       <div className="container mx-auto px-4">
@@ -36,8 +34,8 @@ export function Header() {
           </Link>
           <nav className="hidden md:flex items-center space-x-6">
             {NAVIGATION.map((item) => {
-              // Ascunde elementele admin pentru utilizatorii non-admin
-              if (item.admin && !isAdmin) return null;
+              // Hide admin items for non-admin users
+              if (item.adminOnly && !isAdmin) return null;
               
               return (
                 <Link key={item.href} to={item.href} className="hover:text-gray-600">
