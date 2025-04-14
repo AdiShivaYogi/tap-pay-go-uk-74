@@ -1,7 +1,6 @@
+
 import { Layout } from "@/components/layout/layout";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/use-auth";
 import { useUserRole } from "@/hooks/use-user-role";
 import { Navigate } from "react-router-dom";
@@ -11,6 +10,8 @@ import { AdminTransactionsTable } from "@/components/admin/AdminTransactionsTabl
 import { MonitoringStats } from "@/components/admin/MonitoringStats";
 import { prepareMonthlyData } from "@/utils/admin";
 import { useState } from "react";
+import { useAdminData } from "@/hooks/use-admin-data";
+import { calculateMonitoringStats, calculateFinancialStats, calculatePieChartData } from "@/utils/admin-calculations";
 
 const Admin = () => {
   const { user } = useAuth();
@@ -19,59 +20,19 @@ const Admin = () => {
   const commissionRate = 0.025; // 2.5%
   
   if (isLoadingRole) {
-    return null; // or a loading spinner
+    return null;
   }
 
   if (!isAdmin) {
     return <Navigate to="/dashboard" replace />;
   }
 
-  const { data: transactions = [], isLoading } = useQuery({
-    queryKey: ['admin-transactions', period],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('transactions')
-        .select('*')
-        .order('created_at', { ascending: false });
-      
-      if (error) throw error;
-      return data;
-    }
-  });
-
-  // Calculate monitoring stats
-  const successfulTransactions = transactions.filter(t => t.status === 'completed');
-  const monitoringStats = {
-    totalTransactions: transactions.length,
-    averageAmount: successfulTransactions.length > 0 
-      ? successfulTransactions.reduce((sum, t) => sum + t.amount, 0) / successfulTransactions.length 
-      : 0,
-    activeUsers: [...new Set(transactions.map(t => t.user_id))].length,
-    successRate: transactions.length > 0 
-      ? (successfulTransactions.length / transactions.length) * 100 
-      : 0
-  };
-
-  const totalTransactions = transactions.reduce((sum, t) => sum + t.amount, 0);
-  const totalCommission = totalTransactions * commissionRate;
-  const successfulAmount = successfulTransactions.reduce((sum, t) => sum + t.amount, 0);
-  const successfulCommission = successfulAmount * commissionRate;
-
-  const monthlyData = prepareMonthlyData(transactions, commissionRate);
+  const { data: transactions = [], isLoading } = useAdminData(period);
   
-  const pieChartData = [
-    { name: "Plăți reușite", value: successfulAmount, count: successfulTransactions.length },
-    { 
-      name: "Plăți eșuate", 
-      value: transactions.filter(t => t.status === 'failed').reduce((sum, t) => sum + t.amount, 0),
-      count: transactions.filter(t => t.status === 'failed').length
-    },
-    { 
-      name: "În așteptare", 
-      value: transactions.filter(t => t.status === 'pending').reduce((sum, t) => sum + t.amount, 0),
-      count: transactions.filter(t => t.status === 'pending').length
-    }
-  ];
+  const monitoringStats = calculateMonitoringStats(transactions);
+  const financialStats = calculateFinancialStats(transactions, commissionRate);
+  const monthlyData = prepareMonthlyData(transactions, commissionRate);
+  const pieChartData = calculatePieChartData(transactions);
 
   return (
     <Layout>
@@ -102,12 +63,7 @@ const Admin = () => {
 
         <AdminStats 
           isLoading={isLoading}
-          stats={{
-            totalTransactions: transactions.length,
-            totalAmount: totalTransactions,
-            totalCommission,
-            successfulCommission,
-          }}
+          stats={financialStats}
         />
 
         <AdminCharts 
