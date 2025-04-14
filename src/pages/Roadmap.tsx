@@ -57,7 +57,7 @@ const Roadmap = () => {
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-3">Roadmap Aplicație</h1>
           <p className="text-muted-foreground text-lg">
-            Vizualizează progresul și angajamentul nostru pentru securitate, transparență și experiență utilizator
+            Vizualizează progresul și angajamentul nostru pentru securitate, transparență și experiența utilizator
           </p>
         </div>
 
@@ -86,6 +86,12 @@ const Roadmap = () => {
                     <span>{detail.label}</span>
                   </div>
                 ))}
+              </div>
+              <div className="mt-4 text-xs text-muted-foreground border-t pt-2">
+                <p className="font-medium mb-1">Ultimele modificări ale criteriilor de securitate:</p>
+                <div className="bg-background/50 rounded p-2 font-mono">
+                  {JSON.stringify(SecurityCriteriaReporter.getCurrentDetails(), null, 2)}
+                </div>
               </div>
             </div>
           </AlertDescription>
