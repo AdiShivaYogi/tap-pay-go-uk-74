@@ -1,5 +1,5 @@
 
-import { Clock, Robot } from "lucide-react";
+import { Bot, Clock } from "lucide-react";
 import { TimeEstimate } from "../types";
 import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
@@ -27,7 +27,7 @@ export const TimeEstimationBadge = ({ timeEstimate, status }: TimeEstimationBadg
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           {showAiEstimate ? (
-            <Robot className="h-4 w-4" />
+            <Bot className="h-4 w-4" />
           ) : (
             <Clock className="h-4 w-4" />
           )}
@@ -47,7 +47,7 @@ export const TimeEstimationBadge = ({ timeEstimate, status }: TimeEstimationBadg
             id="estimate-toggle"
             checked={showAiEstimate}
             onCheckedChange={setShowAiEstimate}
-            size="sm"
+            className="scale-75"
           />
         </div>
       </div>
