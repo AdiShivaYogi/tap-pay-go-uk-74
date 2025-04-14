@@ -33,22 +33,69 @@ const Dashboard = () => {
     }
   });
 
+  // Verifică starea ultimei tranzacții
+  const checkLastTransaction = async () => {
+    const lastSessionId = localStorage.getItem('last_payment_session');
+    
+    if (lastSessionId) {
+      try {
+        const { data, error } = await supabase
+          .from('transactions')
+          .select('status')
+          .eq('stripe_session_id', lastSessionId)
+          .single();
+          
+        if (!error && data) {
+          if (data.status === 'completed') {
+            toast({
+              title: "Tranzacție finalizată",
+              description: "Plata a fost procesată cu succes.",
+              variant: "default"
+            });
+            // Curăță ID-ul sesiunii după verificare
+            localStorage.removeItem('last_payment_session');
+            // Reîmprospătează lista de tranzacții
+            queryClient.invalidateQueries({ queryKey: ['transactions'] });
+          } else if (data.status === 'failed') {
+            toast({
+              title: "Plată eșuată",
+              description: "Procesarea plății a eșuat.",
+              variant: "destructive"
+            });
+            localStorage.removeItem('last_payment_session');
+          }
+        }
+      } catch (err) {
+        console.error("Eroare la verificarea tranzacției:", err);
+      }
+    }
+  };
+
   useEffect(() => {
     const success = searchParams.get("success");
     const canceled = searchParams.get("canceled");
 
     if (success === "true") {
       toast({
-        title: "Plată reușită",
-        description: "Plata a fost procesată cu succes.",
+        title: "Plată inițiată",
+        description: "Plata ta este în curs de procesare.",
       });
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      
+      // Verifică starea tranzacției după câteva secunde
+      setTimeout(() => {
+        checkLastTransaction();
+      }, 3000);
     } else if (canceled === "true") {
       toast({
         title: "Plată anulată",
         description: "Plata a fost anulată.",
         variant: "destructive",
       });
+      localStorage.removeItem('last_payment_session');
+    } else {
+      // Verifică la încărcarea paginii dacă există o tranzacție în așteptare
+      checkLastTransaction();
     }
   }, [searchParams, queryClient]);
 

@@ -34,22 +34,50 @@ serve(async (req) => {
     
     if (userError || !user) throw new Error('Unauthorized')
 
-    const { amount } = await req.json()
+    const { amount, description } = await req.json()
     
+    // Validate amount
+    if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
+      throw new Error('Invalid amount. Please provide a positive number.')
+    }
+
     // Initialize Stripe
     const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
       apiVersion: '2023-10-16',
     })
 
+    // Check if user already exists as a Stripe customer
+    const customers = await stripe.customers.list({
+      email: user.email,
+      limit: 1
+    })
+
+    // Get or create customer
+    let customerId: string
+    if (customers.data.length > 0) {
+      customerId = customers.data[0].id
+      console.log(`Using existing Stripe customer: ${customerId}`)
+    } else {
+      const customer = await stripe.customers.create({
+        email: user.email,
+        metadata: {
+          user_id: user.id
+        }
+      })
+      customerId = customer.id
+      console.log(`Created new Stripe customer: ${customerId}`)
+    }
+
     // Create a payment session
     const session = await stripe.checkout.sessions.create({
+      customer: customerId,
       payment_method_types: ['card'],
       line_items: [
         {
           price_data: {
             currency: 'gbp',
             product_data: {
-              name: 'Payment',
+              name: description || 'Payment',
             },
             unit_amount: Math.round(parseFloat(amount) * 100), // Convert to pence
           },
@@ -74,14 +102,19 @@ serve(async (req) => {
 
     if (insertError) throw insertError
 
+    console.log(`Created payment session: ${session.id} for user: ${user.id}`)
     return new Response(
-      JSON.stringify({ url: session.url }),
+      JSON.stringify({ 
+        url: session.url,
+        sessionId: session.id
+      }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
       }
     )
   } catch (error) {
+    console.error('Error creating payment:', error)
     return new Response(
       JSON.stringify({ error: error.message }),
       {

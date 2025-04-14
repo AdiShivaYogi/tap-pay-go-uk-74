@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -5,6 +6,7 @@ import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { DeviceCompatibility } from "@/hooks/use-device-compatibility";
 import { supabase } from "@/integrations/supabase/client";
+import { Textarea } from "@/components/ui/textarea";
 
 interface PaymentFormProps {
   deviceCompatibility: DeviceCompatibility;
@@ -12,6 +14,7 @@ interface PaymentFormProps {
 
 export const PaymentForm = ({ deviceCompatibility }: PaymentFormProps) => {
   const [amount, setAmount] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
   const handlePayment = async () => {
@@ -37,11 +40,19 @@ export const PaymentForm = ({ deviceCompatibility }: PaymentFormProps) => {
 
     try {
       const { data, error } = await supabase.functions.invoke('create-payment', {
-        body: { amount: parseFloat(amount) }
+        body: { 
+          amount: parseFloat(amount),
+          description: description || "Plată"
+        }
       });
 
       if (error) throw error;
       if (!data.url) throw new Error('Nu s-a putut obține URL-ul de plată');
+
+      // Salvăm ID-ul sesiunii pentru referință ulterioară
+      if (data.sessionId) {
+        localStorage.setItem('last_payment_session', data.sessionId);
+      }
 
       window.location.href = data.url;
     } catch (error) {
@@ -84,6 +95,20 @@ export const PaymentForm = ({ deviceCompatibility }: PaymentFormProps) => {
                 min="0.01"
               />
             </div>
+          </div>
+
+          <div>
+            <label htmlFor="description" className="block text-sm font-medium mb-2">
+              Descriere (opțional)
+            </label>
+            <Textarea
+              id="description"
+              placeholder="Descriere pentru această plată"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="resize-none"
+              rows={2}
+            />
           </div>
 
           <Button 

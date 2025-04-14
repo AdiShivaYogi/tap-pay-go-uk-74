@@ -59,11 +59,13 @@ serve(async (req) => {
           .from('transactions')
           .update({ 
             status: 'completed',
-            stripe_payment_intent_id: session.payment_intent as string
+            stripe_payment_intent_id: session.payment_intent as string,
+            updated_at: new Date().toISOString()
           })
           .eq('stripe_session_id', session.id)
 
         if (error) throw error
+        console.log(`Transaction updated to completed for session ${session.id}`)
         break
       }
 
@@ -73,10 +75,14 @@ serve(async (req) => {
         // Update transaction status in database
         const { error } = await supabaseAdmin
           .from('transactions')
-          .update({ status: 'expired' })
+          .update({ 
+            status: 'expired',
+            updated_at: new Date().toISOString()
+          })
           .eq('stripe_session_id', session.id)
 
         if (error) throw error
+        console.log(`Transaction marked as expired for session ${session.id}`)
         break
       }
 
@@ -86,10 +92,70 @@ serve(async (req) => {
         // Update transaction status in database
         const { error } = await supabaseAdmin
           .from('transactions')
-          .update({ status: 'failed' })
+          .update({ 
+            status: 'failed',
+            updated_at: new Date().toISOString()
+          })
           .eq('stripe_payment_intent_id', paymentIntent.id)
 
         if (error) throw error
+        console.log(`Transaction marked as failed for payment intent ${paymentIntent.id}`)
+        break
+      }
+
+      case 'payment_intent.succeeded': {
+        const paymentIntent = event.data.object as Stripe.PaymentIntent
+        
+        // Find transaction by payment intent ID and update if not already completed
+        const { error } = await supabaseAdmin
+          .from('transactions')
+          .update({ 
+            status: 'completed',
+            updated_at: new Date().toISOString()
+          })
+          .eq('stripe_payment_intent_id', paymentIntent.id)
+          .eq('status', 'pending')
+
+        if (error) throw error
+        console.log(`Transaction completed for payment intent ${paymentIntent.id}`)
+        break
+      }
+
+      case 'charge.refunded': {
+        const charge = event.data.object as Stripe.Charge
+        
+        if (charge.payment_intent) {
+          // Update transaction status to refunded
+          const { error } = await supabaseAdmin
+            .from('transactions')
+            .update({ 
+              status: 'refunded',
+              updated_at: new Date().toISOString()
+            })
+            .eq('stripe_payment_intent_id', charge.payment_intent as string)
+
+          if (error) throw error
+          console.log(`Transaction marked as refunded for payment intent ${charge.payment_intent}`)
+        }
+        break
+      }
+
+      case 'charge.dispute.created': {
+        const dispute = event.data.object as Stripe.Dispute
+        
+        if (dispute.charge && dispute.payment_intent) {
+          // Update transaction status to disputed
+          const { error } = await supabaseAdmin
+            .from('transactions')
+            .update({ 
+              status: 'disputed',
+              updated_at: new Date().toISOString()
+            })
+            .eq('stripe_payment_intent_id', dispute.payment_intent as string)
+
+          if (error) throw error
+          console.log(`Transaction marked as disputed for payment intent ${dispute.payment_intent}`)
+        }
         break
       }
     }
