@@ -9,7 +9,6 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders })
   }
@@ -69,6 +68,7 @@ serve(async (req) => {
         user_id: user.id,
         amount: amount,
         status: 'pending',
+        currency: 'GBP',
         stripe_session_id: session.id,
       })
 

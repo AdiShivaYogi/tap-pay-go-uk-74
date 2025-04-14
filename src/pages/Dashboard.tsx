@@ -1,37 +1,34 @@
-
 import { Layout } from "@/components/layout/layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { toast } from "@/hooks/use-toast";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 interface Transaction {
   id: string;
   amount: number;
   status: string;
   created_at: string;
+  currency: string;
 }
 
 const Dashboard = () => {
   const [amount, setAmount] = useState<string>("");
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [searchParams] = useSearchParams();
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    loadTransactions();
-  }, []);
-
-  const loadTransactions = async () => {
-    try {
+  const { data: transactions = [], isLoading } = useQuery({
+    queryKey: ['transactions'],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from('transactions')
         .select('*')
@@ -39,18 +36,9 @@ const Dashboard = () => {
         .limit(10);
 
       if (error) throw error;
-      setTransactions(data || []);
-    } catch (error) {
-      console.error('Error loading transactions:', error);
-      toast({
-        title: "Eroare",
-        description: "Nu am putut încărca tranzacțiile. Te rugăm să încerci din nou.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoading(false);
+      return data as Transaction[];
     }
-  };
+  });
 
   // Check payment status from URL parameters
   useEffect(() => {
@@ -62,7 +50,7 @@ const Dashboard = () => {
         title: "Plată reușită",
         description: "Plata a fost procesată cu succes.",
       });
-      loadTransactions(); // Reîncarcă tranzacțiile după o plată reușită
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
     } else if (canceled === "true") {
       toast({
         title: "Plată anulată",
@@ -70,7 +58,7 @@ const Dashboard = () => {
         variant: "destructive",
       });
     }
-  }, [searchParams]);
+  }, [searchParams, queryClient]);
 
   const handlePayment = async () => {
     if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
@@ -206,7 +194,7 @@ const Dashboard = () => {
               <Button 
                 variant="outline" 
                 className="w-full" 
-                onClick={loadTransactions}
+                onClick={() => queryClient.invalidateQueries({ queryKey: ['transactions'] })}
                 disabled={isLoading}
               >
                 Reîmprospătează
