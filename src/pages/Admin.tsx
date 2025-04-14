@@ -3,7 +3,6 @@ import { Layout } from "@/components/layout/layout";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/use-auth";
 import { useUserRole } from "@/hooks/use-user-role";
-import { Navigate } from "react-router-dom";
 import { AdminStats } from "@/components/admin/AdminStats";
 import { AdminCharts } from "@/components/admin/AdminCharts";
 import { AdminTransactionsTable } from "@/components/admin/AdminTransactionsTable";
@@ -12,12 +11,14 @@ import { prepareMonthlyData } from "@/utils/admin";
 import { useState } from "react";
 import { useAdminData } from "@/hooks/use-admin-data";
 import { calculateMonitoringStats, calculateFinancialStats, calculatePieChartData } from "@/utils/admin-calculations";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2 } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Loader2, LockIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const Admin = () => {
   const { user } = useAuth();
-  const { isAdmin, isLoading: isLoadingRole } = useUserRole();
+  const { isAdmin, isLoading: isLoadingRole, role } = useUserRole();
   const [period, setPeriod] = useState<"week" | "month" | "year">("month");
   const commissionRate = 0.025; // 2.5%
   
@@ -35,9 +36,32 @@ const Admin = () => {
     );
   }
 
-  // Redirect non-admin users
+  // Show access restricted message instead of redirecting
   if (!isAdmin) {
-    return <Navigate to="/dashboard" replace />;
+    return (
+      <Layout>
+        <div className="container py-12">
+          <Alert variant="destructive" className="mb-6">
+            <AlertTitle className="flex items-center gap-2">
+              <LockIcon className="h-4 w-4" /> Acces restricționat
+            </AlertTitle>
+            <AlertDescription>
+              <p className="mb-4">
+                Această pagină necesită privilegii de administrator. Rolul tău actual: <strong>{role || 'user'}</strong>
+              </p>
+              <div className="flex gap-4">
+                <Button asChild variant="outline">
+                  <Link to="/">Înapoi la Pagina Principală</Link>
+                </Button>
+                <Button asChild>
+                  <Link to="/admin-auth">Autentificare administrator</Link>
+                </Button>
+              </div>
+            </AlertDescription>
+          </Alert>
+        </div>
+      </Layout>
+    );
   }
   
   // Prepare data for display

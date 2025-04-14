@@ -8,13 +8,39 @@ import { RoadmapProgress } from "@/features/roadmap/components/RoadmapProgress";
 import { AdvancedReporting } from "@/features/roadmap/components/AdvancedReporting";
 import { roadmapItems } from "@/features/roadmap/types";
 import { useUserRole } from "@/hooks/use-user-role";
-import { Navigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { LockIcon } from "lucide-react";
 
 const Roadmap = () => {
-  const { isAdmin } = useUserRole();
+  const { isAdmin, role } = useUserRole();
 
+  // Instead of redirect, show access restricted message
   if (!isAdmin) {
-    return <Navigate to="/404" replace />;
+    return (
+      <Layout>
+        <div className="container py-12">
+          <Alert variant="destructive" className="mb-6">
+            <AlertTitle className="flex items-center gap-2">
+              <LockIcon className="h-4 w-4" /> Acces restricționat
+            </AlertTitle>
+            <AlertDescription>
+              <p className="mb-4">
+                Această pagină necesită privilegii de administrator. Rolul tău actual: <strong>{role || 'user'}</strong>
+              </p>
+              <div className="flex gap-4">
+                <Button asChild variant="outline">
+                  <Link to="/">Înapoi la Pagina Principală</Link>
+                </Button>
+                <Button asChild>
+                  <Link to="/admin-auth">Autentificare administrator</Link>
+                </Button>
+              </div>
+            </AlertDescription>
+          </Alert>
+        </div>
+      </Layout>
+    );
   }
 
   return (
