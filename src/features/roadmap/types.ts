@@ -1,3 +1,4 @@
+
 import { ReactNode } from "react";
 
 export type Status = "completed" | "in-progress" | "pending";
@@ -28,8 +29,8 @@ export const roadmapItems: RoadmapItem[] = [
     iconType: "shield-check",
     iconColor: "text-green-600",
     timeEstimate: {
-      total: 40,
-      spent: 40
+      total: 10,  // Redus de la 40 la 10 ore
+      spent: 10
     },
     details: [
       "Zero stocare de date sensibile",
@@ -46,8 +47,8 @@ export const roadmapItems: RoadmapItem[] = [
     iconType: "info",
     iconColor: "text-blue-600",
     timeEstimate: {
-      total: 30,
-      spent: 30
+      total: 8,  // Redus de la 30 la 8 ore
+      spent: 8
     },
     details: [
       "Informarea utilizatorilor despre politica de confidențialitate",
@@ -65,8 +66,8 @@ export const roadmapItems: RoadmapItem[] = [
     iconType: "clock",
     iconColor: "text-blue-500",
     timeEstimate: {
-      total: 60,
-      spent: 25
+      total: 20,  // Redus de la 60 la 20 ore
+      spent: 10
     },
     details: [
       "Utilizare webhook-uri Stripe pentru notificări",
@@ -82,8 +83,8 @@ export const roadmapItems: RoadmapItem[] = [
     status: "in-progress",
     priority: "medium",
     timeEstimate: {
-      total: 50,
-      spent: 20
+      total: 15,  // Redus de la 50 la 15 ore
+      spent: 8
     },
     details: [
       "Design responsive și intuitiv",
@@ -101,8 +102,8 @@ export const roadmapItems: RoadmapItem[] = [
     iconType: "shield",
     iconColor: "text-purple-500",
     timeEstimate: {
-      total: 40,
-      spent: 20
+      total: 12,  // Redus de la 40 la 12 ore
+      spent: 6
     },
     details: [
       "Detectare anomalii în tranzacții",
@@ -120,11 +121,11 @@ export const roadmapItems: RoadmapItem[] = [
     iconType: "bar-chart-4",
     iconColor: "text-orange-500",
     timeEstimate: {
-      total: 30,
-      spent: 15
+      total: 10,  // Redus de la 30 la 10 ore
+      spent: 5
     },
     details: [
-      "Grafice pentru volumul de tranzacții",
+      "Grafice pentru volumul de tranzacțiilor",
       "Sumar de venituri pe diferite perioade",
       "Filtrare și căutare sigură",
       "Exporturi de rapoarte anonimizate",
@@ -139,8 +140,8 @@ export const roadmapItems: RoadmapItem[] = [
     iconType: "test-tube-2",
     iconColor: "text-amber-500",
     timeEstimate: {
-      total: 40,
-      spent: 20
+      total: 15,  // Redus de la 40 la 15 ore
+      spent: 7
     },
     details: [
       "Teste de securitate regulate",
