@@ -27,15 +27,29 @@ export const calculateSecurityScore = (criteria: SecurityCriteria): number => {
   return score;
 };
 
+// Nouă funcție pentru a raporta și actualiza criteriile de securitate
+export const updateSecurityCriteria = (
+  newCriteria: Partial<SecurityCriteria>
+): SecurityCriteria => {
+  const currentCriteria = getSecurityCriteria();
+  const updatedCriteria = { ...currentCriteria, ...newCriteria };
+  
+  // Înregistrăm modificările într-un jurnal sau sistem de monitorizare
+  console.log('Security Criteria Updated:', {
+    previous: currentCriteria,
+    updated: updatedCriteria
+  });
+
+  return updatedCriteria;
+};
+
 export const getSecurityCriteria = (): SecurityCriteria => {
-  // Aici am putea adăuga logică pentru a verifica dinamic aceste criterii
-  // Pentru moment, le setăm bazat pe implementarea curentă
   return {
-    hasStripeIntegration: true,      // Verificat prin existența integrării Stripe
-    hasZeroSensitiveData: true,      // Politica noastră de zero date sensibile
-    hasFullTransparency: true,       // Implementată prin interfața transparentă
-    hasLoginProtection: true,        // Verificat prin mecanismul de blocare login
-    hasRoleBasedAccess: true,        // Verificat prin sistemul de roluri
+    hasStripeIntegration: true,
+    hasZeroSensitiveData: true,
+    hasFullTransparency: true,
+    hasLoginProtection: true,
+    hasRoleBasedAccess: true,
   };
 };
 
@@ -64,3 +78,11 @@ export const getSecurityDetails = () => {
     }
   ];
 };
+
+// Export pentru a permite utilizarea în alte componente
+export const SecurityCriteriaReporter = {
+  updateCriteria: updateSecurityCriteria,
+  getCurrentScore: () => calculateSecurityScore(getSecurityCriteria()),
+  getCurrentDetails: getSecurityDetails
+};
+
