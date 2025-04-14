@@ -8,16 +8,41 @@ import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
+import { z } from "zod";
+import { Progress } from "@/components/ui/progress";
 
 const ADMIN_INVITE_CODE = "TPG2025ADMIN"; // Acest cod ar trebui să fie într-un loc sigur în producție
+
+const passwordSchema = z.string()
+  .min(8, "Parola trebuie să aibă cel puțin 8 caractere")
+  .regex(/[A-Z]/, "Parola trebuie să conțină cel puțin o literă mare")
+  .regex(/[a-z]/, "Parola trebuie să conțină cel puțin o literă mică")
+  .regex(/[0-9]/, "Parola trebuie să conțină cel puțin o cifră")
+  .regex(/[!@#$%^&*()]/, "Parola trebuie să conțină cel puțin un caracter special");
 
 const AdminAuth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [inviteCode, setInviteCode] = useState("");
   const [loading, setLoading] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState(0);
   const navigate = useNavigate();
   const { signIn } = useAuth();
+
+  const calculatePasswordStrength = (password: string) => {
+    let strength = 0;
+    if (password.length >= 8) strength += 25;
+    if (/[A-Z]/.test(password)) strength += 25;
+    if (/[a-z]/.test(password)) strength += 25;
+    if (/[0-9]/.test(password)) strength += 25;
+    return strength;
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+    setPasswordStrength(calculatePasswordStrength(newPassword));
+  };
 
   const handleAdminSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,10 +50,40 @@ const AdminAuth = () => {
     try {
       setLoading(true);
 
+      // Validate invite code
       if (inviteCode !== ADMIN_INVITE_CODE) {
         toast({
           title: "Cod de invitație invalid",
           description: "Vă rugăm să verificați codul de invitație",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Validate password
+      try {
+        passwordSchema.parse(password);
+      } catch (validationError) {
+        if (validationError instanceof z.ZodError) {
+          toast({
+            title: "Parolă invalidă",
+            description: validationError.errors[0].message,
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+
+      // Check for existing admin
+      const { data: existingAdmins } = await supabase
+        .from('user_roles')
+        .select('*')
+        .eq('role', 'admin');
+
+      if (existingAdmins && existingAdmins.length > 0) {
+        toast({
+          title: "Cont admin existent",
+          description: "Un cont de administrator a fost deja creat.",
           variant: "destructive",
         });
         return;
@@ -57,7 +112,7 @@ const AdminAuth = () => {
 
         toast({
           title: "Cont admin creat cu succes",
-          description: "Vă rugăm să vă autentificați pentru a continua",
+          description: "Veți fi redirectat către panoul de administrare",
         });
 
         navigate("/admin");
@@ -100,8 +155,19 @@ const AdminAuth = () => {
                   type="password"
                   placeholder="Parolă"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={handlePasswordChange}
                   required
+                />
+                <Progress 
+                  value={passwordStrength} 
+                  className="mt-2"
+                  color={
+                    passwordStrength < 50 
+                      ? "bg-red-500" 
+                      : passwordStrength < 75 
+                      ? "bg-yellow-500" 
+                      : "bg-green-500"
+                  }
                 />
               </div>
               <div>
