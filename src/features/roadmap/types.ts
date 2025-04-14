@@ -64,21 +64,21 @@ export const roadmapItems: RoadmapItem[] = [
   {
     title: "Integrare Stripe Complex",
     description: "Delegare completă a procesării plăților",
-    status: "in-progress",
+    status: "completed", // Actualizat de la in-progress la completed
     priority: "high",
-    iconType: "clock",
-    iconColor: "text-blue-500",
+    iconType: "check", // Actualizat de la clock la check
+    iconColor: "text-green-500", // Actualizat la culoare verde pentru completat
     timeEstimate: {
       total: 20,
-      spent: 12, // Updated to show more progress
+      spent: 20, // Actualizat la total pentru a marca finalizarea
       aiTotal: 8
     },
     details: [
       "Utilizare webhook-uri Stripe pentru notificări ✓",
       "Management complet al plăților prin API Stripe ✓",
       "Fără stocare de informații de plată ✓",
-      "Dashboard pentru urmărirea comisioanelor",
-      "Conformitate PSD2 și SCA prin Stripe"
+      "Dashboard pentru urmărirea comisioanelor ✓",
+      "Conformitate PSD2 și SCA prin Stripe ✓"
     ]
   },
   {
@@ -102,38 +102,38 @@ export const roadmapItems: RoadmapItem[] = [
   {
     title: "Monitorizare Etică",
     description: "Urmărirea anomaliilor fără acces la date sensibile",
-    status: "in-progress",
+    status: "completed", // Actualizat de la in-progress la completed
     priority: "high",
-    iconType: "shield",
-    iconColor: "text-purple-500",
+    iconType: "shield-check", // Actualizat de la shield la shield-check
+    iconColor: "text-green-500", // Actualizat la culoare verde pentru completat
     timeEstimate: {
       total: 12,
-      spent: 6,
+      spent: 12, // Actualizat la total pentru a marca finalizarea
       aiTotal: 5
     },
     details: [
-      "Detectare anomalii în tranzacții",
-      "Alertare pentru evenimente neobișnuite",
-      "Sistem de raportare centrat pe confidențialitate",
-      "Metrici agregate fără identificatori personali",
-      "Analiză de pattern-uri pentru îmbunătățirea UX"
+      "Detectare anomalii în tranzacții ✓",
+      "Alertare pentru evenimente neobișnuite ✓",
+      "Sistem de raportare centrat pe confidențialitate ✓",
+      "Metrici agregate fără identificatori personali ✓",
+      "Analiză de pattern-uri pentru îmbunătățirea UX ✓"
     ]
   },
   {
     title: "Raportare Avansată",
     description: "Analiză și insights fără date sensibile",
-    status: "pending",
+    status: "in-progress", // Actualizat de la pending la in-progress
     priority: "high",
     iconType: "bar-chart-4",
     iconColor: "text-orange-500",
     timeEstimate: {
       total: 10,
-      spent: 5,
+      spent: 6, // Actualizat pentru a arăta progresul
       aiTotal: 4
     },
     details: [
-      "Grafice pentru volumul de tranzacțiilor",
-      "Sumar de venituri pe diferite perioade",
+      "Grafice pentru volumul de tranzacțiilor ✓",
+      "Sumar de venituri pe diferite perioade ✓",
       "Filtrare și căutare sigură",
       "Exporturi de rapoarte anonimizate",
       "Monitorizare etică a performanței"
