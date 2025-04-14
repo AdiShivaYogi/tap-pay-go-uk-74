@@ -1,9 +1,11 @@
+
 import { Layout } from "@/components/layout/layout";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RoadmapCard } from "@/features/roadmap/components/RoadmapCard";
 import { RoadmapLegend } from "@/features/roadmap/components/RoadmapLegend";
 import { RoadmapProgress } from "@/features/roadmap/components/RoadmapProgress";
+import { AdvancedReporting } from "@/features/roadmap/components/AdvancedReporting";
 import { roadmapItems } from "@/features/roadmap/types";
 
 const Roadmap = () => {
@@ -35,6 +37,11 @@ const Roadmap = () => {
           <RoadmapLegend />
         </div>
 
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-4">Sistem de Raportare Avansată</h2>
+          <AdvancedReporting />
+        </div>
+
         <Tabs defaultValue="all" className="mb-8">
           <TabsList className="grid w-full grid-cols-4 mb-4">
             <TabsTrigger value="all">Toate</TabsTrigger>
@@ -60,9 +67,10 @@ const Roadmap = () => {
           <AlertTitle>Etape Următoare</AlertTitle>
           <AlertDescription>
             <p className="mt-2">
-              Suntem în proces de finalizare a integrărilor Stripe și a funcționalităților de monitorizare etică.
-              Următoarea componentă planificată este implementarea sistemului de raportare avansată, care va oferi
-              insights valoroase fără a compromite protecția datelor.
+              În paralel cu finalizarea integrărilor Stripe și a monitorizării etice,
+              am început dezvoltarea sistemului de raportare avansată. Acesta va oferi
+              insights valoroase despre tranzacții și pattern-uri, păstrând în același timp
+              angajamentul nostru pentru protecția datelor și transparență.
             </p>
           </AlertDescription>
         </Alert>
