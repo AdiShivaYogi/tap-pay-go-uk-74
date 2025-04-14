@@ -3,6 +3,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { RoadmapItem } from "../types";
 import { getStatusIcon, getStatusBadge, getPriorityBadge } from "./StatusBadges";
 import { RoadmapIcon } from "./RoadmapIcon";
+import { TimeEstimationBadge } from "./TimeEstimationBadge";
 
 interface RoadmapCardProps {
   item: RoadmapItem;
@@ -38,6 +39,10 @@ export const RoadmapCard = ({ item }: RoadmapCardProps) => {
             </li>
           ))}
         </ul>
+        <TimeEstimationBadge 
+          timeEstimate={item.timeEstimate} 
+          status={item.status}
+        />
       </CardContent>
     </Card>
   );

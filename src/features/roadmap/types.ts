@@ -1,9 +1,13 @@
-
 import { ReactNode } from "react";
 
 export type Status = "completed" | "in-progress" | "pending";
 export type Priority = "high" | "medium" | "low";
-export type IconType = "shield-check" | "info" | "clock" | "shield" | "bar-chart-4" | "test-tube-2" | string;
+export type IconType = "shield-check" | "info" | "clock" | "shield" | "bar-chart-4" | "test-tube-2" | "check" | "alert-circle" | "file-text";
+
+export interface TimeEstimate {
+  total: number; // total hours estimated
+  spent?: number; // hours spent so far (only for in-progress items)
+}
 
 export interface RoadmapItem {
   title: string;
@@ -13,6 +17,7 @@ export interface RoadmapItem {
   details: string[];
   iconType?: IconType;
   iconColor?: string;
+  timeEstimate: TimeEstimate;
 }
 
 export const roadmapItems: RoadmapItem[] = [
@@ -22,6 +27,10 @@ export const roadmapItems: RoadmapItem[] = [
     status: "completed",
     iconType: "shield-check",
     iconColor: "text-green-600",
+    timeEstimate: {
+      total: 40,
+      spent: 40
+    },
     details: [
       "Zero stocare de date sensibile",
       "Delegarea procesării plăților către Stripe",
@@ -36,6 +45,10 @@ export const roadmapItems: RoadmapItem[] = [
     status: "completed",
     iconType: "info",
     iconColor: "text-blue-600",
+    timeEstimate: {
+      total: 30,
+      spent: 30
+    },
     details: [
       "Informarea utilizatorilor despre politica de confidențialitate",
       "Explicarea datelor monitorizate și scopul lor",
@@ -51,6 +64,10 @@ export const roadmapItems: RoadmapItem[] = [
     priority: "high",
     iconType: "clock",
     iconColor: "text-blue-500",
+    timeEstimate: {
+      total: 60,
+      spent: 25
+    },
     details: [
       "Utilizare webhook-uri Stripe pentru notificări",
       "Management complet al plăților prin API Stripe",
@@ -64,6 +81,10 @@ export const roadmapItems: RoadmapItem[] = [
     description: "Experiență avansată fără compromiterea confidențialității",
     status: "in-progress",
     priority: "medium",
+    timeEstimate: {
+      total: 50,
+      spent: 20
+    },
     details: [
       "Design responsive și intuitiv",
       "Vizualizare dinamică a tranzacțiilor prin API-ul Stripe",
@@ -79,6 +100,10 @@ export const roadmapItems: RoadmapItem[] = [
     priority: "high",
     iconType: "shield",
     iconColor: "text-purple-500",
+    timeEstimate: {
+      total: 40,
+      spent: 20
+    },
     details: [
       "Detectare anomalii în tranzacții",
       "Alertare pentru evenimente neobișnuite",
@@ -94,6 +119,10 @@ export const roadmapItems: RoadmapItem[] = [
     priority: "high",
     iconType: "bar-chart-4",
     iconColor: "text-orange-500",
+    timeEstimate: {
+      total: 30,
+      spent: 15
+    },
     details: [
       "Grafice pentru volumul de tranzacții",
       "Sumar de venituri pe diferite perioade",
@@ -109,6 +138,10 @@ export const roadmapItems: RoadmapItem[] = [
     priority: "medium",
     iconType: "test-tube-2",
     iconColor: "text-amber-500",
+    timeEstimate: {
+      total: 40,
+      spent: 20
+    },
     details: [
       "Teste de securitate regulate",
       "Optimizarea performanței aplicației",
