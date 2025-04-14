@@ -23,7 +23,8 @@ const roadmapItems: RoadmapItem[] = [
       "Implementare login/register cu Supabase",
       "Creare tabelă user_roles",
       "Implementare Row Level Security (RLS)",
-      "Hook useUserRole pentru verificarea rolurilor"
+      "Hook useUserRole pentru verificarea rolurilor",
+      "Implementarea autentificării cu doi factori"
     ]
   },
   {
@@ -34,7 +35,8 @@ const roadmapItems: RoadmapItem[] = [
       "Integrare Stripe pentru plăți",
       "Tabelă transactions în Supabase",
       "Webhook pentru procesarea plăților",
-      "Dashboard cu statistici tranzacții"
+      "Dashboard cu statistici tranzacții",
+      "Asigurarea conformității cu reglementările de plată (PSD2, SCA)"
     ]
   },
   {
@@ -42,21 +44,33 @@ const roadmapItems: RoadmapItem[] = [
     description: "Sistem de raportare și vizualizare date",
     status: "in-progress",
     details: [
-      "Grafice pentru vizualizare tranzacții",
-      "Exportare rapoarte",
-      "Filtrare și căutare avansată",
-      "Dashboard analytics"
+      "Grafice pentru volumul de tranzacții pe perioade",
+      "Sumar al veniturilor pe zi/săptămână/lună",
+      "Filtrare după dată, sumă și status",
+      "Căutare după ID-ul tranzacției",
+      "Exportare rapoarte"
     ]
   },
   {
-    title: "Configurare Profil și Setări",
-    description: "Gestionarea profilului și preferințelor",
+    title: "Detalii și Gestionare Tranzacții",
+    description: "Vizualizare și management tranzacții",
     status: "pending",
     details: [
-      "Editare profil utilizator",
-      "Setări notificări",
-      "Preferințe dashboard",
-      "Integrări personalizate"
+      "Vizualizare detaliată a informațiilor despre tranzacție",
+      "Opțiuni pentru rambursare (refund)",
+      "Istoric complet al tranzacției",
+      "Note și comentarii pentru tranzacții"
+    ]
+  },
+  {
+    title: "Testare și Optimizare",
+    description: "Asigurarea calității și performanței",
+    status: "pending",
+    details: [
+      "Teste pentru diferite scenarii de plată",
+      "Optimizarea performanței și a experienței utilizatorului",
+      "Teste de securitate și audit",
+      "Monitorizare și alertare"
     ]
   }
 ];
