@@ -13,48 +13,62 @@ const AboutPage = () => {
           <div className="prose prose-gray max-w-none space-y-6">
             <section>
               <p className="text-lg">
-                TapPayGo transforms your phone into a contactless payment terminal, allowing freelancers and small businesses to accept payments anywhere, anytime—without extra hardware.
+                TapPayGo transformă telefonul tău într-un terminal de plată contactless, permițând freelancerilor și micilor afaceri să accepte plăți oriunde, oricând—fără hardware suplimentar.
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold mb-4">Our Mission</h2>
+              <h2 className="text-2xl font-semibold mb-4">Misiunea Noastră</h2>
               <p>
-                We believe that accepting payments should be simple, secure, and accessible to everyone. Our mission is to empower freelancers and small businesses by providing them with the tools they need to get paid easily, without the complexity and costs of traditional payment systems.
+                Credem că procesarea plăților trebuie să fie simplă, sigură și accesibilă tuturor. Misiunea noastră este să oferim freelancerilor și micilor afaceri instrumentele necesare pentru a încasa bani ușor, fără complexitatea și costurile sistemelor tradiționale de plată.
               </p>
             </section>
             
             <section>
-              <h2 className="text-2xl font-semibold mb-4">Security First</h2>
+              <h2 className="text-2xl font-semibold mb-4">Securitate mai presus de toate</h2>
               <p>
-                Security is our top priority. TapPayGo is designed with a security-first approach:
+                Securitatea este prioritatea noastră principală. TapPayGo este proiectat cu un principiu de securitate maximă:
               </p>
               <ul className="list-disc pl-6 space-y-2 mt-4">
                 <li>
-                  We never store your payment credentials or sensitive financial information.
+                  Nu stocăm niciodată datele dvs. de plată sau informații financiare sensibile.
                 </li>
                 <li>
-                  All payment processing is handled directly through Stripe, a PCI-compliant payment processor.
+                  Procesarea plăților este gestionată direct prin Stripe, un furnizor de plăți conform PCI.
                 </li>
                 <li>
-                  We only store your Stripe account ID to facilitate the connection between you and Stripe.
+                  Singura informație stocată este ID-ul contului Stripe pentru a facilita conexiunea.
                 </li>
                 <li>
-                  No customer payment data is ever stored on your device or our servers.
+                  Nicio informație de plată a clientului nu este stocată pe dispozitivul sau serverele noastre.
                 </li>
               </ul>
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold mb-4">How It Works</h2>
+              <h2 className="text-2xl font-semibold mb-4">Realizări Cheie</h2>
+              <div className="bg-muted/30 p-6 rounded-lg">
+                <h3 className="text-xl font-semibold mb-4">Am finalizat cu succes:</h3>
+                <ul className="space-y-3 text-muted-foreground">
+                  <li>✓ Integrare completă Stripe pentru procesarea plăților</li>
+                  <li>✓ Design UI/UX personalizat și responsiv</li>
+                  <li>✓ Sistem robust de monitorizare etică</li>
+                  <li>✓ Soluție avansată de raportare cu transparență maximă</li>
+                  <li>✓ Implementarea celor mai înalte standarde de securitate și confidențialitate</li>
+                </ul>
+              </div>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-semibold mb-4">Cum Funcționează</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-6">
                 <div className="flex flex-col items-center text-center">
                   <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
                     <div className="text-2xl font-bold text-primary">1</div>
                   </div>
-                  <h3 className="text-lg font-medium mb-2">Connect</h3>
+                  <h3 className="text-lg font-medium mb-2">Conectare</h3>
                   <p className="text-sm">
-                    Link your existing Stripe account securely through Stripe Connect.
+                    Conectează-ți rapid contul Stripe printr-un proces securizat.
                   </p>
                 </div>
                 
@@ -62,9 +76,9 @@ const AboutPage = () => {
                   <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
                     <div className="text-2xl font-bold text-primary">2</div>
                   </div>
-                  <h3 className="text-lg font-medium mb-2">Enter Amount</h3>
+                  <h3 className="text-lg font-medium mb-2">Introdu Suma</h3>
                   <p className="text-sm">
-                    Simply input the payment amount you want to charge.
+                    Specifică simplu suma pe care dorești să o încasezi.
                   </p>
                 </div>
                 
@@ -72,32 +86,32 @@ const AboutPage = () => {
                   <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
                     <div className="text-2xl font-bold text-primary">3</div>
                   </div>
-                  <h3 className="text-lg font-medium mb-2">Get Paid</h3>
+                  <h3 className="text-lg font-medium mb-2">Primire Plată</h3>
                   <p className="text-sm">
-                    Your customer taps their card or device, and the payment goes directly to your Stripe account.
+                    Clientul plătește instant prin atingerea cardului sau dispozitivului.
                   </p>
                 </div>
               </div>
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold mb-4">For UK Businesses and Beyond</h2>
+              <h2 className="text-2xl font-semibold mb-4">Pentru Afaceri și Dincolo</h2>
               <p>
-                While TapPayGo is designed primarily for UK-based freelancers and businesses, our platform is built to scale internationally. As Stripe and contactless payment technologies become available in more regions, TapPayGo will expand to serve businesses worldwide.
+                Deși TapPayGo este conceput primar pentru freelanceri și afaceri din UK, platforma noastră este construită să scaleze internațional. Pe măsură ce Stripe și tehnologiile de plată contactless devin disponibile în mai multe regiuni, TapPayGo va continua să se extindă pentru a servi afaceri din întreaga lume.
               </p>
             </section>
 
             <section className="bg-muted/30 p-6 rounded-lg mt-8">
-              <h2 className="text-2xl font-semibold mb-4">Ready to start accepting payments?</h2>
+              <h2 className="text-2xl font-semibold mb-4">Gata să începi să primești plăți?</h2>
               <p className="mb-6">
-                Join thousands of freelancers and small businesses who use TapPayGo to accept payments anywhere.
+                Alătură-te miilor de freelanceri și mici afaceri care folosesc TapPayGo pentru a primi plăți oriunde.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link to="/onboarding">
-                  <Button size="lg">Get Started</Button>
+                  <Button size="lg">Începe Acum</Button>
                 </Link>
-                <Link to="/pricing">
-                  <Button variant="outline" size="lg">View Pricing</Button>
+                <Link to="/roadmap">
+                  <Button variant="outline" size="lg">Vizualizează Roadmap</Button>
                 </Link>
               </div>
             </section>
