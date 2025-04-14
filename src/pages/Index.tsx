@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { Layout } from "@/components/layout/layout";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowRight, Shield, CreditCard, Zap, CheckCircle, Users, PiggyBank, TestTube } from "lucide-react";
+import { ArrowRight, Shield, CreditCard, Zap, CheckCircle, Users, PiggyBank, TestTube, Lock, Users as Star } from "lucide-react";
 
 const Index = () => {
   return (
@@ -68,27 +67,27 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Beta Testers Section - Replacing Testimonials */}
+      {/* Beta Testers Section - Updated with Early Access Offer */}
       <section className="py-20 px-4 bg-secondary/10">
         <div className="container mx-auto">
           <div className="flex justify-center mb-6">
             <span className="px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium inline-flex items-center gap-2">
-              <TestTube className="h-4 w-4" /> Program Beta Testing
+              <TestTube className="h-4 w-4" /> Program Beta Testing Limitat
             </span>
           </div>
-          <h2 className="text-3xl font-bold text-center mb-4">Alătură-te ca Beta Tester</h2>
+          <h2 className="text-3xl font-bold text-center mb-4">Primii 20 de Utilizatori - Acces Total Gratuit</h2>
           <p className="text-center text-muted-foreground max-w-2xl mx-auto mb-12">
-            Căutăm 20 de beta testeri pentru a ne ajuta să îmbunătățim aplicația. Participă la modelarea viitorului plăților mobile în România.
+            Oferim primilor 20 de utilizatori acces complet și gratuit la toate funcționalitățile pentru a ne ajuta să îmbunătățim aplicația. Beneficiază de o experiență premium fără niciun cost!
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
               <div className="flex items-center justify-center mb-4 text-primary">
-                <TestTube className="h-12 w-12" />
+                <Lock className="h-12 w-12" />
               </div>
-              <h4 className="text-xl font-bold text-center mb-2">Testare Gratuită</h4>
+              <h4 className="text-xl font-bold text-center mb-2">Acces Complet Gratuit</h4>
               <p className="text-center text-muted-foreground mb-4">
-                Acces complet la toate funcționalitățile în perioada de testare, fără costuri.
+                Primii 20 de utilizatori vor beneficia de acces total la toate funcționalitățile fără costuri.
               </p>
             </div>
             
@@ -98,17 +97,17 @@ const Index = () => {
               </div>
               <h4 className="text-xl font-bold text-center mb-2">Feedback Valoros</h4>
               <p className="text-center text-muted-foreground mb-4">
-                Ajută-ne să îmbunătățim experiența și primește acces preferențial la versiunile viitoare.
+                Ajută-ne să îmbunătățim experiența și primești acces preferențial la versiunile viitoare.
               </p>
             </div>
             
             <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
               <div className="flex items-center justify-center mb-4 text-primary">
-                <PiggyBank className="h-12 w-12" />
+                <Star className="h-12 w-12" />
               </div>
-              <h4 className="text-xl font-bold text-center mb-2">0% Comision</h4>
+              <h4 className="text-xl font-bold text-center mb-2">Ofertă Exclusivă</h4>
               <p className="text-center text-muted-foreground mb-4">
-                Beneficiază de zero comisioane pe perioada programului de testare.
+                Locuri limitate pentru primii 20 de utilizatori. O ocazie unică de a fi parte din comunitatea noastră.
               </p>
             </div>
           </div>
@@ -116,7 +115,7 @@ const Index = () => {
           <div className="text-center mt-12">
             <Link to="/onboarding">
               <Button size="lg" className="h-14 px-8 text-lg animate-pulse">
-                Înscrie-te ca Beta Tester <ArrowRight className="ml-2 h-5 w-5" />
+                Înscrie-te Acum - Locuri Limitate <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
           </div>
