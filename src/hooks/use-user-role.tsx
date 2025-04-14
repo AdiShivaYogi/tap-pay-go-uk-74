@@ -1,33 +1,58 @@
 
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./use-auth";
 
-export type UserRole = 'admin' | 'user';
+export type UserRole = 'admin' | 'user' | 'moderator';
 
 export const useUserRole = () => {
   const { user } = useAuth();
 
-  // In this simplified version, we're hard-coding the admin user IDs
-  // This avoids the database RPC call that was causing TypeScript errors
   const { data: role, isLoading } = useQuery({
     queryKey: ['user-role', user?.id],
     queryFn: async (): Promise<UserRole | null> => {
       if (!user?.id) return null;
       
-      // Hard-coded admin IDs for demonstration
-      // In production, this would be replaced with a proper check
-      const adminUserIds = ['demo-user-id']; // Add your admin user IDs here
-      
-      return adminUserIds.includes(user.id) ? 'admin' : 'user';
+      try {
+        // Verificăm dacă utilizatorul are rol de admin folosind funcția user_has_role
+        const { data: isAdmin, error: adminError } = await supabase
+          .rpc('user_has_role', { _role: 'admin' });
+
+        if (adminError) {
+          console.error('Error checking admin role:', adminError);
+          return 'user';
+        }
+
+        if (isAdmin) return 'admin';
+
+        // Verificăm dacă utilizatorul are rol de moderator
+        const { data: isModerator, error: modError } = await supabase
+          .rpc('user_has_role', { _role: 'moderator' });
+
+        if (modError) {
+          console.error('Error checking moderator role:', modError);
+          return 'user';
+        }
+
+        if (isModerator) return 'moderator';
+
+        // Dacă nu are niciun rol special, returnăm 'user'
+        return 'user';
+      } catch (error) {
+        console.error('Error fetching user role:', error);
+        return 'user';
+      }
     },
     enabled: !!user?.id,
   });
 
   const isAdmin = role === 'admin';
+  const isModerator = role === 'moderator';
 
   return {
     role,
     isAdmin,
+    isModerator,
     isLoading,
   };
 };
