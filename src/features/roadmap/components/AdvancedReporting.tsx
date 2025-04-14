@@ -2,14 +2,18 @@
 import { BarChart4, ArrowUpRight, PieChart, LineChart } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useReportingData } from "@/hooks/use-reporting-data";
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 export const AdvancedReporting = () => {
+  const { data: reportingData, isLoading } = useReportingData();
+
   return (
     <div className="space-y-6">
       <Alert>
         <AlertDescription className="flex items-center gap-2">
           <BarChart4 className="h-4 w-4" />
-          <span>Sistem de raportare în dezvoltare - Prioritate Înaltă</span>
+          <span>Sistem de raportare avansat - Date în timp real</span>
         </AlertDescription>
       </Alert>
 
@@ -22,10 +26,29 @@ export const AdvancedReporting = () => {
             <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-2">
-              <LineChart className="h-4 w-4 text-blue-500" />
-              <span className="text-xs text-muted-foreground">În implementare</span>
-            </div>
+            {isLoading ? (
+              <div className="flex items-center gap-2">
+                <LineChart className="h-4 w-4 text-blue-500" />
+                <span className="text-xs text-muted-foreground">Se încarcă...</span>
+              </div>
+            ) : (
+              <div className="h-[200px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={reportingData?.volumeData || []}>
+                    <XAxis dataKey="date" />
+                    <YAxis />
+                    <Tooltip />
+                    <Area
+                      type="monotone"
+                      dataKey="amount"
+                      stroke="#2563eb"
+                      fill="#3b82f6"
+                      fillOpacity={0.2}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -37,10 +60,29 @@ export const AdvancedReporting = () => {
             <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-2">
-              <BarChart4 className="h-4 w-4 text-green-500" />
-              <span className="text-xs text-muted-foreground">În curând</span>
-            </div>
+            {isLoading ? (
+              <div className="flex items-center gap-2">
+                <BarChart4 className="h-4 w-4 text-green-500" />
+                <span className="text-xs text-muted-foreground">Se încarcă...</span>
+              </div>
+            ) : (
+              <div className="h-[200px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={reportingData?.revenueData || []}>
+                    <XAxis dataKey="period" />
+                    <YAxis />
+                    <Tooltip />
+                    <Area
+                      type="monotone"
+                      dataKey="amount"
+                      stroke="#16a34a"
+                      fill="#22c55e"
+                      fillOpacity={0.2}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -52,10 +94,29 @@ export const AdvancedReporting = () => {
             <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-2">
-              <PieChart className="h-4 w-4 text-purple-500" />
-              <span className="text-xs text-muted-foreground">În curând</span>
-            </div>
+            {isLoading ? (
+              <div className="flex items-center gap-2">
+                <PieChart className="h-4 w-4 text-purple-500" />
+                <span className="text-xs text-muted-foreground">Se încarcă...</span>
+              </div>
+            ) : (
+              <div className="h-[200px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={reportingData?.patternsData || []}>
+                    <XAxis dataKey="hour" />
+                    <YAxis />
+                    <Tooltip />
+                    <Area
+                      type="monotone"
+                      dataKey="amount"
+                      stroke="#9333ea"
+                      fill="#a855f7"
+                      fillOpacity={0.2}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
