@@ -1,3 +1,4 @@
+
 import { ReactNode } from "react";
 
 export type Status = "completed" | "in-progress" | "pending";
@@ -69,13 +70,13 @@ export const roadmapItems: RoadmapItem[] = [
     iconColor: "text-blue-500",
     timeEstimate: {
       total: 20,
-      spent: 10,
+      spent: 12, // Updated to show more progress
       aiTotal: 8
     },
     details: [
-      "Utilizare webhook-uri Stripe pentru notificări",
-      "Management complet al plăților prin API Stripe",
-      "Fără stocare de informații de plată",
+      "Utilizare webhook-uri Stripe pentru notificări ✓",
+      "Management complet al plăților prin API Stripe ✓",
+      "Fără stocare de informații de plată ✓",
       "Dashboard pentru urmărirea comisioanelor",
       "Conformitate PSD2 și SCA prin Stripe"
     ]
