@@ -1,7 +1,7 @@
 import { Layout } from "@/components/layout/layout";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowRight, Shield, CreditCard, Zap, CheckCircle, Users, PiggyBank } from "lucide-react";
+import { ArrowRight, Shield, CreditCard, Zap, CheckCircle, Users, PiggyBank, TestTube } from "lucide-react";
 
 const Index = () => {
   return (
@@ -66,80 +66,57 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Testimonials Section - Actualizată cu mărturii mai autentice */}
+      {/* Beta Testers Section - Replacing Testimonials */}
       <section className="py-20 px-4 bg-secondary/10">
         <div className="container mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-4">Feedback din Comunitate</h2>
+          <div className="flex justify-center mb-6">
+            <span className="px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium inline-flex items-center gap-2">
+              <TestTube className="h-4 w-4" /> Program Beta Testing
+            </span>
+          </div>
+          <h2 className="text-3xl font-bold text-center mb-4">Alătură-te ca Beta Tester</h2>
           <p className="text-center text-muted-foreground max-w-2xl mx-auto mb-12">
-            Suntem într-o fază timpurie de dezvoltare. Iată ce spun primii noștri utilizatori.
+            Căutăm 20 de beta testeri pentru a ne ajuta să îmbunătățim aplicația. Participă la modelarea viitorului plăților mobile în România.
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-              <div className="flex items-center mb-4">
-                <div className="mr-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                    <span className="text-primary font-bold">MF</span>
-                  </div>
-                </div>
-                <div>
-                  <h4 className="font-bold">Mihai F.</h4>
-                  <p className="text-sm text-muted-foreground">Dezvoltator Independent</p>
-                </div>
+              <div className="flex items-center justify-center mb-4 text-primary">
+                <TestTube className="h-12 w-12" />
               </div>
-              <p className="italic text-muted-foreground">"Aplicația încă se dezvoltă, dar conceptul este promițător. Aștept cu nerăbdare versiunile viitoare."</p>
-              <div className="flex mt-4 text-primary">
-                <CheckCircle className="h-5 w-5 opacity-50" />
-                <CheckCircle className="h-5 w-5 opacity-50" />
-                <CheckCircle className="h-5 w-5 opacity-50" />
-                <CheckCircle className="h-5 w-5 opacity-50" />
-                <CheckCircle className="h-5 w-5 opacity-50" />
-              </div>
+              <h4 className="text-xl font-bold text-center mb-2">Testare Gratuită</h4>
+              <p className="text-center text-muted-foreground mb-4">
+                Acces complet la toate funcționalitățile în perioada de testare, fără costuri.
+              </p>
             </div>
             
             <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-              <div className="flex items-center mb-4">
-                <div className="mr-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                    <span className="text-primary font-bold">RA</span>
-                  </div>
-                </div>
-                <div>
-                  <h4 className="font-bold">Radu A.</h4>
-                  <p className="text-sm text-muted-foreground">Antreprenor Local</p>
-                </div>
+              <div className="flex items-center justify-center mb-4 text-primary">
+                <Users className="h-12 w-12" />
               </div>
-              <p className="italic text-muted-foreground">"Ideea este interesantă, dar mai avem drum de parcurs. Sunt optimist cu privire la potențial."</p>
-              <div className="flex mt-4 text-primary">
-                <CheckCircle className="h-5 w-5 opacity-50" />
-                <CheckCircle className="h-5 w-5 opacity-50" />
-                <CheckCircle className="h-5 w-5 opacity-50" />
-                <CheckCircle className="h-5 w-5 opacity-50" />
-                <CheckCircle className="h-5 w-5 opacity-50" />
-              </div>
+              <h4 className="text-xl font-bold text-center mb-2">Feedback Valoros</h4>
+              <p className="text-center text-muted-foreground mb-4">
+                Ajută-ne să îmbunătățim experiența și primește acces preferențial la versiunile viitoare.
+              </p>
             </div>
             
             <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-              <div className="flex items-center mb-4">
-                <div className="mr-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                    <span className="text-primary font-bold">LT</span>
-                  </div>
-                </div>
-                <div>
-                  <h4 className="font-bold">Laura T.</h4>
-                  <p className="text-sm text-muted-foreground">Consultant Financiar</p>
-                </div>
+              <div className="flex items-center justify-center mb-4 text-primary">
+                <PiggyBank className="h-12 w-12" />
               </div>
-              <p className="italic text-muted-foreground">"Un concept interesant. Aștept să văd cum se va dezvolta și ce caracteristici vor fi adăugate."</p>
-              <div className="flex mt-4 text-primary">
-                <CheckCircle className="h-5 w-5 opacity-50" />
-                <CheckCircle className="h-5 w-5 opacity-50" />
-                <CheckCircle className="h-5 w-5 opacity-50" />
-                <CheckCircle className="h-5 w-5 opacity-50" />
-                <CheckCircle className="h-5 w-5 opacity-50" />
-              </div>
+              <h4 className="text-xl font-bold text-center mb-2">0% Comision</h4>
+              <p className="text-center text-muted-foreground mb-4">
+                Beneficiază de zero comisioane pe perioada programului de testare.
+              </p>
             </div>
+          </div>
+
+          <div className="text-center mt-12">
+            <Link to="/onboarding">
+              <Button size="lg" className="h-14 px-8 text-lg animate-pulse">
+                Înscrie-te ca Beta Tester <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
