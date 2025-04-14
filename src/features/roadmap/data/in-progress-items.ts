@@ -1,4 +1,3 @@
-
 import { RoadmapItem } from "../types";
 
 export const inProgressRoadmapItems: RoadmapItem[] = [
@@ -91,15 +90,15 @@ export const inProgressRoadmapItems: RoadmapItem[] = [
     iconColor: "text-red-500",
     timeEstimate: {
       total: 24,
-      spent: 10,
+      spent: 12,
       aiTotal: 16
     },
     details: [
       "Arhitectură multi-regiune pentru disponibilitate ridicată ✓",
       "Backup automat și recuperare în caz de dezastru ✓",
-      "Failover automatizat pentru servicii critice",
-      "Monitorizare avansată și alertare în timp real",
-      "Testare periodică a scenariilor de recuperare după dezastre"
+      "Failover automatizat pentru servicii critice ✓",
+      "Monitorizare avansată și alertare în timp real ✓",
+      "Documentare completă a proceselor de recuperare după dezastre"
     ]
   },
   {
@@ -107,19 +106,39 @@ export const inProgressRoadmapItems: RoadmapItem[] = [
     description: "Implementare infrastructură redundantă completă",
     status: "in-progress",
     priority: "high",
-    iconType: "server",
+    iconType: "database",
     iconColor: "text-blue-500",
     timeEstimate: {
       total: 30,
-      spent: 12,
+      spent: 15,
       aiTotal: 25
     },
     details: [
-      "Configurare centru de date secundar activ-pasiv",
-      "Replicare continuă a datelor între centre",
+      "Configurare centru de date secundar activ-pasiv ✓",
+      "Replicare continuă a datelor între centre ✓",
       "Balansare automată a traficului în caz de avarie",
-      "Sistem de monitorizare unificat pentru ambele centre",
-      "Proceduri documentate pentru switching între centre"
+      "Sistem de monitorizare unificat pentru ambele centre ✓",
+      "Testare completă a procedurilor de switching între centre"
+    ]
+  },
+  {
+    title: "Optimizare Infrastructură Cloud",
+    description: "Îmbunătățirea performanței și scalabilității",
+    status: "in-progress",
+    priority: "high",
+    iconType: "cloud-cog",
+    iconColor: "text-green-500",
+    timeEstimate: {
+      total: 20,
+      spent: 8,
+      aiTotal: 15
+    },
+    details: [
+      "Implementare auto-scaling pentru resurse cloud ✓",
+      "Optimizare costuri și utilizare resurse",
+      "Configurare CDN pentru livrare conținut global",
+      "Implementare caching distribuit",
+      "Monitorizare și optimizare continuă a performanței"
     ]
   }
 ];
