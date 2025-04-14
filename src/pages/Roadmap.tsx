@@ -3,14 +3,17 @@ import { Layout } from "@/components/layout/layout";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle2, Circle, ClockIcon, Shield, ShieldCheck, Info } from "lucide-react";
+import { CheckCircle2, Circle, ClockIcon, Shield, ShieldCheck, Info, BarChart4, TestTube2 } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type Status = "completed" | "in-progress" | "pending";
+type Priority = "high" | "medium" | "low";
 
 interface RoadmapItem {
   title: string;
   description: string;
   status: Status;
+  priority?: Priority;
   details: string[];
   icon?: React.ReactNode;
 }
@@ -46,6 +49,7 @@ const roadmapItems: RoadmapItem[] = [
     title: "Integrare Stripe Complex",
     description: "Delegare completă a procesării plăților",
     status: "in-progress",
+    priority: "high",
     icon: <ClockIcon className="h-5 w-5 text-blue-500" />,
     details: [
       "Utilizare webhook-uri Stripe pentru notificări",
@@ -59,6 +63,7 @@ const roadmapItems: RoadmapItem[] = [
     title: "UI/UX Personalizat",
     description: "Experiență avansată fără compromiterea confidențialității",
     status: "in-progress",
+    priority: "medium",
     details: [
       "Design responsive și intuitiv",
       "Vizualizare dinamică a tranzacțiilor prin API-ul Stripe",
@@ -71,6 +76,7 @@ const roadmapItems: RoadmapItem[] = [
     title: "Monitorizare Etică",
     description: "Urmărirea anomaliilor fără acces la date sensibile",
     status: "in-progress",
+    priority: "high",
     icon: <Shield className="h-5 w-5 text-purple-500" />,
     details: [
       "Detectare anomalii în tranzacții",
@@ -84,6 +90,8 @@ const roadmapItems: RoadmapItem[] = [
     title: "Raportare Avansată",
     description: "Analiză și insights fără date sensibile",
     status: "pending",
+    priority: "high",
+    icon: <BarChart4 className="h-5 w-5 text-orange-500" />,
     details: [
       "Grafice pentru volumul de tranzacții",
       "Sumar de venituri pe diferite perioade",
@@ -96,6 +104,8 @@ const roadmapItems: RoadmapItem[] = [
     title: "Testare și Optimizare Continuă",
     description: "Asigurarea calității și securității",
     status: "pending",
+    priority: "medium",
+    icon: <TestTube2 className="h-5 w-5 text-amber-500" />,
     details: [
       "Teste de securitate regulate",
       "Optimizarea performanței aplicației",
@@ -137,6 +147,28 @@ const getStatusBadge = (status: Status) => {
   );
 };
 
+const getPriorityBadge = (priority?: Priority) => {
+  if (!priority) return null;
+  
+  const variants = {
+    "high": "bg-red-100 text-red-800",
+    "medium": "bg-yellow-100 text-yellow-800",
+    "low": "bg-green-100 text-green-800"
+  };
+
+  const labels = {
+    "high": "Prioritate Înaltă",
+    "medium": "Prioritate Medie",
+    "low": "Prioritate Scăzută"
+  };
+
+  return (
+    <Badge variant="outline" className={`${variants[priority]} ml-2`}>
+      {labels[priority]}
+    </Badge>
+  );
+};
+
 const Roadmap = () => {
   return (
     <Layout>
@@ -163,7 +195,7 @@ const Roadmap = () => {
         <div className="mb-8">
           <Alert className="mb-4">
             <AlertTitle>Legendă Status</AlertTitle>
-            <AlertDescription className="flex items-center gap-4 mt-2">
+            <AlertDescription className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mt-2">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="text-green-500" />
                 <span>Completat</span>
@@ -180,35 +212,62 @@ const Roadmap = () => {
           </Alert>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2">
-          {roadmapItems.map((item, index) => (
-            <Card key={index} className="hover:shadow-lg transition-shadow">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <div className="flex items-center gap-2">
-                  {item.icon && <span>{item.icon}</span>}
-                  <CardTitle className="text-xl font-bold">{item.title}</CardTitle>
-                </div>
-                {getStatusIcon(item.status)}
-              </CardHeader>
-              <CardDescription className="px-6">
-                {item.description}
-              </CardDescription>
-              <CardContent className="mt-4">
-                <div className="mb-4">
-                  {getStatusBadge(item.status)}
-                </div>
-                <ul className="space-y-2">
-                  {item.details.map((detail, idx) => (
-                    <li key={idx} className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-primary/20" />
-                      {detail}
-                    </li>
+        <Tabs defaultValue="all" className="mb-8">
+          <TabsList className="grid w-full grid-cols-4 mb-4">
+            <TabsTrigger value="all">Toate</TabsTrigger>
+            <TabsTrigger value="completed">Completate</TabsTrigger>
+            <TabsTrigger value="in-progress">În Lucru</TabsTrigger>
+            <TabsTrigger value="pending">În Așteptare</TabsTrigger>
+          </TabsList>
+
+          {["all", "completed", "in-progress", "pending"].map((tabValue) => (
+            <TabsContent key={tabValue} value={tabValue} className="mt-0">
+              <div className="grid gap-6 md:grid-cols-2">
+                {roadmapItems
+                  .filter(item => tabValue === "all" || item.status === tabValue)
+                  .map((item, index) => (
+                    <Card key={index} className="hover:shadow-lg transition-shadow">
+                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <div className="flex items-center gap-2">
+                          {item.icon && <span>{item.icon}</span>}
+                          <CardTitle className="text-xl font-bold">{item.title}</CardTitle>
+                        </div>
+                        {getStatusIcon(item.status)}
+                      </CardHeader>
+                      <CardDescription className="px-6">
+                        {item.description}
+                      </CardDescription>
+                      <CardContent className="mt-4">
+                        <div className="mb-4 flex flex-wrap items-center gap-2">
+                          {getStatusBadge(item.status)}
+                          {getPriorityBadge(item.priority)}
+                        </div>
+                        <ul className="space-y-2">
+                          {item.details.map((detail, idx) => (
+                            <li key={idx} className="flex items-start gap-2">
+                              <span className="mt-2 w-2 h-2 rounded-full bg-primary/20 flex-shrink-0" />
+                              <span>{detail}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </CardContent>
+                    </Card>
                   ))}
-                </ul>
-              </CardContent>
-            </Card>
+              </div>
+            </TabsContent>
           ))}
-        </div>
+        </Tabs>
+
+        <Alert className="mt-8">
+          <AlertTitle>Etape Următoare</AlertTitle>
+          <AlertDescription>
+            <p className="mt-2">
+              Suntem în proces de finalizare a integrărilor Stripe și a funcționalităților de monitorizare etică.
+              Următoarea componentă planificată este implementarea sistemului de raportare avansată, care va oferi
+              insights valoroase fără a compromite protecția datelor.
+            </p>
+          </AlertDescription>
+        </Alert>
       </div>
     </Layout>
   );
