@@ -5,15 +5,36 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { toast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
+import { useSearchParams } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 const Dashboard = () => {
   const [amount, setAmount] = useState<string>("");
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  const [paymentSuccess, setPaymentSuccess] = useState<boolean>(false);
+  const [searchParams] = useSearchParams();
 
-  const handlePayment = () => {
+  // Check payment status from URL parameters
+  useEffect(() => {
+    const success = searchParams.get("success");
+    const canceled = searchParams.get("canceled");
+
+    if (success === "true") {
+      toast({
+        title: "Plată reușită",
+        description: "Plata a fost procesată cu succes.",
+      });
+    } else if (canceled === "true") {
+      toast({
+        title: "Plată anulată",
+        description: "Plata a fost anulată.",
+        variant: "destructive",
+      });
+    }
+  }, [searchParams]);
+
+  const handlePayment = async () => {
     if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
       toast({
         title: "Sumă invalidă",
@@ -25,23 +46,25 @@ const Dashboard = () => {
 
     setIsProcessing(true);
 
-    // Simulăm procesarea plății
-    setTimeout(() => {
-      setIsProcessing(false);
-      setPaymentSuccess(true);
-      
-      // Afișăm notificarea de succes
-      toast({
-        title: "Plată procesată cu succes",
-        description: `Suma de £${parseFloat(amount).toFixed(2)} a fost procesată cu succes.`,
+    try {
+      const { data, error } = await supabase.functions.invoke('create-payment', {
+        body: { amount: parseFloat(amount) }
       });
 
-      // Resetăm starea după 3 secunde
-      setTimeout(() => {
-        setPaymentSuccess(false);
-        setAmount("");
-      }, 3000);
-    }, 2000);
+      if (error) throw error;
+      if (!data.url) throw new Error('Nu s-a putut obține URL-ul de plată');
+
+      // Redirect to Stripe Checkout
+      window.location.href = data.url;
+    } catch (error) {
+      console.error('Eroare la procesarea plății:', error);
+      toast({
+        title: "Eroare la procesare",
+        description: "A apărut o eroare la procesarea plății. Te rugăm să încerci din nou.",
+        variant: "destructive"
+      });
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -63,7 +86,7 @@ const Dashboard = () => {
           <CardHeader>
             <CardTitle>Procesează o plată nouă</CardTitle>
             <CardDescription>
-              Introdu suma și cere clientului să apropie cardul de spatele telefonului tău
+              Introdu suma și procesează plata în siguranță prin Stripe
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -93,7 +116,7 @@ const Dashboard = () => {
                 className="w-full h-16 text-lg"
                 disabled={isProcessing || !amount}
               >
-                {isProcessing ? "Se procesează..." : paymentSuccess ? "Plată reușită! ✓" : "Încasează plata"}
+                {isProcessing ? "Se procesează..." : "Procesează plata prin Stripe"}
               </Button>
             </div>
           </CardContent>
