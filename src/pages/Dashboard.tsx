@@ -1,31 +1,19 @@
+
 import { Layout } from "@/components/layout/layout";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { toast } from "@/hooks/use-toast";
-import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { format } from "date-fns";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { DeviceCompatibilityAlert } from "@/components/device-compatibility-alert";
 import { useDeviceCompatibility } from "@/hooks/use-device-compatibility";
 import { SecurityAlert } from "@/components/security/SecurityAlert";
-
-interface Transaction {
-  id: string;
-  amount: number;
-  status: string;
-  created_at: string;
-  currency: string;
-}
+import { PaymentForm } from "@/components/dashboard/PaymentForm";
+import { TransactionsList } from "@/components/dashboard/TransactionsList";
+import { AccountInfo } from "@/components/dashboard/AccountInfo";
+import { toast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
-  const [amount, setAmount] = useState<string>("");
-  const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [searchParams] = useSearchParams();
   const queryClient = useQueryClient();
   const deviceCompatibility = useDeviceCompatibility();
@@ -40,7 +28,7 @@ const Dashboard = () => {
         .limit(10);
 
       if (error) throw error;
-      return data as Transaction[];
+      return data;
     }
   });
 
@@ -63,47 +51,6 @@ const Dashboard = () => {
     }
   }, [searchParams, queryClient]);
 
-  const handlePayment = async () => {
-    if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
-      toast({
-        title: "Sumă invalidă",
-        description: "Te rugăm să introduci o sumă validă mai mare decât zero.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (deviceCompatibility.isCompatible !== 'compatible') {
-      toast({
-        title: "Dispozitiv incompatibil",
-        description: "Dispozitivul dumneavoastră nu suportă Tap to Pay. Folosiți un iPhone cu iOS 16+ pentru a procesa plăți contactless.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setIsProcessing(true);
-
-    try {
-      const { data, error } = await supabase.functions.invoke('create-payment', {
-        body: { amount: parseFloat(amount) }
-      });
-
-      if (error) throw error;
-      if (!data.url) throw new Error('Nu s-a putut obține URL-ul de plată');
-
-      window.location.href = data.url;
-    } catch (error) {
-      console.error('Eroare la procesarea plății:', error);
-      toast({
-        title: "Eroare la procesare",
-        description: "A apărut o eroare la procesarea plății. Te rugăm să încerci din nou.",
-        variant: "destructive"
-      });
-      setIsProcessing(false);
-    }
-  };
-
   return (
     <Layout>
       <div className="container py-8 px-4">
@@ -125,169 +72,15 @@ const Dashboard = () => {
           <DeviceCompatibilityAlert compatibility={deviceCompatibility} />
         </div>
 
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Procesează o plată nouă</CardTitle>
-            <CardDescription>
-              Introdu suma și procesează plata în siguranță prin Stripe
-              {deviceCompatibility.isCompatible === 'compatible' && 
-                " folosind Tap to Pay pentru plăți contactless"}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col space-y-6">
-              <div>
-                <label htmlFor="amount" className="block text-sm font-medium mb-2">
-                  Suma (£)
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2">£</span>
-                  <Input
-                    id="amount"
-                    type="number"
-                    placeholder="0.00"
-                    className="pl-8"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    step="0.01"
-                    min="0.01"
-                  />
-                </div>
-              </div>
-
-              <Button 
-                onClick={handlePayment} 
-                size="lg" 
-                className="w-full h-16 text-lg"
-                disabled={isProcessing || !amount || deviceCompatibility.isCompatible !== 'compatible'}
-              >
-                {isProcessing ? "Se procesează..." : deviceCompatibility.isCompatible === 'compatible' ? 
-                  "Procesează plata contactless" : "Procesează plata prin Stripe"}
-              </Button>
-              
-              {deviceCompatibility.isCompatible !== 'compatible' && (
-                <p className="text-sm text-amber-600 text-center">
-                  Plățile contactless sunt disponibile doar pe iPhone-uri compatibile cu Tap to Pay.
-                </p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        <PaymentForm deviceCompatibility={deviceCompatibility} />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Tranzacții recente</CardTitle>
-              <CardDescription>
-                Istoric tranzacții procesat prin Stripe
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {isLoading ? (
-                <div className="text-muted-foreground text-center py-6">
-                  Se încarcă...
-                </div>
-              ) : transactions.length === 0 ? (
-                <div className="text-center py-6">
-                  <p className="text-muted-foreground mb-2">
-                    Nu există tranzacții recente
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Tranzacțiile vor apărea aici după ce procesezi prima plată prin Stripe
-                  </p>
-                </div>
-              ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Data</TableHead>
-                      <TableHead>Suma</TableHead>
-                      <TableHead>Status</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {transactions.map((transaction) => (
-                      <TableRow key={transaction.id}>
-                        <TableCell>
-                          {format(new Date(transaction.created_at), 'dd/MM/yyyy HH:mm')}
-                        </TableCell>
-                        <TableCell>£{transaction.amount.toFixed(2)}</TableCell>
-                        <TableCell>
-                          <Badge variant={transaction.status === 'completed' ? 'default' : 'secondary'}>
-                            {transaction.status === 'completed' ? 'Finalizată' : 'În așteptare'}
-                          </Badge>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              )}
-            </CardContent>
-            <CardFooter className="border-t pt-4">
-              <Button 
-                variant="outline" 
-                className="w-full" 
-                onClick={() => queryClient.invalidateQueries({ queryKey: ['transactions'] })}
-                disabled={isLoading}
-              >
-                Reîmprospătează
-              </Button>
-            </CardFooter>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Informații cont</CardTitle>
-              <CardDescription>
-                Contul tău este conectat direct la Stripe pentru procesarea plăților
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <p className="text-sm font-medium">Cont Stripe</p>
-                  <p className="text-sm text-muted-foreground">Conectat și securizat</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium">Plan curent</p>
-                  <p className="text-sm text-muted-foreground">Pay-as-you-go</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium">Dispozitiv</p>
-                  <p className="text-sm text-muted-foreground">
-                    {deviceCompatibility.deviceType === 'iphone' 
-                      ? `iPhone (${deviceCompatibility.isCompatible === 'compatible' ? 'Compatibil' : 'Incompatibil'} cu Tap to Pay)` 
-                      : deviceCompatibility.deviceType === 'android' 
-                      ? 'Android (Incompatibil cu Tap to Pay)' 
-                      : 'Desktop (Incompatibil cu Tap to Pay)'}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter className="border-t pt-4">
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant="outline" className="w-full">Gestionează contul</Button>
-                </SheetTrigger>
-                <SheetContent>
-                  <SheetHeader>
-                    <SheetTitle>Setări cont</SheetTitle>
-                    <SheetDescription>
-                      Gestionează setările contului tău TapPayGo
-                    </SheetDescription>
-                  </SheetHeader>
-                  <div className="py-6 space-y-4">
-                    <Button variant="outline" className="w-full">Deconectare de la Stripe</Button>
-                    <Button variant="outline" className="w-full">Schimbă planul tarifar</Button>
-                    <Button variant="outline" className="w-full">Preferințe notificări</Button>
-                  </div>
-                  <SheetFooter>
-                    <Button variant="outline" className="w-full">Închide</Button>
-                  </SheetFooter>
-                </SheetContent>
-              </Sheet>
-            </CardFooter>
-          </Card>
+          <TransactionsList 
+            transactions={transactions}
+            isLoading={isLoading}
+            onRefresh={() => queryClient.invalidateQueries({ queryKey: ['transactions'] })}
+          />
+          <AccountInfo deviceCompatibility={deviceCompatibility} />
         </div>
       </div>
     </Layout>
