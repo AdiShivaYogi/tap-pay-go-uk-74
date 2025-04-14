@@ -1,3 +1,4 @@
+
 import { ReactNode } from "react";
 
 export type Status = "completed" | "in-progress" | "pending";
@@ -23,6 +24,26 @@ export interface RoadmapItem {
 
 export const roadmapItems: RoadmapItem[] = [
   {
+    title: "Program Beta Limitat",
+    description: "Lansare program beta cu primii 20 de utilizatori",
+    status: "in-progress",
+    priority: "high",
+    iconType: "test-tube-2",
+    iconColor: "text-blue-600",
+    timeEstimate: {
+      total: 15,
+      spent: 5,
+      aiTotal: 6
+    },
+    details: [
+      "Identificare și recrutare primilor 20 de utilizatori",
+      "Oferă acces complet și gratuit la funcționalități",
+      "Colectare feedback pentru îmbunătățiri",
+      "Monitorizare și suport pentru experiența utilizatorilor",
+      "Validare model de business și flux de plăți"
+    ]
+  },
+  {
     title: "Securitate și Confidențialitate",
     description: "Protejarea datelor utilizatorilor prin design",
     status: "completed",
@@ -39,25 +60,6 @@ export const roadmapItems: RoadmapItem[] = [
       "Interfață securizată și transparentă ✓",
       "Experiență utilizator izolată pentru fiecare client ✓",
       "Monitorizare minimală, axată strict pe comisioane ✓"
-    ]
-  },
-  {
-    title: "Transparență în Tranzacții",
-    description: "Comunicare clară despre procesarea plăților",
-    status: "completed",
-    iconType: "info",
-    iconColor: "text-blue-600",
-    timeEstimate: {
-      total: 8,
-      spent: 8,
-      aiTotal: 3
-    },
-    details: [
-      "Informarea utilizatorilor despre politica de confidențialitate ✓",
-      "Explicarea datelor monitorizate și scopul lor ✓",
-      "Claritate privind rolul Stripe în procesarea plăților ✓",
-      "Izolarea completă a datelor între utilizatori ✓",
-      "Interfață intuitivă pentru statusul tranzacțiilor ✓"
     ]
   },
   {
@@ -143,7 +145,7 @@ export const roadmapItems: RoadmapItem[] = [
   {
     title: "Testare și Optimizare Continuă",
     description: "Asigurarea calității și securității",
-    status: "pending",
+    status: "in-progress",
     priority: "medium",
     iconType: "test-tube-2",
     iconColor: "text-amber-500",
@@ -161,3 +163,4 @@ export const roadmapItems: RoadmapItem[] = [
     ]
   }
 ];
+
