@@ -16,6 +16,7 @@ import About from "./pages/About";
 import Reports from "./pages/Reports";
 import Admin from "./pages/Admin";
 import Roadmap from "./pages/Roadmap";
+import AdminAuth from "./pages/AdminAuth";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/roadmap" element={<Roadmap />} />
+            <Route path="/admin-auth" element={<AdminAuth />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

@@ -16,8 +16,9 @@ const NAVIGATION = [
   { href: "/", label: "Acasă" },
   { href: "/dashboard", label: "Dashboard" },
   { href: "/reports", label: "Rapoarte" },
-  { href: "/roadmap", label: "Roadmap" },
+  { href: "/roadmap", label: "Roadmap", adminOnly: true },
   { href: "/admin", label: "Admin", adminOnly: true },
+  { href: "/admin-auth", label: "Admin Auth" },
   { href: "/pricing", label: "Prețuri" },
   { href: "/about", label: "Despre" },
 ];
