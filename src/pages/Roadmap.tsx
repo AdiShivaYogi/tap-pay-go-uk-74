@@ -1,3 +1,4 @@
+
 import { Layout } from "@/components/layout/layout";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -10,7 +11,7 @@ import { Link } from "react-router-dom";
 import { LockIcon, Compass, ChevronRight, ShieldCheck } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
-import { calculateSecurityScore, getSecurityCriteria, getSecurityDetails } from "@/utils/security-score";
+import { calculateSecurityScore, getSecurityCriteria, getSecurityDetails, SecurityCriteriaReporter } from "@/utils/security-score";
 
 const Roadmap = () => {
   const { isAdmin, role } = useUserRole();
