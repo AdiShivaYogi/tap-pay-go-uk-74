@@ -14,21 +14,22 @@ export const useUserRole = () => {
       if (!user?.id) return null;
       
       try {
-        // Since the Supabase client isn't properly typed for user_roles table,
-        // we need to use a more generic approach
+        // Use a more generic query approach to avoid TypeScript errors
+        // We're calling the database directly since the user_roles table
+        // isn't in the generated types yet
         const { data, error } = await supabase
-          .from('user_roles')
-          .select('*')
-          .eq('user_id', user.id)
-          .maybeSingle();
+          .rpc('has_role', {
+            _user_id: user.id,
+            _role: 'admin'
+          });
 
         if (error) {
-          console.error('Error fetching user role:', error);
+          console.error('Error checking user role:', error);
           return null;
         }
 
-        // Since TypeScript doesn't know about the role column, we need to use an assertion
-        return (data as any)?.role || null;
+        // has_role returns a boolean
+        return data === true ? 'admin' : 'user';
       } catch (error) {
         console.error('Error fetching user role:', error);
         return null;
