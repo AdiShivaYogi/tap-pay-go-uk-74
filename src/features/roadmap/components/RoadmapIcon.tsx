@@ -3,7 +3,9 @@ import { ReactNode } from 'react';
 import { 
   ShieldCheck, Info, ClockIcon, 
   Shield, BarChart4, TestTube2,
-  Check, AlertCircle, FileText 
+  Check, AlertCircle, FileText,
+  Banknote, Smartphone, Globe,
+  Users, Webhook, Database
 } from 'lucide-react';
 import { IconType } from '../types';
 
@@ -38,6 +40,18 @@ export const RoadmapIcon = ({ iconType, iconColor = "text-gray-500" }: RoadmapIc
       return <AlertCircle {...iconProps} />;
     case "file-text":
       return <FileText {...iconProps} />;
+    case "banknote":
+      return <Banknote {...iconProps} />;
+    case "smartphone":
+      return <Smartphone {...iconProps} />;
+    case "globe":
+      return <Globe {...iconProps} />;
+    case "users":
+      return <Users {...iconProps} />;
+    case "webhook":
+      return <Webhook {...iconProps} />;
+    case "database":
+      return <Database {...iconProps} />;
     default:
       return null;
   }

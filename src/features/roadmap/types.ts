@@ -1,8 +1,9 @@
+
 import { ReactNode } from "react";
 
 export type Status = "completed" | "in-progress" | "pending";
 export type Priority = "high" | "medium" | "low";
-export type IconType = "shield-check" | "info" | "clock" | "shield" | "bar-chart-4" | "test-tube-2" | "check" | "alert-circle" | "file-text";
+export type IconType = "shield-check" | "info" | "clock" | "shield" | "bar-chart-4" | "test-tube-2" | "check" | "alert-circle" | "file-text" | "banknote" | "smartphone" | "globe" | "users" | "webhook" | "database";
 
 export interface TimeEstimate {
   total: number;
@@ -23,12 +24,32 @@ export interface RoadmapItem {
 
 export const roadmapItems: RoadmapItem[] = [
   {
+    title: "Integrare Multi-Payment",
+    description: "Suport pentru procesarea plăților prin multiple metode",
+    status: "completed",
+    priority: "high",
+    iconType: "banknote",
+    iconColor: "text-green-600",
+    timeEstimate: {
+      total: 20,
+      spent: 20,
+      aiTotal: 15
+    },
+    details: [
+      "Integrare completă cu Stripe pentru carduri bancare ✓",
+      "Suport pentru plăți recurente și abonamente ✓",
+      "Plăți instant cu confirmări automate ✓",
+      "Sistem de webhook-uri pentru notificări ✓",
+      "Suport pentru multiple monede (RON, EUR, USD) ✓"
+    ]
+  },
+  {
     title: "Program Beta Limitat",
     description: "Lansare program beta cu primii 20 de utilizatori",
     status: "in-progress",
     priority: "high",
     iconType: "test-tube-2",
-    iconColor: "text-primary",  // Updated to use primary color for consistency
+    iconColor: "text-primary",
     timeEstimate: {
       total: 15,
       spent: 5,
@@ -60,6 +81,26 @@ export const roadmapItems: RoadmapItem[] = [
       "Testare și audit de securitate",
       "Monitorizare în timp real a tranzacțiilor",
       "Sistem de backup și recuperare date"
+    ]
+  },
+  {
+    title: "Optimizare UX Mobile",
+    description: "Îmbunătățirea experienței pe dispozitive mobile",
+    status: "in-progress",
+    priority: "high",
+    iconType: "smartphone",
+    iconColor: "text-blue-500",
+    timeEstimate: {
+      total: 18,
+      spent: 8,
+      aiTotal: 10
+    },
+    details: [
+      "Design responsive pentru toate ecranele",
+      "Optimizare viteza de încărcare pe conexiuni mobile",
+      "Fluxuri de plată adaptate pentru touch",
+      "Testare pe multiple dispozitive și browsere",
+      "Animații și tranziții optimizate pentru mobile"
     ]
   },
   {
@@ -179,6 +220,86 @@ export const roadmapItems: RoadmapItem[] = [
       "Audit continuu al fluxurilor de plată",
       "Monitorizare și alertare inteligentă",
       "Actualizări bazate pe feedback și reglementări"
+    ]
+  },
+  {
+    title: "Integrare API pentru Terți",
+    description: "Permiterea integrării cu sisteme externe",
+    status: "pending",
+    priority: "medium",
+    iconType: "webhook",
+    iconColor: "text-violet-500",
+    timeEstimate: {
+      total: 22,
+      spent: 0,
+      aiTotal: 15
+    },
+    details: [
+      "Dezvoltare API REST pentru integrări",
+      "Documentație completă pentru dezvoltatori",
+      "Autentificare OAuth pentru aplicații terțe",
+      "Sandbox pentru testarea integrărilor",
+      "Limitare de rate și protecție împotriva abuzurilor"
+    ]
+  },
+  {
+    title: "Localizare și Internaționalizare",
+    description: "Suport pentru multiple limbi și regiuni",
+    status: "pending",
+    priority: "low",
+    iconType: "globe",
+    iconColor: "text-blue-500",
+    timeEstimate: {
+      total: 16,
+      spent: 0,
+      aiTotal: 12
+    },
+    details: [
+      "Sistem de traduceri dinamice",
+      "Suport pentru multiple limbi de interfață",
+      "Adaptare la specificul local pentru fiecare țară",
+      "Formatare localizată pentru date, numere și valute",
+      "Documentație multilingvă"
+    ]
+  },
+  {
+    title: "Program Parteneriat",
+    description: "Sistem de afiliere și parteneriate",
+    status: "pending",
+    priority: "low",
+    iconType: "users",
+    iconColor: "text-yellow-500",
+    timeEstimate: {
+      total: 18,
+      spent: 0,
+      aiTotal: 10
+    },
+    details: [
+      "Portal pentru parteneri și afiliați",
+      "Sistem de tracking și atribuire a referalurilor",
+      "Raportare transparentă pentru comisioane",
+      "Materiale de marketing pentru parteneri",
+      "Dashboard dedicat pentru managementul parteneriatelor"
+    ]
+  },
+  {
+    title: "Infrastructură Redundantă",
+    description: "Asigurarea disponibilității continue a serviciului",
+    status: "pending",
+    priority: "high",
+    iconType: "database",
+    iconColor: "text-red-500",
+    timeEstimate: {
+      total: 24,
+      spent: 0,
+      aiTotal: 16
+    },
+    details: [
+      "Arhitectură multi-regiune pentru disponibilitate ridicată",
+      "Backup automat și recuperare în caz de dezastru",
+      "Failover automatizat pentru servicii critice",
+      "Monitorizare continuă a infrastructurii",
+      "Testare regulată a scenariilor de recuperare"
     ]
   }
 ];
