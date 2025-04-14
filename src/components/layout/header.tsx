@@ -1,3 +1,4 @@
+
 import {
   Sheet,
   SheetContent,
@@ -11,16 +12,26 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
 import { useUserRole } from "@/hooks/use-user-role";
+import { 
+  Home, 
+  LayoutDashboard, 
+  FileText, 
+  Map, 
+  User, 
+  Key, 
+  DollarSign, 
+  Info 
+} from "lucide-react";
 
 const NAVIGATION = [
-  { href: "/", label: "Acasă" },
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/reports", label: "Rapoarte" },
-  { href: "/roadmap", label: "Roadmap", adminOnly: true },
-  { href: "/admin", label: "Admin", adminOnly: true },
-  { href: "/admin-auth", label: "Admin Auth" },
-  { href: "/pricing", label: "Prețuri" },
-  { href: "/about", label: "Despre" },
+  { href: "/", label: "Acasă", icon: Home },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/reports", label: "Rapoarte", icon: FileText },
+  { href: "/roadmap", label: "Roadmap", icon: Map, adminOnly: true },
+  { href: "/admin", label: "Admin", icon: User, adminOnly: true },
+  { href: "/admin-auth", label: "Admin Auth", icon: Key },
+  { href: "/pricing", label: "Prețuri", icon: DollarSign },
+  { href: "/about", label: "Despre", icon: Info },
 ];
 
 export function Header() {
@@ -31,7 +42,8 @@ export function Header() {
     <header className="bg-white py-4 shadow-sm">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
-          <Link to="/" className="font-bold text-xl">
+          <Link to="/" className="font-bold text-xl flex items-center gap-2">
+            <img src="/favicon.ico" alt="Logo" className="h-8 w-8" />
             TapPayGo
           </Link>
           <nav className="hidden md:flex items-center space-x-6">
@@ -40,7 +52,12 @@ export function Header() {
               if ((item.adminOnly || item.href === "/roadmap") && !isAdmin) return null;
               
               return (
-                <Link key={item.href} to={item.href} className="hover:text-gray-600">
+                <Link 
+                  key={item.href} 
+                  to={item.href} 
+                  className="hover:text-gray-600 flex items-center gap-2 text-sm"
+                >
+                  {item.icon && <item.icon className="h-4 w-4" />}
                   {item.label}
                 </Link>
               );
