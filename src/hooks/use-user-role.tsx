@@ -10,11 +10,11 @@ export const useUserRole = () => {
 
   const { data: role, isLoading } = useQuery({
     queryKey: ['user-role', user?.id],
-    queryFn: async (): Promise<UserRole | null> => {
-      if (!user?.id) return null;
-      
+    queryFn: async (): Promise<UserRole> => {
+      if (!user?.id) return 'user';
+
       try {
-        // Verificăm dacă utilizatorul are rol de admin folosind funcția user_has_role
+        // Verificăm rolul de admin
         const { data: isAdmin, error: adminError } = await supabase
           .rpc('user_has_role', { _role: 'admin' });
 
@@ -25,7 +25,7 @@ export const useUserRole = () => {
 
         if (isAdmin) return 'admin';
 
-        // Verificăm dacă utilizatorul are rol de moderator
+        // Verificăm rolul de moderator
         const { data: isModerator, error: modError } = await supabase
           .rpc('user_has_role', { _role: 'moderator' });
 
