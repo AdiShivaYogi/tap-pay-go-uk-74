@@ -12,6 +12,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { DeviceCompatibilityAlert } from "@/components/device-compatibility-alert";
+import { useDeviceCompatibility } from "@/hooks/use-device-compatibility";
 
 interface Transaction {
   id: string;
@@ -26,6 +28,7 @@ const Dashboard = () => {
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [searchParams] = useSearchParams();
   const queryClient = useQueryClient();
+  const deviceCompatibility = useDeviceCompatibility();
 
   const { data: transactions = [], isLoading } = useQuery({
     queryKey: ['transactions'],
@@ -71,6 +74,16 @@ const Dashboard = () => {
       return;
     }
 
+    // Verificăm compatibilitatea înainte de procesare
+    if (deviceCompatibility.isCompatible !== 'compatible') {
+      toast({
+        title: "Dispozitiv incompatibil",
+        description: "Dispozitivul dumneavoastră nu suportă Tap to Pay. Folosiți un iPhone cu iOS 16+ pentru a procesa plăți contactless.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsProcessing(true);
 
     try {
@@ -109,11 +122,18 @@ const Dashboard = () => {
           </div>
         </div>
 
+        {/* Alertă compatibilitate dispozitiv */}
+        <div className="mb-6">
+          <DeviceCompatibilityAlert compatibility={deviceCompatibility} />
+        </div>
+
         <Card className="mb-8">
           <CardHeader>
             <CardTitle>Procesează o plată nouă</CardTitle>
             <CardDescription>
               Introdu suma și procesează plata în siguranță prin Stripe
+              {deviceCompatibility.isCompatible === 'compatible' && 
+                " folosind Tap to Pay pentru plăți contactless"}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -141,10 +161,17 @@ const Dashboard = () => {
                 onClick={handlePayment} 
                 size="lg" 
                 className="w-full h-16 text-lg"
-                disabled={isProcessing || !amount}
+                disabled={isProcessing || !amount || deviceCompatibility.isCompatible !== 'compatible'}
               >
-                {isProcessing ? "Se procesează..." : "Procesează plata prin Stripe"}
+                {isProcessing ? "Se procesează..." : deviceCompatibility.isCompatible === 'compatible' ? 
+                  "Procesează plata contactless" : "Procesează plata prin Stripe"}
               </Button>
+              
+              {deviceCompatibility.isCompatible !== 'compatible' && (
+                <p className="text-sm text-amber-600 text-center">
+                  Plățile contactless sunt disponibile doar pe iPhone-uri compatibile cu Tap to Pay.
+                </p>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -220,7 +247,13 @@ const Dashboard = () => {
                 </div>
                 <div>
                   <p className="text-sm font-medium">Dispozitiv</p>
-                  <p className="text-sm text-muted-foreground">iPhone (Compatibil cu Tap to Pay)</p>
+                  <p className="text-sm text-muted-foreground">
+                    {deviceCompatibility.deviceType === 'iphone' 
+                      ? `iPhone (${deviceCompatibility.isCompatible === 'compatible' ? 'Compatibil' : 'Incompatibil'} cu Tap to Pay)` 
+                      : deviceCompatibility.deviceType === 'android' 
+                      ? 'Android (Incompatibil cu Tap to Pay)' 
+                      : 'Desktop (Incompatibil cu Tap to Pay)'}
+                  </p>
                 </div>
               </div>
             </CardContent>

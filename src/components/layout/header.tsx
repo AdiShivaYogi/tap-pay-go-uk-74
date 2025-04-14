@@ -16,12 +16,16 @@ const NAVIGATION = [
   { href: "/", label: "Acasă" },
   { href: "/dashboard", label: "Dashboard" },
   { href: "/reports", label: "Rapoarte" },
+  { href: "/admin", label: "Admin", admin: true },
   { href: "/pricing", label: "Prețuri" },
   { href: "/about", label: "Despre" },
 ];
 
 export function Header() {
   const { signOut, user } = useAuth();
+  
+  // Verificăm dacă utilizatorul este admin (puteți personaliza această logică)
+  const isAdmin = user?.email?.includes('admin');
 
   return (
     <header className="bg-white py-4 shadow-sm">
@@ -31,11 +35,16 @@ export function Header() {
             TapPayGo
           </Link>
           <nav className="hidden md:flex items-center space-x-6">
-            {NAVIGATION.map((item) => (
-              <Link key={item.href} to={item.href} className="hover:text-gray-600">
-                {item.label}
-              </Link>
-            ))}
+            {NAVIGATION.map((item) => {
+              // Ascunde elementele admin pentru utilizatorii non-admin
+              if (item.admin && !isAdmin) return null;
+              
+              return (
+                <Link key={item.href} to={item.href} className="hover:text-gray-600">
+                  {item.label}
+                </Link>
+              );
+            })}
           </nav>
           <div className="flex items-center space-x-4">
             {user ? (
