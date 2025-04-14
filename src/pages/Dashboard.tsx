@@ -13,8 +13,7 @@ import { format } from "date-fns";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { DeviceCompatibilityAlert } from "@/components/device-compatibility-alert";
 import { useDeviceCompatibility } from "@/hooks/use-device-compatibility";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { ShieldCheck } from "lucide-react";
+import { SecurityAlert } from "@/components/security/SecurityAlert";
 
 interface Transaction {
   id: string;
@@ -120,15 +119,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <Alert className="mb-6 border-green-200 bg-green-50">
-          <ShieldCheck className="h-5 w-5 text-green-600" />
-          <AlertTitle className="text-green-800">Plăți Securizate prin Stripe</AlertTitle>
-          <AlertDescription className="text-green-700">
-            Nu stocăm niciodată informații sensibile despre carduri sau tranzacții. 
-            Toate plățile sunt procesate direct și securizat prin Stripe, iar noi 
-            menținem doar referințe minime necesare pentru afișarea istoricului tău.
-          </AlertDescription>
-        </Alert>
+        <SecurityAlert />
 
         <div className="mb-6">
           <DeviceCompatibilityAlert compatibility={deviceCompatibility} />
