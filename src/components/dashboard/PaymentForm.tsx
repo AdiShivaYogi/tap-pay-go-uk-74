@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
@@ -7,8 +6,9 @@ import { DeviceCompatibility } from "@/hooks/use-device-compatibility";
 import { supabase } from "@/integrations/supabase/client";
 import { Textarea } from "@/components/ui/textarea";
 import { CurrencyInput } from "@/components/ui/currency-input";
-import { Loader2, ShieldCheck, AlertTriangle } from "lucide-react";
+import { Loader2, ShieldCheck, AlertTriangle, CreditCard, Smartphone, NfcIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface PaymentFormProps {
   deviceCompatibility: DeviceCompatibility;
@@ -73,80 +73,93 @@ export const PaymentForm = ({ deviceCompatibility }: PaymentFormProps) => {
   };
 
   return (
-    <Card className="mb-8">
-      <CardHeader>
+    <Card className="border-2 border-primary/10">
+      <CardHeader className="space-y-4">
         <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>Procesează o plată nouă</CardTitle>
+          <div className="space-y-1">
+            <CardTitle className="text-2xl">Procesează o plată nouă</CardTitle>
             <CardDescription>
-              Introdu suma și procesează plata în siguranță prin Stripe
-              {deviceCompatibility.isCompatible === 'compatible' && 
-                " folosind Tap to Pay pentru plăți contactless"}
+              Acceptă plăți contactless rapid și în siguranță
             </CardDescription>
           </div>
-          <Badge variant="outline" className="bg-green-50 text-green-600 border-green-200">
-            <ShieldCheck className="h-3.5 w-3.5 mr-1" />
-            Securizat
-          </Badge>
+          <div className="hidden md:flex items-center gap-2">
+            <NfcIcon className="h-8 w-8 text-primary" />
+            <CreditCard className="h-8 w-8 text-primary" />
+          </div>
         </div>
+
+        <Alert className="bg-blue-50 border-blue-200">
+          <Smartphone className="h-4 w-4 text-blue-600" />
+          <AlertDescription className="text-blue-700">
+            {deviceCompatibility.isCompatible === 'compatible' 
+              ? "Dispozitivul tău este pregătit pentru plăți contactless"
+              : "Pentru plăți contactless, folosește un iPhone cu iOS 16+"}
+          </AlertDescription>
+        </Alert>
       </CardHeader>
-      <CardContent>
-        <div className="flex flex-col space-y-6">
-          <div>
-            <label htmlFor="amount" className="block text-sm font-medium mb-2">
-              Suma (£)
-            </label>
-            <CurrencyInput
-              id="amount"
-              placeholder="0.00"
-              value={amount}
-              onValueChange={(value) => setAmount(value)}
-              prefix="£"
-              decimalScale={2}
-              className="h-14 text-xl"
-            />
-          </div>
 
-          <div>
-            <label htmlFor="description" className="block text-sm font-medium mb-2">
-              Descriere (opțional)
-            </label>
-            <Textarea
-              id="description"
-              placeholder="Descriere pentru această plată"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="resize-none"
-              rows={2}
-            />
-          </div>
+      <CardContent className="space-y-6">
+        <div>
+          <label htmlFor="amount" className="block text-sm font-medium mb-2 text-foreground/90">
+            Sumă de încasat (£)
+          </label>
+          <CurrencyInput
+            id="amount"
+            placeholder="0.00"
+            value={amount}
+            onValueChange={(value) => setAmount(value)}
+            prefix="£"
+            decimalScale={2}
+            className="h-14 text-xl font-medium"
+          />
+        </div>
 
+        <div>
+          <label htmlFor="description" className="block text-sm font-medium mb-2 text-foreground/90">
+            Descriere plată (opțional)
+          </label>
+          <Textarea
+            id="description"
+            placeholder="Ex: Plată servicii"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="resize-none min-h-[80px]"
+          />
+        </div>
+
+        <div className="pt-4">
           <Button 
             onClick={handlePayment} 
             size="lg" 
-            className="w-full h-16 text-lg"
+            className="w-full h-16 text-lg gap-3"
             disabled={isProcessing || !amount || deviceCompatibility.isCompatible !== 'compatible'}
           >
             {isProcessing ? (
               <>
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                <Loader2 className="h-5 w-5 animate-spin" />
                 Se procesează...
               </>
-            ) : deviceCompatibility.isCompatible === 'compatible' ? (
-              "Procesează plata contactless"
             ) : (
-              "Procesează plata prin Stripe"
+              <>
+                <NfcIcon className="h-5 w-5" />
+                Procesează plata contactless
+              </>
             )}
           </Button>
-          
+
           {deviceCompatibility.isCompatible !== 'compatible' && (
-            <div className="flex items-center gap-2 text-amber-600 text-sm mt-2 bg-amber-50 p-3 rounded-md">
+            <div className="flex items-center gap-2 text-amber-600 text-sm mt-4 bg-amber-50 p-3 rounded-md">
               <AlertTriangle className="h-4 w-4 flex-shrink-0" />
               <p>
-                Plățile contactless sunt disponibile doar pe iPhone-uri compatibile cu Tap to Pay.
+                Plățile contactless sunt disponibile doar pe iPhone-uri cu suport pentru Tap to Pay.
               </p>
             </div>
           )}
+
+          <div className="flex items-center justify-center gap-2 mt-4 text-sm text-muted-foreground">
+            <ShieldCheck className="h-4 w-4" />
+            <span>Plăți securizate prin Stripe</span>
+          </div>
         </div>
       </CardContent>
     </Card>

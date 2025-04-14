@@ -13,6 +13,9 @@ import { TransactionsList } from "@/components/dashboard/TransactionsList";
 import { AccountInfo } from "@/components/dashboard/AccountInfo";
 import { PaymentTransparencyInfo } from "@/components/dashboard/PaymentTransparencyInfo";
 import { toast } from "@/hooks/use-toast";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card } from "@/components/ui/card";
+import { NfcIcon, AlertCircle, ShieldCheck } from "lucide-react";
 
 const Dashboard = () => {
   const [searchParams] = useSearchParams();
@@ -101,35 +104,59 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <div className="container py-8 px-4">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+      <div className="container max-w-7xl py-8 px-4">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
           <div>
-            <h1 className="text-3xl font-bold mb-1">Dashboard</h1>
-            <p className="text-muted-foreground">Acceptă plăți contactless direct pe telefonul tău</p>
+            <div className="flex items-center gap-3 mb-2">
+              <NfcIcon className="h-8 w-8 text-primary" />
+              <h1 className="text-3xl font-bold">Plăți Contactless</h1>
+            </div>
+            <p className="text-muted-foreground">
+              Transformă-ți telefonul într-un terminal de plată sigur și eficient
+            </p>
           </div>
-          <div className="mt-4 md:mt-0">
+          <div className="flex items-center gap-3">
             <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 px-3 py-1">
+              <ShieldCheck className="mr-1 h-4 w-4" />
               Conectat la Stripe
             </Badge>
+            {deviceCompatibility.isCompatible === 'compatible' && (
+              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 px-3 py-1">
+                <NfcIcon className="mr-1 h-4 w-4" />
+                NFC Activ
+              </Badge>
+            )}
           </div>
         </div>
 
-        <SecurityAlert />
-        <PaymentTransparencyInfo />
-
-        <div className="mb-6">
+        <div className="grid gap-6">
           <DeviceCompatibilityAlert compatibility={deviceCompatibility} />
-        </div>
+          
+          <SecurityAlert />
+          
+          <PaymentTransparencyInfo />
 
-        <PaymentForm deviceCompatibility={deviceCompatibility} />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <TransactionsList 
-            transactions={transactions}
-            isLoading={isLoading}
-            onRefresh={() => queryClient.invalidateQueries({ queryKey: ['transactions'] })}
-          />
-          <AccountInfo deviceCompatibility={deviceCompatibility} />
+          <Tabs defaultValue="payment" className="w-full">
+            <TabsList className="mb-4">
+              <TabsTrigger value="payment">Procesare Plată</TabsTrigger>
+              <TabsTrigger value="transactions">Tranzacții & Cont</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="payment" className="space-y-6">
+              <PaymentForm deviceCompatibility={deviceCompatibility} />
+            </TabsContent>
+            
+            <TabsContent value="transactions" className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <TransactionsList 
+                  transactions={transactions}
+                  isLoading={isLoading}
+                  onRefresh={() => queryClient.invalidateQueries({ queryKey: ['transactions'] })}
+                />
+                <AccountInfo deviceCompatibility={deviceCompatibility} />
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </Layout>
