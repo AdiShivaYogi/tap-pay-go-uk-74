@@ -11,6 +11,7 @@ import { SecurityAlert } from "@/components/security/SecurityAlert";
 import { PaymentForm } from "@/components/dashboard/PaymentForm";
 import { TransactionsList } from "@/components/dashboard/TransactionsList";
 import { AccountInfo } from "@/components/dashboard/AccountInfo";
+import { PaymentTransparencyInfo } from "@/components/dashboard/PaymentTransparencyInfo";
 import { toast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
@@ -67,6 +68,7 @@ const Dashboard = () => {
         </div>
 
         <SecurityAlert />
+        <PaymentTransparencyInfo />
 
         <div className="mb-6">
           <DeviceCompatibilityAlert compatibility={deviceCompatibility} />

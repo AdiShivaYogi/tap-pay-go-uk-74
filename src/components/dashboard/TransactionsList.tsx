@@ -13,12 +13,32 @@ interface TransactionsListProps {
 }
 
 export const TransactionsList = ({ transactions, isLoading, onRefresh }: TransactionsListProps) => {
+  const getStatusVariant = (status: string) => {
+    switch (status) {
+      case 'completed': return 'default';
+      case 'failed': return 'destructive';
+      case 'pending': return 'secondary';
+      case 'expired': return 'outline';
+      default: return 'secondary';
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    const labels: { [key: string]: string } = {
+      'completed': 'Finalizată',
+      'failed': 'Eșuată',
+      'pending': 'În așteptare',
+      'expired': 'Expirată'
+    };
+    return labels[status] || 'Necunoscut';
+  };
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Tranzacții recente</CardTitle>
+        <CardTitle>Istoric Tranzacții</CardTitle>
         <CardDescription>
-          Istoric tranzacții procesat prin Stripe
+          Istoric tranzacții procesate prin Stripe, cu transparență maximă
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -32,7 +52,7 @@ export const TransactionsList = ({ transactions, isLoading, onRefresh }: Transac
               Nu există tranzacții recente
             </p>
             <p className="text-sm text-muted-foreground">
-              Tranzacțiile vor apărea aici după ce procesezi prima plată prin Stripe
+              Tranzacțiile vor apărea după procesarea primei plăți
             </p>
           </div>
         ) : (
@@ -50,10 +70,13 @@ export const TransactionsList = ({ transactions, isLoading, onRefresh }: Transac
                   <TableCell>
                     {format(new Date(transaction.created_at), 'dd/MM/yyyy HH:mm')}
                   </TableCell>
-                  <TableCell>£{transaction.amount.toFixed(2)}</TableCell>
                   <TableCell>
-                    <Badge variant={transaction.status === 'completed' ? 'default' : 'secondary'}>
-                      {transaction.status === 'completed' ? 'Finalizată' : 'În așteptare'}
+                    {transaction.currency || '£'}
+                    {transaction.amount.toFixed(2)}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={getStatusVariant(transaction.status)}>
+                      {getStatusLabel(transaction.status)}
                     </Badge>
                   </TableCell>
                 </TableRow>

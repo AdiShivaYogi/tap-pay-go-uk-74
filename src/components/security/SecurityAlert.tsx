@@ -9,8 +9,9 @@ export const SecurityAlert = () => {
         <ShieldCheck className="h-5 w-5 text-green-600" />
         <AlertTitle className="text-green-800">Plăți Securizate prin Stripe</AlertTitle>
         <AlertDescription className="text-green-700">
-          Toate plățile sunt procesate direct și securizat prin Stripe. 
-          Nu stocăm niciodată informații despre carduri sau alte date sensibile.
+          Nu stocăm niciun fel de informații bancare. 
+          Toate datele sensibile sunt gestionate exclusiv de Stripe, 
+          asigurând cea mai înaltă protecție pentru plățile tale.
         </AlertDescription>
       </Alert>
 
@@ -18,9 +19,9 @@ export const SecurityAlert = () => {
         <Info className="h-5 w-5" />
         <AlertTitle>Transparență Totală</AlertTitle>
         <AlertDescription>
-          Monitorizăm doar informații minime necesare pentru istoricul tranzacțiilor,
-          fără acces la detalii sensibile despre plăți. Datele sunt izolate și
-          gestionate exclusiv prin interfața securizată Stripe.
+          Monitorizăm doar informații minime necesare pentru istoric, 
+          fără acces la detalii personale. 
+          Procesarea plăților este izolată și securizată 100% prin interfața Stripe.
         </AlertDescription>
       </Alert>
     </div>
