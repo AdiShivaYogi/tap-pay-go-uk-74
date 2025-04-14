@@ -1,30 +1,84 @@
-
-import { Link } from "react-router-dom";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { TapPayGoLogo } from "@/components/icons/logo";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/use-auth";
+
+const NAVIGATION = [
+  { href: "/", label: "Acasă" },
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/reports", label: "Rapoarte" },
+  { href: "/pricing", label: "Prețuri" },
+  { href: "/about", label: "Despre" },
+];
 
 export function Header() {
+  const { signOut, user } = useAuth();
+
   return (
-    <header className="w-full border-b bg-background/95 backdrop-blur sticky top-0 z-50">
-      <div className="container flex h-16 items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Link to="/" className="flex items-center gap-2">
-            <TapPayGoLogo className="h-8 w-8 text-primary" />
-            <span className="font-bold text-primary text-2xl">TapPayGo</span>
+    <header className="bg-white py-4 shadow-sm">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between">
+          <Link to="/" className="font-bold text-xl">
+            TapPayGo
           </Link>
-        </div>
-        <nav className="hidden md:flex items-center gap-6">
-          <Link to="/pricing" className="text-sm font-medium text-foreground hover:text-primary/90">
-            Pricing
-          </Link>
-          <Link to="/about" className="text-sm font-medium text-foreground hover:text-primary/90">
-            About
-          </Link>
-        </nav>
-        <div className="flex items-center gap-2">
-          <Link to="/dashboard">
-            <Button variant="default">Dashboard</Button>
-          </Link>
+          <nav className="hidden md:flex items-center space-x-6">
+            {NAVIGATION.map((item) => (
+              <Link key={item.href} to={item.href} className="hover:text-gray-600">
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+          <div className="flex items-center space-x-4">
+            {user ? (
+              <>
+                <Avatar>
+                  <AvatarImage src={user.user_metadata?.avatar_url} />
+                  <AvatarFallback>{user.email?.charAt(0).toUpperCase()}</AvatarFallback>
+                </Avatar>
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button variant="outline">Account</Button>
+                  </SheetTrigger>
+                  <SheetContent className="sm:max-w-lg">
+                    <SheetHeader>
+                      <SheetTitle>Account</SheetTitle>
+                      <SheetDescription>
+                        Manage your account settings.
+                      </SheetDescription>
+                    </SheetHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <label htmlFor="name" className="text-right text-sm font-medium leading-none text-right">
+                          Name
+                        </label>
+                        <input
+                          type="text"
+                          id="name"
+                          value={user.email}
+                          className="col-span-3 flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                        />
+                      </div>
+                      <Button onClick={() => signOut()} variant="destructive">Sign Out</Button>
+                    </div>
+                  </SheetContent>
+                </Sheet>
+              </>
+            ) : (
+              <>
+                <Link to="/onboarding">
+                  <Button variant="outline">Sign In</Button>
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </header>
