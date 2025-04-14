@@ -1,4 +1,3 @@
-
 import { Layout } from "@/components/layout/layout";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,15 +7,17 @@ import { roadmapItems } from "@/features/roadmap/data/roadmap-data";
 import { useUserRole } from "@/hooks/use-user-role";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { LockIcon, Compass, ChevronRight, ShieldCheck } from "lucide-react";
+import { LockIcon, Compass, ChevronRight, ShieldCheck, Star, Zap } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { calculateSecurityScore, getSecurityCriteria, getSecurityDetails, SecurityCriteriaReporter } from "@/utils/security-score";
+import { cn } from "@/lib/utils";
 
 const Roadmap = () => {
   const { isAdmin, role } = useUserRole();
   const securityScore = calculateSecurityScore(getSecurityCriteria());
   const securityDetails = getSecurityDetails();
+  const criteriaUpdates = SecurityCriteriaReporter.getCurrentDetails();
 
   if (!isAdmin) {
     return (
@@ -47,7 +48,7 @@ const Roadmap = () => {
 
   return (
     <Layout>
-      <div className="container py-8">
+      <div className="container py-8 space-y-8">
         <div className="flex items-center gap-2 text-muted-foreground mb-2">
           <Compass className="h-4 w-4" />
           <span>Roadmap</span>
@@ -56,7 +57,10 @@ const Roadmap = () => {
         </div>
         
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-3">Roadmap Aplicație</h1>
+          <h1 className="text-4xl font-bold mb-3 flex items-center gap-4">
+            Roadmap Aplicație 
+            <Star className="text-primary/70 animate-pulse" />
+          </h1>
           <p className="text-muted-foreground text-lg">
             Vizualizează progresul și angajamentul nostru pentru securitate, transparență și experiența utilizator
           </p>
@@ -64,34 +68,51 @@ const Roadmap = () => {
 
         <RoadmapProgress />
 
-        <Alert className="mb-8 border-primary/50 bg-primary/5">
+        <Alert className="mb-8 border-primary/50 bg-primary/5 animate-in slide-in-from-bottom">
           <AlertTitle className="text-primary font-bold text-lg flex items-center gap-2">
             <ShieldCheck className="h-5 w-5" />
             Principiu Fundamental
+            <Zap className="h-4 w-4 text-yellow-500 animate-pulse" />
           </AlertTitle>
           <AlertDescription>
             <p className="mt-2 text-foreground/90 leading-relaxed mb-4">
               Aplicația noastră este proiectată cu un angajament ferm pentru protecția datelor utilizatorilor. 
               Nu stocăm niciun fel de informații sensibile, iar procesarea plăților este gestionată complet de Stripe.
             </p>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center text-sm">
-                <span className="text-primary/90 font-medium">Nivel de Securitate</span>
-                <span className="font-bold text-primary">{securityScore}%</span>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-primary/90 font-medium">Nivel de Securitate</span>
+                  <span className="font-bold text-primary">{securityScore}%</span>
+                </div>
+                <Progress value={securityScore} className="h-2 bg-primary/20" />
+                <div className="flex flex-wrap gap-4 text-xs text-muted-foreground mt-2">
+                  {securityDetails.map((detail, index) => (
+                    <div key={index} className="flex items-center gap-1">
+                      <div className={`w-2 h-2 rounded-full ${detail.isActive ? 'bg-primary' : 'bg-muted'}`} />
+                      <span>{detail.label}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <Progress value={securityScore} className="h-2 bg-primary/20" />
-              <div className="flex flex-wrap gap-4 text-xs text-muted-foreground mt-2">
-                {securityDetails.map((detail, index) => (
-                  <div key={index} className="flex items-center gap-1">
-                    <div className={`w-2 h-2 rounded-full ${detail.isActive ? 'bg-primary' : 'bg-muted'}`} />
-                    <span>{detail.label}</span>
-                  </div>
-                ))}
-              </div>
+              
               <div className="mt-4 text-xs text-muted-foreground border-t pt-2">
-                <p className="font-medium mb-1">Ultimele modificări ale criteriilor de securitate:</p>
-                <div className="bg-background/50 rounded p-2 font-mono">
-                  {JSON.stringify(SecurityCriteriaReporter.getCurrentDetails(), null, 2)}
+                <p className="font-medium mb-1">Ultimele actualizări ale criteriilor de securitate:</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {criteriaUpdates.map((update, index) => (
+                    <div 
+                      key={index} 
+                      className={cn(
+                        "bg-background/50 rounded p-2 font-mono text-xs",
+                        update.isActive ? "border-l-4 border-primary" : "opacity-50"
+                      )}
+                    >
+                      <div className="font-semibold">{update.label}</div>
+                      <div className="text-muted-foreground">
+                        Status: {update.isActive ? 'Activ' : 'Inactiv'}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
