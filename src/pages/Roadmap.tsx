@@ -1,4 +1,3 @@
-
 import { Layout } from "@/components/layout/layout";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,9 +10,12 @@ import { Link } from "react-router-dom";
 import { LockIcon, Compass, ChevronRight, ShieldCheck } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
+import { calculateSecurityScore, getSecurityCriteria, getSecurityDetails } from "@/utils/security-score";
 
 const Roadmap = () => {
   const { isAdmin, role } = useUserRole();
+  const securityScore = calculateSecurityScore(getSecurityCriteria());
+  const securityDetails = getSecurityDetails();
 
   if (!isAdmin) {
     return (
@@ -74,22 +76,16 @@ const Roadmap = () => {
             <div className="space-y-2">
               <div className="flex justify-between items-center text-sm">
                 <span className="text-primary/90 font-medium">Nivel de Securitate</span>
-                <span className="font-bold text-primary">100%</span>
+                <span className="font-bold text-primary">{securityScore}%</span>
               </div>
-              <Progress value={100} className="h-2 bg-primary/20" />
-              <div className="flex gap-4 text-xs text-muted-foreground mt-2">
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 rounded-full bg-primary" />
-                  <span>Zero date sensibile</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 rounded-full bg-primary" />
-                  <span>Plăți prin Stripe</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 rounded-full bg-primary" />
-                  <span>Transparență totală</span>
-                </div>
+              <Progress value={securityScore} className="h-2 bg-primary/20" />
+              <div className="flex flex-wrap gap-4 text-xs text-muted-foreground mt-2">
+                {securityDetails.map((detail, index) => (
+                  <div key={index} className="flex items-center gap-1">
+                    <div className={`w-2 h-2 rounded-full ${detail.isActive ? 'bg-primary' : 'bg-muted'}`} />
+                    <span>{detail.label}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </AlertDescription>
