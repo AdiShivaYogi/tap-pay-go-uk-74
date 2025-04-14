@@ -1,3 +1,4 @@
+
 import {
   Sheet,
   SheetContent,
@@ -40,7 +41,7 @@ export function Header() {
             {user ? (
               <>
                 <Avatar>
-                  <AvatarImage src={user.user_metadata?.avatar_url} />
+                  <AvatarImage src={user.email ? `https://ui-avatars.com/api/?name=${user.email.charAt(0)}` : undefined} />
                   <AvatarFallback>{user.email?.charAt(0).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <Sheet>
