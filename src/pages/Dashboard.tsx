@@ -1,243 +1,169 @@
 
-import { useState } from "react";
 import { Layout } from "@/components/layout/layout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CurrencyInput } from "@/components/ui/currency-input";
-import { useToast } from "@/components/ui/use-toast";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { toast } from "@/hooks/use-toast";
+import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 
-// Mock function to create a payment
-const createPayment = async (amount: number): Promise<{ id: string, status: string }> => {
-  return new Promise((resolve) => {
-    // In a real app, this would call Stripe API
-    setTimeout(() => {
-      resolve({
-        id: `pi_${Math.random().toString(36).substring(2, 10)}`,
-        status: Math.random() > 0.2 ? 'succeeded' : 'failed'
-      });
-    }, 1500);
-  });
-};
+const Dashboard = () => {
+  const [amount, setAmount] = useState<string>("");
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [paymentSuccess, setPaymentSuccess] = useState<boolean>(false);
 
-const DashboardPage = () => {
-  const { toast } = useToast();
-  const [amount, setAmount] = useState("");
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [paymentStatus, setPaymentStatus] = useState<'idle' | 'processing' | 'success' | 'failure'>('idle');
-  const [transactionId, setTransactionId] = useState<string | null>(null);
-  const stripeAccountId = localStorage.getItem("stripe_account_id") || "No account connected";
-
-  const handleAmountChange = (value: string) => {
-    if (!isNaN(Number(value))) {
-      setAmount(value);
-    }
-  };
-
-  const handlePaymentRequest = async () => {
-    if (!amount || parseFloat(amount) <= 0) {
+  const handlePayment = () => {
+    if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
       toast({
-        title: "Invalid amount",
-        description: "Please enter a valid amount greater than 0.",
-        variant: "destructive",
+        title: "Sumă invalidă",
+        description: "Te rugăm să introduci o sumă validă mai mare decât zero.",
+        variant: "destructive"
       });
       return;
     }
 
     setIsProcessing(true);
-    setPaymentStatus('processing');
-    
-    try {
-      const paymentResponse = await createPayment(parseFloat(amount));
-      setTransactionId(paymentResponse.id);
-      
-      if (paymentResponse.status === 'succeeded') {
-        setPaymentStatus('success');
-        toast({
-          title: "Payment successful!",
-          description: `Successfully processed payment of £${parseFloat(amount).toFixed(2)}`,
-          variant: "default",
-        });
-      } else {
-        setPaymentStatus('failure');
-        toast({
-          title: "Payment failed",
-          description: "The payment could not be processed. Please try again.",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      setPaymentStatus('failure');
-      toast({
-        title: "Error",
-        description: "An error occurred while processing the payment.",
-        variant: "destructive",
-      });
-    } finally {
+
+    // Simulăm procesarea plății
+    setTimeout(() => {
       setIsProcessing(false);
-      // Reset after 5 seconds
+      setPaymentSuccess(true);
+      
+      // Afișăm notificarea de succes
+      toast({
+        title: "Plată procesată cu succes",
+        description: `Suma de £${parseFloat(amount).toFixed(2)} a fost procesată cu succes.`,
+      });
+
+      // Resetăm starea după 3 secunde
       setTimeout(() => {
-        if (paymentStatus !== 'idle') {
-          setPaymentStatus('idle');
-          setTransactionId(null);
-        }
-      }, 5000);
-    }
+        setPaymentSuccess(false);
+        setAmount("");
+      }, 3000);
+    }, 2000);
   };
 
   return (
     <Layout>
       <div className="container py-8 px-4">
-        <div className="flex flex-col md:flex-row gap-4 md:items-center justify-between mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
           <div>
-            <h1 className="text-3xl font-bold">Dashboard</h1>
-            <p className="text-muted-foreground">Accept payments directly on your device</p>
+            <h1 className="text-3xl font-bold mb-1">Dashboard</h1>
+            <p className="text-muted-foreground">Acceptă plăți contactless direct pe telefonul tău</p>
           </div>
-          <div className="bg-secondary/50 py-2 px-4 rounded-md flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-accent"></div>
-            <span className="text-sm">Connected to Stripe: <span className="font-mono text-xs">{stripeAccountId}</span></span>
+          <div className="mt-4 md:mt-0">
+            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 px-3 py-1">
+              Conectat la Stripe
+            </Badge>
           </div>
         </div>
 
-        <Tabs defaultValue="payment" className="w-full">
-          <TabsList className="grid grid-cols-2 mb-8">
-            <TabsTrigger value="payment">Accept Payment</TabsTrigger>
-            <TabsTrigger value="history">History</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="payment" className="space-y-8">
-            <Card className="w-full">
-              <CardHeader>
-                <CardTitle>Payment Amount</CardTitle>
-                <CardDescription>Enter the amount you want to charge</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  <div>
-                    <label htmlFor="amount" className="block text-sm font-medium mb-2">
-                      Amount (GBP)
-                    </label>
-                    <CurrencyInput
-                      id="amount"
-                      placeholder="0.00"
-                      value={amount}
-                      onValueChange={handleAmountChange}
-                      prefix="£"
-                      disabled={isProcessing || paymentStatus === 'success'}
-                    />
-                  </div>
-
-                  <Button
-                    className="w-full h-16 text-lg font-medium"
-                    onClick={handlePaymentRequest}
-                    disabled={isProcessing || !amount || paymentStatus === 'success'}
-                  >
-                    {isProcessing ? "Processing..." : "Tap to Pay"}
-                  </Button>
-
-                  {paymentStatus === 'processing' && (
-                    <div className="bg-secondary/50 p-6 rounded-lg text-center animate-pulse">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-4">
-                        <path d="M22 12H2"></path>
-                        <path d="M5 12v7"></path>
-                        <path d="M19 12v7"></path>
-                        <path d="M5 19h14"></path>
-                        <path d="M8 5v7"></path>
-                        <path d="M16 5v7"></path>
-                        <path d="M8 5h8"></path>
-                      </svg>
-                      <h3 className="text-xl font-medium mb-2">Tap Card to Phone</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Hold the contactless card close to the back of your phone
-                      </p>
-                    </div>
-                  )}
-
-                  {paymentStatus === 'success' && (
-                    <div className="bg-accent/20 p-6 rounded-lg text-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-4 text-accent-foreground">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                      </svg>
-                      <h3 className="text-xl font-medium mb-2">Payment Successful</h3>
-                      <p className="text-sm text-muted-foreground mb-2">
-                        Transaction ID: {transactionId}
-                      </p>
-                      <p className="text-2xl font-bold">£{parseFloat(amount).toFixed(2)}</p>
-                      <Button 
-                        variant="outline" 
-                        className="mt-4"
-                        onClick={() => {
-                          setAmount("");
-                          setPaymentStatus('idle');
-                          setTransactionId(null);
-                        }}
-                      >
-                        New Payment
-                      </Button>
-                    </div>
-                  )}
-
-                  {paymentStatus === 'failure' && (
-                    <div className="bg-destructive/10 p-6 rounded-lg text-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-4 text-destructive">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="15" y1="9" x2="9" y2="15"></line>
-                        <line x1="9" y1="9" x2="15" y2="15"></line>
-                      </svg>
-                      <h3 className="text-xl font-medium mb-2">Payment Failed</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Please try again or use a different payment method
-                      </p>
-                      <Button 
-                        variant="outline" 
-                        className="mt-4"
-                        onClick={() => {
-                          setPaymentStatus('idle');
-                          setTransactionId(null);
-                        }}
-                      >
-                        Try Again
-                      </Button>
-                    </div>
-                  )}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>Procesează o plată nouă</CardTitle>
+            <CardDescription>
+              Introdu suma și cere clientului să apropie cardul de spatele telefonului tău
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col space-y-6">
+              <div>
+                <label htmlFor="amount" className="block text-sm font-medium mb-2">
+                  Suma (£)
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2">£</span>
+                  <Input
+                    id="amount"
+                    type="number"
+                    placeholder="0.00"
+                    className="pl-8"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    step="0.01"
+                    min="0.01"
+                  />
                 </div>
-              </CardContent>
-            </Card>
+              </div>
 
-            <div className="text-center text-sm text-muted-foreground">
-              <p>
-                Payments are processed securely through Stripe.<br />
-                TapPayGo does not store any payment information.
-              </p>
+              <Button 
+                onClick={handlePayment} 
+                size="lg" 
+                className="w-full h-16 text-lg"
+                disabled={isProcessing || !amount}
+              >
+                {isProcessing ? "Se procesează..." : paymentSuccess ? "Plată reușită! ✓" : "Încasează plata"}
+              </Button>
             </div>
-          </TabsContent>
+          </CardContent>
+        </Card>
 
-          <TabsContent value="history">
-            <Card>
-              <CardHeader>
-                <CardTitle>Transaction History</CardTitle>
-                <CardDescription>Recent payment transactions</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-10">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-4 text-muted-foreground">
-                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                    <line x1="8" y1="21" x2="16" y2="21"></line>
-                    <line x1="12" y1="17" x2="12" y2="21"></line>
-                  </svg>
-                  <h3 className="text-lg font-medium mb-2">No Transactions Yet</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Once you process payments, they will appear here.
-                  </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Tranzacții recente</CardTitle>
+              <CardDescription>Ultimele plăți procesate</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-muted-foreground text-center py-6">
+                Nu există tranzacții recente.
+              </div>
+            </CardContent>
+            <CardFooter className="border-t pt-4">
+              <Button variant="outline" className="w-full" disabled>Vezi toate tranzacțiile</Button>
+            </CardFooter>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Informații cont</CardTitle>
+              <CardDescription>Detaliile contului tău</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm font-medium">Cont Stripe</p>
+                  <p className="text-sm text-muted-foreground">Conectat</p>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+                <div>
+                  <p className="text-sm font-medium">Plan curent</p>
+                  <p className="text-sm text-muted-foreground">Pay-as-you-go</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium">Dispozitiv</p>
+                  <p className="text-sm text-muted-foreground">iPhone (Compatibil cu Tap to Pay)</p>
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter className="border-t pt-4">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" className="w-full">Gestionează contul</Button>
+                </SheetTrigger>
+                <SheetContent>
+                  <SheetHeader>
+                    <SheetTitle>Setări cont</SheetTitle>
+                    <SheetDescription>
+                      Gestionează setările contului tău TapPayGo
+                    </SheetDescription>
+                  </SheetHeader>
+                  <div className="py-6 space-y-4">
+                    <Button variant="outline" className="w-full">Deconectare de la Stripe</Button>
+                    <Button variant="outline" className="w-full">Schimbă planul tarifar</Button>
+                    <Button variant="outline" className="w-full">Preferințe notificări</Button>
+                  </div>
+                  <SheetFooter>
+                    <Button variant="outline" className="w-full">Închide</Button>
+                  </SheetFooter>
+                </SheetContent>
+              </Sheet>
+            </CardFooter>
+          </Card>
+        </div>
       </div>
     </Layout>
   );
 };
 
-export default DashboardPage;
+export default Dashboard;
