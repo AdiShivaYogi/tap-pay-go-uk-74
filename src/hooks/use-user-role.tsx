@@ -13,6 +13,12 @@ export const useUserRole = () => {
     queryFn: async (): Promise<UserRole> => {
       if (!user?.id) return 'user';
 
+      // Pentru demo, returnăm direct 'admin' pentru utilizatorul demo
+      if (user.id === 'demo-user-id') {
+        console.log('Demo user detected, returning admin role');
+        return 'admin';
+      }
+
       try {
         // Verificăm rolul de admin
         const { data: isAdmin, error: adminError } = await supabase
