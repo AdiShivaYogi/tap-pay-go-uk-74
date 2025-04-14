@@ -2,6 +2,7 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { RoadmapItem } from "../types";
 import { getStatusIcon, getStatusBadge, getPriorityBadge } from "./StatusBadges";
+import { RoadmapIcon } from "./RoadmapIcon";
 
 interface RoadmapCardProps {
   item: RoadmapItem;
@@ -12,7 +13,11 @@ export const RoadmapCard = ({ item }: RoadmapCardProps) => {
     <Card className="hover:shadow-lg transition-shadow">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div className="flex items-center gap-2">
-          {item.icon && <span>{item.icon}</span>}
+          {item.iconType && (
+            <span>
+              <RoadmapIcon iconType={item.iconType} iconColor={item.iconColor} />
+            </span>
+          )}
           <CardTitle className="text-xl font-bold">{item.title}</CardTitle>
         </div>
         {getStatusIcon(item.status)}

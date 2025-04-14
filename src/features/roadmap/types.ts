@@ -1,7 +1,9 @@
+
 import { ReactNode } from "react";
 
 export type Status = "completed" | "in-progress" | "pending";
 export type Priority = "high" | "medium" | "low";
+export type IconType = "shield-check" | "info" | "clock" | "shield" | "bar-chart-4" | "test-tube-2" | string;
 
 export interface RoadmapItem {
   title: string;
@@ -9,7 +11,8 @@ export interface RoadmapItem {
   status: Status;
   priority?: Priority;
   details: string[];
-  icon?: ReactNode;
+  iconType?: IconType;
+  iconColor?: string;
 }
 
 export const roadmapItems: RoadmapItem[] = [
@@ -17,7 +20,8 @@ export const roadmapItems: RoadmapItem[] = [
     title: "Securitate și Confidențialitate",
     description: "Protejarea datelor utilizatorilor prin design",
     status: "completed",
-    icon: <ShieldCheck className="h-5 w-5 text-green-600" />,
+    iconType: "shield-check",
+    iconColor: "text-green-600",
     details: [
       "Zero stocare de date sensibile",
       "Delegarea procesării plăților către Stripe",
@@ -30,7 +34,8 @@ export const roadmapItems: RoadmapItem[] = [
     title: "Transparență în Tranzacții",
     description: "Comunicare clară despre procesarea plăților",
     status: "completed",
-    icon: <Info className="h-5 w-5 text-blue-600" />,
+    iconType: "info",
+    iconColor: "text-blue-600",
     details: [
       "Informarea utilizatorilor despre politica de confidențialitate",
       "Explicarea datelor monitorizate și scopul lor",
@@ -44,7 +49,8 @@ export const roadmapItems: RoadmapItem[] = [
     description: "Delegare completă a procesării plăților",
     status: "in-progress",
     priority: "high",
-    icon: <ClockIcon className="h-5 w-5 text-blue-500" />,
+    iconType: "clock",
+    iconColor: "text-blue-500",
     details: [
       "Utilizare webhook-uri Stripe pentru notificări",
       "Management complet al plăților prin API Stripe",
@@ -71,7 +77,8 @@ export const roadmapItems: RoadmapItem[] = [
     description: "Urmărirea anomaliilor fără acces la date sensibile",
     status: "in-progress",
     priority: "high",
-    icon: <Shield className="h-5 w-5 text-purple-500" />,
+    iconType: "shield",
+    iconColor: "text-purple-500",
     details: [
       "Detectare anomalii în tranzacții",
       "Alertare pentru evenimente neobișnuite",
@@ -85,7 +92,8 @@ export const roadmapItems: RoadmapItem[] = [
     description: "Analiză și insights fără date sensibile",
     status: "pending",
     priority: "high",
-    icon: <BarChart4 className="h-5 w-5 text-orange-500" />,
+    iconType: "bar-chart-4",
+    iconColor: "text-orange-500",
     details: [
       "Grafice pentru volumul de tranzacții",
       "Sumar de venituri pe diferite perioade",
@@ -99,7 +107,8 @@ export const roadmapItems: RoadmapItem[] = [
     description: "Asigurarea calității și securității",
     status: "pending",
     priority: "medium",
-    icon: <TestTube2 className="h-5 w-5 text-amber-500" />,
+    iconType: "test-tube-2",
+    iconColor: "text-amber-500",
     details: [
       "Teste de securitate regulate",
       "Optimizarea performanței aplicației",
