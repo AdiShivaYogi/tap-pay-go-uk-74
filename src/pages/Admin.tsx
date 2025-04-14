@@ -1,4 +1,3 @@
-
 import { Layout } from "@/components/layout/layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery } from "@tanstack/react-query";
@@ -9,6 +8,7 @@ import { Navigate } from "react-router-dom";
 import { AdminStats } from "@/components/admin/AdminStats";
 import { AdminCharts } from "@/components/admin/AdminCharts";
 import { AdminTransactionsTable } from "@/components/admin/AdminTransactionsTable";
+import { MonitoringStats } from "@/components/admin/MonitoringStats";
 import { prepareMonthlyData } from "@/utils/admin";
 import { useState } from "react";
 
@@ -39,9 +39,21 @@ const Admin = () => {
     }
   });
 
+  // Calculate monitoring stats
+  const successfulTransactions = transactions.filter(t => t.status === 'completed');
+  const monitoringStats = {
+    totalTransactions: transactions.length,
+    averageAmount: successfulTransactions.length > 0 
+      ? successfulTransactions.reduce((sum, t) => sum + t.amount, 0) / successfulTransactions.length 
+      : 0,
+    activeUsers: [...new Set(transactions.map(t => t.user_id))].length,
+    successRate: transactions.length > 0 
+      ? (successfulTransactions.length / transactions.length) * 100 
+      : 0
+  };
+
   const totalTransactions = transactions.reduce((sum, t) => sum + t.amount, 0);
   const totalCommission = totalTransactions * commissionRate;
-  const successfulTransactions = transactions.filter(t => t.status === 'completed');
   const successfulAmount = successfulTransactions.reduce((sum, t) => sum + t.amount, 0);
   const successfulCommission = successfulAmount * commissionRate;
 
@@ -66,7 +78,9 @@ const Admin = () => {
       <div className="container py-8 px-4">
         <div className="mb-6">
           <h1 className="text-3xl font-bold mb-1">Admin Dashboard</h1>
-          <p className="text-muted-foreground">Monitorizează comisioanele și performanța platformei</p>
+          <p className="text-muted-foreground">
+            Monitorizează performanța platformei și comisioanele, fără acces la date sensibile
+          </p>
         </div>
 
         <div className="mb-6">
@@ -77,6 +91,13 @@ const Admin = () => {
               <TabsTrigger value="year">Ultimul an</TabsTrigger>
             </TabsList>
           </Tabs>
+        </div>
+
+        <div className="mb-8">
+          <MonitoringStats 
+            isLoading={isLoading}
+            stats={monitoringStats}
+          />
         </div>
 
         <AdminStats 
