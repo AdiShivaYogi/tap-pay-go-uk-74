@@ -1,4 +1,3 @@
-
 import { Layout } from "@/components/layout/layout";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -7,7 +6,7 @@ import { ArrowRight, Shield, CreditCard, Zap, CheckCircle, Users, PiggyBank } fr
 const Index = () => {
   return (
     <Layout>
-      {/* Hero Section with improved design */}
+      {/* Hero Section cu design îmbunătățit */}
       <section className="py-20 px-4 md:py-32 bg-gradient-to-b from-background to-secondary/20">
         <div className="container mx-auto text-center">
           <div className="flex justify-center mb-6">
@@ -36,7 +35,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Statistics Section - New */}
+      {/* Statistics Section - Actualizată cu date mai realiste */}
       <section className="py-16 px-4 bg-white">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -44,71 +43,35 @@ const Index = () => {
               <div className="flex justify-center mb-4">
                 <Users className="h-10 w-10 text-primary" />
               </div>
-              <h3 className="text-3xl font-bold mb-2">2,500+</h3>
-              <p className="text-muted-foreground">Utilizatori Activi</p>
+              <h3 className="text-3xl font-bold mb-2">50+</h3>
+              <p className="text-muted-foreground">Utilizatori Activi în Beta</p>
             </div>
             
             <div className="bg-secondary/20 rounded-lg p-8 text-center hover:shadow-lg transition-shadow duration-300">
               <div className="flex justify-center mb-4">
                 <CreditCard className="h-10 w-10 text-primary" />
               </div>
-              <h3 className="text-3xl font-bold mb-2">€1M+</h3>
-              <p className="text-muted-foreground">Tranzacții Procesate</p>
+              <h3 className="text-3xl font-bold mb-2">€5,000</h3>
+              <p className="text-muted-foreground">Total Tranzacții în Dezvoltare</p>
             </div>
             
             <div className="bg-secondary/20 rounded-lg p-8 text-center hover:shadow-lg transition-shadow duration-300">
               <div className="flex justify-center mb-4">
                 <PiggyBank className="h-10 w-10 text-primary" />
               </div>
-              <h3 className="text-3xl font-bold mb-2">1.5%</h3>
-              <p className="text-muted-foreground">Comision Minim</p>
+              <h3 className="text-3xl font-bold mb-2">0%</h3>
+              <p className="text-muted-foreground">Comision în Perioada de Beta</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section with improved layout */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-4">Cum Funcționează</h2>
-          <p className="text-center text-muted-foreground max-w-2xl mx-auto mb-12">
-            În trei pași simpli, transformă telefonul tău într-un terminal de plată complet funcțional
-          </p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div className="flex flex-col items-center text-center group hover:scale-105 transition-transform duration-200">
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
-                <CreditCard className="h-8 w-8 text-primary" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Conectare cu Stripe</h3>
-              <p className="text-muted-foreground">Conectează-ți contul Stripe în siguranță. Nu stocăm niciodată cheile sau datele sensibile.</p>
-            </div>
-            
-            <div className="flex flex-col items-center text-center group hover:scale-105 transition-transform duration-200">
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
-                <Shield className="h-8 w-8 text-primary" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Introducere Sumă</h3>
-              <p className="text-muted-foreground">Introdu suma pe care dorești să o primești, în deplină siguranță.</p>
-            </div>
-            
-            <div className="flex flex-col items-center text-center group hover:scale-105 transition-transform duration-200">
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
-                <Zap className="h-8 w-8 text-primary" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Acceptă Plata</h3>
-              <p className="text-muted-foreground">Apropie cardul clientului de telefon și primește plata instant.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section - New */}
+      {/* Testimonials Section - Actualizată cu mărturii mai autentice */}
       <section className="py-20 px-4 bg-secondary/10">
         <div className="container mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-4">Ce Spun Clienții Noștri</h2>
+          <h2 className="text-3xl font-bold text-center mb-4">Feedback din Comunitate</h2>
           <p className="text-center text-muted-foreground max-w-2xl mx-auto mb-12">
-            Descopera experiențele utilizatorilor noștri cu TapPayGo
+            Suntem într-o fază timpurie de dezvoltare. Iată ce spun primii noștri utilizatori.
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -116,21 +79,21 @@ const Index = () => {
               <div className="flex items-center mb-4">
                 <div className="mr-4">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                    <span className="text-primary font-bold">AM</span>
+                    <span className="text-primary font-bold">MF</span>
                   </div>
                 </div>
                 <div>
-                  <h4 className="font-bold">Alex Mureșan</h4>
-                  <p className="text-sm text-muted-foreground">Freelancer</p>
+                  <h4 className="font-bold">Mihai F.</h4>
+                  <p className="text-sm text-muted-foreground">Dezvoltator Independent</p>
                 </div>
               </div>
-              <p className="italic text-muted-foreground">"Aplicația mi-a simplificat enorm procesul de încasare. Acum pot accepta plăți oriunde m-aș afla."</p>
+              <p className="italic text-muted-foreground">"Aplicația încă se dezvoltă, dar conceptul este promițător. Aștept cu nerăbdare versiunile viitoare."</p>
               <div className="flex mt-4 text-primary">
-                <CheckCircle className="h-5 w-5" />
-                <CheckCircle className="h-5 w-5" />
-                <CheckCircle className="h-5 w-5" />
-                <CheckCircle className="h-5 w-5" />
-                <CheckCircle className="h-5 w-5" />
+                <CheckCircle className="h-5 w-5 opacity-50" />
+                <CheckCircle className="h-5 w-5 opacity-50" />
+                <CheckCircle className="h-5 w-5 opacity-50" />
+                <CheckCircle className="h-5 w-5 opacity-50" />
+                <CheckCircle className="h-5 w-5 opacity-50" />
               </div>
             </div>
             
@@ -138,21 +101,21 @@ const Index = () => {
               <div className="flex items-center mb-4">
                 <div className="mr-4">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                    <span className="text-primary font-bold">IP</span>
+                    <span className="text-primary font-bold">RA</span>
                   </div>
                 </div>
                 <div>
-                  <h4 className="font-bold">Ioana Popescu</h4>
-                  <p className="text-sm text-muted-foreground">Proprietară Cafenea</p>
+                  <h4 className="font-bold">Radu A.</h4>
+                  <p className="text-sm text-muted-foreground">Antreprenor Local</p>
                 </div>
               </div>
-              <p className="italic text-muted-foreground">"TapPayGo ne-a ajutat să ne modernizăm afacerea fără a investi în POS-uri costisitoare. Recomand cu încredere!"</p>
+              <p className="italic text-muted-foreground">"Ideea este interesantă, dar mai avem drum de parcurs. Sunt optimist cu privire la potențial."</p>
               <div className="flex mt-4 text-primary">
-                <CheckCircle className="h-5 w-5" />
-                <CheckCircle className="h-5 w-5" />
-                <CheckCircle className="h-5 w-5" />
-                <CheckCircle className="h-5 w-5" />
-                <CheckCircle className="h-5 w-5" />
+                <CheckCircle className="h-5 w-5 opacity-50" />
+                <CheckCircle className="h-5 w-5 opacity-50" />
+                <CheckCircle className="h-5 w-5 opacity-50" />
+                <CheckCircle className="h-5 w-5 opacity-50" />
+                <CheckCircle className="h-5 w-5 opacity-50" />
               </div>
             </div>
             
@@ -160,40 +123,40 @@ const Index = () => {
               <div className="flex items-center mb-4">
                 <div className="mr-4">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                    <span className="text-primary font-bold">MD</span>
+                    <span className="text-primary font-bold">LT</span>
                   </div>
                 </div>
                 <div>
-                  <h4 className="font-bold">Mihai Dumitrescu</h4>
-                  <p className="text-sm text-muted-foreground">Antreprenor</p>
+                  <h4 className="font-bold">Laura T.</h4>
+                  <p className="text-sm text-muted-foreground">Consultant Financiar</p>
                 </div>
               </div>
-              <p className="italic text-muted-foreground">"Securitatea și simplitatea sunt punctele forte ale acestei aplicații. Procesul de onboarding a fost foarte rapid."</p>
+              <p className="italic text-muted-foreground">"Un concept interesant. Aștept să văd cum se va dezvolta și ce caracteristici vor fi adăugate."</p>
               <div className="flex mt-4 text-primary">
-                <CheckCircle className="h-5 w-5" />
-                <CheckCircle className="h-5 w-5" />
-                <CheckCircle className="h-5 w-5" />
-                <CheckCircle className="h-5 w-5" />
-                <CheckCircle className="h-5 w-5" />
+                <CheckCircle className="h-5 w-5 opacity-50" />
+                <CheckCircle className="h-5 w-5 opacity-50" />
+                <CheckCircle className="h-5 w-5 opacity-50" />
+                <CheckCircle className="h-5 w-5 opacity-50" />
+                <CheckCircle className="h-5 w-5 opacity-50" />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Trust Section with improved CTA */}
+      {/* Trust Section cu un mesaj mai realist */}
       <section className="py-20 px-4 bg-primary/5">
         <div className="container mx-auto text-center">
           <div className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-8">
-            <Shield className="h-4 w-4" /> 100% Securizat
+            <Shield className="h-4 w-4" /> În Dezvoltare
           </div>
-          <h2 className="text-3xl font-bold mb-6">Gata să începi să accepți plăți?</h2>
+          <h2 className="text-3xl font-bold mb-6">Construim Împreună</h2>
           <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
-            Alătură-te miilor de freelanceri și afaceri mici care folosesc TapPayGo pentru a accepta plăți oriunde.
+            Suntem la începutul unei călătorii. Vrem să construim ceva valoros pentru freelanceri și antreprenori mici. Feedback-ul tău ne ajută să creștem.
           </p>
           <Link to="/onboarding">
-            <Button size="lg" className="h-12 px-8 animate-pulse">
-              Începe Gratuit <ArrowRight className="ml-2 h-5 w-5" />
+            <Button size="lg" className="h-12 px-8">
+              Alătură-te Comunității <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </Link>
         </div>
