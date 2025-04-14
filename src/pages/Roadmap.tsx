@@ -3,7 +3,7 @@ import { Layout } from "@/components/layout/layout";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle2, Circle, ClockIcon } from "lucide-react";
+import { CheckCircle2, Circle, ClockIcon, Shield, ShieldCheck, Info } from "lucide-react";
 
 type Status = "completed" | "in-progress" | "pending";
 
@@ -12,6 +12,7 @@ interface RoadmapItem {
   description: string;
   status: Status;
   details: string[];
+  icon?: React.ReactNode;
 }
 
 const roadmapItems: RoadmapItem[] = [
@@ -19,6 +20,7 @@ const roadmapItems: RoadmapItem[] = [
     title: "Securitate și Confidențialitate",
     description: "Protejarea datelor utilizatorilor prin design",
     status: "completed",
+    icon: <ShieldCheck className="h-5 w-5 text-green-600" />,
     details: [
       "Zero stocare de date sensibile",
       "Delegarea procesării plăților către Stripe",
@@ -28,9 +30,23 @@ const roadmapItems: RoadmapItem[] = [
     ]
   },
   {
+    title: "Transparență în Tranzacții",
+    description: "Comunicare clară despre procesarea plăților",
+    status: "completed",
+    icon: <Info className="h-5 w-5 text-blue-600" />,
+    details: [
+      "Informarea utilizatorilor despre politica de confidențialitate",
+      "Explicarea datelor monitorizate și scopul lor",
+      "Claritate privind rolul Stripe în procesarea plăților",
+      "Izolarea completă a datelor între utilizatori",
+      "Interfață intuitivă pentru statusul tranzacțiilor"
+    ]
+  },
+  {
     title: "Integrare Stripe Complex",
     description: "Delegare completă a procesării plăților",
     status: "in-progress",
+    icon: <ClockIcon className="h-5 w-5 text-blue-500" />,
     details: [
       "Utilizare webhook-uri Stripe pentru notificări",
       "Management complet al plăților prin API Stripe",
@@ -49,6 +65,19 @@ const roadmapItems: RoadmapItem[] = [
       "Dashboard personalizat pentru fiecare utilizator",
       "Interfață simplă pentru gestionarea plăților",
       "Transparență maximă în procesarea tranzacțiilor"
+    ]
+  },
+  {
+    title: "Monitorizare Etică",
+    description: "Urmărirea anomaliilor fără acces la date sensibile",
+    status: "in-progress",
+    icon: <Shield className="h-5 w-5 text-purple-500" />,
+    details: [
+      "Detectare anomalii în tranzacții",
+      "Alertare pentru evenimente neobișnuite",
+      "Sistem de raportare centrat pe confidențialitate",
+      "Metrici agregate fără identificatori personali",
+      "Analiză de pattern-uri pentru îmbunătățirea UX"
     ]
   },
   {
@@ -115,7 +144,7 @@ const Roadmap = () => {
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Roadmap Aplicație</h1>
           <p className="text-muted-foreground">
-            Vizualizează progresul și angajamentul nostru pentru securitate și experiență utilizator
+            Vizualizează progresul și angajamentul nostru pentru securitate, transparență și experiență utilizator
           </p>
         </div>
 
@@ -155,7 +184,10 @@ const Roadmap = () => {
           {roadmapItems.map((item, index) => (
             <Card key={index} className="hover:shadow-lg transition-shadow">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-xl font-bold">{item.title}</CardTitle>
+                <div className="flex items-center gap-2">
+                  {item.icon && <span>{item.icon}</span>}
+                  <CardTitle className="text-xl font-bold">{item.title}</CardTitle>
+                </div>
                 {getStatusIcon(item.status)}
               </CardHeader>
               <CardDescription className="px-6">
