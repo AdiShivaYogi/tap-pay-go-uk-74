@@ -4,14 +4,17 @@ import { RoadmapItem } from "../types";
 import { getStatusIcon, getStatusBadge, getPriorityBadge } from "./StatusBadges";
 import { RoadmapIcon } from "./RoadmapIcon";
 import { TimeEstimationBadge } from "./TimeEstimationBadge";
+import { AlertTriangle } from "lucide-react";
 
 interface RoadmapCardProps {
   item: RoadmapItem;
 }
 
 export const RoadmapCard = ({ item }: RoadmapCardProps) => {
+  const isHighPriority = item.priority === "high";
+
   return (
-    <Card className="hover:shadow-lg transition-shadow">
+    <Card className={`hover:shadow-lg transition-shadow ${isHighPriority ? 'border-primary' : ''}`}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div className="flex items-center gap-2">
           {item.iconType && (
@@ -19,7 +22,14 @@ export const RoadmapCard = ({ item }: RoadmapCardProps) => {
               <RoadmapIcon iconType={item.iconType} iconColor={item.iconColor} />
             </span>
           )}
-          <CardTitle className="text-xl font-bold">{item.title}</CardTitle>
+          <CardTitle className="text-xl font-bold">
+            {item.title}
+            {isHighPriority && (
+              <span className="inline-flex items-center ml-2">
+                <AlertTriangle className="h-4 w-4 text-primary" />
+              </span>
+            )}
+          </CardTitle>
         </div>
         {getStatusIcon(item.status)}
       </CardHeader>
@@ -34,7 +44,7 @@ export const RoadmapCard = ({ item }: RoadmapCardProps) => {
         <ul className="space-y-2">
           {item.details.map((detail, idx) => (
             <li key={idx} className="flex items-start gap-2">
-              <span className="mt-2 w-2 h-2 rounded-full bg-primary/20 flex-shrink-0" />
+              <span className={`mt-2 w-2 h-2 rounded-full ${isHighPriority ? 'bg-primary' : 'bg-primary/20'} flex-shrink-0`} />
               <span>{detail}</span>
             </li>
           ))}

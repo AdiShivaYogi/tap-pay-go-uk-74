@@ -1,5 +1,5 @@
 
-import { CheckCircle2, Clock, CircleDot } from "lucide-react";
+import { CheckCircle2, Clock, CircleDot, AlertTriangle } from "lucide-react";
 import { roadmapItems } from "../types";
 
 export const RoadmapProgress = () => {
@@ -7,6 +7,7 @@ export const RoadmapProgress = () => {
   const completedItems = roadmapItems.filter(item => item.status === "completed").length;
   const inProgressItems = roadmapItems.filter(item => item.status === "in-progress").length;
   const pendingItems = roadmapItems.filter(item => item.status === "pending").length;
+  const highPriorityItems = roadmapItems.filter(item => item.priority === "high").length;
 
   const stats = [
     {
@@ -26,11 +27,17 @@ export const RoadmapProgress = () => {
       value: pendingItems,
       icon: CircleDot,
       color: "text-gray-400"
+    },
+    {
+      label: "Prioritate Înaltă",
+      value: highPriorityItems,
+      icon: AlertTriangle,
+      color: "text-primary"
     }
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
       {stats.map((stat) => (
         <div 
           key={stat.label} 
