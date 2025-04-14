@@ -8,8 +8,9 @@ import { roadmapItems } from "@/features/roadmap/data/roadmap-data";
 import { useUserRole } from "@/hooks/use-user-role";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { LockIcon, Compass, ChevronRight } from "lucide-react";
+import { LockIcon, Compass, ChevronRight, ShieldCheck } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { Progress } from "@/components/ui/progress";
 
 const Roadmap = () => {
   const { isAdmin, role } = useUserRole();
@@ -61,12 +62,36 @@ const Roadmap = () => {
         <RoadmapProgress />
 
         <Alert className="mb-8 border-primary/50 bg-primary/5">
-          <AlertTitle className="text-primary font-bold text-lg">Principiu Fundamental</AlertTitle>
+          <AlertTitle className="text-primary font-bold text-lg flex items-center gap-2">
+            <ShieldCheck className="h-5 w-5" />
+            Principiu Fundamental
+          </AlertTitle>
           <AlertDescription>
-            <p className="mt-2 text-foreground/90 leading-relaxed">
+            <p className="mt-2 text-foreground/90 leading-relaxed mb-4">
               Aplicația noastră este proiectată cu un angajament ferm pentru protecția datelor utilizatorilor. 
               Nu stocăm niciun fel de informații sensibile, iar procesarea plăților este gestionată complet de Stripe.
             </p>
+            <div className="space-y-2">
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-primary/90 font-medium">Nivel de Securitate</span>
+                <span className="font-bold text-primary">100%</span>
+              </div>
+              <Progress value={100} className="h-2 bg-primary/20" />
+              <div className="flex gap-4 text-xs text-muted-foreground mt-2">
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 rounded-full bg-primary" />
+                  <span>Zero date sensibile</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 rounded-full bg-primary" />
+                  <span>Plăți prin Stripe</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 rounded-full bg-primary" />
+                  <span>Transparență totală</span>
+                </div>
+              </div>
+            </div>
           </AlertDescription>
         </Alert>
 
