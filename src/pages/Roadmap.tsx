@@ -4,7 +4,7 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RoadmapCard } from "@/features/roadmap/components/RoadmapCard";
 import { RoadmapProgress } from "@/features/roadmap/components/RoadmapProgress";
-import { roadmapItems } from "@/features/roadmap/types";
+import { roadmapItems } from "@/features/roadmap/data/roadmap-data";
 import { useUserRole } from "@/hooks/use-user-role";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";

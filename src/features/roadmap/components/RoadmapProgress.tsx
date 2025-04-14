@@ -1,6 +1,6 @@
 
 import { CheckCircle2, Clock, CircleDot } from "lucide-react";
-import { roadmapItems } from "../types";
+import { roadmapItems } from "../data/roadmap-data";
 import { Progress } from "@/components/ui/progress";
 
 export const RoadmapProgress = () => {
