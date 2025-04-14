@@ -1,32 +1,27 @@
 
 import { Layout } from "@/components/layout/layout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { format } from "date-fns";
-import { ro } from "date-fns/locale";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { Navigate } from "react-router-dom";
-import { TransactionsBarChart } from "@/components/transactions/TransactionsBarChart";
-import { TransactionsPieChart } from "@/components/transactions/TransactionsPieChart";
+import { AdminStats } from "@/components/admin/AdminStats";
+import { AdminCharts } from "@/components/admin/AdminCharts";
+import { AdminTransactionsTable } from "@/components/admin/AdminTransactionsTable";
+import { prepareMonthlyData } from "@/utils/admin";
+import { useState } from "react";
 
 const Admin = () => {
   const { user } = useAuth();
   const [period, setPeriod] = useState<"week" | "month" | "year">("month");
+  const commissionRate = 0.025; // 2.5%
   
-  // Verificăm dacă utilizatorul este admin
   const isAdmin = user?.email?.includes('admin');
   
-  // Redirecționăm utilizatorii non-admin
   if (!isAdmin) {
     return <Navigate to="/dashboard" replace />;
   }
 
-  // Interogare pentru a obține toate tranzacțiile
   const { data: transactions = [], isLoading } = useQuery({
     queryKey: ['admin-transactions', period],
     queryFn: async () => {
@@ -40,18 +35,14 @@ const Admin = () => {
     }
   });
 
-  // Calculăm totalul comisioanelor (presupunem un comision de 2.5%)
-  const commissionRate = 0.025; // 2.5%
   const totalTransactions = transactions.reduce((sum, t) => sum + t.amount, 0);
   const totalCommission = totalTransactions * commissionRate;
   const successfulTransactions = transactions.filter(t => t.status === 'completed');
   const successfulAmount = successfulTransactions.reduce((sum, t) => sum + t.amount, 0);
   const successfulCommission = successfulAmount * commissionRate;
 
-  // Pregătim date pentru grafice
   const monthlyData = prepareMonthlyData(transactions, commissionRate);
   
-  // Pregătim datele pentru graficul pie
   const pieChartData = [
     { name: "Plăți reușite", value: successfulAmount, count: successfulTransactions.length },
     { 
@@ -84,163 +75,30 @@ const Admin = () => {
           </Tabs>
         </div>
 
-        {/* Carduri de statistici */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Total tranzacții</CardDescription>
-              <CardTitle className="text-2xl">
-                {isLoading ? <Skeleton className="h-8 w-20" /> : transactions.length}
-              </CardTitle>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Valoare totală</CardDescription>
-              <CardTitle className="text-2xl">
-                {isLoading ? <Skeleton className="h-8 w-20" /> : `£${totalTransactions.toFixed(2)}`}
-              </CardTitle>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Comision total</CardDescription>
-              <CardTitle className="text-2xl">
-                {isLoading ? <Skeleton className="h-8 w-20" /> : `£${totalCommission.toFixed(2)}`}
-              </CardTitle>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Comision din tranzacții reușite</CardDescription>
-              <CardTitle className="text-2xl">
-                {isLoading ? <Skeleton className="h-8 w-20" /> : `£${successfulCommission.toFixed(2)}`}
-              </CardTitle>
-            </CardHeader>
-          </Card>
-        </div>
+        <AdminStats 
+          isLoading={isLoading}
+          stats={{
+            totalTransactions: transactions.length,
+            totalAmount: totalTransactions,
+            totalCommission,
+            successfulCommission,
+          }}
+        />
 
-        {/* Grafice pentru vizualizări */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Distribuția tranzacțiilor</CardTitle>
-              <CardDescription>Status tranzacții după valoare totală</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {isLoading ? (
-                <Skeleton className="h-[300px] w-full" />
-              ) : (
-                <TransactionsPieChart data={pieChartData} />
-              )}
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader>
-              <CardTitle>Evoluția comisioanelor</CardTitle>
-              <CardDescription>Vizualizarea comisioanelor lunare</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {isLoading ? (
-                <Skeleton className="h-[300px] w-full" />
-              ) : (
-                <TransactionsBarChart data={monthlyData} />
-              )}
-            </CardContent>
-          </Card>
-        </div>
+        <AdminCharts 
+          isLoading={isLoading}
+          monthlyData={monthlyData}
+          pieChartData={pieChartData}
+        />
 
-        {/* Tabel detaliat de comisioane */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>Comisioane pe tranzacții</CardTitle>
-            <CardDescription>Detalii despre comisioanele generate din fiecare tranzacție</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <div className="space-y-2">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Skeleton key={i} className="h-12 w-full" />
-                ))}
-              </div>
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Data</TableHead>
-                    <TableHead>ID Tranzacție</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Suma</TableHead>
-                    <TableHead>Comision (2.5%)</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {transactions.map((transaction) => (
-                    <TableRow key={transaction.id}>
-                      <TableCell>
-                        {format(new Date(transaction.created_at), 'dd/MM/yyyy HH:mm')}
-                      </TableCell>
-                      <TableCell className="font-mono text-xs">
-                        {transaction.id.substring(0, 8)}...
-                      </TableCell>
-                      <TableCell>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          transaction.status === 'completed' 
-                            ? 'bg-green-100 text-green-800' 
-                            : transaction.status === 'failed' 
-                            ? 'bg-red-100 text-red-800'
-                            : 'bg-yellow-100 text-yellow-800'
-                        }`}>
-                          {transaction.status}
-                        </span>
-                      </TableCell>
-                      <TableCell>£{transaction.amount.toFixed(2)}</TableCell>
-                      <TableCell>£{(transaction.amount * commissionRate).toFixed(2)}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            )}
-          </CardContent>
-        </Card>
+        <AdminTransactionsTable 
+          isLoading={isLoading}
+          transactions={transactions}
+          commissionRate={commissionRate}
+        />
       </div>
     </Layout>
   );
-};
-
-// Funcție pentru pregătirea datelor lunare
-const prepareMonthlyData = (transactions: any[], commissionRate: number) => {
-  const monthMap = new Map();
-  
-  transactions.forEach(t => {
-    const date = new Date(t.created_at);
-    const monthKey = `${date.getFullYear()}-${date.getMonth() + 1}`;
-    const monthName = format(date, 'MMM yyyy', { locale: ro });
-    
-    if (!monthMap.has(monthKey)) {
-      monthMap.set(monthKey, { 
-        date: monthName, 
-        total: 0, 
-        completed: 0, 
-        failed: 0, 
-        pending: 0 
-      });
-    }
-    
-    const entry = monthMap.get(monthKey);
-    entry.total += t.amount;
-    
-    if (t.status === 'completed') {
-      entry.completed += t.amount;
-    } else if (t.status === 'failed') {
-      entry.failed += t.amount;
-    } else {
-      entry.pending += t.amount;
-    }
-  });
-  
-  return Array.from(monthMap.values());
 };
 
 export default Admin;
