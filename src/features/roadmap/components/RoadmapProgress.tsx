@@ -1,7 +1,8 @@
 
-import { CheckCircle2, Clock, CircleDot } from "lucide-react";
+import { CheckCircle2, Clock, CircleDot, ChevronRight } from "lucide-react";
 import { roadmapItems } from "../data/roadmap-data";
 import { Progress } from "@/components/ui/progress";
+import { Card } from "@/components/ui/card";
 
 export const RoadmapProgress = () => {
   const totalItems = roadmapItems.length;
@@ -15,19 +16,19 @@ export const RoadmapProgress = () => {
       label: "Completate",
       value: completedItems,
       icon: CheckCircle2,
-      color: "text-green-500"
+      color: "text-green-500 bg-green-50"
     },
     {
       label: "În Lucru",
       value: inProgressItems,
       icon: Clock,
-      color: "text-blue-500"
+      color: "text-blue-500 bg-blue-50"
     },
     {
       label: "În Așteptare",
       value: pendingItems,
       icon: CircleDot,
-      color: "text-gray-400"
+      color: "text-gray-400 bg-gray-50"
     }
   ];
 
@@ -37,28 +38,40 @@ export const RoadmapProgress = () => {
     <div className="space-y-6 mb-8">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {stats.map((stat) => (
-          <div 
+          <Card 
             key={stat.label} 
-            className="flex items-center gap-4 p-4 rounded-lg border bg-card"
+            className="p-4 hover:shadow-md transition-shadow"
           >
-            <div className={`p-2 rounded-full bg-background ${stat.color}`}>
-              <stat.icon className="w-5 h-5" />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className={`p-2 rounded-lg ${stat.color}`}>
+                  <stat.icon className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold">{stat.value}</p>
+                  <p className="text-sm text-muted-foreground">{stat.label}</p>
+                </div>
+              </div>
+              <ChevronRight className="w-5 h-5 text-muted-foreground/30" />
             </div>
-            <div>
-              <p className="text-2xl font-bold">{stat.value}</p>
-              <p className="text-sm text-muted-foreground">{stat.label}</p>
-            </div>
-          </div>
+          </Card>
         ))}
       </div>
       
-      <div className="border rounded-lg p-4 bg-card">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="font-semibold">Progres General</h3>
-          <span className="text-sm font-medium">{completionPercentage}% completat</span>
+      <Card className="p-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-lg font-semibold mb-1">Progres General</h3>
+            <p className="text-sm text-muted-foreground">
+              {completedItems} din {totalItems} obiective completate
+            </p>
+          </div>
+          <span className="text-2xl font-bold text-primary">
+            {completionPercentage}%
+          </span>
         </div>
         <Progress value={completionPercentage} className="h-2" />
-      </div>
+      </Card>
     </div>
   );
 };

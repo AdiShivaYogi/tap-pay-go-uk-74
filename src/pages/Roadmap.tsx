@@ -8,7 +8,8 @@ import { roadmapItems } from "@/features/roadmap/data/roadmap-data";
 import { useUserRole } from "@/hooks/use-user-role";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { LockIcon } from "lucide-react";
+import { LockIcon, Compass, ChevronRight } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 const Roadmap = () => {
   const { isAdmin, role } = useUserRole();
@@ -43,27 +44,36 @@ const Roadmap = () => {
   return (
     <Layout>
       <div className="container py-8">
+        <div className="flex items-center gap-2 text-muted-foreground mb-2">
+          <Compass className="h-4 w-4" />
+          <span>Roadmap</span>
+          <ChevronRight className="h-4 w-4" />
+          <span className="text-foreground">Dezvoltare</span>
+        </div>
+        
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Roadmap Aplicație</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-4xl font-bold mb-3">Roadmap Aplicație</h1>
+          <p className="text-muted-foreground text-lg">
             Vizualizează progresul și angajamentul nostru pentru securitate, transparență și experiență utilizator
           </p>
         </div>
 
         <RoadmapProgress />
 
-        <Alert className="mb-8 border-primary/50">
-          <AlertTitle className="text-primary">Principiu Fundamental</AlertTitle>
+        <Alert className="mb-8 border-primary/50 bg-primary/5">
+          <AlertTitle className="text-primary font-bold text-lg">Principiu Fundamental</AlertTitle>
           <AlertDescription>
-            <p className="mt-2 text-foreground">
+            <p className="mt-2 text-foreground/90 leading-relaxed">
               Aplicația noastră este proiectată cu un angajament ferm pentru protecția datelor utilizatorilor. 
               Nu stocăm niciun fel de informații sensibile, iar procesarea plăților este gestionată complet de Stripe.
             </p>
           </AlertDescription>
         </Alert>
 
+        <Separator className="my-8" />
+
         <Tabs defaultValue="all" className="mb-8">
-          <TabsList className="grid w-full grid-cols-4 mb-4">
+          <TabsList className="grid w-full grid-cols-4 mb-6">
             <TabsTrigger value="all">Toate</TabsTrigger>
             <TabsTrigger value="completed">Completate</TabsTrigger>
             <TabsTrigger value="in-progress">În Lucru</TabsTrigger>
