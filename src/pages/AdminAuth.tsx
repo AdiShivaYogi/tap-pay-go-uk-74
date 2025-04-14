@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Layout } from "@/components/layout/layout";
 import { Button } from "@/components/ui/button";
@@ -10,8 +9,10 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { z } from "zod";
 import { Progress } from "@/components/ui/progress";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
-const ADMIN_INVITE_CODE = "TPG2025ADMIN"; // Acest cod ar trebui să fie într-un loc sigur în producție
+const ADMIN_INVITE_CODE = "TPG2025ADMIN";
 
 const passwordSchema = z.string()
   .min(8, "Parola trebuie să aibă cel puțin 8 caractere")
@@ -26,6 +27,8 @@ const AdminAuth = () => {
   const [inviteCode, setInviteCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
+  const [isLocked, setIsLocked] = useState(false);
+  const [lockMinutesLeft, setLockMinutesLeft] = useState(0);
   const navigate = useNavigate();
   const { signIn } = useAuth();
 
@@ -44,13 +47,57 @@ const AdminAuth = () => {
     setPasswordStrength(calculatePasswordStrength(newPassword));
   };
 
+  const checkLoginStatus = async (email: string) => {
+    try {
+      const { data, error } = await supabase.rpc('check_login_attempts', {
+        p_email: email
+      });
+      
+      if (error) throw error;
+      
+      if (data && data.length > 0) {
+        setIsLocked(data[0].is_locked);
+        setLockMinutesLeft(data[0].minutes_left);
+      }
+    } catch (error) {
+      console.error('Error checking login status:', error);
+    }
+  };
+
+  const recordFailedAttempt = async (email: string) => {
+    try {
+      const { data, error } = await supabase.rpc('record_failed_attempt', {
+        p_email: email
+      });
+      
+      if (error) throw error;
+      
+      if (data && data.length > 0) {
+        setIsLocked(data[0].is_locked);
+        setLockMinutesLeft(data[0].minutes_left);
+      }
+    } catch (error) {
+      console.error('Error recording failed attempt:', error);
+    }
+  };
+
   const handleAdminSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     
     try {
       setLoading(true);
 
-      // Validate invite code
+      await checkLoginStatus(email);
+      
+      if (isLocked) {
+        toast({
+          title: "Cont blocat temporar",
+          description: `Prea multe încercări eșuate. Încercați din nou în ${lockMinutesLeft} minute.`,
+          variant: "destructive",
+        });
+        return;
+      }
+
       if (inviteCode !== ADMIN_INVITE_CODE) {
         toast({
           title: "Cod de invitație invalid",
@@ -60,7 +107,6 @@ const AdminAuth = () => {
         return;
       }
 
-      // Validate password
       try {
         passwordSchema.parse(password);
       } catch (validationError) {
@@ -74,7 +120,6 @@ const AdminAuth = () => {
         }
       }
 
-      // Check for existing admin
       const { data: existingAdmins } = await supabase
         .from('user_roles')
         .select('*')
@@ -89,15 +134,16 @@ const AdminAuth = () => {
         return;
       }
 
-      // Înregistrare utilizator
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
       });
 
-      if (signUpError) throw signUpError;
+      if (signUpError) {
+        await recordFailedAttempt(email);
+        throw signUpError;
+      }
 
-      // Adăugare rol de admin
       if (authData.user) {
         const { error: roleError } = await supabase
           .from('user_roles')
@@ -107,7 +153,6 @@ const AdminAuth = () => {
 
         if (roleError) throw roleError;
 
-        // Autentificare automată
         await signIn(email, password);
 
         toast({
@@ -140,6 +185,15 @@ const AdminAuth = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
+            {isLocked && (
+              <Alert variant="destructive" className="mb-4">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Cont blocat temporar</AlertTitle>
+                <AlertDescription>
+                  Prea multe încercări eșuate. Vă rugăm să așteptați {lockMinutesLeft} minute înainte de a încerca din nou.
+                </AlertDescription>
+              </Alert>
+            )}
             <form onSubmit={handleAdminSignUp} className="space-y-4">
               <div>
                 <Input

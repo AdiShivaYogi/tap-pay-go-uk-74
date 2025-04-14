@@ -9,6 +9,33 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      login_attempts: {
+        Row: {
+          attempt_count: number | null
+          created_at: string | null
+          email: string
+          id: string
+          last_attempt: string | null
+          locked_until: string | null
+        }
+        Insert: {
+          attempt_count?: number | null
+          created_at?: string | null
+          email: string
+          id?: string
+          last_attempt?: string | null
+          locked_until?: string | null
+        }
+        Update: {
+          attempt_count?: number | null
+          created_at?: string | null
+          email?: string
+          id?: string
+          last_attempt?: string | null
+          locked_until?: string | null
+        }
+        Relationships: []
+      }
       transactions: {
         Row: {
           amount: number
@@ -68,6 +95,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_login_attempts: {
+        Args: { p_email: string }
+        Returns: {
+          is_locked: boolean
+          minutes_left: number
+        }[]
+      }
+      record_failed_attempt: {
+        Args: { p_email: string }
+        Returns: {
+          is_locked: boolean
+          minutes_left: number
+        }[]
+      }
       user_has_role: {
         Args: { _role: Database["public"]["Enums"]["app_role"] }
         Returns: boolean
