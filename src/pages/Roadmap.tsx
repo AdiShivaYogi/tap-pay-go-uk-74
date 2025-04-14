@@ -1,9 +1,9 @@
-
 import { Layout } from "@/components/layout/layout";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RoadmapCard } from "@/features/roadmap/components/RoadmapCard";
 import { RoadmapLegend } from "@/features/roadmap/components/RoadmapLegend";
+import { RoadmapProgress } from "@/features/roadmap/components/RoadmapProgress";
 import { roadmapItems } from "@/features/roadmap/types";
 
 const Roadmap = () => {
@@ -16,6 +16,8 @@ const Roadmap = () => {
             Vizualizează progresul și angajamentul nostru pentru securitate, transparență și experiență utilizator
           </p>
         </div>
+
+        <RoadmapProgress />
 
         <Alert className="mb-8 border-primary/50">
           <AlertTitle className="text-primary">Principiu Fundamental</AlertTitle>
