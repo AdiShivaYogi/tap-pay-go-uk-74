@@ -1,12 +1,14 @@
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { DeviceCompatibility } from "@/hooks/use-device-compatibility";
 import { supabase } from "@/integrations/supabase/client";
 import { Textarea } from "@/components/ui/textarea";
+import { CurrencyInput } from "@/components/ui/currency-input";
+import { Loader2, ShieldCheck, AlertTriangle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 interface PaymentFormProps {
   deviceCompatibility: DeviceCompatibility;
@@ -18,6 +20,7 @@ export const PaymentForm = ({ deviceCompatibility }: PaymentFormProps) => {
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
   const handlePayment = async () => {
+    // Validate amount
     if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
       toast({
         title: "Sumă invalidă",
@@ -27,6 +30,7 @@ export const PaymentForm = ({ deviceCompatibility }: PaymentFormProps) => {
       return;
     }
 
+    // Check device compatibility
     if (deviceCompatibility.isCompatible !== 'compatible') {
       toast({
         title: "Dispozitiv incompatibil",
@@ -39,6 +43,7 @@ export const PaymentForm = ({ deviceCompatibility }: PaymentFormProps) => {
     setIsProcessing(true);
 
     try {
+      // Call the create-payment edge function
       const { data, error } = await supabase.functions.invoke('create-payment', {
         body: { 
           amount: parseFloat(amount),
@@ -49,11 +54,12 @@ export const PaymentForm = ({ deviceCompatibility }: PaymentFormProps) => {
       if (error) throw error;
       if (!data.url) throw new Error('Nu s-a putut obține URL-ul de plată');
 
-      // Salvăm ID-ul sesiunii pentru referință ulterioară
+      // Save session ID for reference
       if (data.sessionId) {
         localStorage.setItem('last_payment_session', data.sessionId);
       }
 
+      // Redirect to Stripe Checkout
       window.location.href = data.url;
     } catch (error) {
       console.error('Eroare la procesarea plății:', error);
@@ -69,12 +75,20 @@ export const PaymentForm = ({ deviceCompatibility }: PaymentFormProps) => {
   return (
     <Card className="mb-8">
       <CardHeader>
-        <CardTitle>Procesează o plată nouă</CardTitle>
-        <CardDescription>
-          Introdu suma și procesează plata în siguranță prin Stripe
-          {deviceCompatibility.isCompatible === 'compatible' && 
-            " folosind Tap to Pay pentru plăți contactless"}
-        </CardDescription>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle>Procesează o plată nouă</CardTitle>
+            <CardDescription>
+              Introdu suma și procesează plata în siguranță prin Stripe
+              {deviceCompatibility.isCompatible === 'compatible' && 
+                " folosind Tap to Pay pentru plăți contactless"}
+            </CardDescription>
+          </div>
+          <Badge variant="outline" className="bg-green-50 text-green-600 border-green-200">
+            <ShieldCheck className="h-3.5 w-3.5 mr-1" />
+            Securizat
+          </Badge>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col space-y-6">
@@ -82,19 +96,15 @@ export const PaymentForm = ({ deviceCompatibility }: PaymentFormProps) => {
             <label htmlFor="amount" className="block text-sm font-medium mb-2">
               Suma (£)
             </label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2">£</span>
-              <Input
-                id="amount"
-                type="number"
-                placeholder="0.00"
-                className="pl-8"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                step="0.01"
-                min="0.01"
-              />
-            </div>
+            <CurrencyInput
+              id="amount"
+              placeholder="0.00"
+              value={amount}
+              onValueChange={(value) => setAmount(value)}
+              prefix="£"
+              decimalScale={2}
+              className="h-14 text-xl"
+            />
           </div>
 
           <div>
@@ -117,14 +127,25 @@ export const PaymentForm = ({ deviceCompatibility }: PaymentFormProps) => {
             className="w-full h-16 text-lg"
             disabled={isProcessing || !amount || deviceCompatibility.isCompatible !== 'compatible'}
           >
-            {isProcessing ? "Se procesează..." : deviceCompatibility.isCompatible === 'compatible' ? 
-              "Procesează plata contactless" : "Procesează plata prin Stripe"}
+            {isProcessing ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                Se procesează...
+              </>
+            ) : deviceCompatibility.isCompatible === 'compatible' ? (
+              "Procesează plata contactless"
+            ) : (
+              "Procesează plata prin Stripe"
+            )}
           </Button>
           
           {deviceCompatibility.isCompatible !== 'compatible' && (
-            <p className="text-sm text-amber-600 text-center">
-              Plățile contactless sunt disponibile doar pe iPhone-uri compatibile cu Tap to Pay.
-            </p>
+            <div className="flex items-center gap-2 text-amber-600 text-sm mt-2 bg-amber-50 p-3 rounded-md">
+              <AlertTriangle className="h-4 w-4 flex-shrink-0" />
+              <p>
+                Plățile contactless sunt disponibile doar pe iPhone-uri compatibile cu Tap to Pay.
+              </p>
+            </div>
           )}
         </div>
       </CardContent>
