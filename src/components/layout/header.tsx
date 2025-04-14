@@ -1,4 +1,3 @@
-
 import {
   Sheet,
   SheetContent,
@@ -12,27 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
 import { useUserRole } from "@/hooks/use-user-role";
-import { 
-  Home, 
-  LayoutDashboard, 
-  FileText, 
-  Map, 
-  User, 
-  Key, 
-  DollarSign, 
-  Info 
-} from "lucide-react";
-
-const NAVIGATION = [
-  { href: "/", label: "Acasă", icon: Home },
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/reports", label: "Rapoarte", icon: FileText },
-  { href: "/roadmap", label: "Roadmap", icon: Map, adminOnly: true },
-  { href: "/admin", label: "Admin", icon: User, adminOnly: true },
-  { href: "/admin-auth", label: "Admin Auth", icon: Key },
-  { href: "/pricing", label: "Prețuri", icon: DollarSign },
-  { href: "/about", label: "Despre", icon: Info },
-];
+import { NAVIGATION } from "@/config/navigation";
 
 export function Header() {
   const { signOut, user } = useAuth();
@@ -48,7 +27,6 @@ export function Header() {
           </Link>
           <nav className="hidden md:flex items-center space-x-6">
             {NAVIGATION.map((item) => {
-              // Hide admin-only items for non-admin users
               if ((item.adminOnly || item.href === "/roadmap") && !isAdmin) return null;
               
               return (
