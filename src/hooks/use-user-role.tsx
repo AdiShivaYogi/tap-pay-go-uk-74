@@ -22,7 +22,7 @@ export const useUserRole = () => {
       try {
         // Verificăm rolul de admin
         const { data: isAdmin, error: adminError } = await supabase
-          .rpc('user_has_role', { _role: 'admin' });
+          .rpc('user_has_role', { _role: 'admin' as const });
 
         if (adminError) {
           console.error('Error checking admin role:', adminError);
@@ -33,7 +33,7 @@ export const useUserRole = () => {
 
         // Verificăm rolul de moderator
         const { data: isModerator, error: modError } = await supabase
-          .rpc('user_has_role', { _role: 'moderator' });
+          .rpc('user_has_role', { _role: 'moderator' as const });
 
         if (modError) {
           console.error('Error checking moderator role:', modError);
