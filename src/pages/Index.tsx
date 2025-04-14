@@ -2,6 +2,7 @@
 import { Layout } from "@/components/layout/layout";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { ArrowRight, Shield, CreditCard, Zap } from "lucide-react";
 
 const Index = () => {
   return (
@@ -9,82 +10,78 @@ const Index = () => {
       {/* Hero Section */}
       <section className="py-20 px-4 md:py-32 bg-gradient-to-b from-background to-secondary/20">
         <div className="container mx-auto text-center">
+          <div className="flex justify-center mb-6">
+            <span className="px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium">
+              Plăți contactless, simplu și rapid
+            </span>
+          </div>
           <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
-            Transform Your Phone Into a <span className="text-primary">Payment Terminal</span>
+            Transformă-ți Telefonul în <span className="text-primary">Terminal de Plată</span>
           </h1>
           <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
-            Accept contactless payments instantly as a freelancer or small business. No extra hardware needed - just your phone.
+            Acceptă plăți contactless instant ca freelancer sau afacere mică. Nu ai nevoie de hardware suplimentar - doar telefonul tău.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link to="/onboarding">
-              <Button size="lg" className="h-14 px-8 text-lg">
-                Get Started
+              <Button size="lg" className="h-14 px-8 text-lg w-full sm:w-auto">
+                Începe Acum <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
             <Link to="/pricing">
-              <Button variant="outline" size="lg" className="h-14 px-8 text-lg">
-                View Pricing
+              <Button variant="outline" size="lg" className="h-14 px-8 text-lg w-full sm:w-auto">
+                Vezi Prețurile
               </Button>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Features section */}
+      {/* Features Section */}
       <section className="py-20 px-4">
         <div className="container mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">Cum Funcționează</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
-                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
-                </svg>
+            <div className="flex flex-col items-center text-center group hover:scale-105 transition-transform duration-200">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
+                <CreditCard className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-xl font-bold mb-3">Connect with Stripe</h3>
-              <p className="text-muted-foreground">Link your Stripe account securely. We never store your keys or sensitive data.</p>
+              <h3 className="text-xl font-bold mb-3">Conectare cu Stripe</h3>
+              <p className="text-muted-foreground">Conectează-ți contul Stripe în siguranță. Nu stocăm niciodată cheile sau datele sensibile.</p>
             </div>
             
-            <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
-                  <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                  <line x1="15" y1="9" x2="15.01" y2="9"></line>
-                </svg>
+            <div className="flex flex-col items-center text-center group hover:scale-105 transition-transform duration-200">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
+                <Shield className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-xl font-bold mb-3">Enter Amount</h3>
-              <p className="text-muted-foreground">Simply input the payment amount you want to receive.</p>
+              <h3 className="text-xl font-bold mb-3">Introducere Sumă</h3>
+              <p className="text-muted-foreground">Introdu suma pe care dorești să o primești, în deplină siguranță.</p>
             </div>
             
-            <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
-                  <path d="M5 11a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z"></path>
-                  <path d="M12 11v8"></path>
-                  <path d="M8 9V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4"></path>
-                </svg>
+            <div className="flex flex-col items-center text-center group hover:scale-105 transition-transform duration-200">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
+                <Zap className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-xl font-bold mb-3">Accept Payment</h3>
-              <p className="text-muted-foreground">Tap the customer's card to your phone and get paid instantly.</p>
+              <h3 className="text-xl font-bold mb-3">Acceptă Plata</h3>
+              <p className="text-muted-foreground">Apropie cardul clientului de telefon și primește plata instant.</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Trust Section */}
       <section className="py-20 px-4 bg-primary/5">
         <div className="container mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-6">Ready to start accepting payments?</h2>
+          <div className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-8">
+            <Shield className="h-4 w-4" /> 100% Securizat
+          </div>
+          <h2 className="text-3xl font-bold mb-6">Gata să începi să accepți plăți?</h2>
           <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
-            Join thousands of freelancers and small businesses who use TapPayGo to accept payments anywhere.
+            Alătură-te miilor de freelanceri și afaceri mici care folosesc TapPayGo pentru a accepta plăți oriunde.
           </p>
           <Link to="/onboarding">
             <Button size="lg" className="h-12 px-8">
-              Get Started for Free
+              Începe Gratuit <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </Link>
         </div>
