@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,6 +18,7 @@ import Reports from "./pages/Reports";
 import Admin from "./pages/Admin";
 import Roadmap from "./pages/Roadmap";
 import UserAuth from "./pages/UserAuth";
+import Account from "./pages/Account";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +42,7 @@ const App = () => (
             <Route path="/admin" element={<Admin />} />
             <Route path="/roadmap" element={<Roadmap />} />
             <Route path="/auth" element={<UserAuth />} />
+            <Route path="/account" element={<Account />} />
             <Route path="/system-administration" element={<UserAuth />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
