@@ -55,15 +55,15 @@ export const securityItems: RoadmapItem[] = [
     iconColor: "text-red-500",
     timeEstimate: {
       total: 40,
-      spent: 25,
+      spent: 36,
       aiTotal: 25
     },
     details: [
       "Implementare criptare end-to-end pentru date utilizator ✓",
       "Consolidare politici de acces și autorizare ✓",
       "Auditare și logging avansate ✓",
-      "Scanări automate de vulnerabilități",
-      "Exerciții de penetration testing"
+      "Scanări automate de vulnerabilități ✓",
+      "Exerciții de penetration testing în desfășurare"
     ]
   }
 ];
