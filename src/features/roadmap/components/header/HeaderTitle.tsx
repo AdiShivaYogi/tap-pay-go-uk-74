@@ -1,5 +1,5 @@
 
-import { Compass, ChevronRight, Star } from "lucide-react";
+import { Compass, ChevronRight, Star, BarChart2 } from "lucide-react";
 import { roadmapItems } from "../../data/roadmap-data";
 
 export const HeaderTitle = () => {
