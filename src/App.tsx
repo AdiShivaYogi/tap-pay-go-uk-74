@@ -19,6 +19,7 @@ import Roadmap from "./pages/Roadmap";
 import UserAuth from "./pages/UserAuth";
 import Account from "./pages/Account";
 import Api from "./pages/Api";
+import Backups from "./pages/Backups";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/api" element={<Api />} />
+            <Route path="/backups" element={<Backups />} />
             <Route path="/roadmap" element={<Roadmap />} />
             <Route path="/auth" element={<UserAuth />} />
             <Route path="/account" element={<Account />} />
