@@ -1,3 +1,4 @@
+
 import { RoadmapItem } from "../types";
 
 export const inProgressRoadmapItems: RoadmapItem[] = [
@@ -90,17 +91,17 @@ export const inProgressRoadmapItems: RoadmapItem[] = [
     iconColor: "text-red-500",
     timeEstimate: {
       total: 40,
-      spent: 15,
+      spent: 20,
       aiTotal: 25
     },
     details: [
       "Arhitectură multi-regiune cu toleranță la defecțiuni ✓",
       "Implementare cluster Kubernetes cu auto-scaling ✓", 
       "Configurare mecanisme de failover automat ✓",
-      "Strategie de backup și recuperare în 3 etape",
-      "Monitorizare avansată cu detecție proactivă a problemelor",
-      "Plan de recuperare în dezastre cu timp de indisponibilitate < 5 minute",
-      "Implementare filtre de securitate la nivel de rețea",
+      "Strategie de backup și recuperare în 3 etape ✓",
+      "Monitorizare avansată cu detecție proactivă ✓",
+      "Plan de recuperare în dezastre < 5 minute ✓",
+      "Implementare filtre de securitate la nivel de rețea ✓",
       "Teste periodice de rezistență și recuperare"
     ]
   },
@@ -113,15 +114,15 @@ export const inProgressRoadmapItems: RoadmapItem[] = [
     iconColor: "text-blue-500", 
     timeEstimate: {
       total: 50,
-      spent: 20,
+      spent: 35,
       aiTotal: 30
     },
     details: [
       "Configurare centru de date secundar activ-activ ✓",
       "Replicare geografică a datelor în timp real ✓",
-      "Implementare balansare inteligentă a traficului", 
-      "Sistem de monitorizare unificat cu alertare automată",
-      "Mecanisme avansate de securitate între centre de date",
+      "Implementare balansare inteligentă a traficului ✓", 
+      "Sistem de monitorizare unificat cu alertare automată ✓",
+      "Mecanisme avansate de securitate între centre de date ✓",
       "Optimizare costuri prin resurse cloud dinamice",
       "Plan de tranziție și migrare între centre de date",
       "Testare continuă a scenariilor de dezastre"
@@ -136,15 +137,15 @@ export const inProgressRoadmapItems: RoadmapItem[] = [
     iconColor: "text-green-500",
     timeEstimate: {
       total: 35,
-      spent: 12,
+      spent: 25,
       aiTotal: 20
     },
     details: [
       "Implementare monitorizare comprehensivă ✓",
-      "Configurare metrici detaliate de performanță",
-      "Implementare sisteme de auto-scaling inteligente",
-      "Optimizare costuri și utilizare resurse cloud",
-      "Configurare CDN global cu strategie de caching",
+      "Configurare metrici detaliate de performanță ✓",
+      "Implementare sisteme de auto-scaling inteligente ✓",
+      "Optimizare costuri și utilizare resurse cloud ✓",
+      "Configurare CDN global cu strategie de caching ✓",
       "Audit și optimizare continuă a infrastructurii",
       "Implementare politici de securitate cloud",
       "Raportare automată a performanței și costurilor"

@@ -1,9 +1,11 @@
-
 import { ReactNode } from "react";
 
 export type Status = "completed" | "in-progress" | "pending";
 export type Priority = "high" | "medium" | "low";
-export type IconType = "shield-check" | "info" | "clock" | "shield" | "bar-chart-4" | "test-tube-2" | "check" | "alert-circle" | "file-text" | "banknote" | "smartphone" | "globe" | "users" | "webhook" | "database" | "cloud" | "server-crash" | "server" | "server-cog" | "cloud-cog";
+export type IconType = "shield-check" | "info" | "clock" | "shield" | "bar-chart-4" | 
+  "test-tube-2" | "check" | "alert-circle" | "file-text" | "banknote" | 
+  "smartphone" | "globe" | "users" | "webhook" | "database" | "cloud" | 
+  "server-crash" | "server" | "server-cog" | "cloud-cog" | "network";
 
 export interface TimeEstimate {
   total: number;
