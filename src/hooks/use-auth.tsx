@@ -14,7 +14,7 @@ export const useAuth = () => {
     // List of admin emails
     const adminEmails = [
       '114.adrian.gheorghe@gmail.com',
-      '727.adrian.gheorghe@gmail.com'  // Added alternative admin email
+      '727.adrian.gheorghe@gmail.com'
     ];
     
     // Check if current user email is in admin list

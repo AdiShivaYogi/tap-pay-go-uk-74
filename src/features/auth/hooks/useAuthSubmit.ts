@@ -38,14 +38,20 @@ export const useAuthSubmit = () => {
         } catch (error: any) {
           console.error("Eroare la autentificare:", error);
           
-          if (error.message === "Invalid login credentials") {
-            setErrorMessage("Email sau parolă incorectă. Vă rugăm să încercați din nou.");
-          } else if (error.message?.includes("rate limited")) {
-            setErrorMessage("Prea multe încercări de autentificare. Vă rugăm să încercați mai târziu.");
-          } else if (error.message?.includes("Email not confirmed")) {
-            setErrorMessage("Email-ul nu a fost confirmat. Verificați email-ul pentru link-ul de confirmare.");
+          if (typeof error === 'object' && error !== null && 'message' in error) {
+            const errorMsg = error.message as string;
+            
+            if (errorMsg.includes("Invalid login credentials")) {
+              setErrorMessage("Email sau parolă incorectă. Vă rugăm să încercați din nou.");
+            } else if (errorMsg.includes("rate limited")) {
+              setErrorMessage("Prea multe încercări de autentificare. Vă rugăm să încercați mai târziu.");
+            } else if (errorMsg.includes("Email not confirmed")) {
+              setErrorMessage("Email-ul nu a fost confirmat. Verificați email-ul pentru link-ul de confirmare.");
+            } else {
+              setErrorMessage(errorMsg || "A apărut o eroare la autentificare");
+            }
           } else {
-            setErrorMessage(error.message || "A apărut o eroare la autentificare");
+            setErrorMessage("A apărut o eroare la autentificare");
           }
           
           toast({
@@ -68,14 +74,9 @@ export const useAuthSubmit = () => {
             return;
           }
           
-          const { data: existingAdmins } = await supabase
-            .from('user_roles')
-            .select('user_id')
-            .eq('role', 'admin');
-
           // Check invite code validity
           const validInviteCodes = ['ADMIN2025', 'SUPERADMIN2025'];
-          if (!validInviteCodes.includes(inviteCode)) {
+          if (!validInviteCodes.includes(inviteCode || '')) {
             setErrorMessage("Cod de invitație invalid");
             toast({
               title: "Eroare",

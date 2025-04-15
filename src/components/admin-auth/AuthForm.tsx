@@ -42,6 +42,7 @@ export const AuthForm = ({
   };
 
   const handleFormSubmit = async (values: AuthFormValues) => {
+    console.log("Form values:", values);
     try {
       await onSubmit(values);
     } catch (error) {
@@ -65,7 +66,7 @@ export const AuthForm = ({
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="Email" {...field} />
+                <Input placeholder="Email" {...field} autoComplete="email" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -85,11 +86,13 @@ export const AuthForm = ({
                     placeholder="Parolă" 
                     {...field}
                     className="pr-10"
+                    autoComplete={isLoginMode ? "current-password" : "new-password"}
                   />
                   <button
                     type="button"
                     onClick={togglePasswordVisibility}
                     className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-600"
+                    tabIndex={-1}
                   >
                     {showPassword ? (
                       <EyeOff className="h-5 w-5" />
@@ -120,7 +123,11 @@ export const AuthForm = ({
           />
         )}
 
-        <Button type="submit" className="w-full" disabled={isLoading}>
+        <Button 
+          type="submit" 
+          className="w-full" 
+          disabled={isLoading}
+        >
           {isLoading ? (
             <LoadingIndicator />
           ) : (

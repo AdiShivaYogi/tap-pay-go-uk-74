@@ -36,6 +36,7 @@ const UserAuth = () => {
 
   useEffect(() => {
     if (user) {
+      console.log("User detected in UserAuth, redirecting to roadmap");
       navigate('/roadmap');
     }
   }, [user, navigate]);
@@ -74,6 +75,13 @@ const UserAuth = () => {
       setLocalLoading(false);
     }
   };
+
+  console.log("Current auth state:", { 
+    isLoginMode, 
+    isLoading, 
+    localLoading, 
+    user: user?.email 
+  });
 
   return (
     <Layout>

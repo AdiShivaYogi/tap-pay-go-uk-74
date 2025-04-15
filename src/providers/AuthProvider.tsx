@@ -19,10 +19,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       try {
         setLoading(true);
         
-        // First set up the listener for auth state changes
+        // First check for existing session
+        const { data: sessionData } = await supabase.auth.getSession();
+        
+        // Then set up the listener for auth state changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
           async (event, session) => {
-            console.log('Auth state changed:', event);
+            console.log('Auth state changed:', event, session?.user?.email);
             
             if (session) {
               // Check if user is an admin
@@ -67,10 +70,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           }
         );
 
-        // Then check for existing session
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        if (session) {
+        // Process initial session if it exists
+        if (sessionData && sessionData.session) {
+          const session = sessionData.session;
           const isAdmin = 
             adminEmails.includes(session.user.email || '') || 
             (session.user.user_metadata && session.user.user_metadata.role === 'admin');
@@ -130,6 +132,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.error('Eroare la autentificare:', error.message);
         throw error;
       }
+
+      return { data, error: null };
     } catch (error) {
       console.error('Eroare la autentificare:', error);
       throw error;

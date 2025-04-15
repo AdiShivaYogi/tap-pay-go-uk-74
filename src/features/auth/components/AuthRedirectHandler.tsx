@@ -17,6 +17,7 @@ export const AuthRedirectHandler = ({ locationHash, setIsLoading }: AuthRedirect
   useEffect(() => {
     const handleAuthRedirect = async () => {
       if (locationHash) {
+        console.log("Processing auth redirect with hash:", locationHash);
         setIsLoading(true);
         
         try {
@@ -51,9 +52,11 @@ export const AuthRedirectHandler = ({ locationHash, setIsLoading }: AuthRedirect
           }
           
           if (data?.session) {
+            console.log("Session detected after redirect:", data.session.user.email);
             // Check if user is an admin
+            const adminEmails = ['114.adrian.gheorghe@gmail.com', '727.adrian.gheorghe@gmail.com'];
             const isAdmin = 
-              data.session.user.email === '114.adrian.gheorghe@gmail.com' || 
+              adminEmails.includes(data.session.user.email || '') || 
               (data.session.user.user_metadata && data.session.user.user_metadata.role === 'admin');
               
             toast({
@@ -61,7 +64,7 @@ export const AuthRedirectHandler = ({ locationHash, setIsLoading }: AuthRedirect
               description: isAdmin ? "Bine ați revenit, admin!" : "Bine ați revenit!",
             });
             
-            navigate("/roadmap");
+            navigate("/roadmap", { replace: true });
           }
         } catch (error: any) {
           console.error("Eroare la procesarea redirecționării:", error);
