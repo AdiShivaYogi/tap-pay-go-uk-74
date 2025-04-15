@@ -1,167 +1,181 @@
 
 import { Layout } from "@/components/layout/layout";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { PageHeader } from "@/components/ui/page-header";
+import { SectionContainer } from "@/components/ui/section-container";
+import { Shield } from "lucide-react";
+import { StyledCard } from "@/components/ui/card-variants";
 
 const PrivacyPage = () => {
   return (
     <Layout>
-      <div className="container py-12 px-4">
-        <div className="max-w-3xl mx-auto">
-          <h1 className="text-3xl font-bold mb-6">Privacy Policy</h1>
-          
-          <div className="prose prose-gray max-w-none">
-            <p className="text-muted-foreground mb-8">
-              Last updated: April 14, 2025
-            </p>
-            
-            <ScrollArea className="h-[500px] rounded-md border p-6">
-              <div className="space-y-6">
-                <section>
-                  <h2 className="text-xl font-semibold mb-3">1. Introduction</h2>
-                  <p>
-                    At TapPayGo, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our application and website (collectively, the "Service").
-                  </p>
-                  <p>
-                    Please read this Privacy Policy carefully. By using our Service, you consent to the collection and use of information in accordance with this policy.
-                  </p>
-                </section>
+      <ScrollArea className="h-[calc(100vh-4rem)]">
+        <SectionContainer>
+          <PageHeader
+            icon={Shield}
+            title="Politica de Confidențialitate"
+            description="Ultima actualizare: 15 Aprilie 2025"
+          />
 
-                <section>
-                  <h2 className="text-xl font-semibold mb-3">2. Information We Collect</h2>
-                  <p>
-                    We collect minimal information to provide our Service:
+          <div className="max-w-4xl mx-auto space-y-8 pb-8">
+            <StyledCard variant="default" className="p-6">
+              <div className="flex items-start gap-4">
+                <Shield className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
+                <div>
+                  <h2 className="text-lg font-semibold">Procesarea Sigură prin Stripe</h2>
+                  <p className="text-muted-foreground text-sm">
+                    Pentru siguranța dvs., toate datele de plată sunt procesate și stocate direct de Stripe, 
+                    lider global în procesarea plăților online.
                   </p>
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>
-                      <strong>Stripe Account ID:</strong> When you connect your Stripe account, we store only your Stripe account ID to facilitate the connection between our Service and Stripe.
-                    </li>
-                    <li>
-                      <strong>Device Information:</strong> We collect information about your device, including device model, operating system version, and unique device identifiers.
-                    </li>
-                    <li>
-                      <strong>Usage Data:</strong> We may collect information about how you use our Service, such as the features you access and the time spent on the Service.
-                    </li>
-                  </ul>
-                  <p className="mt-4">
-                    <strong>Information We Do NOT Collect:</strong>
-                  </p>
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>
-                      We do NOT collect, store, or process any payment card data.
-                    </li>
-                    <li>
-                      We do NOT have access to your Stripe API keys or credentials.
-                    </li>
-                    <li>
-                      We do NOT store customer payment information.
-                    </li>
-                  </ul>
-                </section>
-                
-                <section>
-                  <h2 className="text-xl font-semibold mb-3">3. How We Use Your Information</h2>
-                  <p>
-                    We use the information we collect to:
-                  </p>
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>
-                      Provide, maintain, and improve our Service.
-                    </li>
-                    <li>
-                      Process transactions via the Stripe API.
-                    </li>
-                    <li>
-                      Communicate with you about the Service, including updates and support.
-                    </li>
-                    <li>
-                      Monitor usage patterns and analyze trends to improve user experience.
-                    </li>
-                    <li>
-                      Protect against fraudulent or unauthorized transactions.
-                    </li>
-                  </ul>
-                </section>
-
-                <section>
-                  <h2 className="text-xl font-semibold mb-3">4. Stripe Integration and Data Processing</h2>
-                  <p>
-                    Our Service integrates with Stripe for payment processing. When you use our Service:
-                  </p>
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>
-                      All payment processing occurs directly through Stripe.
-                    </li>
-                    <li>
-                      Payment data is sent directly from your device to Stripe, not through our servers.
-                    </li>
-                    <li>
-                      We never see, store, or have access to payment card details.
-                    </li>
-                    <li>
-                      Stripe's privacy policy governs their collection and use of data. You can view Stripe's privacy policy at <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">https://stripe.com/privacy</a>.
-                    </li>
-                  </ul>
-                </section>
-
-                <section>
-                  <h2 className="text-xl font-semibold mb-3">5. Data Retention</h2>
-                  <p>
-                    We retain your information only as long as necessary to provide our Service. If you delete your account, we will delete or anonymize your information, except where we are required to maintain certain information for legal or legitimate business purposes.
-                  </p>
-                </section>
-
-                <section>
-                  <h2 className="text-xl font-semibold mb-3">6. Security</h2>
-                  <p>
-                    We implement appropriate security measures to protect your information from unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the Internet or electronic storage is 100% secure, and we cannot guarantee absolute security.
-                  </p>
-                </section>
-
-                <section>
-                  <h2 className="text-xl font-semibold mb-3">7. Your Rights</h2>
-                  <p>
-                    Depending on your location, you may have certain rights regarding your personal information, including:
-                  </p>
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>
-                      The right to access your personal information.
-                    </li>
-                    <li>
-                      The right to rectify inaccurate information.
-                    </li>
-                    <li>
-                      The right to erasure or deletion of your information.
-                    </li>
-                    <li>
-                      The right to restrict or object to processing.
-                    </li>
-                    <li>
-                      The right to data portability.
-                    </li>
-                  </ul>
-                  <p>
-                    To exercise these rights, please contact us using the information provided below.
-                  </p>
-                </section>
-
-                <section>
-                  <h2 className="text-xl font-semibold mb-3">8. Changes to This Privacy Policy</h2>
-                  <p>
-                    We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page. Changes will be effective immediately upon posting. You are advised to review this Privacy Policy periodically for any changes.
-                  </p>
-                </section>
-
-                <section>
-                  <h2 className="text-xl font-semibold mb-3">9. Contact Us</h2>
-                  <p>
-                    If you have any questions about this Privacy Policy, please contact us at privacy@tappaygo.com.
-                  </p>
-                </section>
+                </div>
               </div>
-            </ScrollArea>
+            </StyledCard>
+
+            <div className="space-y-6">
+              <section>
+                <h2 className="text-2xl font-semibold mb-3">1. Introducere</h2>
+                <p className="text-muted-foreground">
+                  La TapPayGo, protejarea confidențialității dvs. este o prioritate. Această Politică de Confidențialitate 
+                  explică modul în care colectăm, folosim și protejăm informațiile dvs. atunci când utilizați 
+                  serviciile noastre de procesare a plăților.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-3">2. Informații pe care le colectăm</h2>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-medium">2.1. Informații furnizate direct:</h3>
+                  <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
+                    <li>Informații de contact (nume, email, telefon)</li>
+                    <li>Informații despre afacere (denumire, adresă, CUI)</li>
+                    <li>Date despre contul bancar pentru procesarea plăților</li>
+                  </ul>
+
+                  <h3 className="text-lg font-medium">2.2. Informații despre tranzacții:</h3>
+                  <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
+                    <li>Sumele tranzacțiilor</li>
+                    <li>Data și ora tranzacțiilor</li>
+                    <li>Statusul tranzacțiilor</li>
+                    <li>Referințe ale tranzacțiilor</li>
+                  </ul>
+
+                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                    <p className="text-blue-800 font-medium">Important:</p>
+                    <p className="text-blue-700 text-sm">
+                      Nu colectăm și nu stocăm niciodată informații despre cardurile de credit. 
+                      Toate datele sensibile sunt procesate direct de Stripe prin sisteme conforme PCI DSS.
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-3">3. Cum folosim informațiile</h2>
+                <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
+                  <li>Pentru procesarea plăților prin platforma Stripe</li>
+                  <li>Pentru prevenirea fraudelor și verificarea identității</li>
+                  <li>Pentru raportarea și analiza tranzacțiilor</li>
+                  <li>Pentru comunicarea cu dvs. despre serviciile noastre</li>
+                  <li>Pentru respectarea obligațiilor legale și reglementărilor</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-3">4. Partajarea informațiilor</h2>
+                <p className="text-muted-foreground mb-4">
+                  Partajăm informații doar cu:
+                </p>
+                <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
+                  <li>
+                    <strong>Stripe</strong> - procesatorul nostru de plăți, pentru procesarea tranzacțiilor
+                  </li>
+                  <li>
+                    <strong>Autorități</strong> - când este cerut de lege sau pentru prevenirea fraudelor
+                  </li>
+                  <li>
+                    <strong>Furnizori de servicii</strong> - care ne ajută să operăm serviciul (cu acorduri stricte de confidențialitate)
+                  </li>
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-3">5. Securitatea datelor</h2>
+                <div className="space-y-4">
+                  <p className="text-muted-foreground">
+                    Implementăm măsuri stricte de securitate pentru protejarea datelor dvs.:
+                  </p>
+                  <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
+                    <li>Criptare SSL/TLS pentru toate transmisiile de date</li>
+                    <li>Autentificare multi-factor pentru accesul la cont</li>
+                    <li>Monitorizare continuă pentru activități suspecte</li>
+                    <li>Acces restricționat la date pe bază de roluri</li>
+                  </ul>
+                </div>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-3">6. Conformitate cu GDPR</h2>
+                <p className="text-muted-foreground mb-4">
+                  În calitate de operator de date cu sediul în UE, respectăm GDPR și vă oferim următoarele drepturi:
+                </p>
+                <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
+                  <li>Dreptul de acces la datele personale</li>
+                  <li>Dreptul la rectificarea datelor</li>
+                  <li>Dreptul la ștergerea datelor ("dreptul de a fi uitat")</li>
+                  <li>Dreptul la restricționarea prelucrării</li>
+                  <li>Dreptul la portabilitatea datelor</li>
+                  <li>Dreptul de a obiecta la prelucrarea datelor</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-3">7. Retenția datelor</h2>
+                <p className="text-muted-foreground">
+                  Păstrăm datele dvs. doar atât timp cât este necesar pentru:
+                </p>
+                <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
+                  <li>Furnizarea serviciilor noastre</li>
+                  <li>Respectarea obligațiilor legale (de ex. păstrarea înregistrărilor financiare)</li>
+                  <li>Rezolvarea disputelor</li>
+                  <li>Prevenirea fraudelor</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-3">8. Cookie-uri și tehnologii similare</h2>
+                <p className="text-muted-foreground mb-4">
+                  Folosim cookie-uri și tehnologii similare pentru:
+                </p>
+                <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
+                  <li>Autentificare și securitate</li>
+                  <li>Preferințe și funcționalitate</li>
+                  <li>Analiză și performanță</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-3">9. Contactați-ne</h2>
+                <p className="text-muted-foreground">
+                  Pentru orice întrebări despre această politică sau despre datele dvs., ne puteți contacta la:
+                </p>
+                <ul className="list-none space-y-2 text-muted-foreground mt-4">
+                  <li>Email: privacy@tappaygo.com</li>
+                  <li>Telefon: +44 20 1234 5678</li>
+                  <li>Adresă: 123 Payment Street, London, UK, EC1A 1BB</li>
+                </ul>
+              </section>
+
+              <div className="bg-muted/40 p-6 rounded-lg mt-8">
+                <p className="text-sm text-center text-muted-foreground">
+                  Această Politică de Confidențialitate poate fi actualizată periodic. 
+                  Vă vom notifica despre orice modificări semnificative prin email sau prin notificări în aplicație. 
+                  Ultima actualizare: 15 Aprilie 2025.
+                </p>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </SectionContainer>
+      </ScrollArea>
     </Layout>
   );
 };
