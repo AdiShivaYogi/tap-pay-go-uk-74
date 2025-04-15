@@ -64,5 +64,25 @@ export const inProgressRoadmapItems: RoadmapItem[] = [
       "Training pentru echipa de suport clienți",
       "Monitorizarea performanței chat-ului"
     ]
+  },
+  {
+    title: "Optimizare Performanță Back-end",
+    description: "Îmbunătățirea performanței și scalabilității back-end",
+    status: "in-progress",
+    priority: "high",
+    iconType: "database",
+    iconColor: "text-blue-600",
+    timeEstimate: {
+      total: 22,
+      spent: 18,
+      aiTotal: 18
+    },
+    details: [
+      "Optimizare interogări și indexare bază de date ✓",
+      "Implementare mecanism de caching distribuit ✓",
+      "Configurare load balancing avansat ✓",
+      "Reducere latență API ✓",
+      "Testare și măsurare performanță"
+    ]
   }
-];
+]

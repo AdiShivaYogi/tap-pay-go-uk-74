@@ -1,5 +1,5 @@
 
-import { RoadmapItem } from "../../types";
+import { RoadmapItem } from "../types";
 
 export const productItems: RoadmapItem[] = [
   {
@@ -47,22 +47,22 @@ export const productItems: RoadmapItem[] = [
   {
     title: "Pregătire Integrări Viitoare",
     description: "Pregătirea infrastructurii pentru API și integrări terțe",
-    status: "completed",
+    status: "in-progress",
     priority: "high",
     category: "infrastructure",
     iconType: "webhook",
-    iconColor: "text-green-500",
+    iconColor: "text-purple-500",
     timeEstimate: {
       total: 25,
-      spent: 25,
+      spent: 5,
       aiTotal: 15
     },
     details: [
-      "Definirea structurii de API și endpoints ✓",
-      "Implementarea autentificării OAuth ✓",
-      "Crearea documentației pentru dezvoltatori ✓",
-      "Dezvoltarea unui mediu sandbox pentru teste ✓",
-      "Configurarea rate limiting și protecție API ✓"
+      "Definirea structurii de API și endpoints",
+      "Implementarea autentificării OAuth",
+      "Crearea documentației pentru dezvoltatori",
+      "Dezvoltarea unui mediu sandbox pentru teste",
+      "Configurarea rate limiting și protecție API"
     ]
   },
   {
@@ -96,14 +96,14 @@ export const productItems: RoadmapItem[] = [
     iconColor: "text-blue-600",
     timeEstimate: {
       total: 22,
-      spent: 14,
+      spent: 18,
       aiTotal: 18
     },
     details: [
-      "Optimizare interogări și indexare bază de date",
-      "Implementare mecanism de caching distribuit",
-      "Configurare load balancing avansat",
-      "Reducere latență API",
+      "Optimizare interogări și indexare bază de date ✓",
+      "Implementare mecanism de caching distribuit ✓",
+      "Configurare load balancing avansat ✓",
+      "Reducere latență API ✓",
       "Testare și măsurare performanță"
     ]
   },
