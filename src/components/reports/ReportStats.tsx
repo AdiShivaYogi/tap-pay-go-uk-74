@@ -1,8 +1,7 @@
-
-import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Transaction } from "@/types/transactions";
 import { ArrowDownCircle, ArrowUpCircle, CircleDollarSign, PercentCircle } from "lucide-react";
+import { StyledCard, StyledCardContent } from "@/components/ui/styled-card";
 
 interface ReportStatsProps {
   transactions: Transaction[];
@@ -47,8 +46,8 @@ export const ReportStats = ({ transactions, isLoading }: ReportStatsProps) => {
       {stats.map((stat) => {
         const Icon = stat.icon;
         return (
-          <Card key={stat.label} className="border-2 border-primary/10 relative overflow-hidden hover:shadow-md transition-shadow duration-300">
-            <CardContent className="pt-6">
+          <StyledCard key={stat.label}>
+            <StyledCardContent className="pt-6">
               <div className="absolute right-4 top-4 opacity-20">
                 <Icon className="h-8 w-8" />
               </div>
@@ -64,13 +63,8 @@ export const ReportStats = ({ transactions, isLoading }: ReportStatsProps) => {
                   )}
                 </p>
               </div>
-              <div 
-                className={`absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r ${
-                  stat.color.replace('text', 'from')
-                } to-transparent animate-pulse`}
-              />
-            </CardContent>
-          </Card>
+            </StyledCardContent>
+          </StyledCard>
         );
       })}
     </div>
