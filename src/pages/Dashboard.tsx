@@ -1,18 +1,18 @@
-
 import { Layout } from "@/components/layout/layout";
-import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { BarChart2 } from "lucide-react";
 import { DeviceCompatibilityAlert } from "@/components/device-compatibility-alert";
-import { useDeviceCompatibility } from "@/hooks/use-device-compatibility";
 import { SecurityAlert } from "@/components/security/SecurityAlert";
 import { PaymentForm } from "@/components/dashboard/PaymentForm";
 import { TransactionsList } from "@/components/dashboard/TransactionsList";
 import { AccountInfo } from "@/components/dashboard/AccountInfo";
-import { toast } from "@/hooks/use-toast";
+import { useDeviceCompatibility } from "@/hooks/use-device-compatibility";
+import { PageHeader } from "@/components/ui/page-header";
+import { SectionContainer } from "@/components/ui/section-container";
 import { StyledCard } from "@/components/ui/card-variants";
-import { BarChart2, ChevronRight } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
   const [searchParams] = useSearchParams();
@@ -96,19 +96,12 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <div className="container max-w-5xl py-8 px-4">
-        <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg p-6 mb-8">
-          <div className="flex items-center gap-2 text-muted-foreground mb-2">
-            <BarChart2 className="h-4 w-4" />
-            <span>Dashboard</span>
-            <ChevronRight className="h-4 w-4" />
-            <span className="text-foreground">Tranzacții</span>
-          </div>
-          <h1 className="text-3xl font-bold">Panou de Control</h1>
-          <p className="text-muted-foreground mt-1">
-            Gestionează tranzacțiile și monitorizează activitatea
-          </p>
-        </div>
+      <SectionContainer>
+        <PageHeader
+          icon={BarChart2}
+          title="Panou de Control"
+          description="Gestionează tranzacțiile și monitorizează activitatea"
+        />
 
         <div className="space-y-6">
           <DeviceCompatibilityAlert compatibility={deviceCompatibility} />
@@ -141,7 +134,7 @@ const Dashboard = () => {
 
           <SecurityAlert />
         </div>
-      </div>
+      </SectionContainer>
     </Layout>
   );
 };
