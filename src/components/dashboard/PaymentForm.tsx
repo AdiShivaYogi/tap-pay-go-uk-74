@@ -1,13 +1,22 @@
 
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
-import { useState, useEffect } from "react";
 import { DeviceCompatibility } from "@/hooks/use-device-compatibility";
 import { supabase } from "@/integrations/supabase/client";
 import { Textarea } from "@/components/ui/textarea";
 import { CurrencyInput } from "@/components/ui/currency-input";
-import { Loader2, ShieldCheck, AlertTriangle, CreditCard, Smartphone, NfcIcon, Info } from "lucide-react";
+import { 
+  Loader2, 
+  ShieldCheck, 
+  AlertTriangle, 
+  CreditCard, 
+  Smartphone, 
+  NfcIcon, 
+  Info,
+  CheckCircle  // Add this import
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
