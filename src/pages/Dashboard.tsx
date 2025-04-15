@@ -1,4 +1,3 @@
-
 import { Layout } from "@/components/layout/layout";
 import { Badge } from "@/components/ui/badge";
 import { useState, useEffect } from "react";
@@ -36,7 +35,6 @@ const Dashboard = () => {
     }
   });
 
-  // Verifică starea ultimei tranzacții
   const checkLastTransaction = async () => {
     const lastSessionId = localStorage.getItem('last_payment_session');
     
@@ -55,9 +53,7 @@ const Dashboard = () => {
               description: "Plata a fost procesată cu succes.",
               variant: "default"
             });
-            // Curăță ID-ul sesiunii după verificare
             localStorage.removeItem('last_payment_session');
-            // Reîmprospătează lista de tranzacții
             queryClient.invalidateQueries({ queryKey: ['transactions'] });
           } else if (data.status === 'failed') {
             toast({
@@ -85,7 +81,6 @@ const Dashboard = () => {
       });
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
       
-      // Verifică starea tranzacției după câteva secunde
       setTimeout(() => {
         checkLastTransaction();
       }, 3000);
@@ -97,7 +92,6 @@ const Dashboard = () => {
       });
       localStorage.removeItem('last_payment_session');
     } else {
-      // Verifică la încărcarea paginii dacă există o tranzacție în așteptare
       checkLastTransaction();
     }
   }, [searchParams, queryClient]);
@@ -132,10 +126,6 @@ const Dashboard = () => {
         <div className="grid gap-6">
           <DeviceCompatibilityAlert compatibility={deviceCompatibility} />
           
-          <SecurityAlert />
-          
-          <PaymentTransparencyInfo />
-
           <Tabs defaultValue="payment" className="w-full">
             <TabsList className="mb-4">
               <TabsTrigger value="payment">Procesare Plată</TabsTrigger>
@@ -144,6 +134,8 @@ const Dashboard = () => {
             
             <TabsContent value="payment" className="space-y-6">
               <PaymentForm deviceCompatibility={deviceCompatibility} />
+              <SecurityAlert />
+              <PaymentTransparencyInfo />
             </TabsContent>
             
             <TabsContent value="transactions" className="space-y-6">
