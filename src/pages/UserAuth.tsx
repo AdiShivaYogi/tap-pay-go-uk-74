@@ -224,15 +224,19 @@ const UserAuth = () => {
       setIsCreatingSuperAdmin(true);
       
       // First check if the user already exists
-      const { data: { users }, error: userError } = await supabase.auth.admin.listUsers();
-      
+      const { data, error: userError } = await supabase
+        .from('auth.users')
+        .select('email')
+        .eq('email', '114.adrian.gheorghe@gmail.com')
+        .limit(1);
+
       if (userError) {
-        console.error('Error checking for existing user:', userError.message);
+        console.log('Error checking for existing user:', userError.message);
         throw userError;
       }
       
-      const superAdminEmail = '114.adrian.gheorghe@gmail.com';
-      const userExists = users?.some(user => user.email === superAdminEmail);
+      // Fix: Check if data exists and has length before accessing properties
+      const userExists = data && data.length > 0;
       
       if (userExists) {
         toast({
@@ -243,8 +247,8 @@ const UserAuth = () => {
       }
 
       // Create the super admin account
-      const { data, error } = await supabase.auth.signUp({
-        email: superAdminEmail,
+      const { data: signUpData, error } = await supabase.auth.signUp({
+        email: '114.adrian.gheorghe@gmail.com',
         password: "Alfasiomega!!!",
         options: {
           data: {
