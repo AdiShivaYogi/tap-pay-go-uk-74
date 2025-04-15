@@ -2,6 +2,106 @@ import { RoadmapItem } from "../types";
 
 export const inProgressRoadmapItems: RoadmapItem[] = [
   {
+    title: "Monitorizare și Alertare",
+    description: "Sistem avansat de monitorizare și alertare",
+    status: "in-progress",
+    priority: "high",
+    iconType: "activity",
+    iconColor: "text-blue-500",
+    timeEstimate: {
+      total: 20,
+      spent: 15,
+      aiTotal: 12
+    },
+    details: [
+      "Implementare sistem de logging centralizat ✓",
+      "Configurare alerte pentru evenimente critice ✓",
+      "Dashboard-uri de monitorizare în timp real ✓",
+      "Integrare cu sisteme de notificare",
+      "Analiza și raportare automată a incidentelor"
+    ]
+  },
+  {
+    title: "Backup și Recuperare",
+    description: "Sistem robust de backup și recuperare date",
+    status: "in-progress",
+    priority: "high",
+    iconType: "database",
+    iconColor: "text-green-500",
+    timeEstimate: {
+      total: 25,
+      spent: 18,
+      aiTotal: 15
+    },
+    details: [
+      "Implementare backup automatizat multi-nivel ✓",
+      "Configurare retenție date pe termen lung ✓",
+      "Testare proceduri de recuperare ✓",
+      "Documentare politici de backup",
+      "Optimizare strategii de backup incremental"
+    ]
+  },
+  {
+    title: "Management Configurații",
+    description: "Sistem centralizat de management al configurațiilor",
+    status: "in-progress",
+    priority: "medium",
+    iconType: "settings",
+    iconColor: "text-amber-500",
+    timeEstimate: {
+      total: 15,
+      spent: 10,
+      aiTotal: 8
+    },
+    details: [
+      "Implementare sistem version control pentru configurații ✓",
+      "Automatizare deployment configurații ✓",
+      "Validare și testare configurații",
+      "Rollback automat configurații invalide",
+      "Audit modificări configurații"
+    ]
+  },
+  {
+    title: "Scalare Automată",
+    description: "Implementare sistem de auto-scaling avansat",
+    status: "in-progress",
+    priority: "high",
+    iconType: "expand",
+    iconColor: "text-purple-500",
+    timeEstimate: {
+      total: 30,
+      spent: 20,
+      aiTotal: 18
+    },
+    details: [
+      "Configurare reguli de auto-scaling ✓",
+      "Implementare balansare încărcare automată ✓",
+      "Optimizare algoritmi de scalare",
+      "Monitorizare performanță scalare",
+      "Raportare costuri și eficiență"
+    ]
+  },
+  {
+    title: "Securitate Rețea",
+    description: "Implementare măsuri avansate de securitate rețea",
+    status: "in-progress",
+    priority: "high",
+    iconType: "shield",
+    iconColor: "text-red-500",
+    timeEstimate: {
+      total: 35,
+      spent: 25,
+      aiTotal: 20
+    },
+    details: [
+      "Implementare firewall multi-layer ✓",
+      "Configurare VPN și access control ✓",
+      "Monitorizare și detecție intruziuni",
+      "Implementare politici de securitate",
+      "Testare penetrare și vulnerabilități"
+    ]
+  },
+  {
     title: "Program Beta Limitat",
     description: "Lansare program beta cu primii 20 de utilizatori",
     status: "in-progress",
