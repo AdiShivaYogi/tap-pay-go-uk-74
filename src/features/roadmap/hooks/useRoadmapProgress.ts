@@ -4,55 +4,57 @@ import { roadmapItems } from "../data/roadmap-data";
 import { RoadmapItem } from "../types";
 
 export const useRoadmapProgress = () => {
-  const totalItems = roadmapItems.length;
-  const completedItems = roadmapItems.filter(item => item.status === "completed").length;
-  const inProgressItems = roadmapItems.filter(item => item.status === "in-progress").length;
-  const pendingItems = roadmapItems.filter(item => item.status === "pending").length;
+  const stats = useMemo(() => {
+    const items = roadmapItems;
+    const totalItems = items.length;
+    const completedItems = items.filter(item => item.status === "completed").length;
+    const inProgressItems = items.filter(item => item.status === "in-progress").length;
+    const pendingItems = items.filter(item => item.status === "pending").length;
 
-  const executionScore = Math.round((completedItems / totalItems) * 100);
-  const progressScore = Math.round(((completedItems + (inProgressItems * 0.5)) / totalItems) * 100);
-
-  // Calculate impact of completing in-progress items
-  const potentialScoreGain = useMemo(() => {
-    // If we complete all in-progress items, we gain 0.5 points per item
-    const scoreIncrease = Math.round((inProgressItems * 0.5 / totalItems) * 100);
-    const potentialScore = executionScore + scoreIncrease;
+    // Calculate completion scores
+    const executionScore = Math.round((completedItems / totalItems) * 100);
     
-    return {
-      scoreIncrease,
-      potentialScore
-    };
-  }, [inProgressItems, totalItems, executionScore]);
+    // Enhanced progress calculation that weights in-progress items
+    const progressScore = Math.round(
+      ((completedItems + (inProgressItems * 0.5)) / totalItems) * 100
+    );
 
-  // Get high-impact items (prioritized by quick wins)
-  const highImpactItems = useMemo(() => {
-    return roadmapItems
-      .filter(item => item.status === "in-progress")
-      .sort((a, b) => {
-        // First prioritize by remaining time (less time = higher priority)
-        const aRemaining = a.timeEstimate.total - (a.timeEstimate.spent || 0);
-        const bRemaining = b.timeEstimate.total - (b.timeEstimate.spent || 0);
-        
-        // If similar remaining time, prioritize by priority
-        if (Math.abs(aRemaining - bRemaining) < 5) {
-          const priorityOrder = { high: 1, medium: 2, low: 3 };
-          return (priorityOrder[a.priority || "medium"] || 2) - 
-                 (priorityOrder[b.priority || "medium"] || 2);
+    // Calculate efficiency metrics
+    const timeEfficiency = items.reduce((acc, item) => {
+      if (item.timeEstimate.spent && item.timeEstimate.total) {
+        return acc + (item.timeEstimate.spent / item.timeEstimate.total);
+      }
+      return acc;
+    }, 0) / items.length;
+
+    // Calculate category completion rates
+    const categoryProgress = items.reduce((acc, item) => {
+      if (item.category) {
+        if (!acc[item.category]) {
+          acc[item.category] = {
+            total: 0,
+            completed: 0
+          };
         }
-        
-        return aRemaining - bRemaining;
-      })
-      .slice(0, 3); // Top 3 items
-  }, [roadmapItems]);
+        acc[item.category].total++;
+        if (item.status === "completed") {
+          acc[item.category].completed++;
+        }
+      }
+      return acc;
+    }, {} as Record<string, { total: number; completed: number }>);
 
-  return {
-    totalItems,
-    completedItems,
-    inProgressItems,
-    pendingItems,
-    executionScore,
-    progressScore,
-    potentialScoreGain,
-    highImpactItems
-  };
+    return {
+      totalItems,
+      completedItems,
+      inProgressItems,
+      pendingItems,
+      executionScore,
+      progressScore,
+      timeEfficiency: Math.round(timeEfficiency * 100),
+      categoryProgress
+    };
+  }, []);
+
+  return stats;
 };
