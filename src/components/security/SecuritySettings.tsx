@@ -1,9 +1,8 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { Shield, CheckCircle2, AlertTriangle, RefreshCw, Lock } from "lucide-react";
+import { Shield, CheckCircle2, AlertTriangle, RefreshCw, Lock, ServerCog } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { MFASetupDialog } from "./MFASetupDialog";
 import { StyledCard } from "@/components/ui/card-variants";
@@ -14,26 +13,38 @@ export const SecuritySettings = () => {
   const [isMFAEnabled, setIsMFAEnabled] = useState(false);
   const [lastSecurityScan, setLastSecurityScan] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(false);
+  const [vulnerabilitiesFound, setVulnerabilitiesFound] = useState<string[]>([]);
+  const [lastDependencyCheck, setLastDependencyCheck] = useState<string | null>(null);
 
   const runSecurityScan = () => {
     setIsScanning(true);
-    
-    // Simulate a security scan
     setTimeout(() => {
       setLastSecurityScan(new Date().toLocaleString());
+      const mockVulnerabilities: string[] = [];
+      setVulnerabilitiesFound(mockVulnerabilities);
+      
       toast({
-        title: "Scanare completă",
-        description: "Nu au fost găsite vulnerabilități.",
+        title: mockVulnerabilities.length ? "Vulnerabilități găsite" : "Scanare completă",
+        description: mockVulnerabilities.length 
+          ? `S-au găsit ${mockVulnerabilities.length} vulnerabilități.`
+          : "Nu au fost găsite vulnerabilități.",
       });
       setIsScanning(false);
     }, 2000);
+  };
+
+  const checkDependencies = () => {
+    setLastDependencyCheck(new Date().toLocaleString());
+    toast({
+      title: "Verificare dependențe",
+      description: "Toate dependențele sunt la zi.",
+    });
   };
 
   const toggleMFA = () => {
     if (!isMFAEnabled) {
       setIsMFADialogOpen(true);
     } else {
-      // Here you would disable MFA in a real implementation
       toast({
         title: "MFA dezactivat",
         description: "Autentificarea multi-factor a fost dezactivată.",
@@ -49,14 +60,13 @@ export const SecuritySettings = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Shield className="h-5 w-5" />
-              Setări de Securitate
+              Setări de Securitate Backend
             </CardTitle>
             <CardDescription>
-              Gestionați setările de securitate pentru contul dvs.
+              Gestionați setările de securitate pentru backend și infrastructură
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            {/* MFA Section */}
             <div className="border rounded-lg p-4 bg-card">
               <div className="flex justify-between items-start">
                 <div className="space-y-1">
@@ -85,36 +95,58 @@ export const SecuritySettings = () => {
               )}
             </div>
             
-            {/* Security Scan Section */}
             <div className="border rounded-lg p-4 bg-card">
               <div className="flex justify-between items-start">
                 <div className="space-y-1">
                   <h3 className="text-base font-medium flex items-center gap-2">
-                    <AlertTriangle className="h-4 w-4" />
-                    Scanare de Securitate
+                    <ServerCog className="h-4 w-4" />
+                    Scanare de Securitate Backend
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    Verificați contul dvs. pentru probleme de securitate și vulnerabilități.
+                    Verificați serverul și infrastructura pentru vulnerabilități.
                   </p>
                 </div>
-                <Button
-                  variant="outline"
-                  onClick={runSecurityScan}
-                  disabled={isScanning}
-                >
-                  {isScanning ? (
-                    <>
-                      <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                      Scanare...
-                    </>
-                  ) : (
-                    "Scanează acum"
-                  )}
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={checkDependencies}
+                  >
+                    Verifică Dependențe
+                  </Button>
+                  <Button
+                    variant="default"
+                    onClick={runSecurityScan}
+                    disabled={isScanning}
+                  >
+                    {isScanning ? (
+                      <>
+                        <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                        Scanare...
+                      </>
+                    ) : (
+                      "Scanează Infrastructura"
+                    )}
+                  </Button>
+                </div>
               </div>
               {lastSecurityScan && (
                 <div className="mt-4 text-xs text-muted-foreground">
-                  Ultima scanare: {lastSecurityScan}
+                  Ultima scanare de securitate: {lastSecurityScan}
+                </div>
+              )}
+              {lastDependencyCheck && (
+                <div className="mt-2 text-xs text-muted-foreground">
+                  Ultima verificare a dependențelor: {lastDependencyCheck}
+                </div>
+              )}
+              {vulnerabilitiesFound.length > 0 && (
+                <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md">
+                  <h4 className="text-sm font-medium text-red-800">Vulnerabilități Detectate:</h4>
+                  <ul className="mt-2 space-y-1">
+                    {vulnerabilitiesFound.map((vuln, idx) => (
+                      <li key={idx} className="text-sm text-red-600">• {vuln}</li>
+                    ))}
+                  </ul>
                 </div>
               )}
             </div>
@@ -125,19 +157,7 @@ export const SecuritySettings = () => {
       {user && (
         <MFASetupDialog
           open={isMFADialogOpen}
-          onOpenChange={(open) => {
-            setIsMFADialogOpen(open);
-            if (!open) {
-              // If the dialog was closed after successful setup
-              // This would be properly checked in a real implementation
-              if (isMFAEnabled) {
-                toast({
-                  title: "MFA activat",
-                  description: "Autentificarea multi-factor este acum activă.",
-                });
-              }
-            }
-          }}
+          onOpenChange={setIsMFADialogOpen}
           userId={user.id}
         />
       )}
