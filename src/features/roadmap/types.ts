@@ -1,9 +1,10 @@
+
 import { ReactNode } from "react";
 import { IconType as RoadmapIconType } from "./components/RoadmapIcon";
 
 export type Status = "completed" | "in-progress" | "pending";
 export type Priority = "high" | "medium" | "low";
-export type Category = "product" | "development" | "infrastructure" | "security" | "devops" | "payment" | "ui" | "other";
+export type Category = "product" | "development" | "infrastructure" | "security" | "devops" | "payment" | "ui" | "other" | "partnership"; // Added "partnership"
 export type IconType = RoadmapIconType;
 
 export interface TimeEstimate {
