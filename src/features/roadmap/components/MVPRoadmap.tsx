@@ -46,8 +46,8 @@ export const MVPRoadmap = () => {
                 );
               } else if (line.startsWith('1.') || line.startsWith('2.') || line.startsWith('3.')) {
                 return <div key={index} className="ml-4 my-2">{line}</div>;
-              } else if (line.startsWith('**')) {
-                return <div key={index} className="font-semibold my-2">{line.replaceAll('**', '')}</div>;
+              } else if (line.includes('**')) {
+                return <div key={index} className="font-semibold my-2">{line.split('**').join('')}</div>;
               } else {
                 return <p key={index} className="my-2">{line}</p>;
               }
@@ -58,4 +58,3 @@ export const MVPRoadmap = () => {
     </Card>
   );
 };
-
