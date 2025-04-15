@@ -3,12 +3,15 @@ import { Layout } from "@/components/layout/layout";
 import { RoadmapProgress } from "@/features/roadmap/components/RoadmapProgress";
 import { useUserRole } from "@/hooks/use-user-role";
 import { AccessRestrictionAlert } from "@/features/roadmap/components/AccessRestrictionAlert";
-import { RoadmapHeader } from "@/features/roadmap/components/RoadmapHeader";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { RoadmapCategory } from "@/features/roadmap/components/RoadmapCategory";
 import { RoadmapContextProvider } from "@/features/roadmap/context/RoadmapContext";
 import { MVPRoadmap } from "@/features/roadmap/components/MVPRoadmap";
 import { BackupProgress } from "@/features/roadmap/components/BackupProgress";
+import { PageHeader } from "@/components/ui/page-header";
+import { SectionContainer } from "@/components/ui/section-container";
+import { Compass, GitFork } from "lucide-react";
+import { StyledCard } from "@/components/ui/card-variants";
 
 const Roadmap = () => {
   const { isAdmin, role } = useUserRole();
@@ -39,13 +42,28 @@ const Roadmap = () => {
   return (
     <Layout>
       <ScrollArea className="h-[calc(100vh-4rem)]">
-        <div className="container py-8">
+        <SectionContainer>
+          <PageHeader
+            icon={Compass}
+            title="Development Roadmap"
+            description="Urmărește progresul și obiectivele de dezvoltare"
+          >
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <GitFork className="h-4 w-4" />
+              <span className="text-sm">Versiunea 2.0</span>
+            </div>
+          </PageHeader>
+
           <div className="space-y-8 max-w-[1400px] mx-auto">
-            <RoadmapHeader />
-            <BackupProgress />
+            <StyledCard className="border-primary/10">
+              <div className="p-6">
+                <BackupProgress />
+              </div>
+            </StyledCard>
+            
             <RoadmapContextProvider>
               <RoadmapProgress />
-              <div className="mt-8 space-y-6">
+              <div className="space-y-6">
                 {categoryGroups.map((group, index) => (
                   <RoadmapCategory
                     key={index}
@@ -60,7 +78,7 @@ const Roadmap = () => {
               </div>
             </RoadmapContextProvider>
           </div>
-        </div>
+        </SectionContainer>
       </ScrollArea>
     </Layout>
   );
