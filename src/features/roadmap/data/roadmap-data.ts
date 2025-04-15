@@ -16,7 +16,7 @@ import { partnershipItems } from "./categories/partnership-items";
 const removeDuplicates = (items: RoadmapItem[]) => {
   const uniqueItems = new Map<string, RoadmapItem>();
   items.forEach(item => {
-    if (!uniqueItems.has(item.title)) {
+    if (!uniqueItems.has(item.title) && item.title !== "Pregătire Integrări Viitoare") {
       uniqueItems.set(item.title, item);
     }
   });
@@ -33,8 +33,6 @@ export const roadmapItems: RoadmapItem[] = removeDuplicates([
   ...monitoringItems,        // Monitoring and analytics
   ...productItems,           // Product features
   ...pendingRoadmapItems,    // Future developments
-  ...integrationItems,       // Integration features
   ...localizationItems,      // Localization features
   ...partnershipItems        // Partnership features
 ]);
-
