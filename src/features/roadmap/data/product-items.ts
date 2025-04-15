@@ -54,36 +54,36 @@ export const productItems: RoadmapItem[] = [
     iconColor: "text-green-600",
     timeEstimate: {
       total: 20,
-      spent: 12,
+      spent: 18,
       aiTotal: 15
     },
     details: [
-      "Implementare criptare end-to-end pentru date utilizator",
-      "Consolidare politici de acces și autorizare",
-      "Auditare și logging avansate",
-      "Scanări automate de vulnerabilități",
+      "Implementare criptare end-to-end pentru date utilizator ✓",
+      "Consolidare politici de acces și autorizare ✓",
+      "Auditare și logging avansate ✓",
+      "Scanări automate de vulnerabilități ✓",
       "Exerciții de penetration testing"
     ]
   },
   {
     title: "Optimizare Performanță Back-end",
     description: "Îmbunătățirea performanței și scalabilității back-end",
-    status: "in-progress",
+    status: "completed",
     priority: "high",
     category: "infrastructure",
     iconType: "database",
     iconColor: "text-blue-600",
     timeEstimate: {
       total: 22,
-      spent: 14,
+      spent: 22,
       aiTotal: 18
     },
     details: [
-      "Optimizare interogări și indexare bază de date",
-      "Implementare mecanism de caching distribuit",
-      "Configurare load balancing avansat",
-      "Reducere latență API",
-      "Testare și măsurare performanță"
+      "Optimizare interogări și indexare bază de date ✓",
+      "Implementare mecanism de caching distribuit ✓",
+      "Configurare load balancing avansat ✓",
+      "Reducere latență API ✓",
+      "Testare și măsurare performanță ✓"
     ]
   },
   {
@@ -108,4 +108,3 @@ export const productItems: RoadmapItem[] = [
     ]
   }
 ];
-

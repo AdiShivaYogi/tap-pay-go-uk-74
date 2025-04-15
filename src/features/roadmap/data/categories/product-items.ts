@@ -68,14 +68,14 @@ export const productItems: RoadmapItem[] = [
   {
     title: "Optimizare Performanță Back-end",
     description: "Îmbunătățirea performanței și scalabilității back-end",
-    status: "in-progress",
+    status: "completed",
     priority: "high",
     category: "infrastructure",
     iconType: "database",
     iconColor: "text-blue-600",
     timeEstimate: {
       total: 22,
-      spent: 18,
+      spent: 22,
       aiTotal: 18
     },
     details: [
@@ -83,7 +83,7 @@ export const productItems: RoadmapItem[] = [
       "Implementare mecanism de caching distribuit ✓",
       "Configurare load balancing avansat ✓",
       "Reducere latență API ✓",
-      "Testare și măsurare performanță"
+      "Testare și măsurare performanță ✓"
     ]
   },
   {
