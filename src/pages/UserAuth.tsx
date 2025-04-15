@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/layout";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -10,10 +10,14 @@ import { AuthForm } from "@/components/admin-auth/AuthForm";
 import { AuthModeToggle } from "@/components/admin-auth/AuthModeToggle";
 import { ResetPasswordForm } from "@/components/admin-auth/ResetPasswordForm";
 import { AuthFormValues } from "@/components/admin-auth/auth-validation";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { UserPlus } from "lucide-react";
 
 const UserAuth = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [isResetMode, setIsResetMode] = useState(false);
+  const [isCreatingSuperAdmin, setIsCreatingSuperAdmin] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { signIn, user } = useAuth();
@@ -84,6 +88,8 @@ const UserAuth = () => {
             setErrorMessage("Email sau parolă incorectă. Vă rugăm să încercați din nou.");
           } else if (error.message?.includes("rate limited")) {
             setErrorMessage("Prea multe încercări de autentificare. Vă rugăm să încercați mai târziu.");
+          } else if (error.message?.includes("Email not confirmed")) {
+            setErrorMessage("Email-ul nu a fost confirmat. Verificați email-ul pentru link-ul de confirmare.");
           } else {
             setErrorMessage(error.message || "A apărut o eroare la autentificare");
           }
@@ -213,6 +219,60 @@ const UserAuth = () => {
     setErrorMessage(undefined);
   }, [isLoginMode, isResetMode]);
 
+  const createSuperAdmin = async () => {
+    try {
+      setIsCreatingSuperAdmin(true);
+      
+      // First check if the user already exists
+      const { data: { users }, error: userError } = await supabase.auth.admin.listUsers();
+      
+      if (userError) {
+        console.error('Error checking for existing user:', userError.message);
+        throw userError;
+      }
+      
+      const superAdminEmail = '114.adrian.gheorghe@gmail.com';
+      const userExists = users?.some(user => user.email === superAdminEmail);
+      
+      if (userExists) {
+        toast({
+          title: "Contul super admin există deja",
+          description: "Încercați să vă conectați cu credențialele super admin"
+        });
+        return;
+      }
+
+      // Create the super admin account
+      const { data, error } = await supabase.auth.signUp({
+        email: superAdminEmail,
+        password: "Alfasiomega!!!",
+        options: {
+          data: {
+            role: 'admin'
+          },
+          emailRedirectTo: window.location.origin
+        }
+      });
+
+      if (error) throw error;
+      
+      toast({
+        title: "Cont super admin creat",
+        description: "Verificați email-ul pentru confirmarea contului sau dezactivați confirmarea în Supabase dashboard"
+      });
+      
+    } catch (error: any) {
+      console.error('Eroare la crearea super admin:', error);
+      toast({
+        title: "Eroare la crearea super admin",
+        description: error.message || "Verificați consolă pentru detalii",
+        variant: "destructive"
+      });
+    } finally {
+      setIsCreatingSuperAdmin(false);
+    }
+  };
+
   return (
     <Layout>
       <div className="container max-w-md py-8">
@@ -255,7 +315,27 @@ const UserAuth = () => {
                 />
               </>
             )}
+            
+            {errorMessage?.includes("Email sau parolă incorectă") && (
+              <Alert className="mt-4">
+                <AlertDescription>
+                  Dacă încercați să vă conectați ca super admin și contul nu a fost încă creat, 
+                  puteți crea contul apăsând butonul de mai jos.
+                </AlertDescription>
+              </Alert>
+            )}
           </CardContent>
+          <CardFooter>
+            <Button 
+              variant="outline"
+              className="w-full mt-2" 
+              onClick={createSuperAdmin}
+              disabled={isCreatingSuperAdmin}
+            >
+              <UserPlus className="mr-2 h-4 w-4" />
+              {isCreatingSuperAdmin ? "Se creează..." : "Creare cont super admin"}
+            </Button>
+          </CardFooter>
         </Card>
       </div>
     </Layout>

@@ -1,3 +1,4 @@
+
 import {
   Sheet,
   SheetContent,
@@ -12,7 +13,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
 import { useUserRole } from "@/hooks/use-user-role";
 import { NAVIGATION } from "@/config/navigation";
-import { Menu, X } from "lucide-react";
+import { Menu } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,13 +27,16 @@ export function Header() {
   const { signOut, user } = useAuth();
   const { isAdmin, isModerator, role } = useUserRole();
   
+  // Verificăm dacă utilizatorul e super admin (email specific)
+  const isSuperAdmin = user?.email === '114.adrian.gheorghe@gmail.com';
+  
   // Function to determine if a navigation item should be visible
   const isVisible = (item: typeof NAVIGATION[0]) => {
-    // Super admin (email admin@example.com) always sees all menu items
-    if (user?.email === '114.adrian.gheorghe@gmail.com') return true;
+    // Super admin (email 114.adrian.gheorghe@gmail.com) always sees all menu items
+    if (isSuperAdmin) return true;
     
     // If item is superAdminOnly, only show to super admin
-    if (item.superAdminOnly && user?.email !== '114.adrian.gheorghe@gmail.com') return false;
+    if (item.superAdminOnly && !isSuperAdmin) return false;
     
     // Admin users can see admin-only items
     if (item.adminOnly && !isAdmin) return false;
@@ -90,8 +94,14 @@ export function Header() {
                       <p className="text-xs leading-none text-muted-foreground">
                         {user.email}
                       </p>
-                      {user.email === '114.adrian.gheorghe@gmail.com' && (
+                      {isSuperAdmin && (
                         <p className="text-xs font-semibold text-primary">Super Admin</p>
+                      )}
+                      {isAdmin && !isSuperAdmin && (
+                        <p className="text-xs font-semibold text-primary">Admin</p>
+                      )}
+                      {isModerator && !isAdmin && !isSuperAdmin && (
+                        <p className="text-xs font-semibold text-primary">Moderator</p>
                       )}
                     </div>
                   </DropdownMenuLabel>
