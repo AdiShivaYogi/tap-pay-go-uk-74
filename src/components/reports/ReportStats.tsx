@@ -71,7 +71,8 @@ export const ReportStats = ({ transactions, isLoading }: ReportStatsProps) => {
               />
             </CardContent>
           </Card>
-        ))}
+        );
+      })}
     </div>
   );
 };
