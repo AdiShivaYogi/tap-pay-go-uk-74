@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
@@ -47,6 +46,21 @@ export const useAuthSubmit = () => {
           });
         }
       } else {
+        const { data: existingAdmins } = await supabase
+          .from('user_roles')
+          .select('user_id')
+          .eq('role', 'admin');
+
+        if (existingAdmins && existingAdmins.length > 0) {
+          setErrorMessage("Un cont de super admin există deja. Nu se mai pot crea conturi noi de admin.");
+          toast({
+            title: "Eroare",
+            description: "Un cont de super admin există deja",
+            variant: "destructive",
+          });
+          return;
+        }
+
         if (inviteCode !== 'ADMIN2025') {
           setErrorMessage("Cod de invitație invalid");
           toast({
