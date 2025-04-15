@@ -3,7 +3,18 @@ import React from 'react';
 import { Layout } from "@/components/layout/layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { User, MapPin, ShieldCheck } from "lucide-react";
+import { 
+  User, 
+  MapPin, 
+  ShieldCheck, 
+  CreditCard, 
+  Receipt, 
+  History, 
+  Bell,
+  Store,
+  Wallet,
+  Settings2 
+} from "lucide-react";
 
 const Account = () => {
   return (
@@ -16,7 +27,8 @@ const Account = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Personal Details Card */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -27,12 +39,36 @@ const Account = () => {
             <CardContent>
               <div className="space-y-4">
                 <div>
-                  <p className="text-sm text-muted-foreground">Location</p>
+                  <p className="text-sm text-muted-foreground">Business Location</p>
                   <div className="flex items-center gap-2">
                     <MapPin className="h-4 w-4" />
                     <span>Glasgow, Scotland, UK</span>
                   </div>
                 </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Business Type</p>
+                  <div className="flex items-center gap-2">
+                    <Store className="h-4 w-4" />
+                    <span>Retail</span>
+                  </div>
+                </div>
+                <Button variant="outline" className="w-full">
+                  Update Business Information
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Payment Settings Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Wallet className="h-6 w-6 text-primary" />
+                Payment Settings
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
                 <div>
                   <p className="text-sm text-muted-foreground">Stripe Connection</p>
                   <div className="flex items-center gap-2">
@@ -40,35 +76,93 @@ const Account = () => {
                     <span>Active</span>
                   </div>
                 </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Default Currency</p>
+                  <div className="flex items-center gap-2">
+                    <CreditCard className="h-4 w-4" />
+                    <span>GBP (£)</span>
+                  </div>
+                </div>
                 <Button variant="outline" className="w-full">
-                  Update Personal Information
+                  Manage Payment Settings
                 </Button>
               </div>
             </CardContent>
           </Card>
 
+          {/* Security Settings Card */}
           <Card>
             <CardHeader>
-              <CardTitle>Account Security</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Settings2 className="h-6 w-6 text-primary" />
+                Security Settings
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-2">
+                  <p className="text-sm text-muted-foreground">
                     Two-Factor Authentication
                   </p>
-                  <Button variant="destructive" className="w-full">
+                  <Button variant="destructive" className="w-full mt-2">
                     Enable 2FA
                   </Button>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground mb-2">
-                    Reset Password
+                  <p className="text-sm text-muted-foreground">
+                    Account Password
                   </p>
-                  <Button variant="outline" className="w-full">
+                  <Button variant="outline" className="w-full mt-2">
                     Change Password
                   </Button>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Transaction History Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <History className="h-6 w-6 text-primary" />
+                Transaction History
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm text-muted-foreground">Last 30 Days</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <Receipt className="h-4 w-4" />
+                    <span>238 Transactions</span>
+                  </div>
+                </div>
+                <Button variant="outline" className="w-full">
+                  View Full History
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Notifications Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Bell className="h-6 w-6 text-primary" />
+                Notifications
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm text-muted-foreground">Email Alerts</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span>Transaction & Security Alerts</span>
+                  </div>
+                </div>
+                <Button variant="outline" className="w-full">
+                  Manage Notifications
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -85,4 +179,3 @@ const Account = () => {
 };
 
 export default Account;
-
