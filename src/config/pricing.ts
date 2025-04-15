@@ -1,4 +1,3 @@
-
 import { BadgeDollarSign, CreditCard, Wallet } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 
@@ -23,47 +22,48 @@ export const pricingPlans: PricingPlan[] = [
   {
     name: "Pay-as-you-go",
     id: "pay-as-you-go",
-    description: "For occasional use",
-    price: "Free",
+    description: "Pentru utilizare ocazională",
+    price: "Gratuit",
     features: [
-      "No monthly fee",
-      "1.5% + £0.20 per transaction",
-      "Unlimited payments",
-      "24/7 Support"
+      "Fără taxă lunară",
+      "Comision: 1.5% + £0.20 per tranzacție",
+      "Plăți nelimitate",
+      "Suport 24/7"
     ],
-    cta: "Start Free",
+    cta: "Începe Gratuit",
     popular: false,
     icon: CreditCard
   },
   {
     name: "Monthly",
     id: "monthly",
-    description: "For regular merchants",
+    description: "Pentru comercianți regulați",
     price: "£14.99",
-    period: "per month",
+    period: "pe lună",
     features: [
-      "No commissions (only Stripe fees apply)",
-      "Priority support",
-      "Transaction history",
-      "Analytics dashboard"
+      "Comision: 1.0% + £0.15 per tranzacție",
+      "Suport prioritar",
+      "Istoric tranzacții",
+      "Panou de analiză"
     ],
-    cta: "Subscribe Now",
+    cta: "Abonare Acum",
     popular: true,
     icon: Wallet
   },
   {
     name: "Lifetime",
     id: "lifetime",
-    description: "Best value for serious businesses",
-    price: "£149.99",
-    period: "one-time payment",
+    description: "Cea mai bună valoare pentru afaceri serioase",
+    price: "£1840",
+    period: "plată unică",
     features: [
-      "All features from Monthly plan",
-      "No recurring payments",
-      "Free lifetime updates",
-      "Priority customer service"
+      "Toate funcțiile din planul Monthly",
+      "Fără plăți recurente",
+      "Actualizări gratuite pe viață",
+      "Serviciu clienți prioritar",
+      "Comision: 0% + £0.00 per tranzacție"
     ],
-    cta: "Get Lifetime Access",
+    cta: "Obține Acces pe Viață",
     popular: false,
     icon: BadgeDollarSign
   }
