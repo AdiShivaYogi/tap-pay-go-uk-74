@@ -1,3 +1,4 @@
+
 import { Layout } from "@/components/layout/layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RoadmapCard } from "@/features/roadmap/components/RoadmapCard";
@@ -19,6 +20,7 @@ import { BetaLaunchProgress } from "@/features/roadmap/components/BetaLaunchProg
 import { BetaUsersMonitoring } from "@/features/beta/components/BetaUsersMonitoring";
 import { FeedbackCollection } from "@/features/beta/components/FeedbackCollection";
 import { PaymentTestingPanel } from "@/features/beta/components/PaymentTestingPanel";
+import { MorningPriorityTasks } from "@/features/roadmap/components/MorningPriorityTasks";
 
 const Roadmap = () => {
   const { isAdmin, role } = useUserRole();
@@ -27,6 +29,12 @@ const Roadmap = () => {
   const criteriaUpdates = SecurityCriteriaReporter.getCurrentDetails();
   const [activeTab, setActiveTab] = useState("all");
   const [activeCategory, setActiveCategory] = useState("all");
+
+  // Check if it's morning (before noon)
+  const isMorning = useMemo(() => {
+    const currentHour = new Date().getHours();
+    return currentHour < 12;
+  }, []);
 
   const highPriorityItems = useMemo(() => 
     roadmapItems.filter(item => item.priority === "high"), 
@@ -56,6 +64,14 @@ const Roadmap = () => {
     <Layout>
       <div className="container py-8 space-y-8">
         <RoadmapHeader />
+        
+        {/* Show the Morning Priority Tasks component if it's morning */}
+        {isMorning && (
+          <div className="animate-in slide-in-from-bottom fade-in duration-700">
+            <MorningPriorityTasks />
+          </div>
+        )}
+        
         <BetaLaunchProgress />
         
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -95,7 +111,7 @@ const Roadmap = () => {
             <TabsTrigger value="pending">Pending</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="high-priority" className="mt-0">
+          <TabsContent value="high-priority" className="mt-0" id="high-priority-tasks">
             <PriorityTaskFilter 
               activeCategory={activeCategory} 
               onCategoryChange={setActiveCategory}
