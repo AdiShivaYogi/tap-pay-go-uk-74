@@ -7,7 +7,6 @@ import { Eye, EyeOff } from "lucide-react";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
 import { LoadingIndicator } from "./LoadingIndicator";
 import { formSchema } from "./auth-validation";
 
@@ -40,9 +39,17 @@ export const AuthForm = ({
     setShowPassword(!showPassword);
   };
 
+  const handleFormSubmit = async (values: FormValues) => {
+    try {
+      await onSubmit(values);
+    } catch (error) {
+      console.error("Form submission error:", error);
+    }
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="email"

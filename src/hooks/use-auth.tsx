@@ -8,5 +8,13 @@ export const useAuth = () => {
   if (context === undefined) {
     throw new Error('useAuth trebuie folosit în interiorul unui AuthProvider');
   }
+  
+  // Log authentication context for debugging
+  console.log('Auth context:', {
+    isAuthenticated: !!context.user,
+    user: context.user,
+    loading: context.loading
+  });
+  
   return context;
 };

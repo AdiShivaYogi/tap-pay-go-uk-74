@@ -73,11 +73,11 @@ const UserAuth = () => {
 
       if (isLoginMode) {
         try {
-          // Utilizăm signIn din AuthProvider pentru a gestiona starea autentificării
+          // Use signIn from AuthProvider to handle authentication
           await signIn(email, password);
           
-          // Redirecționarea se face în AuthProvider după autentificare reușită
-          navigate("/roadmap");
+          console.log("Authentication successful");
+          // Redirect handled in the authStateChange listener
         } catch (error: any) {
           console.error("Eroare la autentificare:", error);
           toast({
@@ -123,7 +123,7 @@ const UserAuth = () => {
       }
 
       if (data.user) {
-        // Autentificare directă după înregistrare
+        // Sign in after registration
         const { error: signInError } = await supabase.auth.signInWithPassword({ 
           email, 
           password 

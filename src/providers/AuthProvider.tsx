@@ -23,8 +23,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             
             if (session) {
               // Verificăm dacă utilizatorul este admin@example.com sau are metadate specifice
-              if (session.user.email === 'admin@example.com' || 
-                  (session.user.user_metadata && session.user.user_metadata.role === 'admin')) {
+              const isAdmin = 
+                session.user.email === 'admin@example.com' || 
+                (session.user.user_metadata && session.user.user_metadata.role === 'admin');
+              
+              console.log('User info:', {
+                email: session.user.email,
+                metadata: session.user.user_metadata,
+                isAdmin: isAdmin
+              });
+              
+              if (isAdmin) {
                 setUser({
                   id: session.user.id,
                   email: session.user.email,
@@ -32,12 +41,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                   stripeAccountId: 'demo-account-id',
                   role: 'admin'
                 });
+                console.log('Admin user detected and set');
               } else {
                 setUser({
                   id: session.user.id,
                   email: session.user.email,
-                  stripeConnected: false
+                  stripeConnected: false,
+                  role: 'user'
                 });
+                console.log('Regular user set');
               }
               
               if (event === 'SIGNED_IN') {
@@ -48,6 +60,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               }
             } else {
               setUser(null);
+              console.log('No session found, user set to null');
             }
             setLoading(false);
           }
@@ -57,8 +70,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const { data: { session } } = await supabase.auth.getSession();
         
         if (session) {
-          if (session.user.email === 'admin@example.com' || 
-              (session.user.user_metadata && session.user.user_metadata.role === 'admin')) {
+          const isAdmin = 
+            session.user.email === 'admin@example.com' || 
+            (session.user.user_metadata && session.user.user_metadata.role === 'admin');
+            
+          console.log('Initial session check:', {
+            email: session.user.email,
+            metadata: session.user.user_metadata,
+            isAdmin: isAdmin
+          });
+            
+          if (isAdmin) {
             setUser({
               id: session.user.id,
               email: session.user.email,
@@ -66,15 +88,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               stripeAccountId: 'demo-account-id',
               role: 'admin'
             });
+            console.log('Initial admin user set');
           } else {
             setUser({
               id: session.user.id,
               email: session.user.email,
-              stripeConnected: false
+              stripeConnected: false,
+              role: 'user'
             });
+            console.log('Initial regular user set');
           }
         } else {
           setUser(null);
+          console.log('No initial session found');
         }
         
         setLoading(false);
@@ -95,7 +121,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signIn = async (email: string, password: string) => {
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signInWithPassword({ 
+      console.log('Attempting to sign in with email:', email);
+      
+      const { data, error } = await supabase.auth.signInWithPassword({ 
         email, 
         password 
       });
@@ -105,6 +133,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         throw error;
       }
 
+      console.log('Sign in successful, data:', data);
       // Toast-ul va fi afișat de listener-ul onAuthStateChange
     } catch (error) {
       console.error('Eroare la autentificare:', error);
