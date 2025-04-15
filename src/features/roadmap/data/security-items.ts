@@ -44,5 +44,26 @@ export const securityItems: RoadmapItem[] = [
       "Monitorizare și alertare pentru evenimente de securitate",
       "Conformitate cu standardele de securitate cloud"
     ]
+  },
+  {
+    title: "Îmbunătățiri Securitate Internă",
+    description: "Consolidarea măsurilor de securitate pentru date sensibile",
+    status: "in-progress",
+    priority: "high",
+    category: "security",
+    iconType: "shield",
+    iconColor: "text-red-500",
+    timeEstimate: {
+      total: 40,
+      spent: 10,
+      aiTotal: 25
+    },
+    details: [
+      "Implementare criptare end-to-end pentru date utilizator",
+      "Consolidare politici de acces și autorizare",
+      "Auditare și logging avansate",
+      "Scanări automate de vulnerabilități",
+      "Exerciții de penetration testing"
+    ]
   }
 ];
