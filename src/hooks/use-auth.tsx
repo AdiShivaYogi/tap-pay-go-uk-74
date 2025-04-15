@@ -34,18 +34,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         
         // Setăm userul dacă există o sesiune activă
         if (session) {
-          const { data: profileData } = await supabase
-            .from('profiles')
-            .select('stripe_connected, stripe_account_id')
-            .eq('id', session.user.id)
-            .single();
-            
-          setUser({
-            id: session.user.id,
-            email: session.user.email,
-            stripeConnected: profileData?.stripe_connected || false,
-            stripeAccountId: profileData?.stripe_account_id
-          });
+          // Pentru demo, setăm un utilizator hardcodat
+          if (session.user.email === 'admin@example.com') {
+            setUser({
+              id: session.user.id,
+              email: session.user.email,
+              stripeConnected: true,
+              stripeAccountId: 'demo-account-id'
+            });
+          } else {
+            setUser({
+              id: session.user.id,
+              email: session.user.email,
+              stripeConnected: false
+            });
+          }
         } else {
           setUser(null);
         }
@@ -66,21 +69,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.log('Auth state changed:', event);
         
         if (session) {
-          try {
-            const { data: profileData } = await supabase
-              .from('profiles')
-              .select('stripe_connected, stripe_account_id')
-              .eq('id', session.user.id)
-              .single();
-              
+          // Pentru demo, setăm un utilizator hardcodat
+          if (session.user.email === 'admin@example.com') {
             setUser({
               id: session.user.id,
               email: session.user.email,
-              stripeConnected: profileData?.stripe_connected || false,
-              stripeAccountId: profileData?.stripe_account_id
+              stripeConnected: true,
+              stripeAccountId: 'demo-account-id'
             });
-          } catch (error) {
-            console.error('Eroare la obținerea datelor de profil:', error);
+          } else {
             setUser({
               id: session.user.id,
               email: session.user.email,
@@ -159,16 +156,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setLoading(true);
       if (!user) throw new Error('Utilizatorul nu este autentificat');
       
-      const { error } = await supabase
-        .from('profiles')
-        .update({
-          stripe_connected: true,
-          stripe_account_id: accountId
-        })
-        .eq('id', user.id);
-      
-      if (error) throw error;
-      
+      // Pentru demo, doar actualizăm starea locală
       setUser({
         ...user,
         stripeConnected: true,
@@ -197,16 +185,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setLoading(true);
       if (!user) throw new Error('Utilizatorul nu este autentificat');
       
-      const { error } = await supabase
-        .from('profiles')
-        .update({
-          stripe_connected: false,
-          stripe_account_id: null
-        })
-        .eq('id', user.id);
-      
-      if (error) throw error;
-      
+      // Pentru demo, doar actualizăm starea locală
       setUser({
         ...user,
         stripeConnected: false,

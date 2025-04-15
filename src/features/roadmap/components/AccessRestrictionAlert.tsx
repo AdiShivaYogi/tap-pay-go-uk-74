@@ -23,7 +23,7 @@ export const AccessRestrictionAlert = ({ role }: AccessRestrictionAlertProps) =>
             <Link to="/">Înapoi la Pagina Principală</Link>
           </Button>
           <Button asChild>
-            <Link to="/admin-auth">Autentificare administrator</Link>
+            <Link to="/auth">Autentificare</Link>
           </Button>
         </div>
       </AlertDescription>

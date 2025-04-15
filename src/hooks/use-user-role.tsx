@@ -13,14 +13,14 @@ export const useUserRole = () => {
     queryFn: async (): Promise<UserRole> => {
       if (!user?.id) return 'user';
 
-      // Pentru demo, returnăm direct 'admin' pentru utilizatorul demo
-      if (user.id === 'demo-user-id') {
-        console.log('Demo user detected, returning admin role');
+      // Pentru demo, considerăm admin orice utilizator cu email admin@example.com
+      if (user.email === 'admin@example.com') {
+        console.log('Admin user detected');
         return 'admin';
       }
 
       try {
-        // Verificăm rolul de admin
+        // Pentru utilizare reală, verificăm rolul din baza de date
         const { data: isAdmin, error: adminError } = await supabase
           .rpc('user_has_role', { _role: 'admin' as const });
 
