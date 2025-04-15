@@ -20,7 +20,7 @@ export const useUserRole = () => {
       }
 
       // Verificăm adresa de email pentru super admin
-      if (user.email === 'admin@example.com') {
+      if (user.email === '114.adrian.gheorghe@gmail.com') {
         console.log('Super admin user detected by email');
         return 'admin';
       }
