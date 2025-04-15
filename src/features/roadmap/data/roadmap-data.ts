@@ -12,8 +12,19 @@ import { integrationItems } from "./categories/integration-items";
 import { localizationItems } from "./categories/localization-items";
 import { partnershipItems } from "./categories/partnership-items";
 
+// Function to remove duplicates based on title
+const removeDuplicates = (items: RoadmapItem[]) => {
+  const uniqueItems = new Map<string, RoadmapItem>();
+  items.forEach(item => {
+    if (!uniqueItems.has(item.title)) {
+      uniqueItems.set(item.title, item);
+    }
+  });
+  return Array.from(uniqueItems.values());
+};
+
 // Combine all roadmap items into a single array, prioritizing UK and Stripe compliance items
-export const roadmapItems: RoadmapItem[] = [
+export const roadmapItems: RoadmapItem[] = removeDuplicates([
   ...securityItems,           // Security first - critical for UK/Stripe compliance
   ...infrastructureItems,     // Infrastructure foundation
   ...completedRoadmapItems,   // Completed features
@@ -25,4 +36,5 @@ export const roadmapItems: RoadmapItem[] = [
   ...integrationItems,       // Integration features
   ...localizationItems,      // Localization features
   ...partnershipItems        // Partnership features
-];
+]);
+
