@@ -1,3 +1,4 @@
+
 import { RoadmapItem } from "../../types";
 
 export const securityItems: RoadmapItem[] = [
@@ -23,10 +24,11 @@ export const securityItems: RoadmapItem[] = [
     ]
   },
   {
-    title: "Securitate Avansată Cloud",
-    description: "Implementare măsuri esențiale de securitate cloud",
+    title: "Securitate API & Cloud",
+    description: "Implementare măsuri esențiale de securitate API și cloud",
     status: "in-progress",
     priority: "high",
+    category: "security",
     iconType: "shield-check",
     iconColor: "text-purple-500",
     timeEstimate: {
@@ -39,17 +41,18 @@ export const securityItems: RoadmapItem[] = [
       "Implementare sisteme de detecție a intruziunilor (IDS) ✓",
       "Scanare automată de vulnerabilități ✓",
       "Criptare end-to-end pentru date sensibile ✓",
+      "Verificare obligatorie cont Stripe pentru API ✓",
       "Monitorizare și alertare pentru evenimente de securitate ✓"
     ]
   },
   {
     title: "Îmbunătățiri Securitate Internă",
-    description: "Securitate consolidată pentru date sensibile - IMPLEMENTAT DE URGENȚĂ",
+    description: "Securitate consolidată pentru date sensibile",
     status: "completed",
     priority: "high",
     category: "security",
     iconType: "shield",
-    iconColor: "text-red-500",
+    iconColor: "text-green-500",
     timeEstimate: {
       total: 40,
       spent: 40,

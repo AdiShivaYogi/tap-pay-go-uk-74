@@ -1,3 +1,4 @@
+
 import { RoadmapItem } from "../../types";
 
 export const inProgressRoadmapItems: RoadmapItem[] = [
@@ -6,39 +7,42 @@ export const inProgressRoadmapItems: RoadmapItem[] = [
     description: "Consolidarea securității serverelor și a datelor",
     status: "in-progress",
     priority: "high",
-    iconType: "security",
+    iconType: "shield",
     iconColor: "text-green-500",
     timeEstimate: {
       total: 40,
-      spent: 25,
+      spent: 35,
       aiTotal: 20
     },
     details: [
-      "Implementare autentificare multi-factor (MFA)",
-      "Audit de securitate complet al codului sursă",
-      "Actualizarea dependențelor la cele mai recente versiuni",
-      "Monitorizare continuă a vulnerabilităților",
-      "Îmbunătățirea politicilor de acces și a permisiunilor"
+      "Implementare autentificare multi-factor (MFA) ✓",
+      "Audit de securitate complet al codului sursă ✓",
+      "Actualizarea dependențelor la cele mai recente versiuni ✓",
+      "Monitorizare continuă a vulnerabilităților ✓",
+      "Îmbunătățirea politicilor de acces și a permisiunilor ✓",
+      "Verificare obligatorie cont Stripe pentru API ✓",
+      "Implementare rate limiting și protecție API"
     ]
   },
   {
     title: "Documentație API Publică",
     description: "Crearea documentației detaliate pentru API",
     status: "in-progress",
-    priority: "medium",
-    iconType: "documentation",
+    priority: "high",
+    iconType: "file-code-2",
     iconColor: "text-blue-500",
     timeEstimate: {
       total: 32,
-      spent: 18,
+      spent: 28,
       aiTotal: 15
     },
     details: [
-      "Generarea documentației folosind instrumente automate",
-      "Exemple de utilizare pentru fiecare endpoint",
-      "Ghiduri detaliate pentru autentificare și autorizare",
-      "Secțiuni dedicate pentru erori și depanare",
-      "Actualizarea continuă a documentației"
+      "Generarea documentației folosind instrumente automate ✓",
+      "Exemple de utilizare pentru fiecare endpoint ✓",
+      "Ghiduri detaliate pentru autentificare și autorizare ✓",
+      "Documentație transparentă cerințe de securitate ✓",
+      "Actualizare documentație cu cerințe Stripe ✓",
+      "Secțiuni dedicate pentru erori și depanare"
     ]
   },
   {
@@ -46,7 +50,7 @@ export const inProgressRoadmapItems: RoadmapItem[] = [
     description: "Adăugarea funcționalității de chat live pentru suport clienți",
     status: "in-progress",
     priority: "medium",
-    iconType: "communication",
+    iconType: "messages-square",
     iconColor: "text-purple-500",
     timeEstimate: {
       total: 24,
