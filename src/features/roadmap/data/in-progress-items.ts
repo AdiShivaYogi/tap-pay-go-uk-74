@@ -82,63 +82,72 @@ export const inProgressRoadmapItems: RoadmapItem[] = [
     ]
   },
   {
-    title: "Infrastructură Redundantă",
-    description: "Asigurarea disponibilității continue a serviciului",
+    title: "Infrastructură Redundantă Avansată",
+    description: "Strategie completă de disponibilitate și reziliență",
     status: "in-progress",
     priority: "high",
     iconType: "server-cog",
     iconColor: "text-red-500",
     timeEstimate: {
-      total: 24,
-      spent: 12,
-      aiTotal: 16
-    },
-    details: [
-      "Arhitectură multi-regiune pentru disponibilitate ridicată ✓",
-      "Backup automat și recuperare în caz de dezastru ✓",
-      "Failover automatizat pentru servicii critice ✓",
-      "Monitorizare avansată și alertare în timp real ✓",
-      "Documentare completă a proceselor de recuperare după dezastre"
-    ]
-  },
-  {
-    title: "Centru de Date Secundar",
-    description: "Implementare infrastructură redundantă completă",
-    status: "in-progress",
-    priority: "high",
-    iconType: "database",
-    iconColor: "text-blue-500",
-    timeEstimate: {
-      total: 30,
+      total: 40,
       spent: 15,
       aiTotal: 25
     },
     details: [
-      "Configurare centru de date secundar activ-pasiv ✓",
-      "Replicare continuă a datelor între centre ✓",
-      "Balansare automată a traficului în caz de avarie",
-      "Sistem de monitorizare unificat pentru ambele centre ✓",
-      "Testare completă a procedurilor de switching între centre"
+      "Arhitectură multi-regiune cu toleranță la defecțiuni ✓",
+      "Implementare cluster Kubernetes cu auto-scaling ✓", 
+      "Configurare mecanisme de failover automat ✓",
+      "Strategie de backup și recuperare în 3 etape",
+      "Monitorizare avansată cu detecție proactivă a problemelor",
+      "Plan de recuperare în dezastre cu timp de indisponibilitate < 5 minute",
+      "Implementare filtre de securitate la nivel de rețea",
+      "Teste periodice de rezistență și recuperare"
     ]
   },
   {
-    title: "Optimizare Infrastructură Cloud",
-    description: "Îmbunătățirea performanței și scalabilității",
-    status: "in-progress",
+    title: "Centru de Date Redundant",
+    description: "Infrastructură cloud distribuită și securizată",
+    status: "in-progress", 
     priority: "high",
     iconType: "cloud-cog",
-    iconColor: "text-green-500",
+    iconColor: "text-blue-500", 
     timeEstimate: {
-      total: 20,
-      spent: 8,
-      aiTotal: 15
+      total: 50,
+      spent: 20,
+      aiTotal: 30
     },
     details: [
-      "Implementare auto-scaling pentru resurse cloud ✓",
-      "Optimizare costuri și utilizare resurse",
-      "Configurare CDN pentru livrare conținut global",
-      "Implementare caching distribuit",
-      "Monitorizare și optimizare continuă a performanței"
+      "Configurare centru de date secundar activ-activ ✓",
+      "Replicare geografică a datelor în timp real ✓",
+      "Implementare balansare inteligentă a traficului", 
+      "Sistem de monitorizare unificat cu alertare automată",
+      "Mecanisme avansate de securitate între centre de date",
+      "Optimizare costuri prin resurse cloud dinamice",
+      "Plan de tranziție și migrare între centre de date",
+      "Testare continuă a scenariilor de dezastre"
+    ]
+  },
+  {
+    title: "Optimizare și Monitorizare Cloud",
+    description: "Îmbunătățirea performanței și controlului infrastructurii",
+    status: "in-progress",
+    priority: "high", 
+    iconType: "network",
+    iconColor: "text-green-500",
+    timeEstimate: {
+      total: 35,
+      spent: 12,
+      aiTotal: 20
+    },
+    details: [
+      "Implementare monitorizare comprehensivă ✓",
+      "Configurare metrici detaliate de performanță",
+      "Implementare sisteme de auto-scaling inteligente",
+      "Optimizare costuri și utilizare resurse cloud",
+      "Configurare CDN global cu strategie de caching",
+      "Audit și optimizare continuă a infrastructurii",
+      "Implementare politici de securitate cloud",
+      "Raportare automată a performanței și costurilor"
     ]
   }
 ];
