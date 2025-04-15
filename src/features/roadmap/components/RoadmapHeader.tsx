@@ -1,5 +1,5 @@
 
-import { Compass, ChevronRight, Star, BarChart2, Shield } from "lucide-react";
+import { Compass, ChevronRight, Star, BarChart2, Shield, AlertTriangle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { roadmapItems } from "../data/roadmap-data";
 import { calculateSecurityScore, getSecurityDetails, getSecurityCriteria } from "@/utils/security-score";
@@ -14,6 +14,14 @@ export const RoadmapHeader = () => {
   const securityCriteria = getSecurityCriteria();
   const securityScore = calculateSecurityScore(securityCriteria);
   const securityDetails = getSecurityDetails();
+  
+  // Calculate high priority task metrics
+  const highPriorityItems = roadmapItems.filter(item => item.priority === "high");
+  const totalHighPriority = highPriorityItems.length;
+  const completedHighPriority = highPriorityItems.filter(item => item.status === "completed").length;
+  const highPriorityPercentage = totalHighPriority > 0 
+    ? Math.round((completedHighPriority / totalHighPriority) * 100) 
+    : 100;
   
   return (
     <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg p-6 mb-8 space-y-6">
@@ -73,6 +81,20 @@ export const RoadmapHeader = () => {
             </div>
           ))}
         </div>
+        
+        {/* High Priority Tasks Progress */}
+        <div className="flex justify-between items-center mt-6">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5 text-amber-500" />
+            <span className="font-medium">High Priority Tasks</span>
+          </div>
+          <span className="text-lg font-bold text-amber-500">{completedHighPriority}/{totalHighPriority} ({highPriorityPercentage}%)</span>
+        </div>
+        
+        <Progress 
+          value={highPriorityPercentage} 
+          className={cn("h-2 bg-amber-100", "data-[value]:bg-amber-500")}
+        />
       </div>
     </div>
   );
