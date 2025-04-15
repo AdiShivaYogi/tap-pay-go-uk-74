@@ -1,6 +1,6 @@
 
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 
@@ -11,6 +11,8 @@ interface AuthRedirectHandlerProps {
 
 export const AuthRedirectHandler = ({ locationHash, setIsLoading }: AuthRedirectHandlerProps) => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const resetRequested = searchParams.get("reset") === "true";
 
   useEffect(() => {
     const handleAuthRedirect = async () => {
@@ -18,10 +20,32 @@ export const AuthRedirectHandler = ({ locationHash, setIsLoading }: AuthRedirect
         setIsLoading(true);
         
         try {
-          const { data, error } = await supabase.auth.getSession();
-          
+          // Check for error parameters in the hash
+          const hashParams = new URLSearchParams(locationHash.substring(1));
+          const error = hashParams.get("error");
+          const errorCode = hashParams.get("error_code");
+          const errorDescription = hashParams.get("error_description");
+
           if (error) {
-            throw error;
+            // Handle known error types
+            if (errorCode === "otp_expired") {
+              toast({
+                title: "Link expirat",
+                description: "Linkul de resetare a parolei a expirat. Vă rugăm să solicitați un nou link.",
+                variant: "destructive",
+              });
+              navigate("/auth", { replace: true });
+              return;
+            } else {
+              throw new Error(errorDescription || "Eroare la procesarea autentificării");
+            }
+          }
+          
+          // No error, proceed with session check
+          const { data, error: sessionError } = await supabase.auth.getSession();
+          
+          if (sessionError) {
+            throw sessionError;
           }
           
           if (data?.session) {
