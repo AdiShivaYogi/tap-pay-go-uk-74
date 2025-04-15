@@ -5,8 +5,8 @@ import { CircleCheck, Database, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const BackupProgress = () => {
-  const backupProgress: number = 95; // Explicitly typed as number
-  const isBackupComplete: boolean = backupProgress >= 100; // Use >= to handle cases near 100%
+  const backupProgress: number = 100; // Updated to 100%
+  const isBackupComplete: boolean = backupProgress >= 100;
 
   return (
     <Card className="border-2 border-primary/10 mb-4">
@@ -45,4 +45,3 @@ export const BackupProgress = () => {
     </Card>
   );
 };
-
