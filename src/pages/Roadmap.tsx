@@ -1,3 +1,4 @@
+
 import { Layout } from "@/components/layout/layout";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -7,17 +8,22 @@ import { roadmapItems } from "@/features/roadmap/data/roadmap-data";
 import { useUserRole } from "@/hooks/use-user-role";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { LockIcon, Compass, ChevronRight, ShieldCheck, Star, Zap } from "lucide-react";
+import { LockIcon, Compass, ChevronRight, ShieldCheck, Star, Zap, AlertTriangle } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { calculateSecurityScore, getSecurityCriteria, getSecurityDetails, SecurityCriteriaReporter } from "@/utils/security-score";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 const Roadmap = () => {
   const { isAdmin, role } = useUserRole();
   const securityScore = calculateSecurityScore(getSecurityCriteria());
   const securityDetails = getSecurityDetails();
   const criteriaUpdates = SecurityCriteriaReporter.getCurrentDetails();
+  const [activeTab, setActiveTab] = useState("all");
+
+  // Filtered high priority items across all status categories
+  const highPriorityItems = roadmapItems.filter(item => item.priority === "high");
 
   if (!isAdmin) {
     return (
@@ -67,6 +73,28 @@ const Roadmap = () => {
         </div>
 
         <RoadmapProgress />
+
+        {/* High Priority Alert */}
+        {highPriorityItems.length > 0 && (
+          <Alert className="border-amber-500/50 bg-amber-500/5 animate-in slide-in-from-bottom">
+            <AlertTitle className="text-amber-500 font-bold text-lg flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5" />
+              Taskuri Prioritare
+            </AlertTitle>
+            <AlertDescription>
+              <p className="mt-2 text-foreground/90 leading-relaxed mb-2">
+                Avem {highPriorityItems.length} taskuri cu prioritate înaltă care necesită atenție. 
+                Folosiți tab-ul "Priorități Înalte" pentru a vizualiza și gestiona aceste taskuri.
+              </p>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <div className="w-2 h-2 rounded-full bg-amber-500"></div>
+                <span>{highPriorityItems.filter(item => item.status === "in-progress").length} în lucru</span>
+                <div className="w-2 h-2 rounded-full bg-red-500 ml-4"></div>
+                <span>{highPriorityItems.filter(item => item.status === "pending").length} în așteptare</span>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
 
         <Alert className="mb-8 border-primary/50 bg-primary/5 animate-in slide-in-from-bottom">
           <AlertTitle className="text-primary font-bold text-lg flex items-center gap-2">
@@ -121,13 +149,24 @@ const Roadmap = () => {
 
         <Separator className="my-8" />
 
-        <Tabs defaultValue="all" className="mb-8">
-          <TabsList className="grid w-full grid-cols-4 mb-6">
+        <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab} className="mb-8">
+          <TabsList className="grid w-full grid-cols-5 mb-6">
             <TabsTrigger value="all">Toate</TabsTrigger>
+            <TabsTrigger value="high-priority" className="bg-amber-500/10 hover:bg-amber-500/20 data-[state=active]:bg-amber-500/20">
+              Priorități Înalte
+            </TabsTrigger>
             <TabsTrigger value="completed">Completate</TabsTrigger>
             <TabsTrigger value="in-progress">În Lucru</TabsTrigger>
             <TabsTrigger value="pending">În Așteptare</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="high-priority" className="mt-0">
+            <div className="grid gap-6 md:grid-cols-2">
+              {highPriorityItems.map((item, index) => (
+                <RoadmapCard key={index} item={item} />
+              ))}
+            </div>
+          </TabsContent>
 
           {["all", "completed", "in-progress", "pending"].map((tabValue) => (
             <TabsContent key={tabValue} value={tabValue} className="mt-0">
