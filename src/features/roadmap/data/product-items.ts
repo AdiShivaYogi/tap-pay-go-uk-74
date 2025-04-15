@@ -1,3 +1,4 @@
+
 import { RoadmapItem } from "../types";
 
 export const productItems: RoadmapItem[] = [
@@ -41,27 +42,6 @@ export const productItems: RoadmapItem[] = [
       "Fluxuri de plată adaptate pentru touch",
       "Testare pe multiple dispozitive și browsere",
       "Animații și tranziții optimizate pentru mobile"
-    ]
-  },
-  {
-    title: "Pregătire Integrări Viitoare",
-    description: "Pregătirea infrastructurii pentru API și integrări terțe",
-    status: "in-progress",
-    priority: "high",
-    category: "infrastructure",
-    iconType: "webhook",
-    iconColor: "text-purple-500",
-    timeEstimate: {
-      total: 25,
-      spent: 5,
-      aiTotal: 15
-    },
-    details: [
-      "Definirea structurii de API și endpoints",
-      "Implementarea autentificării OAuth",
-      "Crearea documentației pentru dezvoltatori",
-      "Dezvoltarea unui mediu sandbox pentru teste",
-      "Configurarea rate limiting și protecție API"
     ]
   },
   {
@@ -128,3 +108,4 @@ export const productItems: RoadmapItem[] = [
     ]
   }
 ];
+
