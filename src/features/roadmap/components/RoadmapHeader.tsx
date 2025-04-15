@@ -1,8 +1,7 @@
-
 import { Compass, ChevronRight, Star, BarChart2, Shield, AlertTriangle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { roadmapItems } from "../data/roadmap-data";
-import { calculateSecurityScore, getSecurityDetails, getSecurityCriteria } from "@/utils/security-score";
+import { calculateSecurityScore, getSecurityCriteria, getSecurityDetails } from "@/utils/security-score";
 import { cn } from "@/lib/utils";
 
 export const RoadmapHeader = () => {
@@ -10,6 +9,11 @@ export const RoadmapHeader = () => {
   const completedItems = roadmapItems.filter(item => item.status === "completed").length;
   const completionPercentage = Math.round((completedItems / totalItems) * 100);
   
+  // Debug log
+  console.log('Total Items:', totalItems);
+  console.log('Completed Items:', completedItems);
+  console.log('Completion Percentage:', completionPercentage);
+
   // Calculate security score
   const securityCriteria = getSecurityCriteria();
   const securityScore = calculateSecurityScore(securityCriteria);
