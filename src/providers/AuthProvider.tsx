@@ -1,4 +1,3 @@
-
 import { createContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -118,12 +117,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     checkSession();
   }, []);
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (email: string, password: string): Promise<void> => {
     try {
       setLoading(true);
       console.log('Attempting to sign in with email:', email);
       
-      const { data, error } = await supabase.auth.signInWithPassword({ 
+      const { error } = await supabase.auth.signInWithPassword({ 
         email, 
         password 
       });
@@ -132,8 +131,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.error('Eroare la autentificare:', error.message);
         throw error;
       }
-
-      return { data, error: null };
     } catch (error) {
       console.error('Eroare la autentificare:', error);
       throw error;

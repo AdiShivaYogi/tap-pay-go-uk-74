@@ -25,15 +25,12 @@ export const RoadmapCard = ({ item }: RoadmapCardProps) => {
     }
   };
 
-  // Debug item
-  console.log("Rendering item:", item);
-
   return (
     <Card className={cn(
-      "hover:shadow-lg transition-all duration-300 bg-gradient-to-br",
+      "hover:shadow-md transition-all duration-300 bg-gradient-to-br",
       getCategoryColor(item.category),
-      isHighPriority && !isCompleted && "ring-2 ring-primary/20",
-      isCompleted && "opacity-90"
+      isHighPriority && !isCompleted && "ring-1 ring-primary/20",
+      isCompleted && "opacity-95"
     )}>
       <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
         <div className="space-y-2">
@@ -42,17 +39,17 @@ export const RoadmapCard = ({ item }: RoadmapCardProps) => {
               <RoadmapIcon type={item.iconType} className="h-5 w-5" color={item.iconColor || "text-primary"} />
             </span>
           )}
-          <CardTitle className="text-xl font-bold flex items-center gap-2 mt-2">
+          <CardTitle className="text-lg font-bold flex items-center gap-2 mt-2">
             {item.title}
             {isHighPriority && !isCompleted && (
-              <AlertTriangle className="h-4 w-4 text-amber-500 animate-pulse" />
+              <AlertTriangle className="h-4 w-4 text-amber-500" />
             )}
           </CardTitle>
         </div>
         {getStatusIcon(item.status)}
       </CardHeader>
       
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3 pt-2">
         <CardDescription className="text-sm">
           {item.description}
         </CardDescription>
@@ -62,7 +59,7 @@ export const RoadmapCard = ({ item }: RoadmapCardProps) => {
           {getPriorityBadge(item.priority)}
         </div>
 
-        <ul className="space-y-2">
+        <ul className="space-y-1">
           {item.details && item.details.map((detail, idx) => (
             <li key={idx} className="flex items-start gap-2 text-sm">
               <span className={cn(

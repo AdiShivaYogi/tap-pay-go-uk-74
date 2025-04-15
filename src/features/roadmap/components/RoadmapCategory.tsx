@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 
 interface RoadmapCategoryProps {
   title: string;
-  categories: Category[];
+  categories: string[];
 }
 
 export const RoadmapCategory: React.FC<RoadmapCategoryProps> = ({ 
@@ -19,20 +19,18 @@ export const RoadmapCategory: React.FC<RoadmapCategoryProps> = ({
   const { expandedCategories, toggleCategory } = useRoadmapContext();
   const isExpanded = expandedCategories.includes(title);
 
+  // Filter items that belong to any of the specified categories
   const categoryItems = roadmapItems.filter(item => 
-    categories.includes(item.category as Category)
+    item.category && categories.includes(item.category as Category)
   );
 
-  // Debugging category items
-  console.log(`${title} items:`, categoryItems);
-  console.log(`${title} filtered from categories:`, categories);
-
+  // Calculate progress stats
   const completedItems = categoryItems.filter(item => item.status === "completed").length;
   const totalItems = categoryItems.length;
   const progress = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
 
   return (
-    <div className="bg-card rounded-lg border border-border">
+    <div className="bg-card rounded-lg border border-border shadow-sm">
       <button
         onClick={() => toggleCategory(title)}
         className="w-full px-6 py-4 flex items-center justify-between hover:bg-accent/50 transition-colors"

@@ -20,6 +20,21 @@ const Roadmap = () => {
     );
   }
 
+  const categoryGroups = [
+    {
+      title: "Securitate și Infrastructură",
+      categories: ["security", "infrastructure"]
+    },
+    {
+      title: "DevOps și Monitorizare",
+      categories: ["devops"]
+    },
+    {
+      title: "Dezvoltare Produs",
+      categories: ["product"]
+    }
+  ];
+
   return (
     <Layout>
       <ScrollArea className="h-[calc(100vh-4rem)]">
@@ -29,18 +44,13 @@ const Roadmap = () => {
             <RoadmapContextProvider>
               <RoadmapProgress />
               <div className="mt-8 space-y-6">
-                <RoadmapCategory 
-                  title="Securitate și Infrastructură" 
-                  categories={["security", "infrastructure"]} 
-                />
-                <RoadmapCategory 
-                  title="DevOps și Monitorizare" 
-                  categories={["devops"]} 
-                />
-                <RoadmapCategory 
-                  title="Dezvoltare Produs" 
-                  categories={["product"]} 
-                />
+                {categoryGroups.map((group, index) => (
+                  <RoadmapCategory
+                    key={index}
+                    title={group.title}
+                    categories={group.categories}
+                  />
+                ))}
               </div>
               <div className="mt-8">
                 <h2 className="text-2xl font-semibold mb-4">MVP Roadmap</h2>
