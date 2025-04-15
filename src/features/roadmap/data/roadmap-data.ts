@@ -1,29 +1,13 @@
 
 import { RoadmapItem } from "../types";
-import { 
-  infrastructureItems 
-} from "./infrastructure-items";
-import { 
-  securityItems 
-} from "./security-items";
-import { 
-  devopsItems 
-} from "./devops-items";
-import { 
-  monitoringItems 
-} from "./monitoring-items";
-import { 
-  productItems 
-} from "./product-items";
-import { 
-  completedRoadmapItems 
-} from "./completed-items";
-import { 
-  inProgressRoadmapItems 
-} from "./in-progress-items";
-import { 
-  pendingRoadmapItems 
-} from "./pending-items";
+import { completedRoadmapItems } from "./status/completed-items";
+import { inProgressRoadmapItems } from "./status/in-progress-items";
+import { pendingRoadmapItems } from "./status/pending-items";
+import { securityItems } from "./categories/security-items";
+import { infrastructureItems } from "./categories/infrastructure-items";
+import { devopsItems } from "./categories/devops-items";
+import { monitoringItems } from "./categories/monitoring-items";
+import { productItems } from "./categories/product-items";
 
 // Combine all roadmap items into a single array
 export const roadmapItems: RoadmapItem[] = [
@@ -32,7 +16,7 @@ export const roadmapItems: RoadmapItem[] = [
   ...pendingRoadmapItems,
   ...securityItems,
   ...infrastructureItems,
-  ...devopsItems, 
+  ...devopsItems,
   ...monitoringItems,
   ...productItems
 ];
