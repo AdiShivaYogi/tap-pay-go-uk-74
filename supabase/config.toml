@@ -1,3 +1,10 @@
 
+project_id = "utraomhphgnnrpyfwwla"
+
 [functions.set-deepl-key]
 verify_jwt = true
+
+[functions.create-payment]
+
+[functions.stripe-webhook]
+verify_jwt = false

@@ -31,25 +31,45 @@ serve(async (req) => {
       });
     }
 
-    // Store the DeepL API key as a secret
-    const { error } = await supabaseClient.functions.setSecret('DEEPL_API_KEY', key);
+    console.log('Attempting to save DeepL API key...');
 
-    if (error) {
-      console.error('Error setting DeepL API key:', error);
-      return new Response(JSON.stringify({ error: 'Failed to save API key' }), {
+    try {
+      // Store the DeepL API key as a secret
+      const { error } = await supabaseClient.functions.setSecret('DEEPL_API_KEY', key);
+
+      if (error) {
+        console.error('Error setting DeepL API key:', error);
+        return new Response(JSON.stringify({ 
+          error: 'Failed to save API key', 
+          details: error.message || 'Unknown error' 
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 500
+        });
+      }
+
+      console.log('DeepL API key saved successfully');
+      return new Response(JSON.stringify({ message: 'API key saved successfully' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200
+      });
+    } catch (setSecretErr) {
+      console.error('Error in setSecret operation:', setSecretErr);
+      return new Response(JSON.stringify({ 
+        error: 'Exception occurred while saving API key', 
+        details: setSecretErr.message || 'Unknown error during setSecret' 
+      }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 500
       });
     }
 
-    return new Response(JSON.stringify({ message: 'API key saved successfully' }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 200
-    });
-
   } catch (err) {
     console.error('Unexpected error:', err);
-    return new Response(JSON.stringify({ error: 'Internal server error' }), {
+    return new Response(JSON.stringify({ 
+      error: 'Internal server error', 
+      details: err.message || 'Unknown error' 
+    }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 500
     });
