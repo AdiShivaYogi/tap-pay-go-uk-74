@@ -1,5 +1,5 @@
 
-import { RoadmapItem } from "../types";
+import { RoadmapItem } from "../../types";
 import { securityItems } from "../categories/security-items";
 import { monitoringItems } from "../categories/monitoring-items";
 import { productItems } from "../categories/product-items";
