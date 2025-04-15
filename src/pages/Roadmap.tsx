@@ -1,4 +1,3 @@
-
 import { Layout } from "@/components/layout/layout";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,12 +7,13 @@ import { roadmapItems } from "@/features/roadmap/data/roadmap-data";
 import { useUserRole } from "@/hooks/use-user-role";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { LockIcon, Compass, ChevronRight, ShieldCheck, Star, Zap, AlertTriangle } from "lucide-react";
+import { LockIcon, Compass, ChevronRight, ShieldCheck, Star, Zap, AlertTriangle, LayoutGrid } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { calculateSecurityScore, getSecurityCriteria, getSecurityDetails, SecurityCriteriaReporter } from "@/utils/security-score";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Roadmap = () => {
   const { isAdmin, role } = useUserRole();
@@ -21,9 +21,34 @@ const Roadmap = () => {
   const securityDetails = getSecurityDetails();
   const criteriaUpdates = SecurityCriteriaReporter.getCurrentDetails();
   const [activeTab, setActiveTab] = useState("all");
+  const [activeCategory, setActiveCategory] = useState("all");
+  const isMobile = useIsMobile();
 
-  // Filtered high priority items across all status categories
-  const highPriorityItems = roadmapItems.filter(item => item.priority === "high");
+  const highPriorityItems = useMemo(() => 
+    roadmapItems.filter(item => item.priority === "high"), 
+    []
+  );
+
+  const categorizedItems = useMemo(() => {
+    const categories = {
+      all: highPriorityItems,
+      product: highPriorityItems.filter(item => item.category === "product"),
+      development: highPriorityItems.filter(item => item.category === "development"),
+      infrastructure: highPriorityItems.filter(item => item.category === "infrastructure"),
+      security: highPriorityItems.filter(item => item.category === "security"),
+      devops: highPriorityItems.filter(item => item.category === "devops"),
+    };
+    
+    Object.keys(categories).forEach(key => {
+      categories[key].sort((a, b) => {
+        const aProgress = a.timeEstimate.spent / a.timeEstimate.total;
+        const bProgress = b.timeEstimate.spent / b.timeEstimate.total;
+        return bProgress - aProgress;
+      });
+    });
+    
+    return categories;
+  }, [highPriorityItems]);
 
   if (!isAdmin) {
     return (
@@ -74,23 +99,38 @@ const Roadmap = () => {
 
         <RoadmapProgress />
 
-        {/* High Priority Alert */}
         {highPriorityItems.length > 0 && (
           <Alert className="border-amber-500/50 bg-amber-500/5 animate-in slide-in-from-bottom">
             <AlertTitle className="text-amber-500 font-bold text-lg flex items-center gap-2">
               <AlertTriangle className="h-5 w-5" />
-              Taskuri Prioritare
+              Organizare Task-uri Prioritare
             </AlertTitle>
             <AlertDescription>
               <p className="mt-2 text-foreground/90 leading-relaxed mb-2">
-                Avem {highPriorityItems.length} taskuri cu prioritate înaltă care necesită atenție. 
-                Folosiți tab-ul "Priorități Înalte" pentru a vizualiza și gestiona aceste taskuri.
+                Avem {highPriorityItems.length} task-uri cu prioritate înaltă organizate în categorii pentru rezolvare eficientă. 
+                Folosiți filtrele pentru vizualizarea și gestionarea acestor task-uri după categorie sau progres.
               </p>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <div className="w-2 h-2 rounded-full bg-amber-500"></div>
-                <span>{highPriorityItems.filter(item => item.status === "in-progress").length} în lucru</span>
-                <div className="w-2 h-2 rounded-full bg-red-500 ml-4"></div>
-                <span>{highPriorityItems.filter(item => item.status === "pending").length} în așteptare</span>
+              <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mt-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-primary"></div>
+                  <span>Product: {categorizedItems.product?.length || 0}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                  <span>Development: {categorizedItems.development?.length || 0}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-purple-500"></div>
+                  <span>Infrastructure: {categorizedItems.infrastructure?.length || 0}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-green-600"></div>
+                  <span>Security: {categorizedItems.security?.length || 0}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-amber-600"></div>
+                  <span>DevOps: {categorizedItems.devops?.length || 0}</span>
+                </div>
               </div>
             </AlertDescription>
           </Alert>
@@ -161,8 +201,64 @@ const Roadmap = () => {
           </TabsList>
 
           <TabsContent value="high-priority" className="mt-0">
+            <div className="mb-6">
+              <h3 className="text-lg font-medium mb-3 flex items-center gap-2">
+                <LayoutGrid className="h-4 w-4" />
+                Filtrare după Categorie
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                <Button 
+                  variant={activeCategory === "all" ? "default" : "outline"} 
+                  size="sm" 
+                  onClick={() => setActiveCategory("all")}
+                >
+                  Toate
+                </Button>
+                <Button 
+                  variant={activeCategory === "product" ? "default" : "outline"} 
+                  size="sm" 
+                  onClick={() => setActiveCategory("product")}
+                  className="bg-primary/10 hover:bg-primary/20 data-[state=active]:bg-primary/20"
+                >
+                  Product
+                </Button>
+                <Button 
+                  variant={activeCategory === "development" ? "default" : "outline"} 
+                  size="sm" 
+                  onClick={() => setActiveCategory("development")}
+                  className="bg-blue-500/10 hover:bg-blue-500/20 data-[state=active]:bg-blue-500/20"
+                >
+                  Development
+                </Button>
+                <Button 
+                  variant={activeCategory === "infrastructure" ? "default" : "outline"} 
+                  size="sm" 
+                  onClick={() => setActiveCategory("infrastructure")}
+                  className="bg-purple-500/10 hover:bg-purple-500/20 data-[state=active]:bg-purple-500/20"
+                >
+                  Infrastructure
+                </Button>
+                <Button 
+                  variant={activeCategory === "security" ? "default" : "outline"} 
+                  size="sm" 
+                  onClick={() => setActiveCategory("security")}
+                  className="bg-green-600/10 hover:bg-green-600/20 data-[state=active]:bg-green-600/20"
+                >
+                  Security
+                </Button>
+                <Button 
+                  variant={activeCategory === "devops" ? "default" : "outline"} 
+                  size="sm" 
+                  onClick={() => setActiveCategory("devops")}
+                  className="bg-amber-600/10 hover:bg-amber-600/20 data-[state=active]:bg-amber-600/20"
+                >
+                  DevOps
+                </Button>
+              </div>
+            </div>
+            
             <div className="grid gap-6 md:grid-cols-2">
-              {highPriorityItems.map((item, index) => (
+              {(categorizedItems[activeCategory] || []).map((item, index) => (
                 <RoadmapCard key={index} item={item} />
               ))}
             </div>
