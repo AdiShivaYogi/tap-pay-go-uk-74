@@ -8,6 +8,9 @@ import { infrastructureItems } from "./categories/infrastructure-items";
 import { devopsItems } from "./categories/devops-items";
 import { monitoringItems } from "./categories/monitoring-items";
 import { productItems } from "./categories/product-items";
+import { integrationItems } from "./categories/integration-items";
+import { localizationItems } from "./categories/localization-items";
+import { partnershipItems } from "./categories/partnership-items";
 
 // Combine all roadmap items into a single array, prioritizing UK and Stripe compliance items
 export const roadmapItems: RoadmapItem[] = [
@@ -18,5 +21,8 @@ export const roadmapItems: RoadmapItem[] = [
   ...devopsItems,            // DevOps and automation
   ...monitoringItems,        // Monitoring and analytics
   ...productItems,           // Product features
-  ...pendingRoadmapItems     // Future developments
+  ...pendingRoadmapItems,    // Future developments
+  ...integrationItems,       // Integration features
+  ...localizationItems,      // Localization features
+  ...partnershipItems        // Partnership features
 ];
