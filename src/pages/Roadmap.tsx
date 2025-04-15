@@ -8,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { RoadmapCategory } from "@/features/roadmap/components/RoadmapCategory";
 import { RoadmapContextProvider } from "@/features/roadmap/context/RoadmapContext";
 import { MVPRoadmap } from "@/features/roadmap/components/MVPRoadmap";
+import { BackupProgress } from "@/features/roadmap/components/BackupProgress";
 
 const Roadmap = () => {
   const { isAdmin, role } = useUserRole();
@@ -41,6 +42,7 @@ const Roadmap = () => {
         <div className="container py-8">
           <div className="space-y-8 max-w-[1400px] mx-auto">
             <RoadmapHeader />
+            <BackupProgress />
             <RoadmapContextProvider>
               <RoadmapProgress />
               <div className="mt-8 space-y-6">

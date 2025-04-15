@@ -41,7 +41,7 @@ export const devopsItems: RoadmapItem[] = [
       "Implementare strategie de recuperare după dezastre ✓",
       "Testare proces de restaurare ✓",
       "Configurare retenție date și arhivare ✓",
-      "Finalizare documentație proceduri de urgență"
+      "[95%] Finalizare documentație proceduri de urgență"
     ]
   },
   {
