@@ -1,9 +1,8 @@
 
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, ArrowUpCircle } from "lucide-react";
 import { Category } from "../types";
 
-// Fix the interface by using Record instead of mapped type
 type CategoryCount = Record<Category, number>;
 
 interface PriorityTasksAlertProps {
@@ -15,34 +14,31 @@ export const PriorityTasksAlert = ({ highPriorityItemsCount, categoryCounts }: P
   <Alert className="border-amber-500/50 bg-amber-500/5 animate-in slide-in-from-bottom">
     <AlertTitle className="text-amber-500 font-bold text-lg flex items-center gap-2">
       <AlertTriangle className="h-5 w-5" />
-      Organizare Task-uri Prioritare
+      Task-uri cu Prioritate Înaltă (x{highPriorityItemsCount})
     </AlertTitle>
-    <AlertDescription>
-      <p className="mt-2 text-foreground/90 leading-relaxed mb-2">
-        Avem {highPriorityItemsCount} task-uri cu prioritate înaltă organizate în categorii pentru rezolvare eficientă. 
-        Folosiți filtrele pentru vizualizarea și gestionarea acestor task-uri după categorie sau progres.
-      </p>
-      <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mt-3">
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-primary"></div>
-          <span>Product: {categoryCounts.product || 0}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-          <span>Development: {categoryCounts.development || 0}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-purple-500"></div>
-          <span>Infrastructure: {categoryCounts.infrastructure || 0}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-green-600"></div>
-          <span>Security: {categoryCounts.security || 0}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-amber-600"></div>
-          <span>DevOps: {categoryCounts.devops || 0}</span>
-        </div>
+    <AlertDescription className="mt-2">
+      <div className="flex items-center gap-2 mb-3">
+        <ArrowUpCircle className="h-4 w-4 text-amber-500" />
+        <span className="text-amber-700 font-medium">
+          Concentrare pe rezolvarea task-urilor prioritare pentru a avansa mai rapid
+        </span>
+      </div>
+      
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        {Object.entries(categoryCounts).map(([category, count]) => {
+          if (count === 0) return null;
+          return (
+            <div 
+              key={category}
+              className="flex items-center gap-2 p-2 rounded-md bg-white/50 border border-amber-200"
+            >
+              <div className="w-2 h-2 rounded-full bg-amber-500"></div>
+              <span className="text-sm font-medium text-amber-800 capitalize">
+                {category}: {count}
+              </span>
+            </div>
+          );
+        })}
       </div>
     </AlertDescription>
   </Alert>

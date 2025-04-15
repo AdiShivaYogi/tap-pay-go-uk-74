@@ -1,4 +1,3 @@
-
 import { Layout } from "@/components/layout/layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RoadmapCard } from "@/features/roadmap/components/RoadmapCard";
@@ -67,23 +66,6 @@ const Roadmap = () => {
               </div>
             )}
             
-            {/* MVP Progress Section */}
-            <div className="animate-in slide-in-from-bottom fade-in duration-700">
-              <MVPRoadmap />
-            </div>
-            
-            {/* Beta Launch Progress */}
-            <div className="grid gap-6">
-              <BetaLaunchProgress />
-            </div>
-            
-            {/* Monitoring & Analytics Grid */}
-            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-              <BetaUsersMonitoring />
-              <FeedbackCollection />
-              <PaymentTestingPanel />
-            </div>
-
             {/* Priority Tasks Alert */}
             {highPriorityItems.length > 0 && (
               <PriorityTasksAlert 
@@ -101,7 +83,7 @@ const Roadmap = () => {
                     value="high-priority" 
                     className="bg-amber-500/10 hover:bg-amber-500/20 data-[state=active]:bg-amber-500/20"
                   >
-                    Prioritate Înaltă
+                    Prioritate Înaltă ({highPriorityItems.length})
                   </TabsTrigger>
                   <TabsTrigger 
                     value="completed"
@@ -122,6 +104,7 @@ const Roadmap = () => {
                   <PriorityTaskFilter 
                     activeCategory={activeCategory} 
                     onCategoryChange={setActiveCategory}
+                    categoryCounts={categorizedHighPriorityItems}
                   />
                   
                   <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
