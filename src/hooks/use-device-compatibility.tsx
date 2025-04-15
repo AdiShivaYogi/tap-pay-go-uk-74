@@ -21,6 +21,7 @@ const COMPATIBLE_IPHONES = [
   'iPhone 13', 'iPhone 13 mini', 'iPhone 13 Pro', 'iPhone 13 Pro Max',
   'iPhone 14', 'iPhone 14 Plus', 'iPhone 14 Pro', 'iPhone 14 Pro Max',
   'iPhone 15', 'iPhone 15 Plus', 'iPhone 15 Pro', 'iPhone 15 Pro Max',
+  'iPhone SE (3rd generation)'
 ];
 
 export const useDeviceCompatibility = (): DeviceCompatibility => {
@@ -40,14 +41,14 @@ export const useDeviceCompatibility = (): DeviceCompatibility => {
       const isAndroid = /Android/i.test(userAgent);
       const isSafari = /^((?!chrome|android).)*safari/i.test(userAgent);
 
-      // Detectăm modelul de iPhone (aproximativ)
+      // Detectăm modelul de iPhone
       let deviceModel: string | null = null;
       if (isIOS) {
-        // Încercăm să extragem modelul iPhone din User Agent
-        const iphoneMatch = userAgent.match(/iPhone(?:\s+OS\s+(\d+))?/i);
-        if (iphoneMatch) {
-          // Pentru simplificare, presupunem un iPhone recent (doar pentru demonstrație)
-          // În aplicațiile reale, detecția precisă a modelului este mai complexă
+        // Check for iPhone SE 3rd generation
+        if (userAgent.includes('iPhone SE')) {
+          deviceModel = 'iPhone SE (3rd generation)';
+        } else {
+          // Alternativ, verificăm dacă este un model mai nou bazat pe OS
           const osVersion = userAgent.match(/OS (\d+)_(\d+)/i);
           const majorVersion = osVersion ? parseInt(osVersion[1], 10) : 0;
           
@@ -78,13 +79,27 @@ export const useDeviceCompatibility = (): DeviceCompatibility => {
       else if (isAndroid) deviceType = 'android';
       else if (!isMobile) deviceType = 'desktop';
 
-      // Determinăm compatibilitatea (simplificat)
-      // În realitate, ar trebui o detecție mult mai precisă a modelului
+      // Determinăm compatibilitatea
       let isCompatible: CompatibilityStatus = 'unknown';
-      if (deviceType === 'iphone' && osVersion && parseInt(osVersion) >= 16) {
-        isCompatible = 'compatible';
-      } else if (deviceType === 'iphone') {
-        isCompatible = 'incompatible';
+      
+      if (deviceType === 'iphone') {
+        // Verificăm dacă este un model compatibil și rulează iOS 16+
+        let isCompatibleModel = false;
+        
+        // Verificare specială pentru iPhone SE generația 3
+        if (deviceModel === 'iPhone SE (3rd generation)') {
+          isCompatibleModel = true;
+        }
+        // Verificăm dacă este un iPhone modern bazat pe versiunea iOS
+        else if (osVersion && parseInt(osVersion) >= 16) {
+          isCompatibleModel = true;
+        }
+        
+        if (isCompatibleModel) {
+          isCompatible = 'compatible';
+        } else {
+          isCompatible = 'incompatible';
+        }
       } else {
         isCompatible = 'incompatible';
       }
@@ -101,11 +116,17 @@ export const useDeviceCompatibility = (): DeviceCompatibility => {
     const result = detectDevice();
     setCompatibility(result);
 
-    // Arătăm un mesaj de avertizare dacă dispozitivul nu este compatibil
-    if (result.isCompatible === 'incompatible') {
+    // Afișăm un mesaj specific pentru compatibilitatea cu Tap to Pay
+    if (result.isCompatible === 'compatible') {
+      toast({
+        title: "Dispozitiv compatibil cu Tap to Pay",
+        description: "Puteți scana carduri fizice pentru procesarea plăților.",
+        variant: "default",
+      });
+    } else if (result.isCompatible === 'incompatible' && result.deviceType === 'iphone') {
       toast({
         title: "Dispozitiv incompatibil cu Tap to Pay",
-        description: "Aplicația necesită un iPhone cu iOS 16+ pentru a utiliza Tap to Pay. Vă rugăm să folosiți un dispozitiv compatibil.",
+        description: "iPhone-ul dumneavoastră necesită iOS 16+ pentru a utiliza scanarea cardului. Veți folosi metoda standard de plată.",
         variant: "destructive",
       });
     }
