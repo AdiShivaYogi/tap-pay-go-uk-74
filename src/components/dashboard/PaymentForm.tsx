@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
@@ -9,6 +8,7 @@ import { PaymentHeader } from "./payment/PaymentHeader";
 import { PaymentInputs } from "./payment/PaymentInputs";
 import { PaymentButton } from "./payment/PaymentButton";
 import { TapToPayDialog } from "./payment/TapToPayDialog";
+import { StyledCard, NfcIcon } from "@/components/ui/card";
 
 interface PaymentFormProps {
   deviceCompatibility: DeviceCompatibility;
@@ -94,7 +94,11 @@ export const PaymentForm = ({ deviceCompatibility }: PaymentFormProps) => {
 
   return (
     <>
-      <Card className="border-2 border-primary/10">
+      <StyledCard
+        variant="default"
+        icon={NfcIcon}
+        className="border-2 border-primary/10"
+      >
         <CardHeader>
           <PaymentHeader deviceCompatibility={deviceCompatibility} />
         </CardHeader>
@@ -114,7 +118,7 @@ export const PaymentForm = ({ deviceCompatibility }: PaymentFormProps) => {
             onClick={handlePayment}
           />
         </CardContent>
-      </Card>
+      </StyledCard>
 
       <TapToPayDialog
         open={showTapToPayDialog}

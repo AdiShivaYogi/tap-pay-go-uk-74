@@ -1,11 +1,10 @@
-
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, InfoIcon } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
+import { StyledCard, StyledCardHeader, StyledCardContent, StyledCardTitle, StyledCardDescription, StyledCardFooter } from "@/components/ui/card-variants";
 
 interface PricingPlan {
   name: string;
@@ -37,33 +36,33 @@ export const PricingCard = ({ plan }: PricingCardProps) => {
   };
 
   return (
-    <Card className={`flex flex-col transform transition-all duration-300 hover:scale-105 ${
-      plan.popular ? 'border-primary shadow-lg relative overflow-hidden' : ''
-    } ${plan.isApiPlan ? 'border-indigo-400/30 bg-indigo-50/10' : ''}`}>
+    <StyledCard
+      variant="pricing"
+      gradient={plan.popular}
+      icon={plan.icon}
+      iconClassName={plan.isApiPlan ? "text-indigo-500" : "text-primary"}
+      className={plan.isApiPlan ? 'border-indigo-400/30 bg-indigo-50/10' : ''}
+    >
       {plan.popular && (
-        <>
-          <div className="absolute top-0 right-0 bg-primary text-primary-foreground px-4 py-1 rounded-bl-lg text-sm font-medium">
-            Popular
-          </div>
-          <div className="absolute -inset-[1px] rounded-lg bg-gradient-to-r from-primary/50 via-primary to-primary/50 opacity-20 blur-lg -z-10" />
-        </>
+        <div className="absolute top-0 right-0 bg-primary text-primary-foreground px-4 py-1 rounded-bl-lg text-sm font-medium">
+          Popular
+        </div>
       )}
       {plan.isApiPlan && (
-        <>
-          <div className="absolute top-0 right-0 bg-indigo-500 text-white px-4 py-1 rounded-bl-lg text-sm font-medium">
-            Enterprise
-          </div>
-          <div className="absolute -inset-[1px] rounded-lg bg-gradient-to-r from-indigo-500/30 via-indigo-500 to-indigo-500/30 opacity-10 blur-lg -z-10" />
-        </>
+        <div className="absolute top-0 right-0 bg-indigo-500 text-white px-4 py-1 rounded-bl-lg text-sm font-medium">
+          Enterprise
+        </div>
       )}
-      <CardHeader>
+      
+      <StyledCardHeader>
         <div className="flex items-center gap-2 mb-4">
           <plan.icon className={`h-6 w-6 ${plan.isApiPlan ? "text-indigo-500" : "text-primary"}`} />
-          <CardTitle>{plan.name}</CardTitle>
+          <StyledCardTitle>{plan.name}</StyledCardTitle>
         </div>
-        <CardDescription>{plan.description}</CardDescription>
-      </CardHeader>
-      <CardContent className="flex-1">
+        <StyledCardDescription>{plan.description}</StyledCardDescription>
+      </StyledCardHeader>
+      
+      <StyledCardContent className="flex-1">
         <div className="mb-6">
           <span className="text-3xl font-bold">{plan.price}</span>
           {plan.period && (
@@ -103,8 +102,9 @@ export const PricingCard = ({ plan }: PricingCardProps) => {
             </li>
           ))}
         </ul>
-      </CardContent>
-      <CardFooter>
+      </StyledCardContent>
+      
+      <StyledCardFooter>
         <Button 
           className="w-full" 
           variant={plan.isApiPlan ? "outline" : (plan.popular ? "default" : "outline")}
@@ -113,7 +113,7 @@ export const PricingCard = ({ plan }: PricingCardProps) => {
         >
           {plan.cta}
         </Button>
-      </CardFooter>
-    </Card>
+      </StyledCardFooter>
+    </StyledCard>
   );
 };
