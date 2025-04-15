@@ -6,12 +6,9 @@ import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
-import { z } from "zod";
 import { AuthForm } from "@/components/admin-auth/AuthForm";
 import { AuthModeToggle } from "@/components/admin-auth/AuthModeToggle";
-import { formSchema } from "@/components/admin-auth/auth-validation";
-
-type AdminFormValues = z.infer<typeof formSchema>;
+import { AuthFormValues } from "@/components/admin-auth/auth-validation";
 
 const UserAuth = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
@@ -65,11 +62,12 @@ const UserAuth = () => {
     handleAuthRedirect();
   }, [location.hash, navigate]);
 
-  const handleSubmit = async (values: AdminFormValues) => {
+  const handleSubmit = async (values: AuthFormValues) => {
     try {
       const { email, password, inviteCode } = values;
       
       setIsLoading(true);
+      console.log("Form submitted:", { email, isLoginMode, hasInviteCode: !!inviteCode });
 
       if (isLoginMode) {
         try {
@@ -88,8 +86,14 @@ const UserAuth = () => {
         }
       } else {
         // Admin signup
-        if (inviteCode !== 'ADMIN2025') {
-          throw new Error("Cod de invitație invalid");
+        if (!inviteCode || inviteCode !== 'ADMIN2025') {
+          toast({
+            title: "Eroare",
+            description: "Cod de invitație invalid",
+            variant: "destructive",
+          });
+          setIsLoading(false);
+          return;
         }
         
         await handleAdminRegistration(email, password);
@@ -165,7 +169,6 @@ const UserAuth = () => {
               isLoginMode={isLoginMode}
               onSubmit={handleSubmit}
               isLoading={isLoading}
-              formSchema={formSchema}
             />
 
             <AuthModeToggle

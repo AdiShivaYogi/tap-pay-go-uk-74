@@ -1,7 +1,13 @@
 
 import { z } from "zod";
 
-export const formSchema = z.object({
+// Different schemas for login and registration
+export const loginFormSchema = z.object({
+  email: z.string().email("Introduceți un email valid"),
+  password: z.string().min(1, "Parola este obligatorie"),
+});
+
+export const registerFormSchema = z.object({
   email: z.string().email("Introduceți un email valid"),
   password: z.string()
     .min(8, "Parola trebuie să aibă cel puțin 8 caractere")
@@ -9,8 +15,8 @@ export const formSchema = z.object({
     .regex(/[a-z]/, "Parola trebuie să conțină cel puțin o literă mică")
     .regex(/[0-9]/, "Parola trebuie să conțină cel puțin o cifră")
     .regex(/[!@#$%^&*()]/, "Parola trebuie să conțină cel puțin un caracter special"),
-  inviteCode: z.string().refine(
-    (code) => code === 'ADMIN2025', 
-    "Codul de invitație este invalid"
-  )
+  inviteCode: z.string().min(1, "Codul de invitație este obligatoriu"),
 });
+
+// Export a combined type that can be used for form values
+export type AuthFormValues = z.infer<typeof loginFormSchema> & { inviteCode?: string };

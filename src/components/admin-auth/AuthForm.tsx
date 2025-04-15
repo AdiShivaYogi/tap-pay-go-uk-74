@@ -8,26 +8,26 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { LoadingIndicator } from "./LoadingIndicator";
-import { formSchema } from "./auth-validation";
-
-type FormValues = z.infer<typeof formSchema>;
+import { loginFormSchema, registerFormSchema, AuthFormValues } from "./auth-validation";
 
 interface AuthFormProps {
   isLoginMode: boolean;
-  onSubmit: (values: any) => Promise<void>;
+  onSubmit: (values: AuthFormValues) => Promise<void>;
   isLoading: boolean;
-  formSchema?: z.ZodType;
 }
 
 export const AuthForm = ({ 
   isLoginMode, 
   onSubmit, 
-  isLoading, 
-  formSchema: customSchema = formSchema 
+  isLoading 
 }: AuthFormProps) => {
   const [showPassword, setShowPassword] = useState(false);
-  const form = useForm({
-    resolver: zodResolver(customSchema),
+  
+  // Use the appropriate schema based on login mode
+  const schema = isLoginMode ? loginFormSchema : registerFormSchema;
+  
+  const form = useForm<AuthFormValues>({
+    resolver: zodResolver(schema),
     defaultValues: {
       email: "",
       password: "",
@@ -39,7 +39,7 @@ export const AuthForm = ({
     setShowPassword(!showPassword);
   };
 
-  const handleFormSubmit = async (values: FormValues) => {
+  const handleFormSubmit = async (values: AuthFormValues) => {
     try {
       await onSubmit(values);
     } catch (error) {
