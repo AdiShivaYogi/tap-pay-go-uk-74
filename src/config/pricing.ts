@@ -1,4 +1,4 @@
-import { BadgeDollarSign, CreditCard, Wallet } from "lucide-react";
+import { BadgeDollarSign, CreditCard, Wallet, Code } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 
 export interface PricingPlan {
@@ -12,6 +12,7 @@ export interface PricingPlan {
   popular: boolean;
   icon: LucideIcon;
   breakEvenInfo?: string;
+  isApiPlan?: boolean;
 }
 
 export interface FAQItem {
@@ -73,6 +74,26 @@ export const pricingPlans: PricingPlan[] = [
     popular: false,
     icon: BadgeDollarSign,
     breakEvenInfo: "Se amortizează în ~10 luni la volume mari"
+  },
+  {
+    name: "API Enterprise",
+    id: "api-enterprise",
+    description: "Pentru integrări programatice avansate",
+    price: "£149.99",
+    period: "pe lună",
+    features: [
+      "10,000 request-uri API pe lună",
+      "Suport tehnic dedicat",
+      "Documentație API completă",
+      "Autentificare OAuth pentru aplicații",
+      "Rate limiting configurabil",
+      "Mediu sandbox pentru testare",
+      "£0.01 per request peste limită"
+    ],
+    cta: "Contactează-ne",
+    popular: false,
+    icon: Code,
+    isApiPlan: true
   }
 ];
 
