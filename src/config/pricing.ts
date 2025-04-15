@@ -1,4 +1,4 @@
-import { BadgeDollarSign, CreditCard, Wallet, Code } from "lucide-react";
+import { BadgeDollarSign, CreditCard, Wallet } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 
 export interface PricingPlan {
@@ -54,7 +54,7 @@ export const pricingPlans: PricingPlan[] = [
     cta: "Abonare Acum",
     popular: true,
     icon: Wallet,
-    breakEvenInfo: "Ideal pentru 300-1000 tranzacții lunare"
+    breakEvenInfo: "Ideal pentru 300-1000 tranzacții lunale"
   },
   {
     name: "Lifetime",
@@ -74,26 +74,6 @@ export const pricingPlans: PricingPlan[] = [
     popular: false,
     icon: BadgeDollarSign,
     breakEvenInfo: "Se amortizează în ~10 luni la volume mari"
-  },
-  {
-    name: "API Enterprise",
-    id: "api-enterprise",
-    description: "Pentru integrări programatice avansate",
-    price: "£149.99",
-    period: "pe lună",
-    features: [
-      "10,000 request-uri API pe lună",
-      "Suport tehnic dedicat",
-      "Documentație API completă",
-      "Autentificare OAuth pentru aplicații",
-      "Rate limiting configurabil",
-      "Mediu sandbox pentru testare",
-      "£0.01 per request peste limită"
-    ],
-    cta: "Contactează-ne",
-    popular: false,
-    icon: Code,
-    isApiPlan: true
   }
 ];
 
@@ -117,18 +97,6 @@ export const pricingFAQs: FAQItem[] = [
   {
     question: "What happens after I subscribe?",
     answer: "You'll get immediate access to all features included in your chosen plan. You'll also receive a confirmation email with your account details."
-  },
-  {
-    question: "Ce include planul API Enterprise?",
-    answer: "Planul API Enterprise oferă acces complet la API-ul nostru pentru integrări avansate. Include 10,000 de request-uri API pe lună, documentație exhaustivă, suport tehnic dedicat, autentificare OAuth pentru aplicațiile dvs., rate limiting configurabil și acces la un mediu sandbox pentru testare. Este ideal pentru afaceri care doresc să integreze serviciile noastre direct în sistemele lor."
-  },
-  {
-    question: "Cum pot începe să utilizez API-ul?",
-    answer: "După abonarea la planul API Enterprise, veți primi credențialele de acces și documentația completă. Echipa noastră tehnică vă va oferi o sesiune de onboarding pentru a vă ajuta să începeți. Oferim și un mediu sandbox unde puteți testa integrarea fără a afecta datele reale."
-  },
-  {
-    question: "Ce se întâmplă dacă depășesc numărul de request-uri API incluse?",
-    answer: "Dacă depășiți numărul de 10,000 de request-uri incluse în planul API Enterprise, se aplică o taxă suplimentară de £0.01 per request. Pentru volume foarte mari, vă recomandăm să ne contactați pentru a discuta despre un plan personalizat care să fie mai avantajos."
   }
 ];
 
