@@ -15,41 +15,53 @@ export const RoadmapCard = ({ item }: RoadmapCardProps) => {
   const isHighPriority = item.priority === "high";
   const isCompleted = item.status === "completed";
 
+  const getCategoryColor = (category?: string) => {
+    switch (category) {
+      case "security": return "from-green-500/5 to-green-500/10";
+      case "infrastructure": return "from-purple-500/5 to-purple-500/10";
+      case "devops": return "from-amber-500/5 to-amber-500/10";
+      case "product": return "from-blue-500/5 to-blue-500/10";
+      default: return "from-gray-500/5 to-gray-500/10";
+    }
+  };
+
   return (
     <Card className={cn(
-      "hover:shadow-lg transition-shadow",
-      isHighPriority && "border-primary/50",
-      isCompleted && "bg-muted/30"
+      "hover:shadow-lg transition-all duration-300 bg-gradient-to-br",
+      getCategoryColor(item.category),
+      isHighPriority && !isCompleted && "ring-2 ring-primary/20",
+      isCompleted && "opacity-90"
     )}>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <div className="flex items-center gap-2">
+      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
+        <div className="space-y-2">
           {item.iconType && (
-            <span className="p-2 rounded-lg bg-primary/5">
+            <span className="inline-flex p-2 rounded-lg bg-background/80 backdrop-blur-sm">
               <RoadmapIcon iconType={item.iconType} iconColor={item.iconColor || "text-primary"} />
             </span>
           )}
-          <CardTitle className="text-xl font-bold flex items-center gap-2">
+          <CardTitle className="text-xl font-bold flex items-center gap-2 mt-2">
             {item.title}
             {isHighPriority && !isCompleted && (
-              <span className="inline-flex items-center">
-                <AlertTriangle className="h-4 w-4 text-primary animate-pulse" />
-              </span>
+              <AlertTriangle className="h-4 w-4 text-amber-500 animate-pulse" />
             )}
           </CardTitle>
         </div>
         {getStatusIcon(item.status)}
       </CardHeader>
-      <CardDescription className="px-6 text-sm">
-        {item.description}
-      </CardDescription>
-      <CardContent className="mt-4">
-        <div className="mb-4 flex flex-wrap items-center gap-2">
+      
+      <CardContent className="space-y-4">
+        <CardDescription className="text-sm">
+          {item.description}
+        </CardDescription>
+
+        <div className="flex flex-wrap items-center gap-2">
           {getStatusBadge(item.status)}
           {getPriorityBadge(item.priority)}
         </div>
-        <ul className="space-y-2.5">
+
+        <ul className="space-y-2">
           {item.details.map((detail, idx) => (
-            <li key={idx} className="flex items-start gap-2.5 text-sm">
+            <li key={idx} className="flex items-start gap-2 text-sm">
               <span className={cn(
                 "mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0",
                 isHighPriority ? "bg-primary" : "bg-primary/20"
@@ -58,6 +70,7 @@ export const RoadmapCard = ({ item }: RoadmapCardProps) => {
             </li>
           ))}
         </ul>
+
         <TimeEstimationBadge 
           timeEstimate={item.timeEstimate} 
           status={item.status}

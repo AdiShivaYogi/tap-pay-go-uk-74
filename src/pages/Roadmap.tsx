@@ -58,7 +58,7 @@ const Roadmap = () => {
         <RoadmapHeader />
         <BetaLaunchProgress />
         
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           <BetaUsersMonitoring />
           <FeedbackCollection />
           <PaymentTestingPanel />
@@ -71,68 +71,28 @@ const Roadmap = () => {
           />
         )}
 
-        <Alert className="mb-8 border-primary/50 bg-primary/5 animate-in slide-in-from-bottom">
-          <AlertTitle className="text-primary font-bold text-lg flex items-center gap-2">
-            <ShieldCheck className="h-5 w-5" />
-            Principiu Fundamental
-            <Zap className="h-4 w-4 text-yellow-500 animate-pulse" />
-          </AlertTitle>
-          <AlertDescription>
-            <p className="mt-2 text-foreground/90 leading-relaxed mb-4">
-              Aplicația noastră este proiectată cu un angajament ferm pentru protecția datelor utilizatorilor. 
-              Nu stocăm niciun fel de informații sensibile, iar procesarea plăților este gestionată complet de Stripe.
-            </p>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-primary/90 font-medium">Nivel de Securitate</span>
-                  <span className="font-bold text-primary">{securityScore}%</span>
-                </div>
-                <Progress value={securityScore} className="h-2 bg-primary/20" />
-                <div className="flex flex-wrap gap-4 text-xs text-muted-foreground mt-2">
-                  {securityDetails.map((detail, index) => (
-                    <div key={index} className="flex items-center gap-1">
-                      <div className={`w-2 h-2 rounded-full ${detail.isActive ? 'bg-primary' : 'bg-muted'}`} />
-                      <span>{detail.label}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
-              <div className="mt-4 text-xs text-muted-foreground border-t pt-2">
-                <p className="font-medium mb-1">Ultimele actualizări ale criteriilor de securitate:</p>
-                <div className="grid grid-cols-2 gap-2">
-                  {criteriaUpdates.map((update, index) => (
-                    <div 
-                      key={index} 
-                      className={cn(
-                        "bg-background/50 rounded p-2 font-mono text-xs",
-                        update.isActive ? "border-l-4 border-primary" : "opacity-50"
-                      )}
-                    >
-                      <div className="font-semibold">{update.label}</div>
-                      <div className="text-muted-foreground">
-                        Status: {update.isActive ? 'Activ' : 'Inactiv'}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </AlertDescription>
-        </Alert>
-
-        <Separator className="my-8" />
-
         <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab} className="mb-8">
           <TabsList className="grid w-full grid-cols-5 mb-6">
-            <TabsTrigger value="all">Toate</TabsTrigger>
-            <TabsTrigger value="high-priority" className="bg-amber-500/10 hover:bg-amber-500/20 data-[state=active]:bg-amber-500/20">
-              Priorități Înalte
+            <TabsTrigger value="all">All Tasks</TabsTrigger>
+            <TabsTrigger 
+              value="high-priority" 
+              className="bg-amber-500/10 hover:bg-amber-500/20 data-[state=active]:bg-amber-500/20"
+            >
+              High Priority
             </TabsTrigger>
-            <TabsTrigger value="completed">Completate</TabsTrigger>
-            <TabsTrigger value="in-progress">În Lucru</TabsTrigger>
-            <TabsTrigger value="pending">În Așteptare</TabsTrigger>
+            <TabsTrigger 
+              value="completed"
+              className="bg-green-500/10 hover:bg-green-500/20 data-[state=active]:bg-green-500/20"
+            >
+              Completed
+            </TabsTrigger>
+            <TabsTrigger 
+              value="in-progress"
+              className="bg-blue-500/10 hover:bg-blue-500/20 data-[state=active]:bg-blue-500/20"
+            >
+              In Progress
+            </TabsTrigger>
+            <TabsTrigger value="pending">Pending</TabsTrigger>
           </TabsList>
 
           <TabsContent value="high-priority" className="mt-0">
@@ -141,7 +101,7 @@ const Roadmap = () => {
               onCategoryChange={setActiveCategory}
             />
             
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {highPriorityItems
                 .filter(item => activeCategory === "all" || item.category === activeCategory)
                 .map((item, index) => (
@@ -152,7 +112,7 @@ const Roadmap = () => {
 
           {["all", "completed", "in-progress", "pending"].map((tabValue) => (
             <TabsContent key={tabValue} value={tabValue} className="mt-0">
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 animate-in fade-in-50">
                 {roadmapItems
                   .filter(item => tabValue === "all" || item.status === tabValue)
                   .map((item, index) => (
