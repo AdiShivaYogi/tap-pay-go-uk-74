@@ -40,7 +40,7 @@ const UserAuth = () => {
               title: "Autentificare reușită",
               description: "Bine ați revenit!",
             });
-            navigate("/dashboard");
+            navigate("/roadmap");
           }
         } catch (error: any) {
           console.error("Eroare la procesarea redirecționării:", error);
@@ -81,7 +81,7 @@ const UserAuth = () => {
             description: "Bine ați revenit!",
           });
           
-          navigate("/dashboard");
+          navigate("/roadmap");
         } catch (error: any) {
           console.error("Eroare la autentificare:", error);
           toast({
@@ -139,10 +139,10 @@ const UserAuth = () => {
         
         toast({
           title: "Cont admin creat cu succes",
-          description: "Veți fi redirectat către dashboard",
+          description: "Veți fi redirectat către roadmap",
         });
         
-        navigate("/dashboard");
+        navigate("/roadmap");
       }
     } catch (error: any) {
       console.error('Eroare la înregistrare:', error);
