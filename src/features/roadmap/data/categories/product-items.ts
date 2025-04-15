@@ -1,5 +1,5 @@
 
-import { RoadmapItem } from "../types";
+import { RoadmapItem } from "../../types";
 
 export const productItems: RoadmapItem[] = [
   {
@@ -75,14 +75,14 @@ export const productItems: RoadmapItem[] = [
     iconColor: "text-green-600",
     timeEstimate: {
       total: 20,
-      spent: 12,
+      spent: 18,
       aiTotal: 15
     },
     details: [
-      "Implementare criptare end-to-end pentru date utilizator",
-      "Consolidare politici de acces și autorizare",
-      "Auditare și logging avansate",
-      "Scanări automate de vulnerabilități",
+      "Implementare criptare end-to-end pentru date utilizator ✓",
+      "Consolidare politici de acces și autorizare ✓",
+      "Auditare și logging avansate ✓",
+      "Scanări automate de vulnerabilități ✓",
       "Exerciții de penetration testing"
     ]
   },

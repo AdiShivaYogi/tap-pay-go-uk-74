@@ -84,5 +84,25 @@ export const inProgressRoadmapItems: RoadmapItem[] = [
       "Reducere latență API ✓",
       "Testare și măsurare performanță"
     ]
+  },
+  {
+    title: "Îmbunătățiri Securitate Internă",
+    description: "Consolidarea măsurilor de securitate pentru date sensibile",
+    status: "in-progress",
+    priority: "high",
+    iconType: "shield-check",
+    iconColor: "text-green-600",
+    timeEstimate: {
+      total: 20,
+      spent: 18,
+      aiTotal: 15
+    },
+    details: [
+      "Implementare criptare end-to-end pentru date utilizator ✓",
+      "Consolidare politici de acces și autorizare ✓",
+      "Auditare și logging avansate ✓",
+      "Scanări automate de vulnerabilități ✓",
+      "Exerciții de penetration testing"
+    ]
   }
 ]
