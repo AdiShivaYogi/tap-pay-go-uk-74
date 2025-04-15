@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/layout";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -8,31 +7,29 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { AuthForm } from "@/components/admin-auth/AuthForm";
 import { AuthModeToggle } from "@/components/admin-auth/AuthModeToggle";
+import { ResetPasswordForm } from "@/components/admin-auth/ResetPasswordForm";
 import { AuthFormValues } from "@/components/admin-auth/auth-validation";
 
 const UserAuth = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
+  const [isResetMode, setIsResetMode] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { signIn, user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
-  // Redirect if already logged in
   useEffect(() => {
     if (user) {
       navigate('/roadmap');
     }
   }, [user, navigate]);
 
-  // Handle Supabase auth redirect with tokens in URL
   useEffect(() => {
     const handleAuthRedirect = async () => {
-      // Check if we have a hash in the URL (for auth callbacks)
       if (location.hash) {
         setIsLoading(true);
         
         try {
-          // Process the hash fragment containing auth tokens
           const { data, error } = await supabase.auth.getSession();
           
           if (error) {
@@ -71,11 +68,10 @@ const UserAuth = () => {
 
       if (isLoginMode) {
         try {
-          // Use signIn from AuthProvider to handle authentication
           await signIn(email, password);
           
           console.log("Authentication successful");
-          // Redirect handled in the authStateChange listener
+          navigate("/roadmap");
         } catch (error: any) {
           console.error("Eroare la autentificare:", error);
           toast({
@@ -85,7 +81,6 @@ const UserAuth = () => {
           });
         }
       } else {
-        // Admin signup
         if (!inviteCode || inviteCode !== 'ADMIN2025') {
           toast({
             title: "Eroare",
@@ -110,6 +105,34 @@ const UserAuth = () => {
     }
   };
 
+  const handleResetPassword = async ({ email }: { email: string }) => {
+    try {
+      setIsLoading(true);
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth?reset=true`,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: "Email trimis",
+        description: "Verificați email-ul pentru a reseta parola",
+      });
+      setIsResetMode(false);
+    } catch (error: any) {
+      console.error("Eroare la trimiterea emailului de resetare:", error);
+      toast({
+        title: "Eroare",
+        description: error.message || "A apărut o eroare la trimiterea emailului",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleAdminRegistration = async (email: string, password: string) => {
     try {
       const { data, error: signUpError } = await supabase.auth.signUp({
@@ -127,7 +150,6 @@ const UserAuth = () => {
       }
 
       if (data.user) {
-        // Sign in after registration
         const { error: signInError } = await supabase.auth.signInWithPassword({ 
           email, 
           password 
@@ -156,25 +178,41 @@ const UserAuth = () => {
         <Card>
           <CardHeader>
             <CardTitle>
-              {isLoginMode ? "Autentificare" : "Înregistrare Admin"}
+              {isResetMode 
+                ? "Resetare parolă"
+                : isLoginMode 
+                  ? "Autentificare" 
+                  : "Înregistrare Admin"}
             </CardTitle>
             <CardDescription>
-              {isLoginMode 
-                ? "Autentificați-vă în contul dvs." 
-                : "Creați un cont de administrator"}
+              {isResetMode
+                ? "Introduceți adresa de email pentru a reseta parola"
+                : isLoginMode 
+                  ? "Autentificați-vă în contul dvs." 
+                  : "Creați un cont de administrator"}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <AuthForm
-              isLoginMode={isLoginMode}
-              onSubmit={handleSubmit}
-              isLoading={isLoading}
-            />
-
-            <AuthModeToggle
-              isLoginMode={isLoginMode}
-              onToggle={() => setIsLoginMode(!isLoginMode)}
-            />
+            {isResetMode ? (
+              <ResetPasswordForm
+                onSubmit={handleResetPassword}
+                onCancel={() => setIsResetMode(false)}
+                isLoading={isLoading}
+              />
+            ) : (
+              <>
+                <AuthForm
+                  isLoginMode={isLoginMode}
+                  onSubmit={handleSubmit}
+                  isLoading={isLoading}
+                />
+                <AuthModeToggle
+                  isLoginMode={isLoginMode}
+                  onToggle={() => setIsLoginMode(!isLoginMode)}
+                  onForgotPassword={() => setIsResetMode(true)}
+                />
+              </>
+            )}
           </CardContent>
         </Card>
       </div>
