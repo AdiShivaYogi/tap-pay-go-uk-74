@@ -1,16 +1,14 @@
 import React, { useState } from "react";
 import { StyledCard } from "@/components/ui/card-variants";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { InfoIcon, Palette, Sliders, Type, Layout, Pointer, Wand2 } from "lucide-react";
+import { InfoIcon, Sliders, Wand2 } from "lucide-react";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { theme } from "@/config/theme";
 import { useElementSelector } from "@/hooks/use-element-selector";
-import { ElementStyleControls } from "./components/ElementStyleControls";
 import { CssEditor } from "./components/CssEditor";
+import { StyleManagerTabs } from "./manager/StyleManagerTabs";
 
 export function GlobalCssManager({ isSheet = false }) {
   const [customCss, setCustomCss] = useState("");
@@ -54,7 +52,7 @@ export function GlobalCssManager({ isSheet = false }) {
     const css = `${selectedElementPath} {\n${styleLines}\n}\n`;
     setCustomCss(css);
   };
-  
+
   const handleDragStart = (e: React.MouseEvent) => {
     if (!isDragging) {
       setIsDragging(true);
@@ -110,126 +108,11 @@ export function GlobalCssManager({ isSheet = false }) {
         </Alert>
       )}
 
-      <Tabs defaultValue={selectedElementPath ? "element" : "colors"} className="space-y-4">
-        <TabsList className="grid grid-cols-4 w-full">
-          <TabsTrigger value="element" className="flex items-center gap-2" disabled={!selectedElementPath}>
-            <Pointer className="h-4 w-4" />
-            <span>Element</span>
-          </TabsTrigger>
-          <TabsTrigger value="colors" className="flex items-center gap-2">
-            <Palette className="h-4 w-4" />
-            <span>Culori</span>
-          </TabsTrigger>
-          <TabsTrigger value="typography" className="flex items-center gap-2">
-            <Type className="h-4 w-4" />
-            <span>Tipografie</span>
-          </TabsTrigger>
-          <TabsTrigger value="layout" className="flex items-center gap-2">
-            <Layout className="h-4 w-4" />
-            <span>Layout</span>
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="element" className="space-y-4">
-          {selectedElementPath && (
-            <ElementStyleControls 
-              activeStyles={activeStyles}
-              onStyleChange={handleUpdateStyle}
-            />
-          )}
-        </TabsContent>
-
-        <TabsContent value="colors" className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Culoare Primară</Label>
-              <Input 
-                type="color" 
-                value="#9b87f5"
-                onChange={(e) => {
-                  const css = `:root { --primary: ${e.target.value}; }`;
-                  setCustomCss(css);
-                }}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Culoare Secundară</Label>
-              <Input 
-                type="color" 
-                value="#7E69AB"
-                onChange={(e) => {
-                  const css = `:root { --secondary: ${e.target.value}; }`;
-                  setCustomCss(css);
-                }}
-              />
-            </div>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="typography" className="space-y-4">
-          <div className="space-y-4">
-            <div>
-              <Label>Font Size Base</Label>
-              <Input 
-                type="range" 
-                min="12" 
-                max="20" 
-                defaultValue="16"
-                onChange={(e) => {
-                  const css = `html { font-size: ${e.target.value}px; }`;
-                  setCustomCss(css);
-                }}
-              />
-            </div>
-            <div>
-              <Label>Line Height</Label>
-              <Input 
-                type="range" 
-                min="1" 
-                max="2" 
-                step="0.1"
-                defaultValue="1.5"
-                onChange={(e) => {
-                  const css = `body { line-height: ${e.target.value}; }`;
-                  setCustomCss(css);
-                }}
-              />
-            </div>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="layout" className="space-y-4">
-          <div className="space-y-4">
-            <div>
-              <Label>Container Max Width</Label>
-              <Input 
-                type="range" 
-                min="768" 
-                max="1920" 
-                step="64"
-                defaultValue="1280"
-                onChange={(e) => {
-                  const css = `.container { max-width: ${e.target.value}px; }`;
-                  setCustomCss(css);
-                }}
-              />
-            </div>
-            <div>
-              <Label>Gap Size</Label>
-              <Input 
-                type="range" 
-                min="4" 
-                max="16" 
-                defaultValue="8"
-                onChange={(e) => {
-                  const css = `:root { --gap: ${e.target.value}px; }`;
-                  setCustomCss(css);
-                }}
-              />
-            </div>
-          </div>
-        </TabsContent>
-      </Tabs>
+      <StyleManagerTabs
+        selectedElementPath={selectedElementPath}
+        activeStyles={activeStyles}
+        onStyleChange={handleUpdateStyle}
+      />
 
       <CssEditor
         css={customCss}
