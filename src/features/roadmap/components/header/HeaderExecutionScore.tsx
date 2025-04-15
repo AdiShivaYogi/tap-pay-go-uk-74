@@ -2,14 +2,16 @@
 import { Activity } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import { roadmapItems } from "../../data/roadmap-data";
+import { useRoadmapProgress } from "../../hooks/useRoadmapProgress";
 
 export const HeaderExecutionScore = () => {
-  const totalItems = roadmapItems.length;
-  const completedItems = roadmapItems.filter(item => item.status === "completed").length;
-  const inProgressItems = roadmapItems.filter(item => item.status === "in-progress").length;
-  const executionScore = Math.round((completedItems / totalItems) * 100);
-  const progressScore = Math.round(((completedItems + (inProgressItems * 0.5)) / totalItems) * 100);
+  const {
+    totalItems,
+    completedItems,
+    inProgressItems,
+    executionScore,
+    progressScore
+  } = useRoadmapProgress();
 
   return (
     <div className="space-y-4">

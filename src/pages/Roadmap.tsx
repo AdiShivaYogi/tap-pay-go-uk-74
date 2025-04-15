@@ -13,6 +13,7 @@ import { Compass, GitFork, Globe } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { SectionContainer } from "@/components/ui/section-container";
 import { BackupProgress } from "@/features/roadmap/components/BackupProgress";
+import { ProgressOptimizationPanel } from "@/features/roadmap/components/ProgressOptimizationPanel";
 
 const Roadmap = () => {
   const { isAdmin, role } = useUserRole();
@@ -75,6 +76,8 @@ const Roadmap = () => {
                 </div>
               </div>
             </StyledCard>
+            
+            <ProgressOptimizationPanel />
             
             <RoadmapContextProvider>
               <RoadmapProgress />
