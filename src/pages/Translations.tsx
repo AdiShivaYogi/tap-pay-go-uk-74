@@ -10,10 +10,10 @@ import { useState } from "react";
 import { ApiKeyForm } from "@/components/translations/ApiKeyForm";
 import { SupportedLanguages } from "@/components/translations/SupportedLanguages";
 
-interface APIConfigForm {
-  deeplKey: string;
-  deepseekKey: string;
-}
+// Updated interface to match the ApiKeyForm props
+type APIConfigData = {
+  [key: string]: string;
+};
 
 const Translations = () => {
   const { isAdmin } = useUserRole();
@@ -22,7 +22,7 @@ const Translations = () => {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorDetails, setErrorDetails] = useState('');
 
-  const onSubmitDeepL = async (data: APIConfigForm) => {
+  const onSubmitDeepL = async (data: APIConfigData) => {
     setLoading(true);
     setSubmitStatus('idle');
     setErrorDetails('');
@@ -54,7 +54,7 @@ const Translations = () => {
     }
   };
 
-  const onSubmitDeepseek = async (data: APIConfigForm) => {
+  const onSubmitDeepseek = async (data: APIConfigData) => {
     setLoading(true);
     setSubmitStatus('idle');
     setErrorDetails('');
