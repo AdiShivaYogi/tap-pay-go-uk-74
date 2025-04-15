@@ -1,9 +1,8 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 // Mock function for Stripe OAuth redirect
 const redirectToStripeOAuth = () => {
@@ -18,6 +17,16 @@ const redirectToStripeOAuth = () => {
 
 const ConnectStripePage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const selectedPlan = searchParams.get('plan');
+
+  useEffect(() => {
+    if (!selectedPlan) {
+      navigate('/pricing');
+    }
+  }, [selectedPlan, navigate]);
+
   const [isConnecting, setIsConnecting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -43,6 +52,10 @@ const ConnectStripePage = () => {
       setIsConnecting(false);
     }
   };
+
+  if (!selectedPlan) {
+    return null;
+  }
 
   return (
     <Layout>

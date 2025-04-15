@@ -1,4 +1,3 @@
-
 import { Layout } from "@/components/layout/layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,7 +8,7 @@ import {
   BadgeDollarSign,
   HelpCircle
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { 
   Accordion,
   AccordionContent,
@@ -18,9 +17,12 @@ import {
 } from "@/components/ui/accordion";
 
 const PricingPage = () => {
+  const navigate = useNavigate();
+  
   const plans = [
     {
       name: "Pay-as-you-go",
+      id: "pay-as-you-go",
       description: "Pentru utilizare ocazională",
       price: "Gratuit",
       features: [
@@ -35,6 +37,7 @@ const PricingPage = () => {
     },
     {
       name: "Lunar",
+      id: "monthly",
       description: "Pentru comercianți regulați",
       price: "14.99 lei",
       period: "per lună",
@@ -50,6 +53,7 @@ const PricingPage = () => {
     },
     {
       name: "Lifetime",
+      id: "lifetime",
       description: "Cea mai bună valoare pentru afaceri serioase",
       price: "149.99 lei",
       period: "plată unică",
@@ -64,6 +68,10 @@ const PricingPage = () => {
       icon: BadgeDollarSign
     }
   ];
+
+  const handleSelectPlan = (planId: string) => {
+    navigate(`/onboarding?plan=${planId}`);
+  };
 
   const faqs = [
     {
@@ -136,14 +144,13 @@ const PricingPage = () => {
                 </ul>
               </CardContent>
               <CardFooter>
-                <Link to="/onboarding" className="w-full">
-                  <Button 
-                    className="w-full" 
-                    variant={plan.popular ? "default" : "outline"}
-                  >
-                    {plan.cta}
-                  </Button>
-                </Link>
+                <Button 
+                  className="w-full" 
+                  variant={plan.popular ? "default" : "outline"}
+                  onClick={() => handleSelectPlan(plan.id)}
+                >
+                  {plan.cta}
+                </Button>
               </CardFooter>
             </Card>
           ))}

@@ -1,14 +1,22 @@
-
 import { Layout } from "@/components/layout/layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const OnboardingPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const selectedPlan = searchParams.get('plan');
   const totalSteps = 3;
+
+  useEffect(() => {
+    if (!selectedPlan) {
+      navigate('/pricing');
+    }
+  }, [selectedPlan, navigate]);
 
   const handleNext = () => {
     if (currentStep === totalSteps) {
@@ -21,8 +29,14 @@ const OnboardingPage = () => {
   const handlePrevious = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
+    } else {
+      navigate('/pricing');
     }
   };
+
+  if (!selectedPlan) {
+    return null;
+  }
 
   return (
     <Layout>
@@ -48,57 +62,30 @@ const OnboardingPage = () => {
         <Card className="w-full">
           <CardHeader>
             <CardTitle>
-              {currentStep === 1 && "Welcome to TapPayGo"}
-              {currentStep === 2 && "How It Works"}
-              {currentStep === 3 && "Connect Your Stripe Account"}
+              {currentStep === 1 && "Plan Selectat"}
+              {currentStep === 2 && "Cum Funcționează"}
+              {currentStep === 3 && "Conectare Stripe"}
             </CardTitle>
             <CardDescription>
-              {currentStep === 1 && "Let's get you set up to accept payments quickly."}
-              {currentStep === 2 && "A simple 3-step process to receive payments."}
-              {currentStep === 3 && "Connect securely with Stripe to receive payments directly."}
+              {currentStep === 1 && "Ai ales planul perfect pentru tine. Hai să începem configurarea."}
+              {currentStep === 2 && "Un proces simplu în 3 pași pentru a începe să primești plăți."}
+              {currentStep === 3 && "Conectează-te securizat cu Stripe pentru a primi plățile direct."}
             </CardDescription>
           </CardHeader>
           <CardContent>
             {currentStep === 1 && (
               <div className="space-y-6">
-                <div className="flex items-center gap-4">
-                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
-                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                      <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Quick Setup</h3>
-                    <p className="text-sm text-muted-foreground">Connect your Stripe account in minutes.</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-4">
-                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <path d="M12 16v-4"></path>
-                      <path d="M12 8h.01"></path>
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-medium">No Sensitive Data</h3>
-                    <p className="text-sm text-muted-foreground">We don't store your API keys or payment information.</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-4">
-                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
-                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                      <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Secure Integration</h3>
-                    <p className="text-sm text-muted-foreground">Payments processed securely through Stripe.</p>
-                  </div>
+                <div className="p-6 bg-muted/50 rounded-lg text-center">
+                  <h3 className="text-xl font-semibold mb-2">
+                    {selectedPlan === 'pay-as-you-go' && "Pay-as-you-go"}
+                    {selectedPlan === 'monthly' && "Plan Lunar"}
+                    {selectedPlan === 'lifetime' && "Plan Lifetime"}
+                  </h3>
+                  <p className="text-muted-foreground">
+                    {selectedPlan === 'pay-as-you-go' && "Plătești doar când folosești serviciul"}
+                    {selectedPlan === 'monthly' && "Acces complet cu plată lunară"}
+                    {selectedPlan === 'lifetime' && "Acces nelimitat pe viață"}
+                  </p>
                 </div>
               </div>
             )}
@@ -171,10 +158,10 @@ const OnboardingPage = () => {
               onClick={handlePrevious}
               disabled={currentStep === 1}
             >
-              Back
+              {currentStep === 1 ? "Schimbă Planul" : "Înapoi"}
             </Button>
             <Button onClick={handleNext}>
-              {currentStep === totalSteps ? "Connect Stripe" : "Continue"}
+              {currentStep === totalSteps ? "Conectează Stripe" : "Continuă"}
             </Button>
           </CardFooter>
         </Card>
