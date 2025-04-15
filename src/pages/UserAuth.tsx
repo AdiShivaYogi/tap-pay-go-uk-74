@@ -9,15 +9,9 @@ import { toast } from "@/hooks/use-toast";
 import { z } from "zod";
 import { AuthForm } from "@/components/admin-auth/AuthForm";
 import { AuthModeToggle } from "@/components/admin-auth/AuthModeToggle";
+import { formSchema } from "@/components/admin-auth/auth-validation";
 
-// Schema de validare pentru utilizatori
-const userFormSchema = z.object({
-  email: z.string().email("Introduceți un email valid"),
-  password: z.string()
-    .min(8, "Parola trebuie să aibă cel puțin 8 caractere"),
-});
-
-type UserFormValues = z.infer<typeof userFormSchema>;
+type AdminFormValues = z.infer<typeof formSchema>;
 
 const UserAuth = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
@@ -25,9 +19,9 @@ const UserAuth = () => {
   const { signIn } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (values: UserFormValues) => {
+  const handleSubmit = async (values: AdminFormValues) => {
     try {
-      const { email, password } = values;
+      const { email, password, inviteCode } = values;
       
       setIsLoading(true);
 
@@ -43,7 +37,12 @@ const UserAuth = () => {
           });
         }
       } else {
-        await handleRegistration(email, password);
+        // Admin signup
+        if (inviteCode !== 'ADMIN2025') {
+          throw new Error("Cod de invitație invalid");
+        }
+        
+        await handleAdminRegistration(email, password);
       }
     } catch (error: any) {
       console.error('Eroare:', error);
@@ -57,10 +56,15 @@ const UserAuth = () => {
     }
   };
 
-  const handleRegistration = async (email: string, password: string) => {
+  const handleAdminRegistration = async (email: string, password: string) => {
     const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: {
+          role: 'admin'
+        }
+      }
     });
 
     if (signUpError) {
@@ -68,9 +72,21 @@ const UserAuth = () => {
     }
 
     if (data.user) {
+      // Assign admin role in user_roles table
+      const { error: roleError } = await supabase
+        .from('user_roles')
+        .insert({ 
+          user_id: data.user.id, 
+          role: 'admin' 
+        });
+
+      if (roleError) {
+        throw roleError;
+      }
+
       await signIn(email, password);
       toast({
-        title: "Cont creat cu succes",
+        title: "Cont admin creat cu succes",
         description: "Veți fi redirectat către dashboard",
       });
       navigate("/dashboard");
@@ -83,12 +99,12 @@ const UserAuth = () => {
         <Card>
           <CardHeader>
             <CardTitle>
-              {isLoginMode ? "Autentificare" : "Înregistrare"}
+              {isLoginMode ? "Autentificare" : "Înregistrare Admin"}
             </CardTitle>
             <CardDescription>
               {isLoginMode 
                 ? "Autentificați-vă în contul dvs." 
-                : "Creați un cont nou"}
+                : "Creați un cont de administrator"}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -96,7 +112,7 @@ const UserAuth = () => {
               isLoginMode={isLoginMode}
               onSubmit={handleSubmit}
               isLoading={isLoading}
-              formSchema={userFormSchema}
+              formSchema={formSchema}
             />
 
             <AuthModeToggle

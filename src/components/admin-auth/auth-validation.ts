@@ -9,5 +9,8 @@ export const formSchema = z.object({
     .regex(/[a-z]/, "Parola trebuie să conțină cel puțin o literă mică")
     .regex(/[0-9]/, "Parola trebuie să conțină cel puțin o cifră")
     .regex(/[!@#$%^&*()]/, "Parola trebuie să conțină cel puțin un caracter special"),
-  inviteCode: z.string().min(1, "Codul de invitație este obligatoriu")
+  inviteCode: z.string().refine(
+    (code) => code === 'ADMIN2025', 
+    "Codul de invitație este invalid"
+  )
 });
