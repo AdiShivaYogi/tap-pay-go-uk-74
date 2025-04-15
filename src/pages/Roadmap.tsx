@@ -1,4 +1,3 @@
-
 import { Layout } from "@/components/layout/layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RoadmapCard } from "@/features/roadmap/components/RoadmapCard";
@@ -21,6 +20,7 @@ import { BetaUsersMonitoring } from "@/features/beta/components/BetaUsersMonitor
 import { FeedbackCollection } from "@/features/beta/components/FeedbackCollection";
 import { PaymentTestingPanel } from "@/features/beta/components/PaymentTestingPanel";
 import { MorningPriorityTasks } from "@/features/roadmap/components/MorningPriorityTasks";
+import { MVPRoadmap } from "@/features/roadmap/components/MVPRoadmap";
 
 const Roadmap = () => {
   const { isAdmin, role } = useUserRole();
@@ -30,7 +30,6 @@ const Roadmap = () => {
   const [activeTab, setActiveTab] = useState("all");
   const [activeCategory, setActiveCategory] = useState("all");
 
-  // Check if it's morning (before noon)
   const isMorning = useMemo(() => {
     const currentHour = new Date().getHours();
     return currentHour < 12;
@@ -65,12 +64,15 @@ const Roadmap = () => {
       <div className="container py-8 space-y-8">
         <RoadmapHeader />
         
-        {/* Show the Morning Priority Tasks component if it's morning */}
         {isMorning && (
           <div className="animate-in slide-in-from-bottom fade-in duration-700">
             <MorningPriorityTasks />
           </div>
         )}
+        
+        <div className="animate-in slide-in-from-bottom fade-in duration-700">
+          <MVPRoadmap />
+        </div>
         
         <BetaLaunchProgress />
         
