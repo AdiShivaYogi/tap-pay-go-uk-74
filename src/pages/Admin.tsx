@@ -1,4 +1,3 @@
-
 import { Layout } from "@/components/layout/layout";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/use-auth";
@@ -7,14 +6,12 @@ import { AdminStats } from "@/components/admin/AdminStats";
 import { AdminCharts } from "@/components/admin/AdminCharts";
 import { AdminTransactionsTable } from "@/components/admin/AdminTransactionsTable";
 import { MonitoringStats } from "@/components/admin/MonitoringStats";
+import { IPWhitelist } from "@/components/admin/IPWhitelist";
 import { prepareMonthlyData } from "@/utils/admin";
 import { useState } from "react";
 import { useAdminData } from "@/hooks/use-admin-data";
 import { calculateMonitoringStats, calculateFinancialStats, calculatePieChartData } from "@/utils/admin-calculations";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Loader2, LockIcon, Layers } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Loader2, Layers } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { AccessRestrictionAlert } from "@/features/roadmap/components/AccessRestrictionAlert";
 
@@ -75,6 +72,8 @@ const Admin = () => {
         </div>
 
         <div className="grid gap-6">
+          <IPWhitelist />
+          
           <Card className="p-6">
             <MonitoringStats 
               isLoading={isLoading}
