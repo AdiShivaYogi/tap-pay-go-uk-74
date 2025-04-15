@@ -11,6 +11,8 @@ import { productItems } from "./categories/product-items";
 import { integrationItems } from "./categories/integration-items";
 import { localizationItems } from "./categories/localization-items";
 import { partnershipItems } from "./categories/partnership-items";
+import { paymentItems } from "./categories/payment-items";
+import { uiItems } from "./categories/ui-items";
 
 // Function to remove duplicates based on title
 const removeDuplicates = (items: RoadmapItem[]) => {
@@ -25,14 +27,16 @@ const removeDuplicates = (items: RoadmapItem[]) => {
 
 // Combine all roadmap items into a single array, prioritizing UK and Stripe compliance items
 export const roadmapItems: RoadmapItem[] = removeDuplicates([
-  ...securityItems,           // Security first - critical for UK/Stripe compliance
-  ...infrastructureItems,     // Infrastructure foundation
-  ...completedRoadmapItems,   // Completed features
-  ...inProgressRoadmapItems,  // Current development
-  ...devopsItems,            // DevOps and automation
-  ...monitoringItems,        // Monitoring and analytics
-  ...productItems,           // Product features
-  ...pendingRoadmapItems,    // Future developments
-  ...localizationItems,      // Localization features
-  ...partnershipItems        // Partnership features
+  ...securityItems,           
+  ...infrastructureItems,     
+  ...completedRoadmapItems,   
+  ...inProgressRoadmapItems,  
+  ...devopsItems,            
+  ...monitoringItems,        
+  ...productItems,           
+  ...pendingRoadmapItems,    
+  ...localizationItems,      
+  ...partnershipItems,
+  ...paymentItems,           // Adăugat pentru a include elementele de plată
+  ...uiItems                 // Adăugat pentru a include elementele UI
 ]);
