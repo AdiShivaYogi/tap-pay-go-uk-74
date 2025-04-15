@@ -1,3 +1,4 @@
+
 /**
  * Configurația de temă centralizată a aplicației
  * Acest fișier funcționează ca un "design system" simplu
@@ -16,38 +17,38 @@ export const theme = {
     border: "hsl(var(--border))",
   },
   
-  // Spațiere
+  // Spațiere ajustată pentru consistență cu Dashboard
   spacing: {
-    section: "py-12 px-4 md:py-16 md:px-6",
-    container: "container mx-auto px-4",
-    pageHeader: "mb-8 md:mb-12",
+    section: "py-8 md:py-12 px-4 md:px-6",
+    container: "container mx-auto px-4 md:px-6",
+    pageHeader: "mb-6 md:mb-8",
   },
   
-  // Tipografie actualizată pentru a reflecta stilul din Dashboard
+  // Tipografie actualizată în stilul Dashboard
   typography: {
     // Titluri
-    h1: "text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl",
-    h2: "text-2xl font-semibold tracking-tight md:text-3xl",
-    h3: "text-xl font-semibold tracking-tight md:text-2xl",
-    h4: "text-lg font-medium md:text-xl",
+    h1: "text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight",
+    h2: "text-xl md:text-2xl font-semibold tracking-tight",
+    h3: "text-lg md:text-xl font-semibold tracking-tight",
+    h4: "text-base md:text-lg font-medium",
     
     // Text
-    lead: "text-lg md:text-xl text-muted-foreground",
-    paragraph: "text-base leading-7",
+    lead: "text-base md:text-lg text-muted-foreground",
+    paragraph: "text-sm md:text-base leading-relaxed",
     muted: "text-sm text-muted-foreground",
-    small: "text-sm font-medium leading-none",
-    subtle: "text-sm text-muted-foreground",
+    small: "text-xs md:text-sm font-medium leading-none",
+    subtle: "text-xs md:text-sm text-muted-foreground",
     
     // Card specific
-    cardTitle: "text-xl font-semibold leading-none tracking-tight",
+    cardTitle: "text-lg font-semibold leading-none tracking-tight",
     cardDescription: "text-sm text-muted-foreground",
     
     // Stats & Numbers
-    stats: "text-2xl font-semibold md:text-3xl",
+    stats: "text-xl md:text-2xl font-semibold",
     statsLabel: "text-sm font-medium text-muted-foreground",
   },
   
-  // Efecte și decorațiuni
+  // Efecte și decorațiuni adaptate pentru Dashboard
   effects: {
     gradient: {
       primary: "bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent",
@@ -55,33 +56,33 @@ export const theme = {
       accent: "bg-gradient-to-r from-accent to-accent/60 bg-clip-text text-transparent",
     },
     card: {
-      hover: "transition-shadow hover:shadow-md duration-300",
+      hover: "transition-all hover:shadow-md duration-200",
       animation: "animate-fade-in",
     },
   },
   
-  // Layouturi comune
+  // Layouturi comune actualizate pentru mai multă consistență
   layouts: {
-    grid2Cols: "grid grid-cols-1 md:grid-cols-2 gap-6",
-    grid3Cols: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6",
+    grid2Cols: "grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6",
+    grid3Cols: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6",
     grid4Cols: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4",
   },
   
-  // Stiluri de componente
+  // Stiluri de componente actualizate pentru Dashboard
   components: {
     card: {
-      base: "rounded-lg border bg-card text-card-foreground shadow-sm p-6",
-      interactive: "rounded-lg border bg-card text-card-foreground shadow-sm p-6 transition-all hover:shadow-md cursor-pointer",
-      highlight: "rounded-lg border-2 border-primary/10 bg-card text-card-foreground shadow-sm p-6",
+      base: "rounded-lg border bg-card text-card-foreground shadow-sm p-4 md:p-6",
+      interactive: "rounded-lg border bg-card text-card-foreground shadow-sm p-4 md:p-6 transition-all hover:shadow-md cursor-pointer",
+      highlight: "rounded-lg border-2 border-primary/10 bg-card text-card-foreground shadow-sm p-4 md:p-6",
     },
     button: {
-      primary: "bg-primary text-primary-foreground hover:bg-primary/90",
-      secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-      outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+      primary: "bg-primary text-primary-foreground hover:bg-primary/90 transition-colors",
+      secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors",
+      outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors",
     },
     section: {
-      default: "py-12 px-4",
-      alt: "py-12 px-4 bg-muted/50",
+      default: "py-8 md:py-12 px-4 md:px-6",
+      alt: "py-8 md:py-12 px-4 md:px-6 bg-muted/50",
     }
   }
 }
