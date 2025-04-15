@@ -14,12 +14,14 @@ interface AuthFormProps {
   isLoginMode: boolean;
   onSubmit: (values: AuthFormValues) => Promise<void>;
   isLoading: boolean;
+  errorMessage?: string;
 }
 
 export const AuthForm = ({ 
   isLoginMode, 
   onSubmit, 
-  isLoading 
+  isLoading,
+  errorMessage
 }: AuthFormProps) => {
   const [showPassword, setShowPassword] = useState(false);
   
@@ -50,6 +52,12 @@ export const AuthForm = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4">
+        {errorMessage && (
+          <div className="p-3 rounded-md bg-destructive/15 text-destructive text-sm">
+            {errorMessage}
+          </div>
+        )}
+        
         <FormField
           control={form.control}
           name="email"

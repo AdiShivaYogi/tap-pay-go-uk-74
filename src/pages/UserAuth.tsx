@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/layout";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -17,6 +18,7 @@ const UserAuth = () => {
   const location = useLocation();
   const { signIn, user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
   useEffect(() => {
     if (user) {
@@ -64,6 +66,8 @@ const UserAuth = () => {
       const { email, password, inviteCode } = values;
       
       setIsLoading(true);
+      setErrorMessage(undefined); // Reset error message
+      
       console.log("Form submitted:", { email, isLoginMode, hasInviteCode: !!inviteCode });
 
       if (isLoginMode) {
@@ -74,6 +78,16 @@ const UserAuth = () => {
           navigate("/roadmap");
         } catch (error: any) {
           console.error("Eroare la autentificare:", error);
+          
+          // Handle common authentication errors with user-friendly messages
+          if (error.message === "Invalid login credentials") {
+            setErrorMessage("Email sau parolă incorectă. Vă rugăm să încercați din nou.");
+          } else if (error.message?.includes("rate limited")) {
+            setErrorMessage("Prea multe încercări de autentificare. Vă rugăm să încercați mai târziu.");
+          } else {
+            setErrorMessage(error.message || "A apărut o eroare la autentificare");
+          }
+          
           toast({
             title: "Eroare de autentificare",
             description: error.message || "A apărut o eroare la autentificare",
@@ -82,6 +96,7 @@ const UserAuth = () => {
         }
       } else {
         if (!inviteCode || inviteCode !== 'ADMIN2025') {
+          setErrorMessage("Cod de invitație invalid");
           toast({
             title: "Eroare",
             description: "Cod de invitație invalid",
@@ -91,10 +106,28 @@ const UserAuth = () => {
           return;
         }
         
-        await handleAdminRegistration(email, password);
+        try {
+          await handleAdminRegistration(email, password);
+        } catch (error: any) {
+          console.error('Eroare la înregistrare:', error);
+          
+          // Handle registration errors
+          if (error.message?.includes("User already registered")) {
+            setErrorMessage("Există deja un cont cu această adresă de email.");
+          } else {
+            setErrorMessage(error.message || "A apărut o eroare la înregistrare");
+          }
+          
+          toast({
+            title: "Eroare",
+            description: error.message || "A apărut o eroare la înregistrare",
+            variant: "destructive",
+          });
+        }
       }
     } catch (error: any) {
       console.error('Eroare:', error);
+      setErrorMessage(error.message || "A apărut o eroare. Vă rugăm să încercați din nou.");
       toast({
         title: "Eroare",
         description: error.message || "A apărut o eroare. Vă rugăm să încercați din nou.",
@@ -108,6 +141,8 @@ const UserAuth = () => {
   const handleResetPassword = async ({ email }: { email: string }) => {
     try {
       setIsLoading(true);
+      setErrorMessage(undefined);
+      
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/auth?reset=true`,
       });
@@ -123,6 +158,7 @@ const UserAuth = () => {
       setIsResetMode(false);
     } catch (error: any) {
       console.error("Eroare la trimiterea emailului de resetare:", error);
+      setErrorMessage(error.message || "A apărut o eroare la trimiterea emailului");
       toast({
         title: "Eroare",
         description: error.message || "A apărut o eroare la trimiterea emailului",
@@ -172,6 +208,11 @@ const UserAuth = () => {
     }
   };
 
+  // When mode changes, reset error message
+  useEffect(() => {
+    setErrorMessage(undefined);
+  }, [isLoginMode, isResetMode]);
+
   return (
     <Layout>
       <div className="container max-w-md py-8">
@@ -205,6 +246,7 @@ const UserAuth = () => {
                   isLoginMode={isLoginMode}
                   onSubmit={handleSubmit}
                   isLoading={isLoading}
+                  errorMessage={errorMessage}
                 />
                 <AuthModeToggle
                   isLoginMode={isLoginMode}
