@@ -65,17 +65,17 @@ export const securityItems: RoadmapItem[] = [
     ]
   },
   {
-    title: "Consolidarea securității serverelor și a datelor",
-    description: "Implementare măsuri avansate de securitate pentru protejarea datelor sensibile",
+    title: "Îmbunătățiri Securitate Backend",
+    description: "Consolidarea securității serverelor și a datelor",
     status: "in-progress",
     priority: "high",
     category: "security",
-    iconType: "shield",
+    iconType: "server-cog",
     iconColor: "text-blue-500",
     timeEstimate: {
-      total: 45,
-      spent: 20,
-      aiTotal: 15
+      total: 40,
+      spent: 25,
+      aiTotal: 20
     },
     details: [
       "Implementare autentificare multi-factor (MFA) ✓",

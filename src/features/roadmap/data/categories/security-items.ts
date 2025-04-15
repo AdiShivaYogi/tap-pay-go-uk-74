@@ -8,8 +8,8 @@ export const securityItems: RoadmapItem[] = [
     status: "in-progress",
     priority: "high",
     category: "security",
-    iconType: "security",
-    iconColor: "text-green-500",
+    iconType: "server-cog",
+    iconColor: "text-blue-500",
     timeEstimate: {
       total: 40,
       spent: 25,
