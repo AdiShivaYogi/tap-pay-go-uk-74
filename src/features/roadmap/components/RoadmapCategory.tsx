@@ -6,7 +6,8 @@ import { Category } from "../types";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useRoadmapContext } from '../context/RoadmapContext';
 import { cn } from '@/lib/utils';
-import { StyledCard } from "@/components/ui/styled-card";
+import { StyledCard, StyledCardContent } from "@/components/ui/styled-card";
+import { Progress } from "@/components/ui/progress";
 
 interface RoadmapCategoryProps {
   title: string;
@@ -20,27 +21,31 @@ export const RoadmapCategory: React.FC<RoadmapCategoryProps> = ({
   const { expandedCategories, toggleCategory } = useRoadmapContext();
   const isExpanded = expandedCategories.includes(title);
 
-  // Filter items that belong to any of the specified categories
   const categoryItems = roadmapItems.filter(item => 
     item.category && categories.includes(item.category as Category)
   );
 
-  // Calculate progress stats
   const completedItems = categoryItems.filter(item => item.status === "completed").length;
   const totalItems = categoryItems.length;
   const progress = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
 
   return (
-    <StyledCard gradient={false}>
+    <StyledCard className="bg-gradient-to-br from-card to-secondary/5 backdrop-blur-sm">
       <button
         onClick={() => toggleCategory(title)}
-        className="w-full px-6 py-4 flex items-center justify-between hover:bg-accent/50 transition-colors rounded-t-lg"
+        className="w-full px-6 py-4 flex items-center justify-between hover:bg-accent/5 transition-colors rounded-t-lg"
       >
         <div className="flex items-center gap-4">
           <h2 className="text-xl font-semibold">{title}</h2>
-          <span className="text-sm text-muted-foreground">
-            {completedItems} din {totalItems} completate ({progress}%)
-          </span>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Progress 
+              value={progress} 
+              className="w-20 h-2"
+            />
+            <span>
+              {completedItems}/{totalItems}
+            </span>
+          </div>
         </div>
         {isExpanded ? (
           <ChevronDown className="h-5 w-5 text-muted-foreground" />
@@ -50,7 +55,7 @@ export const RoadmapCategory: React.FC<RoadmapCategoryProps> = ({
       </button>
       
       {isExpanded && (
-        <div className="p-6">
+        <StyledCardContent>
           {categoryItems.length > 0 ? (
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {categoryItems.map((item, index) => (
@@ -62,7 +67,7 @@ export const RoadmapCategory: React.FC<RoadmapCategoryProps> = ({
               Nu există elemente în această categorie.
             </div>
           )}
-        </div>
+        </StyledCardContent>
       )}
     </StyledCard>
   );
