@@ -43,4 +43,3 @@ export const NAVIGATION: NavigationItem[] = [
     showWhenAuth: true 
   },
 ];
-
