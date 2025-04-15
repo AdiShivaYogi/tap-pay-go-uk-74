@@ -1,16 +1,15 @@
 
 import { useState } from "react";
 import { Layout } from "@/components/layout/layout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { DateRangeSelector } from "@/components/reports/DateRangeSelector";
 import { ReportStats } from "@/components/reports/ReportStats";
 import { ReportCharts } from "@/components/reports/ReportCharts";
 import { TransactionsTable } from "@/components/transactions/TransactionsTable";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useDateRange } from "@/hooks/use-date-range";
-import { FileSpreadsheet } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { FileSpreadsheet, RefreshCcw, LineChart } from "lucide-react";
 
 const Reports = () => {
   const [period, setPeriod] = useState<"week" | "month" | "all">("week");
@@ -37,43 +36,48 @@ const Reports = () => {
 
   return (
     <Layout>
-      <div className="container py-8 px-4 max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Transaction Reports</h1>
-          <p className="text-muted-foreground text-lg">
-            View and analyse your transaction history
-          </p>
+      <div className="container py-8 px-4 max-w-7xl mx-auto space-y-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <LineChart className="h-8 w-8 text-primary" />
+              <h1 className="text-3xl font-bold">Rapoarte Tranzacții</h1>
+              <Badge variant="outline" className="ml-2">
+                v2.0
+              </Badge>
+            </div>
+            <p className="text-muted-foreground">
+              Analiza detaliată și raportare avansată a tranzacțiilor
+            </p>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            {isLoading ? (
+              <RefreshCcw className="h-4 w-4 animate-spin" />
+            ) : (
+              <FileSpreadsheet className="h-4 w-4 text-muted-foreground" />
+            )}
+            <span className="text-sm text-muted-foreground">
+              {transactions.length} tranzacții
+            </span>
+          </div>
         </div>
 
-        <div className="mb-8">
-          <DateRangeSelector period={period} onPeriodChange={setPeriod} />
-        </div>
-
+        <DateRangeSelector period={period} onPeriodChange={setPeriod} />
         <ReportStats transactions={transactions} isLoading={isLoading} />
         <ReportCharts transactions={transactions} isLoading={isLoading} period={period} />
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <div className="space-y-1">
-              <CardTitle>Detailed Transactions</CardTitle>
-              <CardDescription>
-                Complete list of transactions for the selected period
-              </CardDescription>
-            </div>
-            <FileSpreadsheet className="h-5 w-5 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <div className="space-y-2">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Skeleton key={i} className="h-12 w-full" />
-                ))}
-              </div>
-            ) : (
-              <TransactionsTable transactions={transactions} />
-            )}
-          </CardContent>
-        </Card>
+        <div className="bg-card rounded-lg border shadow-sm">
+          <div className="px-6 py-4 border-b">
+            <h2 className="text-lg font-semibold">Detalii Tranzacții</h2>
+            <p className="text-sm text-muted-foreground">
+              Lista completă a tranzacțiilor pentru perioada selectată
+            </p>
+          </div>
+          <div className="p-6">
+            <TransactionsTable transactions={transactions} />
+          </div>
+        </div>
       </div>
     </Layout>
   );
