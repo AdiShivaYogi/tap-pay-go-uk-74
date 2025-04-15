@@ -2,43 +2,43 @@
 import { Layout } from "@/components/layout/layout";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Shield, Tool, Hammer, Lock, HandCoins, CheckCircle2, LucideIcon } from "lucide-react";
+import { Shield, Hammer, Lock, HandCoins, CheckCircle2, Zap } from "lucide-react";
 
 interface ValueProps {
   title: string;
   description: string;
-  icon: LucideIcon;
+  icon: React.ComponentType<{ className?: string }>;
 }
 
 const CoreValues: ValueProps[] = [
   {
-    title: "Simplicitate",
-    description: "Link de plată, trimitere, încasare. Atât.",
+    title: "Simplitate",
+    description: "Generăm link-uri de plată profesionale și simple.",
     icon: HandCoins
   },
   {
     title: "Securitate",
-    description: "Nu stocăm date sensibile. Totul e gestionat de Stripe.",
+    description: "Protecție maximă prin utilizarea infrastructurii Stripe.",
     icon: Shield
   },
   {
-    title: "Izolare completă",
-    description: "Fiecare utilizator vede doar datele lui. Punct.",
+    title: "Izolare Completă",
+    description: "Datele fiecărui utilizator rămân strict confidențiale.",
     icon: Lock
   },
   {
-    title: "Unealtă, nu platformă",
-    description: "Mică, rapidă și de încredere. Fără complicații.",
-    icon: Tool
+    title: "Eficiență",
+    description: "Soluție rapidă și precisă pentru procesarea plăților.",
+    icon: Zap
   },
   {
-    title: "Zero Tracking",
-    description: "Nu te spionăm, nu te vindem, nu te încurcăm.",
+    title: "Transparență",
+    description: "Fără ascunzișuri, fără date tracking, fără complicații.",
     icon: CheckCircle2
   },
   {
-    title: "Construim pentru tine",
-    description: "Focus pe nevoile tale reale de business.",
+    title: "Focused pe Business",
+    description: "Construim instrumente care amplifică productivitatea ta.",
     icon: Hammer
   }
 ];
@@ -49,32 +49,30 @@ const AboutPage = () => {
       <div className="container py-12 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-6">Despre Noi</h1>
+            <h1 className="text-4xl font-bold mb-6">Misiunea Noastră</h1>
             <p className="text-xl text-muted-foreground">
-              Suntem aici pentru freelanceri, creatori și mici afaceri care vor să se concentreze pe muncă, nu pe facturi, Stripe, sau taxe.
+              Simplificăm procesele financiare pentru freelanceri, creatori și antreprenori.
             </p>
           </div>
           
           <div className="prose prose-gray max-w-none space-y-8">
             <section className="bg-primary/5 p-8 rounded-lg">
               <p className="text-lg mb-6">
-                Am construit o interfață care simplifică tot: creezi un link de plată, îl trimiți clientului, 
-                banii intră în contul tău. Fără să te întrebi dacă ai setat tot bine în Stripe, 
-                fără griji legate de GDPR, fără integrări complicate.
+                Am conceput o soluție care transformă gestionarea plăților într-un proces fluid și eficient. 
+                Generezi un link de plată, îl trimiți clientului, iar banii ajung direct în contul tău.
               </p>
               <p className="text-lg mb-6">
-                Nu stocăm date sensibile. Nu procesăm plăți. Nu ne băgăm în treaba ta.
-                Totul e gestionat de Stripe, iar noi ne ocupăm doar de experiența ta.
+                Eliminăm complexitatea: nicio configurare complicată Stripe, 
+                nicio îngrijorare legată de GDPR, fără integrări tehnice complicate.
               </p>
               <p className="text-lg">
-                Nu vrem să fim o platformă.
-                Vrem să fim o unealtă: mică, rapidă și de încredere.
-                Unelte care nu te încurcă. Care nu te vând. Care nu te spionează.
+                Suntem un instrument, nu o platformă: focused, rapid și de încredere. 
+                Construim pentru a simplifica, nu pentru a complica.
               </p>
             </section>
 
             <section className="mt-12">
-              <h2 className="text-3xl font-semibold mb-8">Ce Ne Face Diferiți</h2>
+              <h2 className="text-3xl font-semibold mb-8">Principiile Noastre</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {CoreValues.map((value, index) => (
                   <div key={index} className="bg-card p-6 rounded-lg border hover:shadow-sm transition-shadow">
@@ -91,10 +89,10 @@ const AboutPage = () => {
             </section>
 
             <section className="bg-muted/30 p-8 rounded-lg mt-12 text-center">
-              <h2 className="text-3xl font-semibold mb-6">Alătură-te Nouă</h2>
+              <h2 className="text-3xl font-semibold mb-6">Alătură-te Comunității</h2>
               <p className="text-lg mb-6">
-                Asta construim. Dacă vrei să vii alături de noi, începe să folosești aplicația. 
-                Dacă vrei să ajuți, scrie-ne.
+                Suntem dedicați să oferim unelte care transformă munca ta în profit. 
+                Începe acum și descoperă simplitatea gestionării financiare.
               </p>
               <div className="flex justify-center gap-4">
                 <Link to="/onboarding">
