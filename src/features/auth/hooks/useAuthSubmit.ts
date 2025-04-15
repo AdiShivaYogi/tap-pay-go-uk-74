@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
@@ -22,6 +23,11 @@ export const useAuthSubmit = () => {
 
       if (isLoginMode) {
         try {
+          // Try to authenticate with the special admin email directly
+          if (email === '114.adrian.gheorghe@gmail.com') {
+            console.log("Attempting admin login");
+          }
+          
           await signIn(email, password);
           
           console.log("Authentication successful");
@@ -46,6 +52,7 @@ export const useAuthSubmit = () => {
           });
         }
       } else {
+        // Handle registration logic - first check if admin already exists
         const { data: existingAdmins } = await supabase
           .from('user_roles')
           .select('user_id')

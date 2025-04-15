@@ -27,6 +27,8 @@ export const AuthRedirectHandler = ({ locationHash, setIsLoading }: AuthRedirect
           const errorDescription = hashParams.get("error_description");
 
           if (error) {
+            console.error("Auth error:", { error, errorCode, errorDescription });
+            
             // Handle known error types
             if (errorCode === "otp_expired") {
               toast({
@@ -49,10 +51,16 @@ export const AuthRedirectHandler = ({ locationHash, setIsLoading }: AuthRedirect
           }
           
           if (data?.session) {
+            // Check if user is an admin
+            const isAdmin = 
+              data.session.user.email === '114.adrian.gheorghe@gmail.com' || 
+              (data.session.user.user_metadata && data.session.user.user_metadata.role === 'admin');
+              
             toast({
               title: "Autentificare reușită",
-              description: "Bine ați revenit!",
+              description: isAdmin ? "Bine ați revenit, admin!" : "Bine ați revenit!",
             });
+            
             navigate("/roadmap");
           }
         } catch (error: any) {

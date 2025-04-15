@@ -9,19 +9,12 @@ export const useAuth = () => {
     throw new Error('useAuth trebuie folosit în interiorul unui AuthProvider');
   }
   
-  // Adăugăm logică pentru a verifica dacă utilizatorul este super admin
+  // Check if user is super admin based on email
   if (context.user && context.user.email === '114.adrian.gheorghe@gmail.com') {
-    // Atribuim explicit rolul de admin pentru super admin
+    // Explicitly assign admin role for super admin
     context.user.role = 'admin';
     console.log('Super admin detected in useAuth hook');
   }
-  
-  // Log authentication context for debugging
-  console.log('Auth context:', {
-    isAuthenticated: !!context.user,
-    user: context.user,
-    loading: context.loading
-  });
   
   return context;
 };

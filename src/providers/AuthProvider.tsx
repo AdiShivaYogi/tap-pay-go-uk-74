@@ -1,4 +1,3 @@
-
 import { createContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -16,15 +15,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       try {
         setLoading(true);
         
-        // Mai întâi se configurează listener-ul pentru schimbările de stare
+        // First set up the listener for auth state changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
           async (event, session) => {
             console.log('Auth state changed:', event);
             
             if (session) {
-              // Verificăm dacă utilizatorul este admin@example.com sau are metadate specifice
+              // Check if user is an admin
               const isAdmin = 
-                session.user.email === 'admin@example.com' || 
+                session.user.email === '114.adrian.gheorghe@gmail.com' || 
                 (session.user.user_metadata && session.user.user_metadata.role === 'admin');
               
               console.log('User info:', {
@@ -49,7 +48,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                   stripeConnected: false,
                   role: 'user'
                 });
-                console.log('Regular user set');
               }
               
               if (event === 'SIGNED_IN') {
@@ -60,18 +58,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               }
             } else {
               setUser(null);
-              console.log('No session found, user set to null');
             }
             setLoading(false);
           }
         );
 
-        // Apoi verificăm sesiunea curentă
+        // Then check for existing session
         const { data: { session } } = await supabase.auth.getSession();
         
         if (session) {
           const isAdmin = 
-            session.user.email === 'admin@example.com' || 
+            session.user.email === '114.adrian.gheorghe@gmail.com' || 
             (session.user.user_metadata && session.user.user_metadata.role === 'admin');
             
           console.log('Initial session check:', {
@@ -88,7 +85,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               stripeAccountId: 'demo-account-id',
               role: 'admin'
             });
-            console.log('Initial admin user set');
           } else {
             setUser({
               id: session.user.id,
@@ -96,11 +92,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               stripeConnected: false,
               role: 'user'
             });
-            console.log('Initial regular user set');
           }
         } else {
           setUser(null);
-          console.log('No initial session found');
         }
         
         setLoading(false);
@@ -132,9 +126,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.error('Eroare la autentificare:', error.message);
         throw error;
       }
-
-      console.log('Sign in successful, data:', data);
-      // Toast-ul va fi afișat de listener-ul onAuthStateChange
     } catch (error) {
       console.error('Eroare la autentificare:', error);
       throw error;
