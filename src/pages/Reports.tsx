@@ -39,9 +39,9 @@ const Reports = () => {
     <Layout>
       <div className="container py-8 px-4 max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Rapoarte tranzacții</h1>
+          <h1 className="text-4xl font-bold mb-2">Transaction Reports</h1>
           <p className="text-muted-foreground text-lg">
-            Vizualizează și analizează istoricul tranzacțiilor
+            View and analyse your transaction history
           </p>
         </div>
 
@@ -55,9 +55,9 @@ const Reports = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <div className="space-y-1">
-              <CardTitle>Tranzacții detaliate</CardTitle>
+              <CardTitle>Detailed Transactions</CardTitle>
               <CardDescription>
-                Lista completă a tranzacțiilor pentru perioada selectată
+                Complete list of transactions for the selected period
               </CardDescription>
             </div>
             <FileSpreadsheet className="h-5 w-5 text-muted-foreground" />

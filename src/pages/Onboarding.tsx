@@ -62,14 +62,14 @@ const OnboardingPage = () => {
         <Card className="w-full">
           <CardHeader>
             <CardTitle>
-              {currentStep === 1 && "Plan Selectat"}
-              {currentStep === 2 && "Cum Funcționează"}
-              {currentStep === 3 && "Conectare Stripe"}
+              {currentStep === 1 && "Selected Plan"}
+              {currentStep === 2 && "How It Works"}
+              {currentStep === 3 && "Connect Stripe"}
             </CardTitle>
             <CardDescription>
-              {currentStep === 1 && "Ai ales planul perfect pentru tine. Hai să începem configurarea."}
-              {currentStep === 2 && "Un proces simplu în 3 pași pentru a începe să primești plăți."}
-              {currentStep === 3 && "Conectează-te securizat cu Stripe pentru a primi plățile direct."}
+              {currentStep === 1 && "You've chosen the perfect plan. Let's start setting things up."}
+              {currentStep === 2 && "A simple 3-step process to start receiving payments."}
+              {currentStep === 3 && "Securely connect with Stripe to receive payments directly."}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -158,10 +158,10 @@ const OnboardingPage = () => {
               onClick={handlePrevious}
               disabled={currentStep === 1}
             >
-              {currentStep === 1 ? "Schimbă Planul" : "Înapoi"}
+              {currentStep === 1 ? "Change Plan" : "Back"}
             </Button>
             <Button onClick={handleNext}>
-              {currentStep === totalSteps ? "Conectează Stripe" : "Continuă"}
+              {currentStep === totalSteps ? "Connect Stripe" : "Continue"}
             </Button>
           </CardFooter>
         </Card>

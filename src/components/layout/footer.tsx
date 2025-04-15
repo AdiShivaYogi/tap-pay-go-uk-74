@@ -7,13 +7,12 @@ export function Footer() {
   return (
     <footer className="w-full border-t bg-background">
       <div className="container px-4 py-12">
-        {/* Main footer content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Company Info */}
           <div className="space-y-4">
             <h3 className="font-bold text-primary text-xl">TapPayGo</h3>
             <p className="text-sm text-muted-foreground max-w-xs">
-              Transformăm orice telefon într-un terminal de plată sigur și eficient pentru afacerea ta.
+              Transforming any phone into a secure and efficient payment terminal for your business.
             </p>
             <div className="flex space-x-4">
               <a href="mailto:contact@tappaygo.com" className="text-muted-foreground hover:text-primary">
@@ -30,13 +29,13 @@ export function Footer() {
 
           {/* Quick Links */}
           <div className="space-y-4">
-            <h4 className="font-medium text-base">Link-uri Rapide</h4>
+            <h4 className="font-medium text-base">Quick Links</h4>
             <nav className="flex flex-col space-y-2">
               <Link to="/about" className="text-sm text-muted-foreground hover:text-foreground">
-                Despre Noi
+                About Us
               </Link>
               <Link to="/pricing" className="text-sm text-muted-foreground hover:text-foreground">
-                Prețuri
+                Pricing
               </Link>
               <Link to="/roadmap" className="text-sm text-muted-foreground hover:text-foreground">
                 Roadmap
@@ -49,10 +48,10 @@ export function Footer() {
             <h4 className="font-medium text-base">Legal</h4>
             <nav className="flex flex-col space-y-2">
               <Link to="/terms" className="text-sm text-muted-foreground hover:text-foreground">
-                Termeni și Condiții
+                Terms & Conditions
               </Link>
               <Link to="/privacy" className="text-sm text-muted-foreground hover:text-foreground">
-                Politica de Confidențialitate
+                Privacy Policy
               </Link>
             </nav>
           </div>
@@ -63,15 +62,15 @@ export function Footer() {
             <div className="space-y-3">
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <MessageCircle className="h-4 w-4" />
-                <span>Suport Live Chat</span>
+                <span>Live Chat Support</span>
               </div>
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <Phone className="h-4 w-4" />
-                <span>+40 123 456 789</span>
+                <span>+44 20 1234 5678</span>
               </div>
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <MapPin className="h-4 w-4" />
-                <span>București, România</span>
+                <span>London, United Kingdom</span>
               </div>
             </div>
           </div>
@@ -81,8 +80,8 @@ export function Footer() {
 
         {/* Bottom footer */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} TapPayGo. Toate drepturile rezervate.</p>
-          <p>Făcut cu ❤️ în România</p>
+          <p>&copy; {new Date().getFullYear()} TapPayGo. All rights reserved.</p>
+          <p>Made with ❤️ in the UK</p>
         </div>
       </div>
     </footer>

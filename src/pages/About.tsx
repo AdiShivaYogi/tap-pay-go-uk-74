@@ -51,7 +51,7 @@ const AboutPage = () => {
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold mb-6">Our Mission</h1>
             <p className="text-xl text-muted-foreground">
-              Simplifying financial processes for freelancers, creators and small businesses in the UK.
+              Simplifying financial processes for UK freelancers, creators and small businesses.
             </p>
           </div>
           

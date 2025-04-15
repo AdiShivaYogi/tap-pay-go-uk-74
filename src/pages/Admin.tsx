@@ -56,7 +56,7 @@ const Admin = () => {
               Admin Dashboard
             </h1>
             <p className="text-muted-foreground mt-1">
-              Monitorizează performanța platformei și comisioanele, fără acces la date sensibile
+              Monitor platform performance and commissions, without access to sensitive data
             </p>
           </div>
           
@@ -64,9 +64,9 @@ const Admin = () => {
                 onValueChange={(v) => setPeriod(v as "week" | "month" | "year")}
                 className="hidden md:block">
             <TabsList>
-              <TabsTrigger value="week">Ultima săptămână</TabsTrigger>
-              <TabsTrigger value="month">Ultima lună</TabsTrigger>
-              <TabsTrigger value="year">Ultimul an</TabsTrigger>
+              <TabsTrigger value="week">Last Week</TabsTrigger>
+              <TabsTrigger value="month">Last Month</TabsTrigger>
+              <TabsTrigger value="year">Last Year</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>

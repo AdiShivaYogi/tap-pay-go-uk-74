@@ -23,47 +23,47 @@ export const pricingPlans: PricingPlan[] = [
   {
     name: "Pay-as-you-go",
     id: "pay-as-you-go",
-    description: "Pentru utilizare ocazională",
-    price: "Gratuit",
+    description: "For occasional use",
+    price: "Free",
     features: [
-      "Fără taxă lunară",
-      "1.5% + 0.20 lei per tranzacție",
-      "Plăți nelimitate",
-      "Suport 24/7"
+      "No monthly fee",
+      "1.5% + £0.20 per transaction",
+      "Unlimited payments",
+      "24/7 Support"
     ],
-    cta: "Începe Gratuit",
+    cta: "Start Free",
     popular: false,
     icon: CreditCard
   },
   {
-    name: "Lunar",
+    name: "Monthly",
     id: "monthly",
-    description: "Pentru comercianți regulați",
-    price: "14.99 lei",
-    period: "per lună",
+    description: "For regular merchants",
+    price: "£14.99",
+    period: "per month",
     features: [
-      "Fără comisioane (se aplică doar taxele Stripe)",
-      "Suport prioritar",
-      "Istoric tranzacții",
-      "Panou de analiză"
+      "No commissions (only Stripe fees apply)",
+      "Priority support",
+      "Transaction history",
+      "Analytics dashboard"
     ],
-    cta: "Abonează-te Acum",
+    cta: "Subscribe Now",
     popular: true,
     icon: Wallet
   },
   {
     name: "Lifetime",
     id: "lifetime",
-    description: "Cea mai bună valoare pentru afaceri serioase",
-    price: "149.99 lei",
-    period: "plată unică",
+    description: "Best value for serious businesses",
+    price: "£149.99",
+    period: "one-time payment",
     features: [
-      "Toate funcționalitățile din planul Lunar",
-      "Fără plăți recurente",
-      "Actualizări gratuite pe viață",
-      "Serviciu clienți prioritar"
+      "All features from Monthly plan",
+      "No recurring payments",
+      "Free lifetime updates",
+      "Priority customer service"
     ],
-    cta: "Obține Acces Lifetime",
+    cta: "Get Lifetime Access",
     popular: false,
     icon: BadgeDollarSign
   }
@@ -71,19 +71,19 @@ export const pricingPlans: PricingPlan[] = [
 
 export const pricingFAQs: FAQItem[] = [
   {
-    question: "Ce metode de plată acceptați?",
-    answer: "Acceptăm toate cardurile majore de credit și debit, inclusiv Visa, Mastercard și American Express. Plățile sunt procesate în siguranță prin Stripe."
+    question: "What payment methods do you accept?",
+    answer: "We accept all major credit and debit cards, including Visa, Mastercard and American Express. Payments are securely processed through Stripe."
   },
   {
-    question: "Pot să schimb planul mai târziu?",
-    answer: "Da, puteți upgrada sau downgrade planul în orice moment. Ajustările de facturare vor fi făcute proporțional."
+    question: "Can I change my plan later?",
+    answer: "Yes, you can upgrade or downgrade your plan at any time. Billing adjustments will be made proportionally."
   },
   {
-    question: "Există o perioadă de probă?",
-    answer: "Da, oferim o perioadă de probă de 14 zile pentru planul Lunar, fără obligații. Puteți anula oricând în această perioadă."
+    question: "Is there a trial period?",
+    answer: "Yes, we offer a 14-day trial period for the Monthly plan with no obligations. You can cancel anytime during this period."
   },
   {
-    question: "Ce se întâmplă după ce mă abonez?",
-    answer: "Veți primi acces imediat la toate funcționalitățile incluse în planul ales. Veți primi și un email de confirmare cu detaliile contului."
+    question: "What happens after I subscribe?",
+    answer: "You'll get immediate access to all features included in your chosen plan. You'll also receive a confirmation email with your account details."
   }
 ];
