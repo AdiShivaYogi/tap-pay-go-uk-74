@@ -2,6 +2,7 @@
 import { useMemo } from "react";
 import { roadmapItems } from "../data/roadmap-data";
 import { RoadmapItem } from "../types";
+import { TaskWithProgress } from "../types/task-types";
 
 export const useRoadmapProgress = () => {
   const stats = useMemo(() => {
@@ -44,6 +45,29 @@ export const useRoadmapProgress = () => {
       return acc;
     }, {} as Record<string, { total: number; completed: number }>);
 
+    // Calculate potential score gain
+    const inProgressItemsArray = items.filter(item => item.status === "in-progress");
+    const potentialScoreIncrement = Math.round((inProgressItemsArray.length / totalItems) * 100);
+    const potentialScore = Math.min(100, executionScore + potentialScoreIncrement);
+    
+    // Identify high impact items (in-progress items with most time already invested)
+    const highImpactItems: TaskWithProgress[] = inProgressItemsArray
+      .map(item => {
+        const timeRemaining = item.timeEstimate.total - (item.timeEstimate.spent || 0);
+        const progressPercentage = ((item.timeEstimate.spent || 0) / item.timeEstimate.total) * 100;
+        return {
+          ...item,
+          timeRemaining,
+          progressPercentage
+        };
+      })
+      .sort((a, b) => {
+        // Sort by progress percentage (descending)
+        return (b.timeEstimate.spent || 0) / b.timeEstimate.total - 
+               (a.timeEstimate.spent || 0) / a.timeEstimate.total;
+      })
+      .slice(0, 3); // Take top 3 high impact items
+
     return {
       totalItems,
       completedItems,
@@ -52,7 +76,12 @@ export const useRoadmapProgress = () => {
       executionScore,
       progressScore,
       timeEfficiency: Math.round(timeEfficiency * 100),
-      categoryProgress
+      categoryProgress,
+      potentialScoreGain: {
+        potentialScore,
+        scoreIncrease: potentialScoreIncrement
+      },
+      highImpactItems
     };
   }, []);
 
