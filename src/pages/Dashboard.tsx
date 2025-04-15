@@ -1,3 +1,4 @@
+
 import { Layout } from "@/components/layout/layout";
 import { BarChart2 } from "lucide-react";
 import { DeviceCompatibilityAlert } from "@/components/device-compatibility-alert";
@@ -13,6 +14,7 @@ import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
+import { useEffect } from "react";
 
 const Dashboard = () => {
   const [searchParams] = useSearchParams();
