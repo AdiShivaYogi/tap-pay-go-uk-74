@@ -29,7 +29,7 @@ const Roadmap = () => {
   const categoryGroups = [
     {
       title: "Securitate și Conformitate",
-      categories: ["security"]
+      categories: ["security", "payment"] // Added payment category here as it's related to compliance
     },
     {
       title: "Infrastructură și Disponibilitate",
@@ -41,7 +41,7 @@ const Roadmap = () => {
     },
     {
       title: "Dezvoltare Produs",
-      categories: ["product"]
+      categories: ["product", "ui"] // Added UI category here as it's related to product development
     }
   ];
 
