@@ -36,7 +36,7 @@ export const RoadmapCard = ({ item }: RoadmapCardProps) => {
         <div className="space-y-2">
           {item.iconType && (
             <span className="inline-flex p-2 rounded-lg bg-background/80 backdrop-blur-sm">
-              <RoadmapIcon iconType={item.iconType} iconColor={item.iconColor || "text-primary"} />
+              <RoadmapIcon type={item.iconType} color={item.iconColor || "text-primary"} />
             </span>
           )}
           <CardTitle className="text-xl font-bold flex items-center gap-2 mt-2">
