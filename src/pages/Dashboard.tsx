@@ -1,5 +1,5 @@
+
 import { Layout } from "@/components/layout/layout";
-import { Badge } from "@/components/ui/badge";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,11 +10,9 @@ import { SecurityAlert } from "@/components/security/SecurityAlert";
 import { PaymentForm } from "@/components/dashboard/PaymentForm";
 import { TransactionsList } from "@/components/dashboard/TransactionsList";
 import { AccountInfo } from "@/components/dashboard/AccountInfo";
-import { PaymentTransparencyInfo } from "@/components/dashboard/PaymentTransparencyInfo";
 import { toast } from "@/hooks/use-toast";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { StyledCard, StyledCardContent, StyledCardHeader, StyledCardTitle } from "@/components/ui/styled-card";
-import { Nfc as NfcIcon, AlertCircle, ShieldCheck, ChevronRight, BarChart2 } from "lucide-react";
+import { StyledCard } from "@/components/ui/card-variants";
+import { BarChart2, ChevronRight } from "lucide-react";
 
 const Dashboard = () => {
   const [searchParams] = useSearchParams();
@@ -98,85 +96,50 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <div className="container max-w-7xl py-8 px-4">
-        <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg p-6 mb-8 space-y-4">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div>
-              <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                <NfcIcon className="h-4 w-4" />
-                <span>Dashboard</span>
-                <ChevronRight className="h-4 w-4" />
-                <span className="text-foreground">Plăți Contactless</span>
-              </div>
-              <div className="flex items-center gap-3 mb-2">
-                <BarChart2 className="h-8 w-8 text-primary" />
-                <h1 className="text-3xl font-bold">Terminal de Plată</h1>
-              </div>
-              <p className="text-muted-foreground">
-                Transformă-ți telefonul într-un terminal de plată sigur și eficient
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 px-3 py-1">
-                <ShieldCheck className="mr-1 h-4 w-4" />
-                Conectat la Stripe
-              </Badge>
-              {deviceCompatibility.isCompatible === 'compatible' && (
-                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 px-3 py-1">
-                  <NfcIcon className="mr-1 h-4 w-4" />
-                  NFC Activ
-                </Badge>
-              )}
-            </div>
+      <div className="container max-w-5xl py-8 px-4">
+        <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg p-6 mb-8">
+          <div className="flex items-center gap-2 text-muted-foreground mb-2">
+            <BarChart2 className="h-4 w-4" />
+            <span>Dashboard</span>
+            <ChevronRight className="h-4 w-4" />
+            <span className="text-foreground">Tranzacții</span>
           </div>
+          <h1 className="text-3xl font-bold">Panou de Control</h1>
+          <p className="text-muted-foreground mt-1">
+            Gestionează tranzacțiile și monitorizează activitatea
+          </p>
         </div>
 
-        <div className="grid gap-6">
+        <div className="space-y-6">
           <DeviceCompatibilityAlert compatibility={deviceCompatibility} />
           
-          <Tabs defaultValue="payment" className="w-full">
-            <TabsList className="mb-4">
-              <TabsTrigger value="payment">Procesare Plată</TabsTrigger>
-              <TabsTrigger value="transactions">Tranzacții & Cont</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="payment" className="space-y-6">
-              <StyledCard className="bg-gradient-to-br from-card to-secondary/5 backdrop-blur-sm">
-                <StyledCardContent>
-                  <PaymentForm deviceCompatibility={deviceCompatibility} />
-                </StyledCardContent>
-              </StyledCard>
-              
-              <SecurityAlert />
-              <PaymentTransparencyInfo />
-            </TabsContent>
-            
-            <TabsContent value="transactions" className="space-y-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <StyledCard className="bg-gradient-to-br from-card to-blue-500/5 backdrop-blur-sm">
-                  <StyledCardHeader>
-                    <StyledCardTitle>Istoricul Tranzacțiilor</StyledCardTitle>
-                  </StyledCardHeader>
-                  <StyledCardContent>
-                    <TransactionsList 
-                      transactions={transactions}
-                      isLoading={isLoading}
-                      onRefresh={() => queryClient.invalidateQueries({ queryKey: ['transactions'] })}
-                    />
-                  </StyledCardContent>
-                </StyledCard>
+          <StyledCard className="border-primary/10">
+            <div className="p-6">
+              <PaymentForm deviceCompatibility={deviceCompatibility} />
+            </div>
+          </StyledCard>
 
-                <StyledCard className="bg-gradient-to-br from-card to-purple-500/5 backdrop-blur-sm">
-                  <StyledCardHeader>
-                    <StyledCardTitle>Informații Cont</StyledCardTitle>
-                  </StyledCardHeader>
-                  <StyledCardContent>
-                    <AccountInfo deviceCompatibility={deviceCompatibility} />
-                  </StyledCardContent>
-                </StyledCard>
+          <div className="grid gap-6">
+            <StyledCard className="border-primary/10">
+              <div className="p-6">
+                <h2 className="text-xl font-semibold mb-4">Tranzacții Recente</h2>
+                <TransactionsList 
+                  transactions={transactions}
+                  isLoading={isLoading}
+                  onRefresh={() => queryClient.invalidateQueries({ queryKey: ['transactions'] })}
+                />
               </div>
-            </TabsContent>
-          </Tabs>
+            </StyledCard>
+
+            <StyledCard className="border-primary/10">
+              <div className="p-6">
+                <h2 className="text-xl font-semibold mb-4">Informații Cont</h2>
+                <AccountInfo deviceCompatibility={deviceCompatibility} />
+              </div>
+            </StyledCard>
+          </div>
+
+          <SecurityAlert />
         </div>
       </div>
     </Layout>
