@@ -14,7 +14,7 @@ import { PaymentTransparencyInfo } from "@/components/dashboard/PaymentTranspare
 import { toast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
-import { NfcIcon, AlertCircle, ShieldCheck } from "lucide-react";
+import { Nfc as NfcIcon, AlertCircle, ShieldCheck } from "lucide-react";
 
 const Dashboard = () => {
   const [searchParams] = useSearchParams();
