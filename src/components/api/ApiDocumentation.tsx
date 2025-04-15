@@ -5,10 +5,34 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { ApiFeaturesList } from './ApiFeaturesList';
 import { ApiAccessRequestForm } from './ApiAccessRequestForm';
+import { AlertTriangle } from 'lucide-react';
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 export const ApiDocumentation = () => {
   return (
     <div className="space-y-6">
+      <Alert variant="destructive" className="mb-6">
+        <AlertTriangle className="h-5 w-5" />
+        <AlertTitle>Declarație de declinare a responsabilității</AlertTitle>
+        <AlertDescription>
+          <p className="mb-2">
+            Utilizarea API-ului nostru este condiționată de următoarele aspecte:
+          </p>
+          <ul className="list-disc pl-5 space-y-2">
+            <li>
+              Este <strong>obligatoriu</strong> să dețineți un cont Stripe activ și validat.
+            </li>
+            <li>
+              Accesul la API este exclusiv pentru utilizatorii care au trecut de procesul de verificare și aprobare.
+            </li>
+            <li>
+              TapPayGo nu răspunde pentru pierderile sau daunele rezultate din utilizarea necorespunzătoare a API-ului.
+            </li>
+          </ul>
+        </AlertDescription>
+      </Alert>
+
+      {/* Restul componentei rămâne neschimbat */}
       <StyledCard variant="default" className="p-6">
         <h1 className="text-3xl font-bold mb-2">API Enterprise</h1>
         <p className="text-muted-foreground mb-6">
@@ -140,7 +164,7 @@ export const ApiDocumentation = () => {
           </TabsContent>
         </Tabs>
       </StyledCard>
-      
+
       <ApiFeaturesList />
       
       <Separator className="my-8" />

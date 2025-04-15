@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { StyledCard } from "@/components/ui/card-variants";
@@ -8,17 +7,29 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
+import { AlertTriangle } from 'lucide-react';
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 export const ApiAccessRequestForm = () => {
   const { user } = useAuth();
   const [companyName, setCompanyName] = useState('');
   const [useCase, setUseCase] = useState('');
   const [expectedVolume, setExpectedVolume] = useState('');
+  const [hasStripeAccount, setHasStripeAccount] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!hasStripeAccount) {
+      toast({
+        title: "Cont Stripe necesar",
+        description: "Trebuie să confirmați că dețineți un cont Stripe pentru a solicita acces API.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     if (!user) {
       toast({
         title: "Autentificare necesară",
@@ -76,10 +87,21 @@ export const ApiAccessRequestForm = () => {
   return (
     <StyledCard variant="default" className="p-6">
       <h2 className="text-2xl font-semibold mb-4">Solicită acces API</h2>
-      <p className="text-muted-foreground mb-6">
-        Completează formularul de mai jos pentru a solicita acces la API-ul nostru. 
-        Vom analiza cererea și vom reveni către tine în cel mai scurt timp.
-      </p>
+      
+      <Alert className="mb-6">
+        <AlertTriangle className="h-5 w-5 text-amber-500" />
+        <AlertTitle>Condiții obligatorii</AlertTitle>
+        <AlertDescription>
+          <p>
+            Pentru a primi acces la API, aveți nevoie de:
+          </p>
+          <ul className="list-disc pl-5 mt-2">
+            <li>Un cont Stripe activ și verificat</li>
+            <li>Un scop valid de utilizare a API-ului</li>
+            <li>Aprobare manuală din partea echipei TapPayGo</li>
+          </ul>
+        </AlertDescription>
+      </Alert>
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -126,10 +148,23 @@ export const ApiAccessRequestForm = () => {
           </Select>
         </div>
         
+        <div className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            id="stripe-account"
+            checked={hasStripeAccount}
+            onChange={(e) => setHasStripeAccount(e.target.checked)}
+            className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+          />
+          <label htmlFor="stripe-account" className="text-sm text-gray-700">
+            Confirm că dețin un cont Stripe activ
+          </label>
+        </div>
+        
         <Button 
           type="submit" 
           className="w-full"
-          disabled={isSubmitting}
+          disabled={isSubmitting || !hasStripeAccount}
         >
           {isSubmitting ? "Se trimite..." : "Trimite solicitarea"}
         </Button>
