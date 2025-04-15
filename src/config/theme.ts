@@ -1,4 +1,3 @@
-
 /**
  * Configurația de temă centralizată a aplicației
  * Acest fișier funcționează ca un "design system" simplu
@@ -24,18 +23,28 @@ export const theme = {
     pageHeader: "mb-8 md:mb-12",
   },
   
-  // Tipografie
+  // Tipografie actualizată pentru a reflecta stilul din Dashboard
   typography: {
     // Titluri
-    h1: "text-4xl font-bold tracking-tight md:text-5xl",
-    h2: "text-3xl font-bold tracking-tight md:text-4xl",
-    h3: "text-2xl font-bold tracking-tight",
-    h4: "text-xl font-semibold",
+    h1: "text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl",
+    h2: "text-2xl font-semibold tracking-tight md:text-3xl",
+    h3: "text-xl font-semibold tracking-tight md:text-2xl",
+    h4: "text-lg font-medium md:text-xl",
     
     // Text
-    lead: "text-xl text-muted-foreground",
-    paragraph: "leading-7",
+    lead: "text-lg md:text-xl text-muted-foreground",
+    paragraph: "text-base leading-7",
     muted: "text-sm text-muted-foreground",
+    small: "text-sm font-medium leading-none",
+    subtle: "text-sm text-muted-foreground",
+    
+    // Card specific
+    cardTitle: "text-xl font-semibold leading-none tracking-tight",
+    cardDescription: "text-sm text-muted-foreground",
+    
+    // Stats & Numbers
+    stats: "text-2xl font-semibold md:text-3xl",
+    statsLabel: "text-sm font-medium text-muted-foreground",
   },
   
   // Efecte și decorațiuni
