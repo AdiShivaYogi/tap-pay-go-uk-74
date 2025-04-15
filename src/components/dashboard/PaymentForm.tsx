@@ -6,7 +6,7 @@ import { DeviceCompatibility } from "@/hooks/use-device-compatibility";
 import { supabase } from "@/integrations/supabase/client";
 import { Textarea } from "@/components/ui/textarea";
 import { CurrencyInput } from "@/components/ui/currency-input";
-import { Loader2, ShieldCheck, AlertTriangle, CreditCard, Smartphone, NfcIcon } from "lucide-react";
+import { Loader2, ShieldCheck, AlertTriangle, CreditCard, Smartphone, NfcIcon, Info } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -43,7 +43,6 @@ export const PaymentForm = ({ deviceCompatibility }: PaymentFormProps) => {
     setIsProcessing(true);
 
     try {
-      // Call the create-payment edge function
       const { data, error } = await supabase.functions.invoke('create-payment', {
         body: { 
           amount: parseFloat(amount),
@@ -54,12 +53,12 @@ export const PaymentForm = ({ deviceCompatibility }: PaymentFormProps) => {
       if (error) throw error;
       if (!data.url) throw new Error('Nu s-a putut obține URL-ul de plată');
 
-      // Save session ID for reference
-      if (data.sessionId) {
-        localStorage.setItem('last_payment_session', data.sessionId);
-      }
+      toast({
+        title: "Redirecționare către plată",
+        description: "Veți fi redirectat către Stripe Checkout pentru completarea plății.",
+        variant: "default"
+      });
 
-      // Redirect to Stripe Checkout
       window.location.href = data.url;
     } catch (error) {
       console.error('Eroare la procesarea plății:', error);
@@ -79,23 +78,22 @@ export const PaymentForm = ({ deviceCompatibility }: PaymentFormProps) => {
           <div className="space-y-1">
             <CardTitle className="text-2xl">Procesează o plată nouă</CardTitle>
             <CardDescription>
-              Acceptă plăți contactless rapid și în siguranță
+              Acceptă plăți în siguranță prin Stripe Checkout
             </CardDescription>
-          </div>
-          <div className="hidden md:flex items-center gap-2">
-            <NfcIcon className="h-8 w-8 text-primary" />
-            <CreditCard className="h-8 w-8 text-primary" />
           </div>
         </div>
 
-        <Alert className="bg-blue-50 border-blue-200">
-          <Smartphone className="h-4 w-4 text-blue-600" />
-          <AlertDescription className="text-blue-700">
-            {deviceCompatibility.isCompatible === 'compatible' 
-              ? "Dispozitivul tău este pregătit pentru plăți contactless"
-              : "Pentru plăți contactless, folosește un iPhone cu iOS 16+"}
-          </AlertDescription>
-        </Alert>
+        {deviceCompatibility.isCompatible !== 'compatible' && (
+          <Alert className="bg-amber-50 border-amber-200">
+            <Info className="h-4 w-4 text-amber-600" />
+            <AlertDescription className="text-amber-700">
+              <div className="flex items-center gap-2">
+                <Smartphone className="h-5 w-5" />
+                <span>Veți fi redirecționat către interfața standard Stripe Checkout pentru introducerea manuală a detaliilor cardului.</span>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
       </CardHeader>
 
       <CardContent className="space-y-6">
@@ -132,7 +130,7 @@ export const PaymentForm = ({ deviceCompatibility }: PaymentFormProps) => {
             onClick={handlePayment} 
             size="lg" 
             className="w-full h-16 text-lg gap-3"
-            disabled={isProcessing || !amount || deviceCompatibility.isCompatible !== 'compatible'}
+            disabled={isProcessing || !amount}
           >
             {isProcessing ? (
               <>
@@ -141,24 +139,15 @@ export const PaymentForm = ({ deviceCompatibility }: PaymentFormProps) => {
               </>
             ) : (
               <>
-                <NfcIcon className="h-5 w-5" />
-                Procesează plata contactless
+                <CreditCard className="h-5 w-5" />
+                Procesează plata prin Stripe
               </>
             )}
           </Button>
 
-          {deviceCompatibility.isCompatible !== 'compatible' && (
-            <div className="flex items-center gap-2 text-amber-600 text-sm mt-4 bg-amber-50 p-3 rounded-md">
-              <AlertTriangle className="h-4 w-4 flex-shrink-0" />
-              <p>
-                Plățile contactless sunt disponibile doar pe iPhone-uri cu suport pentru Tap to Pay.
-              </p>
-            </div>
-          )}
-
           <div className="flex items-center justify-center gap-2 mt-4 text-sm text-muted-foreground">
             <ShieldCheck className="h-4 w-4" />
-            <span>Plăți securizate prin Stripe</span>
+            <span>Plăți securizate prin Stripe Checkout</span>
           </div>
         </div>
       </CardContent>
