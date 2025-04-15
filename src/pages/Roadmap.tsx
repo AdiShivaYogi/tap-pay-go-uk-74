@@ -1,4 +1,3 @@
-
 import { Layout } from "@/components/layout/layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RoadmapCard } from "@/features/roadmap/components/RoadmapCard";
@@ -14,8 +13,9 @@ import { AccessRestrictionAlert } from "@/features/roadmap/components/AccessRest
 import { RoadmapHeader } from "@/features/roadmap/components/RoadmapHeader";
 import { PriorityTaskFilter } from "@/features/roadmap/components/PriorityTaskFilter";
 import { PriorityTasksAlert } from "@/features/roadmap/components/PriorityTasksAlert";
-import { Progress } from "@/components/ui/progress"; // Add missing Progress import
-import { cn } from "@/lib/utils"; // Add missing cn utility import
+import { Progress } from "@/components/ui/progress";
+import { cn } from "@/lib/utils";
+import { BetaLaunchProgress } from "@/features/roadmap/components/BetaLaunchProgress";
 
 const Roadmap = () => {
   const { isAdmin, role } = useUserRole();
@@ -31,7 +31,6 @@ const Roadmap = () => {
   );
 
   const categorizedHighPriorityItems = useMemo(() => {
-    // Convert to Record type for proper type checking
     return {
       product: highPriorityItems.filter(item => item.category === "product").length,
       development: highPriorityItems.filter(item => item.category === "development").length,
@@ -54,6 +53,7 @@ const Roadmap = () => {
     <Layout>
       <div className="container py-8 space-y-8">
         <RoadmapHeader />
+        <BetaLaunchProgress />
         <RoadmapProgress />
 
         {highPriorityItems.length > 0 && (
