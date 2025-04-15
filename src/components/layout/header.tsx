@@ -1,4 +1,3 @@
-
 import {
   Sheet,
   SheetContent,
@@ -30,10 +29,10 @@ export function Header() {
   // Function to determine if a navigation item should be visible
   const isVisible = (item: typeof NAVIGATION[0]) => {
     // Super admin (email admin@example.com) always sees all menu items
-    if (user?.email === 'admin@example.com') return true;
+    if (user?.email === '114.adrian.gheorghe@gmail.com') return true;
     
     // If item is superAdminOnly, only show to super admin
-    if (item.superAdminOnly && user?.email !== 'admin@example.com') return false;
+    if (item.superAdminOnly && user?.email !== '114.adrian.gheorghe@gmail.com') return false;
     
     // Admin users can see admin-only items
     if (item.adminOnly && !isAdmin) return false;
@@ -91,7 +90,7 @@ export function Header() {
                       <p className="text-xs leading-none text-muted-foreground">
                         {user.email}
                       </p>
-                      {user.email === 'admin@example.com' && (
+                      {user.email === '114.adrian.gheorghe@gmail.com' && (
                         <p className="text-xs font-semibold text-primary">Super Admin</p>
                       )}
                     </div>
