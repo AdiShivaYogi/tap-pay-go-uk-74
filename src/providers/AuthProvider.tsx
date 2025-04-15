@@ -1,3 +1,4 @@
+
 import { createContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -85,18 +86,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       if (error) {
         console.error('Eroare la autentificare:', error.message);
-        toast({
-          title: "Eroare la autentificare",
-          description: error.message,
-          variant: "destructive"
-        });
         throw error;
       }
 
-      toast({
-        title: "Autentificare reușită",
-        description: "Bine ați revenit!",
-      });
+      // Toast notificarea va fi afișată după ce evenimentul onAuthStateChange actualizează sesiunea
     } catch (error) {
       console.error('Eroare la autentificare:', error);
       throw error;

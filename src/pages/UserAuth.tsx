@@ -66,9 +66,24 @@ const UserAuth = () => {
 
       if (isLoginMode) {
         try {
-          await signIn(email, password);
+          // Modificare pentru a captura eroarea direct
+          const { error } = await supabase.auth.signInWithPassword({ 
+            email, 
+            password 
+          });
+          
+          if (error) {
+            throw error;
+          }
+          
+          toast({
+            title: "Autentificare reușită",
+            description: "Bine ați revenit!",
+          });
+          
           navigate("/dashboard");
         } catch (error: any) {
+          console.error("Eroare la autentificare:", error);
           toast({
             title: "Eroare de autentificare",
             description: error.message || "A apărut o eroare la autentificare",
@@ -96,39 +111,42 @@ const UserAuth = () => {
   };
 
   const handleAdminRegistration = async (email: string, password: string) => {
-    const { data, error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          role: 'admin'
+    try {
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            role: 'admin'
+          }
         }
-      }
-    });
-
-    if (signUpError) {
-      throw signUpError;
-    }
-
-    if (data.user) {
-      // Assign admin role in user_roles table
-      const { error: roleError } = await supabase
-        .from('user_roles')
-        .insert({ 
-          user_id: data.user.id, 
-          role: 'admin' 
-        });
-
-      if (roleError) {
-        throw roleError;
-      }
-
-      await signIn(email, password);
-      toast({
-        title: "Cont admin creat cu succes",
-        description: "Veți fi redirectat către dashboard",
       });
-      navigate("/dashboard");
+
+      if (signUpError) {
+        throw signUpError;
+      }
+
+      if (data.user) {
+        // Autentificare directă după înregistrare
+        const { error: signInError } = await supabase.auth.signInWithPassword({ 
+          email, 
+          password 
+        });
+        
+        if (signInError) {
+          throw signInError;
+        }
+        
+        toast({
+          title: "Cont admin creat cu succes",
+          description: "Veți fi redirectat către dashboard",
+        });
+        
+        navigate("/dashboard");
+      }
+    } catch (error: any) {
+      console.error('Eroare la înregistrare:', error);
+      throw error;
     }
   };
 
