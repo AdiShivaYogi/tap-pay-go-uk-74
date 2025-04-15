@@ -1,4 +1,3 @@
-
 import { Layout } from "@/components/layout/layout";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/use-auth";
@@ -12,9 +11,10 @@ import { useState } from "react";
 import { useAdminData } from "@/hooks/use-admin-data";
 import { calculateMonitoringStats, calculateFinancialStats, calculatePieChartData } from "@/utils/admin-calculations";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Loader2, LockIcon } from "lucide-react";
+import { Loader2, LockIcon, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { Card } from "@/components/ui/card";
 
 const Admin = () => {
   const { user } = useAuth();
@@ -22,10 +22,8 @@ const Admin = () => {
   const [period, setPeriod] = useState<"week" | "month" | "year">("month");
   const commissionRate = 0.025; // 2.5%
   
-  // Always call hooks at the top level, before any conditional returns
   const { data: transactions = [], isLoading } = useAdminData(period);
   
-  // Show loading state while checking role
   if (isLoadingRole) {
     return (
       <Layout>
@@ -36,7 +34,6 @@ const Admin = () => {
     );
   }
 
-  // Show access restricted message instead of redirecting
   if (!isAdmin) {
     return (
       <Layout>
@@ -64,7 +61,6 @@ const Admin = () => {
     );
   }
   
-  // Prepare data for display
   const monitoringStats = calculateMonitoringStats(transactions);
   const financialStats = calculateFinancialStats(transactions, commissionRate);
   const monthlyData = prepareMonthlyData(transactions, commissionRate);
@@ -72,25 +68,22 @@ const Admin = () => {
 
   return (
     <Layout>
-      <div className="container py-8 px-4">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold mb-1">Admin Dashboard</h1>
-          <p className="text-muted-foreground">
-            Monitorizează performanța platformei și comisioanele, fără acces la date sensibile
-          </p>
-        </div>
-
-        {!user && (
-          <Alert className="mb-6">
-            <AlertDescription>
-              You must be logged in and have admin privileges to access this dashboard.
-            </AlertDescription>
-          </Alert>
-        )}
-
-        <div className="mb-6">
-          <Tabs defaultValue="month" value={period} onValueChange={(v) => setPeriod(v as "week" | "month" | "year")}>
-            <TabsList className="mb-4">
+      <div className="container py-6 px-4 space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold flex items-center gap-2">
+              <Layers className="h-8 w-8 text-primary" />
+              Admin Dashboard
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Monitorizează performanța platformei și comisioanele, fără acces la date sensibile
+            </p>
+          </div>
+          
+          <Tabs defaultValue="month" value={period} 
+                onValueChange={(v) => setPeriod(v as "week" | "month" | "year")}
+                className="hidden md:block">
+            <TabsList>
               <TabsTrigger value="week">Ultima săptămână</TabsTrigger>
               <TabsTrigger value="month">Ultima lună</TabsTrigger>
               <TabsTrigger value="year">Ultimul an</TabsTrigger>
@@ -98,29 +91,66 @@ const Admin = () => {
           </Tabs>
         </div>
 
-        <div className="mb-8">
-          <MonitoringStats 
-            isLoading={isLoading}
-            stats={monitoringStats}
-          />
-        </div>
+        {!user && (
+          <Alert>
+            <AlertDescription>
+              You must be logged in and have admin privileges to access this dashboard.
+            </AlertDescription>
+          </Alert>
+        )}
 
-        <AdminStats 
-          isLoading={isLoading}
-          stats={financialStats}
-        />
+        {isLoadingRole ? (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-8 w-8 animate-spin" />
+          </div>
+        ) : !isAdmin ? (
+          <Alert variant="destructive">
+            <AlertTitle className="flex items-center gap-2">
+              <LockIcon className="h-4 w-4" /> Acces restricționat
+            </AlertTitle>
+            <AlertDescription>
+              <p className="mb-4">
+                Această pagină necesită privilegii de administrator. Rolul tău actual: <strong>{role || 'user'}</strong>
+              </p>
+              <div className="flex gap-4">
+                <Button asChild variant="outline">
+                  <Link to="/">Înapoi la Pagina Principală</Link>
+                </Button>
+                <Button asChild>
+                  <Link to="/admin-auth">Autentificare administrator</Link>
+                </Button>
+              </div>
+            </AlertDescription>
+          </Alert>
+        ) : (
+          <div className="grid gap-6">
+            <Card className="p-6">
+              <MonitoringStats 
+                isLoading={isLoading}
+                stats={monitoringStats}
+              />
+            </Card>
 
-        <AdminCharts 
-          isLoading={isLoading}
-          monthlyData={monthlyData}
-          pieChartData={pieChartData}
-        />
+            <AdminStats 
+              isLoading={isLoading}
+              stats={financialStats}
+            />
 
-        <AdminTransactionsTable 
-          isLoading={isLoading}
-          transactions={transactions}
-          commissionRate={commissionRate}
-        />
+            <div className="grid md:grid-cols-2 gap-6">
+              <AdminCharts 
+                isLoading={isLoading}
+                monthlyData={monthlyData}
+                pieChartData={pieChartData}
+              />
+            </div>
+
+            <AdminTransactionsTable 
+              isLoading={isLoading}
+              transactions={transactions}
+              commissionRate={commissionRate}
+            />
+          </div>
+        )}
       </div>
     </Layout>
   );
