@@ -12,6 +12,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { SectionContainer } from "@/components/ui/section-container";
 import { Compass, GitFork } from "lucide-react";
 import { StyledCard } from "@/components/ui/card-variants";
+import { HeaderSecurityScore } from "@/features/roadmap/components/header/HeaderSecurityScore";
 
 const Roadmap = () => {
   const { isAdmin, role } = useUserRole();
@@ -57,7 +58,10 @@ const Roadmap = () => {
           <div className="space-y-8 max-w-[1400px] mx-auto">
             <StyledCard className="border-primary/10">
               <div className="p-6">
-                <BackupProgress />
+                <HeaderSecurityScore />
+                <div className="mt-6">
+                  <BackupProgress />
+                </div>
               </div>
             </StyledCard>
             
