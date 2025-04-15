@@ -29,23 +29,14 @@ const Roadmap = () => {
     []
   );
 
-  const categorizedItems = useMemo(() => {
+  const categorizedHighPriorityItems = useMemo(() => {
     const categories = {
-      all: highPriorityItems,
       product: highPriorityItems.filter(item => item.category === "product"),
       development: highPriorityItems.filter(item => item.category === "development"),
       infrastructure: highPriorityItems.filter(item => item.category === "infrastructure"),
       security: highPriorityItems.filter(item => item.category === "security"),
       devops: highPriorityItems.filter(item => item.category === "devops"),
     };
-    
-    Object.keys(categories).forEach(key => {
-      categories[key].sort((a, b) => {
-        const aProgress = a.timeEstimate.spent / a.timeEstimate.total;
-        const bProgress = b.timeEstimate.spent / b.timeEstimate.total;
-        return bProgress - aProgress;
-      });
-    });
     
     return categories;
   }, [highPriorityItems]);
@@ -113,23 +104,23 @@ const Roadmap = () => {
               <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mt-3">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-primary"></div>
-                  <span>Product: {categorizedItems.product?.length || 0}</span>
+                  <span>Product: {categorizedHighPriorityItems.product.length || 0}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                  <span>Development: {categorizedItems.development?.length || 0}</span>
+                  <span>Development: {categorizedHighPriorityItems.development.length || 0}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-purple-500"></div>
-                  <span>Infrastructure: {categorizedItems.infrastructure?.length || 0}</span>
+                  <span>Infrastructure: {categorizedHighPriorityItems.infrastructure.length || 0}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-green-600"></div>
-                  <span>Security: {categorizedItems.security?.length || 0}</span>
+                  <span>Security: {categorizedHighPriorityItems.security.length || 0}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-amber-600"></div>
-                  <span>DevOps: {categorizedItems.devops?.length || 0}</span>
+                  <span>DevOps: {categorizedHighPriorityItems.devops.length || 0}</span>
                 </div>
               </div>
             </AlertDescription>
@@ -258,7 +249,7 @@ const Roadmap = () => {
             </div>
             
             <div className="grid gap-6 md:grid-cols-2">
-              {(categorizedItems[activeCategory] || []).map((item, index) => (
+              {(categorizedHighPriorityItems[activeCategory] || []).map((item, index) => (
                 <RoadmapCard key={index} item={item} />
               ))}
             </div>
