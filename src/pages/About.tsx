@@ -13,33 +13,33 @@ interface ValueProps {
 
 const CoreValues: ValueProps[] = [
   {
-    title: "Încredere și Securitate",
-    description: "Securitatea datelor și confidențialitatea sunt fundația serviciului nostru. Nu compromitem niciodată siguranța utilizatorilor noștri.",
+    title: "Securitate și Confidențialitate",
+    description: "Protecția datelor și siguranța utilizatorilor sunt fundamentul nostru.",
     icon: Shield
   },
   {
     title: "Transparență Totală",
-    description: "Credem în comunicare deschisă și onestă. Fiecare tranzacție și cost este complet transparent.",
+    description: "Comunicare deschisă și onestă în toate tranzacțiile și serviciile noastre.",
     icon: CheckCircle2
   },
   {
     title: "Comunitate Sustenabilă",
-    description: "Construim o comunitate de utilizatori și parteneri bazată pe respect reciproc și creștere sustenabilă.",
+    description: "Construim relații bazate pe respect și creștere durabilă.",
     icon: Users
   },
   {
     title: "Impact Global",
-    description: "Vizăm să facem plățile accesibile la nivel global, începând cu România și extinzându-ne treptat.",
+    description: "Democratizăm plățile digitale, cu accent pe România și extindere internațională.",
     icon: Globe2
   },
   {
-    title: "Etică în Business",
-    description: "Menținem cele mai înalte standarde etice în toate aspectele activității noastre.",
+    title: "Etică în Afaceri",
+    description: "Standard ridicat de integritate în toate aspectele activității noastre.",
     icon: Heart
   },
   {
-    title: "Parteneriate de Încredere",
-    description: "Colaborăm doar cu parteneri care împărtășesc valorile noastre etice și standardele de calitate.",
+    title: "Încredere prin Colaborare",
+    description: "Parteneriate bazate pe valori etice și standarde de calitate.",
     icon: Handshake
   }
 ];
@@ -50,9 +50,9 @@ const AboutPage = () => {
       <div className="container py-12 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-6">Despre TapPayGo</h1>
+            <h1 className="text-4xl font-bold mb-6">TapPayGo: Plăți Etice, Simple și Sigure</h1>
             <p className="text-xl text-muted-foreground">
-              Transformăm plățile mobile într-un serviciu etic, sigur și accesibil pentru toți
+              Transformăm plățile mobile într-o experiență accesibilă și responsabilă
             </p>
           </div>
           
@@ -60,34 +60,29 @@ const AboutPage = () => {
             <section className="bg-primary/5 p-8 rounded-lg">
               <h2 className="text-3xl font-semibold mb-6">Misiunea Noastră</h2>
               <p className="text-lg mb-6">
-                La TapPayGo, misiunea noastră este să democratizăm accesul la servicii de plată pentru freelanceri și afaceri mici, 
-                oferind o soluție sigură, etică și accesibilă. Ne angajăm să:
+                La TapPayGo, ne dedicăm simplificării plăților pentru freelanceri și întreprinderi mici, 
+                oferind o soluție sigură, etică și transparentă.
               </p>
               <ul className="space-y-4 list-none pl-0">
-                <li className="flex items-start gap-3">
-                  <CheckCircle2 className="h-6 w-6 text-primary mt-1" />
-                  <span>Protejăm datele clienților cu cele mai înalte standarde de securitate</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle2 className="h-6 w-6 text-primary mt-1" />
-                  <span>Oferim transparență totală în toate operațiunile noastre</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle2 className="h-6 w-6 text-primary mt-1" />
-                  <span>Construim relații pe termen lung bazate pe încredere</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle2 className="h-6 w-6 text-primary mt-1" />
-                  <span>Inovăm constant păstrând standardele etice</span>
-                </li>
+                {[
+                  "Protejăm datele utilizatorilor cu cele mai înalte standarde de securitate",
+                  "Oferim transparență deplină în operațiunile noastre",
+                  "Construim relații bazate pe încredere",
+                  "Inovăm constant, respectând principiile etice"
+                ].map((item, index) => (
+                  <li key={index} className="flex items-start gap-3">
+                    <CheckCircle2 className="h-6 w-6 text-primary mt-1" />
+                    <span>{item}</span>
+                  </li>
+                ))}
               </ul>
             </section>
 
             <section className="mt-12">
-              <h2 className="text-3xl font-semibold mb-8">Valorile Noastre</h2>
+              <h2 className="text-3xl font-semibold mb-8">Valorile Noastre Fundamentale</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {CoreValues.map((value, index) => (
-                  <div key={index} className="bg-card p-6 rounded-lg border">
+                  <div key={index} className="bg-card p-6 rounded-lg border hover:shadow-sm transition-shadow">
                     <div className="flex items-center gap-4 mb-4">
                       <div className="p-2 rounded-full bg-primary/10">
                         <value.icon className="h-6 w-6 text-primary" />
@@ -100,27 +95,16 @@ const AboutPage = () => {
               </div>
             </section>
 
-            <section className="mt-12">
-              <h2 className="text-3xl font-semibold mb-8">Angajamentul Nostru pentru Etică</h2>
-              <EthicalCommunicationGuide />
-            </section>
+            <EthicalCommunicationGuide />
 
-            <section className="bg-muted/30 p-8 rounded-lg mt-12">
-              <h2 className="text-3xl font-semibold mb-6">Alătură-te Misiunii Noastre</h2>
+            <section className="bg-muted/30 p-8 rounded-lg mt-12 text-center">
+              <h2 className="text-3xl font-semibold mb-6">Alătură-te Revoluției Plăților Digitale</h2>
               <p className="text-lg mb-6">
-                Devino parte din revoluția plăților mobile etice. Împreună putem construi un viitor 
-                al tranzacțiilor digitale bazat pe încredere, securitate și accesibilitate.
+                Construim viitorul tranzacțiilor digitale: simplu, etic și accesibil pentru toți.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex justify-center gap-4">
                 <Link to="/onboarding">
-                  <Button size="lg" className="w-full sm:w-auto">
-                    Începe Acum
-                  </Button>
-                </Link>
-                <Link to="/roadmap">
-                  <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                    Vezi Roadmap
-                  </Button>
+                  <Button size="lg">Începe Acum</Button>
                 </Link>
               </div>
             </section>
