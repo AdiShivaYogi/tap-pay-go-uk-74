@@ -2,6 +2,7 @@
 import { Header } from "./header";
 import { Footer } from "./footer";
 import { ReactNode } from "react";
+import { GlobalCssManagerProvider } from "../theme/GlobalCssManagerProvider";
 
 interface LayoutProps {
   children: ReactNode;
@@ -9,12 +10,14 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1">
-        {children}
-      </main>
-      <Footer />
-    </div>
+    <GlobalCssManagerProvider>
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1">
+          {children}
+        </main>
+        <Footer />
+      </div>
+    </GlobalCssManagerProvider>
   );
 }

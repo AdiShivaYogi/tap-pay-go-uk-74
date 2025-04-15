@@ -1,3 +1,4 @@
+
 import { Layout } from "@/components/layout/layout";
 import { RoadmapProgress } from "@/features/roadmap/components/RoadmapProgress";
 import { useUserRole } from "@/hooks/use-user-role";
@@ -8,16 +9,19 @@ import { RoadmapContextProvider } from "@/features/roadmap/context/RoadmapContex
 import { StyledCard } from "@/components/ui/card-variants";
 import { HeaderSecurityScore } from "@/features/roadmap/components/header/HeaderSecurityScore";
 import { HeaderExecutionScore } from "@/features/roadmap/components/header/HeaderExecutionScore";
-import { Compass, GitFork, Globe } from "lucide-react";
+import { Compass, GitFork, Globe, Wand2 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { SectionContainer } from "@/components/ui/section-container";
 import { BackupProgress } from "@/features/roadmap/components/BackupProgress";
 import { ProgressOptimizationPanel } from "@/features/roadmap/components/ProgressOptimizationPanel";
 import { ThemeManagerCard } from "@/components/theme/ThemeManagerCard";
 import { GlobalCssManager } from "@/components/theme/GlobalCssManager";
+import { Button } from "@/components/ui/button";
+import { useGlobalCssManager } from "@/components/theme/GlobalCssManagerProvider";
 
 const Roadmap = () => {
   const { isAdmin, role } = useUserRole();
+  const { toggleManager } = useGlobalCssManager();
 
   if (!isAdmin) {
     return (
@@ -59,15 +63,24 @@ const Roadmap = () => {
             title="Development Roadmap"
             description="Progresul și obiectivele de dezvoltare pentru piața UK și integrare Stripe"
           >
-            <div className="flex items-center gap-4 text-muted-foreground">
-              <div className="flex items-center gap-2">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 text-muted-foreground">
                 <GitFork className="h-4 w-4" />
                 <span className="text-sm">Versiunea 2.0</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 text-muted-foreground">
                 <Globe className="h-4 w-4" />
                 <span className="text-sm">UK & Global Stripe Markets</span>
               </div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={toggleManager}
+                className="flex items-center gap-2 ml-4"
+              >
+                <Wand2 className="h-4 w-4" />
+                <span>Activare Manager CSS</span>
+              </Button>
             </div>
           </PageHeader>
 
