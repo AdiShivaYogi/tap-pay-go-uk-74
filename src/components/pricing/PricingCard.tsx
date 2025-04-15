@@ -1,9 +1,10 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check } from "lucide-react";
+import { Check, InfoIcon } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface PricingPlan {
   name: string;
@@ -15,6 +16,7 @@ interface PricingPlan {
   cta: string;
   popular: boolean;
   icon: LucideIcon;
+  breakEvenInfo?: string;
 }
 
 interface PricingCardProps {
@@ -54,6 +56,25 @@ export const PricingCard = ({ plan }: PricingCardProps) => {
             <span className="text-sm text-muted-foreground"> {plan.period}</span>
           )}
         </div>
+        
+        {plan.breakEvenInfo && (
+          <div className="mb-4 flex items-center text-xs text-muted-foreground">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center gap-1 bg-muted px-2 py-1 rounded-full">
+                    <InfoIcon className="h-3 w-3" />
+                    <span>{plan.breakEvenInfo}</span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Calculul estimat de rentabilitate bazat pe volumul tranzacțiilor.</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+        )}
+        
         <ul className="space-y-3">
           {plan.features.map((feature, i) => (
             <li key={i} className="flex items-start">

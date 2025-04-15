@@ -12,6 +12,7 @@ export interface PricingPlan {
   cta: string;
   popular: boolean;
   icon: LucideIcon;
+  breakEvenInfo?: string;
 }
 
 export interface FAQItem {
@@ -34,7 +35,8 @@ export const pricingPlans: PricingPlan[] = [
     ],
     cta: "Începe Gratuit",
     popular: false,
-    icon: CreditCard
+    icon: CreditCard,
+    breakEvenInfo: "Ideal pentru <300 tranzacții lunare"
   },
   {
     name: "Monthly",
@@ -51,7 +53,8 @@ export const pricingPlans: PricingPlan[] = [
     ],
     cta: "Abonare Acum",
     popular: true,
-    icon: Wallet
+    icon: Wallet,
+    breakEvenInfo: "Ideal pentru 300-1000 tranzacții lunare"
   },
   {
     name: "Lifetime",
@@ -69,11 +72,16 @@ export const pricingPlans: PricingPlan[] = [
     ],
     cta: "Obține Acces pe Viață",
     popular: false,
-    icon: BadgeDollarSign
+    icon: BadgeDollarSign,
+    breakEvenInfo: "Se amortizează în ~10 luni la volume mari"
   }
 ];
 
 export const pricingFAQs: FAQItem[] = [
+  {
+    question: "Cum știu ce plan mi se potrivește?",
+    answer: "Utilizați calculatorul de economii de pe această pagină pentru a vedea care plan este cel mai eficient pentru volumul dvs. de tranzacții. În general, planul Pay-as-you-go este ideal pentru mai puțin de 300 tranzacții lunare, planul Monthly pentru 300-1000 tranzacții, iar planul Lifetime pentru volume mari sau utilizare pe termen lung."
+  },
   {
     question: "What payment methods do you accept?",
     answer: "We accept all major credit and debit cards, including Visa, Mastercard and American Express. Payments are securely processed through Stripe."
@@ -91,3 +99,40 @@ export const pricingFAQs: FAQItem[] = [
     answer: "You'll get immediate access to all features included in your chosen plan. You'll also receive a confirmation email with your account details."
   }
 ];
+
+// Funcție pentru a calcula dacă un utilizator ar trebui să primească notificări despre upgrade de plan
+export const shouldRecommendPlanUpgrade = (
+  currentPlan: string, 
+  monthlyTransactions: number, 
+  averageTransactionAmount: number = 50
+): { 
+  shouldUpgrade: boolean, 
+  recommendedPlan: string, 
+  monthlySavings: number 
+} => {
+  // Calculăm costurile pentru fiecare plan
+  const payAsYouGoCost = 0.01 * averageTransactionAmount * monthlyTransactions + 0.2 * monthlyTransactions;
+  const monthlyCost = 0.007 * averageTransactionAmount * monthlyTransactions + 0.15 * monthlyTransactions + 14.99;
+  const lifetimeMonthlyCost = 0.005 * averageTransactionAmount * monthlyTransactions + 0.1 * monthlyTransactions;
+
+  if (currentPlan === 'pay-as-you-go' && payAsYouGoCost > monthlyCost) {
+    return {
+      shouldUpgrade: true,
+      recommendedPlan: 'Monthly',
+      monthlySavings: +(payAsYouGoCost - monthlyCost).toFixed(2)
+    };
+  } else if (currentPlan === 'monthly' && monthlyTransactions > 500 && averageTransactionAmount > 30) {
+    // Calculăm în câte luni se amortizează planul Lifetime
+    const lifetimeBreakEvenMonths = 1840 / (monthlyCost - lifetimeMonthlyCost);
+    
+    if (lifetimeBreakEvenMonths < 18) { // Dacă se amortizează în mai puțin de 18 luni
+      return {
+        shouldUpgrade: true,
+        recommendedPlan: 'Lifetime',
+        monthlySavings: +(monthlyCost - lifetimeMonthlyCost).toFixed(2)
+      };
+    }
+  }
+
+  return { shouldUpgrade: false, recommendedPlan: currentPlan, monthlySavings: 0 };
+};

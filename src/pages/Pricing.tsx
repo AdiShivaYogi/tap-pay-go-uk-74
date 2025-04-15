@@ -3,6 +3,7 @@ import { Layout } from "@/components/layout/layout";
 import { PricingCard } from "@/components/pricing/PricingCard";
 import { PricingFAQ } from "@/components/pricing/PricingFAQ";
 import { IncludedFeatures } from "@/components/pricing/IncludedFeatures";
+import { PricingCalculator } from "@/components/pricing/PricingCalculator";
 import { pricingPlans, pricingFAQs } from "@/config/pricing";
 
 const PricingPage = () => {
@@ -23,6 +24,8 @@ const PricingPage = () => {
             <PricingCard key={plan.name} plan={plan} />
           ))}
         </div>
+        
+        <PricingCalculator />
 
         <PricingFAQ faqs={pricingFAQs} />
         <IncludedFeatures />

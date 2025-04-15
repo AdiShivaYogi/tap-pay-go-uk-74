@@ -1,3 +1,4 @@
+
 import { Layout } from "@/components/layout/layout";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -32,10 +33,10 @@ const TermsPage = () => {
                   </p>
                   <ul className="list-disc pl-6 space-y-2">
                     <li>
-                      <strong>Pay-as-you-go:</strong> No monthly fee. Commission rate of 1.5% + £0.20 per transaction.
+                      <strong>Pay-as-you-go:</strong> No monthly fee. Commission rate of 1.0% + £0.20 per transaction.
                     </li>
                     <li>
-                      <strong>Monthly Plan (£14.99/month):</strong> Commission rate of 1.0% + £0.15 per transaction, includes advanced features and priority support.
+                      <strong>Monthly Plan (£14.99/month):</strong> Commission rate of 0.7% + £0.15 per transaction, includes advanced features and priority support.
                     </li>
                     <li>
                       <strong>Lifetime Plan (£1,840 one-time payment):</strong> Reduced commission rate of 0.5% + £0.10 per transaction, includes all features, priority support, and lifetime updates.
