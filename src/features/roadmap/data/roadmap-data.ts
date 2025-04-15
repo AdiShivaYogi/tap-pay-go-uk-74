@@ -36,7 +36,7 @@ export const roadmapItems: RoadmapItem[] = removeDuplicates([
   ...productItems,           
   ...pendingRoadmapItems,    
   ...localizationItems,      
-  ...partnershipItems,
-  ...paymentItems,           // Adăugat pentru a include elementele de plată
-  ...uiItems                 // Adăugat pentru a include elementele UI
+  ...partnershipItems,       // Make sure partnershipItems are included here
+  ...paymentItems,          
+  ...uiItems                 
 ]);

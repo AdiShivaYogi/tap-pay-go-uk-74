@@ -21,6 +21,7 @@ export const RoadmapCategory: React.FC<RoadmapCategoryProps> = ({
   const { expandedCategories, toggleCategory } = useRoadmapContext();
   const isExpanded = expandedCategories.includes(title);
 
+  // Make sure partnership is recognized as a valid category
   const categoryItems = roadmapItems.filter(item => 
     item.category && categories.includes(item.category as Category)
   );
@@ -28,6 +29,8 @@ export const RoadmapCategory: React.FC<RoadmapCategoryProps> = ({
   const completedItems = categoryItems.filter(item => item.status === "completed").length;
   const totalItems = categoryItems.length;
   const progress = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
+
+  console.log(`Category: ${title}, Items: ${categoryItems.length}`, categoryItems); // Add logging to debug
 
   return (
     <StyledCard className="bg-gradient-to-br from-card to-secondary/5 backdrop-blur-sm">

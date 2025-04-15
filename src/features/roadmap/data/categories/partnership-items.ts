@@ -7,6 +7,7 @@ export const partnershipItems: RoadmapItem[] = [
     description: "Sistem de afiliere și parteneriate",
     status: "pending",
     priority: "low",
+    category: "partnership", // Make sure category is explicitly set to "partnership"
     iconType: "users",
     iconColor: "text-yellow-500",
     timeEstimate: {
