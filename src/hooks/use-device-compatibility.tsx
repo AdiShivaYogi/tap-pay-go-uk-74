@@ -28,7 +28,7 @@ export const useDeviceCompatibility = (): DeviceCompatibility => {
   const [compatibility, setCompatibility] = useState<DeviceCompatibility>({
     deviceType: 'unknown',
     deviceModel: null,
-    isCompatible: 'unknown',
+    isCompatible: 'incompatible', // Set default to incompatible
     osVersion: null,
     isSafari: false
   });
@@ -71,19 +71,11 @@ export const useDeviceCompatibility = (): DeviceCompatibility => {
       else if (isAndroid) deviceType = 'android';
       else if (!isMobile) deviceType = 'desktop';
 
-      // Determinăm compatibilitatea - Setăm default la incompatibil
-      // Doar modele de iPhone foarte specifice sunt compatibile
-      let isCompatible: CompatibilityStatus = 'incompatible';
-      
-      // Pentru testare, dezactivăm temporar compatibilitatea
-      // Toată logica devine mai strictă - considerăm toate dispozitivele incompatibile 
-      // cu excepția cazurilor când suntem 100% siguri
+      // IMPORTANT: Forțăm toate dispozitivele să fie incompatibile
+      const isCompatible: CompatibilityStatus = 'incompatible';
       
       console.log("Device type:", deviceType);
-      console.log("OS Version:", osVersion);
-      
-      // În acest moment, forțăm ca toate dispozitivele să fie incompatibile
-      // pentru a rezolva problema raportată
+      console.log("Device compatibility:", isCompatible);
       
       return {
         deviceType,
@@ -97,14 +89,8 @@ export const useDeviceCompatibility = (): DeviceCompatibility => {
     const result = detectDevice();
     setCompatibility(result);
 
-    // Afișăm un mesaj specific pentru compatibilitatea cu Tap to Pay
-    if (result.isCompatible === 'compatible') {
-      toast({
-        title: "Dispozitiv compatibil cu Tap to Pay",
-        description: "Puteți scana carduri fizice pentru procesarea plăților.",
-        variant: "default",
-      });
-    } else if (result.isCompatible === 'incompatible' && result.deviceType === 'iphone') {
+    // Afișăm un mesaj pentru dispozitive care nu sunt compatibile
+    if (result.deviceType === 'iphone') {
       toast({
         title: "Dispozitiv incompatibil cu Tap to Pay",
         description: "iPhone-ul dumneavoastră necesită iOS 16+ și un model compatibil pentru a utiliza scanarea cardului. Veți folosi metoda standard de plată.",

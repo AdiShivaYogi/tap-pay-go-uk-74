@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { CreditCard, Loader2, NfcIcon, ShieldCheck } from "lucide-react";
+import { CreditCard, Loader2, ShieldCheck } from "lucide-react";
 import { DeviceCompatibility } from "@/hooks/use-device-compatibility";
 
 interface PaymentButtonProps {
@@ -29,11 +29,6 @@ export const PaymentButton = ({
             <Loader2 className="h-5 w-5 animate-spin" />
             Se procesează...
           </>
-        ) : deviceCompatibility.isCompatible === 'compatible' ? (
-          <>
-            <NfcIcon className="h-5 w-5" />
-            Scanează cardul cu Tap to Pay
-          </>
         ) : (
           <>
             <CreditCard className="h-5 w-5" />
@@ -44,9 +39,7 @@ export const PaymentButton = ({
 
       <div className="flex items-center justify-center gap-2 mt-4 text-sm text-muted-foreground">
         <ShieldCheck className="h-4 w-4" />
-        <span>Plăți securizate prin {deviceCompatibility.isCompatible === 'compatible' ? 
-          "Apple Tap to Pay" : 
-          "Stripe Checkout"}</span>
+        <span>Plăți securizate prin Stripe Checkout</span>
       </div>
     </div>
   );
