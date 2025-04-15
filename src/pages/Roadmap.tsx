@@ -1,3 +1,4 @@
+
 import { Layout } from "@/components/layout/layout";
 import { RoadmapProgress } from "@/features/roadmap/components/RoadmapProgress";
 import { useUserRole } from "@/hooks/use-user-role";
@@ -13,6 +14,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { SectionContainer } from "@/components/ui/section-container";
 import { BackupProgress } from "@/features/roadmap/components/BackupProgress";
 import { ProgressOptimizationPanel } from "@/features/roadmap/components/ProgressOptimizationPanel";
+import { ThemeManagerCard } from "@/components/theme/ThemeManagerCard";
 
 const Roadmap = () => {
   const { isAdmin, role } = useUserRole();
@@ -79,6 +81,8 @@ const Roadmap = () => {
                 </div>
               </div>
             </StyledCard>
+            
+            <ThemeManagerCard />
             
             <ProgressOptimizationPanel />
             
