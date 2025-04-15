@@ -1,5 +1,5 @@
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { StyledCard, StyledCardContent, StyledCardHeader, StyledCardTitle, StyledCardDescription } from "@/components/ui/card-variants";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TransactionsBarChart } from "@/components/transactions/TransactionsBarChart";
 import { TransactionsPieChart } from "@/components/transactions/TransactionsPieChart";
@@ -17,12 +17,12 @@ interface AdminChartsProps {
 export const AdminCharts = ({ isLoading, monthlyData, pieChartData }: AdminChartsProps) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <Card className="w-full h-[400px]">
-        <CardHeader className="space-y-1">
-          <CardTitle>Distribuția tranzacțiilor</CardTitle>
-          <CardDescription>Status tranzacții după valoare totală</CardDescription>
-        </CardHeader>
-        <CardContent>
+      <StyledCard variant="gradient" className="w-full h-[400px]">
+        <StyledCardHeader className="space-y-1">
+          <StyledCardTitle>Distribuția tranzacțiilor</StyledCardTitle>
+          <StyledCardDescription>Status tranzacții după valoare totală</StyledCardDescription>
+        </StyledCardHeader>
+        <StyledCardContent>
           {isLoading ? (
             <Skeleton className="h-[300px] w-full" />
           ) : (
@@ -30,15 +30,15 @@ export const AdminCharts = ({ isLoading, monthlyData, pieChartData }: AdminChart
               <TransactionsPieChart data={pieChartData} />
             </div>
           )}
-        </CardContent>
-      </Card>
+        </StyledCardContent>
+      </StyledCard>
       
-      <Card className="w-full h-[400px]">
-        <CardHeader className="space-y-1">
-          <CardTitle>Evoluția comisioanelor</CardTitle>
-          <CardDescription>Vizualizarea comisioanelor lunare</CardDescription>
-        </CardHeader>
-        <CardContent>
+      <StyledCard variant="gradient" className="w-full h-[400px]">
+        <StyledCardHeader className="space-y-1">
+          <StyledCardTitle>Evoluția comisioanelor</StyledCardTitle>
+          <StyledCardDescription>Vizualizarea comisioanelor lunare</StyledCardDescription>
+        </StyledCardHeader>
+        <StyledCardContent>
           {isLoading ? (
             <Skeleton className="h-[300px] w-full" />
           ) : (
@@ -46,8 +46,8 @@ export const AdminCharts = ({ isLoading, monthlyData, pieChartData }: AdminChart
               <TransactionsBarChart data={monthlyData} />
             </div>
           )}
-        </CardContent>
-      </Card>
+        </StyledCardContent>
+      </StyledCard>
     </div>
   );
 };

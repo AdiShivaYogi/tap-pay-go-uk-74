@@ -1,5 +1,5 @@
 
-import { Card, CardHeader, CardDescription, CardTitle, CardContent } from "@/components/ui/card";
+import { StyledCard, StyledCardHeader, StyledCardContent, StyledCardDescription, StyledCardTitle } from "@/components/ui/card-variants";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BadgeDollarSign, Wallet, CreditCard, TrendingUp } from "lucide-react";
 
@@ -48,31 +48,31 @@ export const AdminStats = ({ isLoading, stats }: AdminStatsProps) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {statCards.map((stat) => (
-        <Card key={stat.title} className="relative overflow-hidden">
-          <CardHeader className="pb-2">
+        <StyledCard key={stat.title} variant="gradient" className="relative overflow-hidden">
+          <StyledCardHeader className="pb-2">
             <div className="flex items-center justify-between">
-              <CardDescription>{stat.title}</CardDescription>
+              <StyledCardDescription>{stat.title}</StyledCardDescription>
               <stat.icon className={`h-5 w-5 ${stat.color}`} />
             </div>
-            <CardTitle className="text-2xl">
+            <StyledCardTitle className="text-2xl">
               {isLoading ? (
                 <Skeleton className="h-8 w-20" />
               ) : (
                 stat.value
               )}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </StyledCardTitle>
+          </StyledCardHeader>
+          <StyledCardContent>
             <p className="text-xs text-muted-foreground">
               {stat.description}
             </p>
-          </CardContent>
+          </StyledCardContent>
           <div 
             className={`absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r ${
               stat.color.replace('text', 'from')
             } to-transparent`}
           />
-        </Card>
+        </StyledCard>
       ))}
     </div>
   );

@@ -1,5 +1,4 @@
-
-import { Card, CardHeader, CardDescription, CardTitle } from "@/components/ui/card";
+import { StyledCard, StyledCardHeader, StyledCardContent, StyledCardTitle, StyledCardDescription } from "@/components/ui/card-variants";
 import { Badge } from "@/components/ui/badge";
 import { Bell, AlertTriangle, CheckCircle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -45,12 +44,12 @@ export const MonitoringStats = ({ isLoading, stats }: MonitoringStatsProps) => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Monitorizare Tranzacții</CardTitle>
-          <CardDescription>
+      <StyledCard variant="gradient">
+        <StyledCardHeader>
+          <StyledCardTitle>Monitorizare Tranzacții</StyledCardTitle>
+          <StyledCardDescription>
             Statistici agregate, fără expunerea datelor sensibile
-          </CardDescription>
+          </StyledCardDescription>
           <div className="grid grid-cols-2 gap-4 mt-4">
             <div>
               <p className="text-sm font-medium">Total Tranzacții</p>
@@ -89,15 +88,15 @@ export const MonitoringStats = ({ isLoading, stats }: MonitoringStatsProps) => {
               )}
             </div>
           </div>
-        </CardHeader>
-      </Card>
+        </StyledCardHeader>
+      </StyledCard>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Alerte Recente</CardTitle>
-          <CardDescription>
+      <StyledCard variant="gradient">
+        <StyledCardHeader>
+          <StyledCardTitle>Alerte Recente</StyledCardTitle>
+          <StyledCardDescription>
             Notificări despre activități neobișnuite
-          </CardDescription>
+          </StyledCardDescription>
           <div className="space-y-4 mt-4">
             {isLoading ? (
               <>
@@ -124,8 +123,8 @@ export const MonitoringStats = ({ isLoading, stats }: MonitoringStatsProps) => {
               ))
             )}
           </div>
-        </CardHeader>
-      </Card>
+        </StyledCardHeader>
+      </StyledCard>
     </div>
   );
 };
