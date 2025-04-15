@@ -164,14 +164,42 @@ export function GlobalCssManager({ isSheet = false }) {
     document.removeEventListener('mouseup', handleDragEnd as any);
   };
 
+  // Adaugă și elimină handler-ul de click când se schimbă starea de selecție
   useEffect(() => {
+    if (isSelecting) {
+      document.addEventListener('click', handleElementClick);
+      document.body.style.cursor = 'pointer';
+    } else {
+      document.removeEventListener('click', handleElementClick);
+      document.body.style.cursor = '';
+      
+      // Reset outline for selected element when exiting selection mode
+      if (selectedElement) {
+        selectedElement.style.outline = '';
+      }
+    }
+    
+    // Cleanup on component unmount
     return () => {
-      if (isSelecting) {
-        document.body.style.cursor = '';
-        document.removeEventListener('click', handleElementClick);
+      document.removeEventListener('click', handleElementClick);
+      document.body.style.cursor = '';
+      
+      // Reset ui when component unmounts
+      if (selectedElement) {
+        selectedElement.style.outline = '';
       }
     };
   }, [isSelecting]);
+
+  // Cleanup any event handlers when component unmounts
+  useEffect(() => {
+    return () => {
+      document.removeEventListener('click', handleElementClick);
+      document.removeEventListener('mousemove', handleDragMove as any);
+      document.removeEventListener('mouseup', handleDragEnd as any);
+      document.body.style.cursor = '';
+    };
+  }, []);
 
   const renderContent = () => (
     <div className="space-y-6">
