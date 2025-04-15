@@ -14,10 +14,10 @@ export interface StyledCardProps extends React.ComponentProps<typeof Card> {
 }
 
 export const CardVariants = {
-  default: "border-2 border-primary/10 relative overflow-hidden hover:shadow-md transition-shadow duration-300",
-  pricing: "transform transition-all duration-300 hover:scale-105 border-2 relative overflow-hidden",
-  gradient: "bg-gradient-to-br from-card to-secondary/80 backdrop-blur-sm border-primary/10",
-  transparent: "bg-card/50 backdrop-blur-sm border-primary/20"
+  default: "border-[1px] border-primary/10 relative overflow-hidden hover:shadow-md transition-shadow duration-300",
+  pricing: "transform transition-all duration-300 hover:scale-105 border-[1px] relative overflow-hidden",
+  gradient: "bg-gradient-to-br from-card to-secondary/80 backdrop-blur-sm border-[1px] border-primary/10",
+  transparent: "bg-card/50 backdrop-blur-sm border-[1px] border-primary/20"
 };
 
 export const StyledCard = ({ 
@@ -59,4 +59,3 @@ export const StyledCardContent = CardContent;
 export const StyledCardTitle = CardTitle;
 export const StyledCardDescription = CardDescription;
 export const StyledCardFooter = CardFooter;
-
