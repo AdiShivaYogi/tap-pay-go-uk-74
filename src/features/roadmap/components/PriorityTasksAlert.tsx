@@ -3,7 +3,7 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle, ArrowUpCircle } from "lucide-react";
 import { Category } from "../types";
 
-type CategoryCount = Record<Category, number>;
+type CategoryCount = Record<Category | 'all' | 'other', number>;
 
 interface PriorityTasksAlertProps {
   highPriorityItemsCount: number;
@@ -26,7 +26,7 @@ export const PriorityTasksAlert = ({ highPriorityItemsCount, categoryCounts }: P
       
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {Object.entries(categoryCounts).map(([category, count]) => {
-          if (count === 0) return null;
+          if (count === 0 || category === 'all') return null;
           return (
             <div 
               key={category}
@@ -34,7 +34,7 @@ export const PriorityTasksAlert = ({ highPriorityItemsCount, categoryCounts }: P
             >
               <div className="w-2 h-2 rounded-full bg-amber-500"></div>
               <span className="text-sm font-medium text-amber-800 capitalize">
-                {category}: {count}
+                {category === 'other' ? 'Altele' : category}: {count}
               </span>
             </div>
           );

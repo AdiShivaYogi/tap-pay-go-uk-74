@@ -3,11 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, ArrowUpCircle, Filter } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Category } from "../types";
 
+// Update the interface to use the Category type from types.ts
 interface PriorityTaskFilterProps {
   activeCategory: string;
   onCategoryChange: (category: string) => void;
-  categoryCounts: Record<string, number>;
+  categoryCounts: Record<Category | 'all' | 'other', number>;
   totalHighPriority: number;
 }
 
@@ -43,21 +45,23 @@ export const PriorityTaskFilter = ({
         >
           Toate ({Object.values(categoryCounts).reduce((a, b) => a + b, 0)})
         </Button>
-        {Object.entries(categoryCounts).map(([category, count]) => (
-          <Button 
-            key={category}
-            variant={activeCategory === category ? "default" : "outline"} 
-            size="sm" 
-            onClick={() => onCategoryChange(category)}
-            className={`
-              ${activeCategory === category 
-                ? getCategoryColor(category).active 
-                : getCategoryColor(category).inactive}
-            `}
-          >
-            {category.charAt(0).toUpperCase() + category.slice(1)} ({count})
-          </Button>
-        ))}
+        {Object.entries(categoryCounts)
+          .filter(([category]) => category !== 'all') // Don't show 'all' twice
+          .map(([category, count]) => (
+            <Button 
+              key={category}
+              variant={activeCategory === category ? "default" : "outline"} 
+              size="sm" 
+              onClick={() => onCategoryChange(category)}
+              className={`
+                ${activeCategory === category 
+                  ? getCategoryColor(category).active 
+                  : getCategoryColor(category).inactive}
+              `}
+            >
+              {category === 'other' ? 'Altele' : category.charAt(0).toUpperCase() + category.slice(1)} ({count})
+            </Button>
+          ))}
       </div>
     </CardContent>
   </Card>
@@ -84,8 +88,13 @@ const getCategoryColor = (category: string) => {
     devops: {
       active: "bg-orange-500 hover:bg-orange-600",
       inactive: "border-orange-200 text-orange-700"
+    },
+    other: {
+      active: "bg-gray-500 hover:bg-gray-600",
+      inactive: "border-gray-200 text-gray-700"
     }
   };
+  
   return colors[category as keyof typeof colors] || {
     active: "bg-gray-500 hover:bg-gray-600",
     inactive: "border-gray-200 text-gray-700"
