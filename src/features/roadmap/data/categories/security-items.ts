@@ -1,3 +1,4 @@
+
 import { RoadmapItem } from "../../types";
 
 export const securityItems: RoadmapItem[] = [
@@ -46,14 +47,14 @@ export const securityItems: RoadmapItem[] = [
   {
     title: "Securitate API & Cloud",
     description: "Implementare măsuri esențiale de securitate API și cloud",
-    status: "in-progress",
+    status: "completed",  // Am schimbat statusul la "completed"
     priority: "high",
     category: "security",
     iconType: "shield-check",
-    iconColor: "text-purple-500",
+    iconColor: "text-green-500",  // Am schimbat și culoarea pentru a indica finalizarea
     timeEstimate: {
       total: 25,
-      spent: 24,
+      spent: 25,  // Am actualizat și timpul total petrecut
       aiTotal: 20
     },
     details: [
