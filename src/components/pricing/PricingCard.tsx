@@ -29,7 +29,7 @@ export const PricingCard = ({ plan }: PricingCardProps) => {
 
   const handleSelectPlan = (planId: string) => {
     if (plan.isApiPlan) {
-      navigate(`/contact?service=api&plan=${planId}`);
+      navigate('/status');
     } else {
       navigate(`/onboarding?plan=${planId}`);
     }
