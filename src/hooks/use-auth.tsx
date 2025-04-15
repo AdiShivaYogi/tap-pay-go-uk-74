@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -26,15 +25,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Verificăm sesiunea la încărcarea aplicației
     const checkSession = async () => {
       try {
         setLoading(true);
         const { data: { session } } = await supabase.auth.getSession();
         
-        // Setăm userul dacă există o sesiune activă
         if (session) {
-          // Pentru demo, setăm un utilizator hardcodat
           if (session.user.email === 'admin@example.com') {
             setUser({
               id: session.user.id,
@@ -60,16 +56,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     };
 
-    // Apelăm verificarea sesiunii
     checkSession();
 
-    // Setăm listener pentru schimbările de autentificare
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log('Auth state changed:', event);
         
         if (session) {
-          // Pentru demo, setăm un utilizator hardcodat
           if (session.user.email === 'admin@example.com') {
             setUser({
               id: session.user.id,
@@ -91,7 +84,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     );
 
-    // Cleanup la unmount
     return () => {
       subscription.unsubscribe();
     };
@@ -120,7 +112,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         description: "Bine ați revenit!",
       });
       
-      return data;
+      return;
     } catch (error) {
       console.error('Eroare la autentificare:', error);
       throw error;
@@ -156,7 +148,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setLoading(true);
       if (!user) throw new Error('Utilizatorul nu este autentificat');
       
-      // Pentru demo, doar actualizăm starea locală
       setUser({
         ...user,
         stripeConnected: true,
@@ -185,7 +176,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setLoading(true);
       if (!user) throw new Error('Utilizatorul nu este autentificat');
       
-      // Pentru demo, doar actualizăm starea locală
       setUser({
         ...user,
         stripeConnected: false,
