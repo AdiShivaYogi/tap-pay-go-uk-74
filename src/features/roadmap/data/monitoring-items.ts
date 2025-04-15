@@ -31,7 +31,7 @@ export const monitoringItems: RoadmapItem[] = [
     iconColor: "text-green-500",
     timeEstimate: {
       total: 35,
-      spent: 32,
+      spent: 35,
       aiTotal: 20
     },
     details: [
@@ -42,7 +42,7 @@ export const monitoringItems: RoadmapItem[] = [
       "Configurare CDN global cu strategie de caching ✓",
       "Audit și optimizare continuă a infrastructurii ✓",
       "Implementare politici de securitate cloud ✓",
-      "Raportare automată a performanței și costurilor"
+      "Raportare automată a performanței și costurilor ✓"
     ]
   }
 ];
