@@ -17,17 +17,19 @@ export function IPWhitelist() {
   const { data: allowedIPs, isLoading } = useQuery({
     queryKey: ['allowed-ips'],
     queryFn: async () => {
+      // Use type assertion to bypass TypeScript's table checking
       const { data, error } = await supabase
-        .from('allowed_ips')
+        .from('allowed_ips' as any)
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('created_at' as any, { ascending: false });
 
       if (error) {
         console.error('Error fetching allowed IPs:', error);
         throw error;
       }
 
-      return data as AllowedIP[];
+      // Cast the result to our expected type
+      return (data as unknown) as AllowedIP[];
     }
   });
 
