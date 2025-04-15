@@ -23,6 +23,10 @@ export const RoadmapCategory: React.FC<RoadmapCategoryProps> = ({
     categories.includes(item.category as Category)
   );
 
+  // Debugging category items
+  console.log(`${title} items:`, categoryItems);
+  console.log(`${title} filtered from categories:`, categories);
+
   const completedItems = categoryItems.filter(item => item.status === "completed").length;
   const totalItems = categoryItems.length;
   const progress = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
@@ -46,20 +50,21 @@ export const RoadmapCategory: React.FC<RoadmapCategoryProps> = ({
         )}
       </button>
       
-      <div className={cn(
-        "grid transition-all duration-300",
-        isExpanded 
-          ? "grid-rows-[1fr] p-6" 
-          : "grid-rows-[0fr]"
-      )}>
-        <div className="min-h-0 overflow-hidden">
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {categoryItems.map((item, index) => (
-              <RoadmapCard key={index} item={item} />
-            ))}
-          </div>
+      {isExpanded && (
+        <div className="p-6">
+          {categoryItems.length > 0 ? (
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+              {categoryItems.map((item, index) => (
+                <RoadmapCard key={`${item.title}-${index}`} item={item} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-6 text-muted-foreground">
+              Nu există elemente în această categorie.
+            </div>
+          )}
         </div>
-      </div>
+      )}
     </div>
   );
 };

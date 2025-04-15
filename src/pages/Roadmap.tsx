@@ -7,6 +7,7 @@ import { RoadmapHeader } from "@/features/roadmap/components/RoadmapHeader";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { RoadmapCategory } from "@/features/roadmap/components/RoadmapCategory";
 import { RoadmapContextProvider } from "@/features/roadmap/context/RoadmapContext";
+import { MVPRoadmap } from "@/features/roadmap/components/MVPRoadmap";
 
 const Roadmap = () => {
   const { isAdmin, role } = useUserRole();
@@ -27,18 +28,24 @@ const Roadmap = () => {
             <RoadmapHeader />
             <RoadmapContextProvider>
               <RoadmapProgress />
-              <RoadmapCategory 
-                title="Securitate și Infrastructură" 
-                categories={["security", "infrastructure"]} 
-              />
-              <RoadmapCategory 
-                title="DevOps și Monitorizare" 
-                categories={["devops"]} 
-              />
-              <RoadmapCategory 
-                title="Dezvoltare Produs" 
-                categories={["product"]} 
-              />
+              <div className="mt-8 space-y-6">
+                <RoadmapCategory 
+                  title="Securitate și Infrastructură" 
+                  categories={["security", "infrastructure"]} 
+                />
+                <RoadmapCategory 
+                  title="DevOps și Monitorizare" 
+                  categories={["devops"]} 
+                />
+                <RoadmapCategory 
+                  title="Dezvoltare Produs" 
+                  categories={["product"]} 
+                />
+              </div>
+              <div className="mt-8">
+                <h2 className="text-2xl font-semibold mb-4">MVP Roadmap</h2>
+                <MVPRoadmap />
+              </div>
             </RoadmapContextProvider>
           </div>
         </div>

@@ -25,6 +25,9 @@ export const RoadmapCard = ({ item }: RoadmapCardProps) => {
     }
   };
 
+  // Debug item
+  console.log("Rendering item:", item);
+
   return (
     <Card className={cn(
       "hover:shadow-lg transition-all duration-300 bg-gradient-to-br",
@@ -60,7 +63,7 @@ export const RoadmapCard = ({ item }: RoadmapCardProps) => {
         </div>
 
         <ul className="space-y-2">
-          {item.details.map((detail, idx) => (
+          {item.details && item.details.map((detail, idx) => (
             <li key={idx} className="flex items-start gap-2 text-sm">
               <span className={cn(
                 "mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0",

@@ -5,14 +5,14 @@ export const infrastructureItems: RoadmapItem[] = [
   {
     title: "Infrastructură Redundantă Avansată",
     description: "Strategie completă de disponibilitate și reziliență",
-    status: "completed", // Updated to completed
+    status: "completed",
     priority: "high",
     category: "infrastructure",
     iconType: "server-cog",
-    iconColor: "text-green-500", // Updated to green to reflect completion
+    iconColor: "text-green-500",
     timeEstimate: {
       total: 40,
-      spent: 40, // Updated to match total
+      spent: 40,
       aiTotal: 25
     },
     details: [
@@ -29,14 +29,14 @@ export const infrastructureItems: RoadmapItem[] = [
   {
     title: "Centru de Date Redundant",
     description: "Infrastructură cloud distribuită și securizată",
-    status: "completed", // Updated to completed
+    status: "completed",
     priority: "high",
     category: "infrastructure",
     iconType: "cloud-cog",
-    iconColor: "text-green-500", // Updated to green
+    iconColor: "text-green-500",
     timeEstimate: {
       total: 50,
-      spent: 50, // Updated to match total
+      spent: 50,
       aiTotal: 30
     },
     details: [
@@ -48,27 +48,6 @@ export const infrastructureItems: RoadmapItem[] = [
       "Optimizare costuri prin resurse cloud dinamice ✓",
       "Plan de tranziție și migrare între centre de date ✓",
       "Testare continuă a scenariilor de dezastre ✓"
-    ]
-  },
-  {
-    title: "Scalare Automată",
-    description: "Implementare sistem de auto-scaling avansat",
-    status: "completed", // Updated to completed
-    priority: "high",
-    category: "infrastructure",
-    iconType: "server-crash",
-    iconColor: "text-green-500", // Updated to green
-    timeEstimate: {
-      total: 30,
-      spent: 30, // Updated to match total
-      aiTotal: 18
-    },
-    details: [
-      "Configurare reguli de auto-scaling ✓",
-      "Implementare balansare încărcare automată ✓",
-      "Optimizare algoritmi de scalare ✓",
-      "Monitorizare performanță scalare ✓",
-      "Raportare costuri și eficiență ✓"
     ]
   }
 ];
