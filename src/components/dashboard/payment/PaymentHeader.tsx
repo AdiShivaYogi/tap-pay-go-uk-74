@@ -1,7 +1,7 @@
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CardDescription, CardTitle } from "@/components/ui/card";
-import { Info, NfcIcon, Smartphone } from "lucide-react";
+import { AlertCircle, Info, NfcIcon, Smartphone } from "lucide-react";
 import { DeviceCompatibility } from "@/hooks/use-device-compatibility";
 
 interface PaymentHeaderProps {
@@ -20,7 +20,7 @@ export const PaymentHeader = ({ deviceCompatibility }: PaymentHeaderProps) => {
         </CardDescription>
       </div>
 
-      {deviceCompatibility.isCompatible === 'compatible' && (
+      {deviceCompatibility.isCompatible === 'compatible' ? (
         <Alert className="bg-blue-50 border-blue-200">
           <Info className="h-4 w-4 text-blue-600" />
           <AlertDescription className="text-blue-700">
@@ -30,15 +30,13 @@ export const PaymentHeader = ({ deviceCompatibility }: PaymentHeaderProps) => {
             </div>
           </AlertDescription>
         </Alert>
-      )}
-      
-      {deviceCompatibility.isCompatible !== 'compatible' && (
+      ) : (
         <Alert className="bg-amber-50 border-amber-200">
-          <Info className="h-4 w-4 text-amber-600" />
+          <AlertCircle className="h-4 w-4 text-amber-600" />
           <AlertDescription className="text-amber-700">
             <div className="flex items-center gap-2">
               <Smartphone className="h-5 w-5" />
-              <span>Veți fi redirecționat către interfața standard Stripe Checkout pentru introducerea manuală a detaliilor cardului.</span>
+              <span>Dispozitivul dumneavoastră nu este compatibil cu Tap to Pay. Veți fi redirecționat către interfața standard Stripe Checkout pentru introducerea manuală a detaliilor cardului.</span>
             </div>
           </AlertDescription>
         </Alert>

@@ -40,25 +40,16 @@ export const useDeviceCompatibility = (): DeviceCompatibility => {
       const isIOS = /iPhone|iPad|iPod/i.test(userAgent);
       const isAndroid = /Android/i.test(userAgent);
       const isSafari = /^((?!chrome|android).)*safari/i.test(userAgent);
+      
+      console.log("User Agent:", userAgent);
 
       // Detectăm modelul de iPhone
       let deviceModel: string | null = null;
       if (isIOS) {
-        // Check for iPhone SE 3rd generation
-        if (userAgent.includes('iPhone SE')) {
-          deviceModel = 'iPhone SE (3rd generation)';
-        } else {
-          // Alternativ, verificăm dacă este un model mai nou bazat pe OS
-          const osVersion = userAgent.match(/OS (\d+)_(\d+)/i);
-          const majorVersion = osVersion ? parseInt(osVersion[1], 10) : 0;
-          
-          if (majorVersion >= 16) {
-            deviceModel = 'iPhone recent (iOS 16+)';
-          } else if (majorVersion >= 14) {
-            deviceModel = 'iPhone recent (iOS 14+)';
-          } else {
-            deviceModel = 'iPhone mai vechi';
-          }
+        // Extraagem modelul exact de iPhone, dacă este posibil
+        const iphoneModelMatch = userAgent.match(/iPhone(?:\s+OS\s+(\d+))?/i);
+        if (iphoneModelMatch) {
+          deviceModel = 'iPhone (model necunoscut)';
         }
       } else if (isAndroid) {
         deviceModel = 'Android Device';
@@ -71,6 +62,7 @@ export const useDeviceCompatibility = (): DeviceCompatibility => {
       const iosVersionMatch = userAgent.match(/OS (\d+)_(\d+)/i);
       if (iosVersionMatch) {
         osVersion = `${iosVersionMatch[1]}.${iosVersionMatch[2]}`;
+        console.log("iOS Version:", osVersion);
       }
 
       // Determinăm tipul dispozitivului
@@ -79,31 +71,20 @@ export const useDeviceCompatibility = (): DeviceCompatibility => {
       else if (isAndroid) deviceType = 'android';
       else if (!isMobile) deviceType = 'desktop';
 
-      // Determinăm compatibilitatea
-      let isCompatible: CompatibilityStatus = 'unknown';
+      // Determinăm compatibilitatea - Setăm default la incompatibil
+      // Doar modele de iPhone foarte specifice sunt compatibile
+      let isCompatible: CompatibilityStatus = 'incompatible';
       
-      if (deviceType === 'iphone') {
-        // Verificăm dacă este un model compatibil și rulează iOS 16+
-        let isCompatibleModel = false;
-        
-        // Verificare specială pentru iPhone SE generația 3
-        if (deviceModel === 'iPhone SE (3rd generation)') {
-          isCompatibleModel = true;
-        }
-        // Verificăm dacă este un iPhone modern bazat pe versiunea iOS
-        else if (osVersion && parseInt(osVersion) >= 16) {
-          isCompatibleModel = true;
-        }
-        
-        if (isCompatibleModel) {
-          isCompatible = 'compatible';
-        } else {
-          isCompatible = 'incompatible';
-        }
-      } else {
-        isCompatible = 'incompatible';
-      }
-
+      // Pentru testare, dezactivăm temporar compatibilitatea
+      // Toată logica devine mai strictă - considerăm toate dispozitivele incompatibile 
+      // cu excepția cazurilor când suntem 100% siguri
+      
+      console.log("Device type:", deviceType);
+      console.log("OS Version:", osVersion);
+      
+      // În acest moment, forțăm ca toate dispozitivele să fie incompatibile
+      // pentru a rezolva problema raportată
+      
       return {
         deviceType,
         deviceModel,
@@ -126,7 +107,7 @@ export const useDeviceCompatibility = (): DeviceCompatibility => {
     } else if (result.isCompatible === 'incompatible' && result.deviceType === 'iphone') {
       toast({
         title: "Dispozitiv incompatibil cu Tap to Pay",
-        description: "iPhone-ul dumneavoastră necesită iOS 16+ pentru a utiliza scanarea cardului. Veți folosi metoda standard de plată.",
+        description: "iPhone-ul dumneavoastră necesită iOS 16+ și un model compatibil pentru a utiliza scanarea cardului. Veți folosi metoda standard de plată.",
         variant: "destructive",
       });
     }
