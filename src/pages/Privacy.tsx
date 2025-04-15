@@ -1,9 +1,8 @@
-
 import { Layout } from "@/components/layout/layout";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { PageHeader } from "@/components/ui/page-header";
 import { SectionContainer } from "@/components/ui/section-container";
-import { Shield } from "lucide-react";
+import { Shield, Globe, Lock, Flag } from "lucide-react";
 import { StyledCard } from "@/components/ui/card-variants";
 
 const PrivacyPage = () => {
@@ -13,19 +12,32 @@ const PrivacyPage = () => {
         <SectionContainer>
           <PageHeader
             icon={Shield}
-            title="Politica de Confidențialitate"
+            title="Politică de Confidențialitate"
             description="Ultima actualizare: 15 Aprilie 2025"
           />
 
           <div className="max-w-4xl mx-auto space-y-8 pb-8">
+            <StyledCard variant="default" className="p-6 bg-blue-50/50 border-blue-100">
+              <div className="flex items-start gap-4">
+                <Globe className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
+                <div>
+                  <h2 className="text-lg font-semibold text-primary">Context Geografic și Juridic</h2>
+                  <p className="text-muted-foreground text-sm">
+                    Serviciile noastre sunt disponibile în Regatul Unit și alte țări care acceptă Stripe, 
+                    respectând standardele internaționale de protecție a datelor precum GDPR și legislația britanică.
+                  </p>
+                </div>
+              </div>
+            </StyledCard>
+
             <StyledCard variant="default" className="p-6">
               <div className="flex items-start gap-4">
                 <Shield className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
                 <div>
-                  <h2 className="text-lg font-semibold">Procesarea Sigură prin Stripe</h2>
+                  <h2 className="text-lg font-semibold">Procesarea Securizată prin Stripe</h2>
                   <p className="text-muted-foreground text-sm">
-                    Pentru siguranța dvs., toate datele de plată sunt procesate și stocate direct de Stripe, 
-                    lider global în procesarea plăților online.
+                    Toate datele de plată sunt procesate și stocate direct de Stripe, 
+                    un provider de servicii de plată autorizat de Financial Conduct Authority (FCA) din Regatul Unit.
                   </p>
                 </div>
               </div>
@@ -33,37 +45,33 @@ const PrivacyPage = () => {
 
             <div className="space-y-6">
               <section>
-                <h2 className="text-2xl font-semibold mb-3">1. Introducere</h2>
+                <h2 className="text-2xl font-semibold mb-3">1. Introducere și Jurisdicție</h2>
                 <p className="text-muted-foreground">
-                  La TapPayGo, protejarea confidențialității dvs. este o prioritate. Această Politică de Confidențialitate 
-                  explică modul în care colectăm, folosim și protejăm informațiile dvs. atunci când utilizați 
-                  serviciile noastre de procesare a plăților.
+                  TapPayGo oferă servicii de procesare plăți cu respectarea strictă a legislației britanice 
+                  privind protecția datelor, inclusiv Data Protection Act 2018 și UK GDPR. Serviciile noastre sunt 
+                  disponibile pentru utilizatorii din Regatul Unit și alte țări care acceptă Stripe.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-2xl font-semibold mb-3">2. Informații pe care le colectăm</h2>
+                <h2 className="text-2xl font-semibold mb-3">2. Informații Colectate</h2>
                 <div className="space-y-4">
-                  <h3 className="text-lg font-medium">2.1. Informații furnizate direct:</h3>
+                  <h3 className="text-lg font-medium">2.1. Date Personale și Financiare</h3>
                   <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
                     <li>Informații de contact (nume, email, telefon)</li>
-                    <li>Informații despre afacere (denumire, adresă, CUI)</li>
-                    <li>Date despre contul bancar pentru procesarea plăților</li>
+                    <li>Detalii de afacere (denumire, adresă, număr de înregistrare)</li>
+                    <li>Metadate tranzacții procesate prin Stripe</li>
                   </ul>
 
-                  <h3 className="text-lg font-medium">2.2. Informații despre tranzacții:</h3>
-                  <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
-                    <li>Sumele tranzacțiilor</li>
-                    <li>Data și ora tranzacțiilor</li>
-                    <li>Statusul tranzacțiilor</li>
-                    <li>Referințe ale tranzacțiilor</li>
-                  </ul>
-
-                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
-                    <p className="text-blue-800 font-medium">Important:</p>
-                    <p className="text-blue-700 text-sm">
-                      Nu colectăm și nu stocăm niciodată informații despre cardurile de credit. 
-                      Toate datele sensibile sunt procesate direct de Stripe prin sisteme conforme PCI DSS.
+                  <div className="bg-green-50 p-4 rounded-lg border border-green-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Lock className="h-5 w-5 text-green-600" />
+                      <p className="text-green-800 font-medium">Protecție Avansată a Datelor</p>
+                    </div>
+                    <p className="text-green-700 text-sm">
+                      Niciun card sau detalii financiare sensibile nu sunt stocate de TapPayGo. 
+                      Toate informațiile sunt procesate securizat de Stripe, respectând standardele PCI DSS și 
+                      reglementările FCA.
                     </p>
                   </div>
                 </div>
@@ -162,6 +170,34 @@ const PrivacyPage = () => {
                   <li>Email: privacy@tappaygo.com</li>
                   <li>Telefon: +44 20 1234 5678</li>
                   <li>Adresă: 123 Payment Street, London, UK, EC1A 1BB</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-3">10. Conformitate cu Reglementări Internaționale</h2>
+                <p className="text-muted-foreground mb-4">
+                  TapPayGo respectă standarde internaționale de protecție a datelor, inclusiv:
+                </p>
+                <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
+                  <li>UK GDPR și Data Protection Act 2018 (Regatul Unit)</li>
+                  <li>General Data Protection Regulation (UE)</li>
+                  <li>Standardele de securitate PCI DSS pentru tranzacții</li>
+                  <li>Reglementări ale Financial Conduct Authority (FCA)</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-3">11. Contact și Suport</h2>
+                <div className="flex items-center gap-2 mb-4">
+                  <Flag className="h-6 w-6 text-primary" />
+                  <p className="text-muted-foreground">
+                    Pentru întrebări privind confidențialitatea datelor în jurisdicția britanică:
+                  </p>
+                </div>
+                <ul className="list-none space-y-2 text-muted-foreground">
+                  <li>Email: privacy@tappaygo.co.uk</li>
+                  <li>Telefon: +44 20 7123 4567</li>
+                  <li>Adresă: 20 Finsbury Circus, London, EC2M 7EB, United Kingdom</li>
                 </ul>
               </section>
 
