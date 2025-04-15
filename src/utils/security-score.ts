@@ -5,15 +5,17 @@ interface SecurityCriteria {
   hasFullTransparency: boolean;
   hasLoginProtection: boolean;
   hasRoleBasedAccess: boolean;
+  hasApiAccessControl: boolean;
 }
 
 export const calculateSecurityScore = (criteria: SecurityCriteria): number => {
   const weights = {
-    hasStripeIntegration: 25,
-    hasZeroSensitiveData: 25,
-    hasFullTransparency: 20,
-    hasLoginProtection: 15,
-    hasRoleBasedAccess: 15,
+    hasStripeIntegration: 20,        // Reduced from 25 to accommodate API security
+    hasZeroSensitiveData: 20,        // Reduced from 25 to accommodate API security
+    hasFullTransparency: 15,         // Reduced from 20
+    hasLoginProtection: 15,          // Maintained
+    hasRoleBasedAccess: 15,          // Maintained
+    hasApiAccessControl: 15,         // New criteria for API access control
   };
 
   let score = 0;
@@ -23,18 +25,17 @@ export const calculateSecurityScore = (criteria: SecurityCriteria): number => {
   if (criteria.hasFullTransparency) score += weights.hasFullTransparency;
   if (criteria.hasLoginProtection) score += weights.hasLoginProtection;
   if (criteria.hasRoleBasedAccess) score += weights.hasRoleBasedAccess;
+  if (criteria.hasApiAccessControl) score += weights.hasApiAccessControl;
 
   return score;
 };
 
-// Nouă funcție pentru a raporta și actualiza criteriile de securitate
 export const updateSecurityCriteria = (
   newCriteria: Partial<SecurityCriteria>
 ): SecurityCriteria => {
   const currentCriteria = getSecurityCriteria();
   const updatedCriteria = { ...currentCriteria, ...newCriteria };
   
-  // Înregistrăm modificările într-un jurnal sau sistem de monitorizare
   console.log('Security Criteria Updated:', {
     previous: currentCriteria,
     updated: updatedCriteria
@@ -50,6 +51,7 @@ export const getSecurityCriteria = (): SecurityCriteria => {
     hasFullTransparency: true,
     hasLoginProtection: true,
     hasRoleBasedAccess: true,
+    hasApiAccessControl: true,  // New criteria - true because we've implemented API access control
   };
 };
 
@@ -75,14 +77,10 @@ export const getSecurityDetails = () => {
     {
       label: "Control acces bazat pe roluri",
       isActive: criteria.hasRoleBasedAccess
+    },
+    {
+      label: "Control acces API",
+      isActive: criteria.hasApiAccessControl
     }
   ];
 };
-
-// Export pentru a permite utilizarea în alte componente
-export const SecurityCriteriaReporter = {
-  updateCriteria: updateSecurityCriteria,
-  getCurrentScore: () => calculateSecurityScore(getSecurityCriteria()),
-  getCurrentDetails: getSecurityDetails
-};
-
