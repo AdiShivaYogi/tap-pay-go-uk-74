@@ -1,6 +1,6 @@
-
 import { Layout } from "@/components/layout/layout";
 import { useUserRole } from "@/hooks/use-user-role";
+import { AccessRestrictionAlert } from "@/features/roadmap/components/AccessRestrictionAlert";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Languages } from "lucide-react";
@@ -10,17 +10,24 @@ import { useState } from "react";
 import { ApiKeyForm } from "@/components/translations/ApiKeyForm";
 import { SupportedLanguages } from "@/components/translations/SupportedLanguages";
 
-// Updated interface to match the ApiKeyForm props
 type APIConfigData = {
   [key: string]: string;
 };
 
 const Translations = () => {
-  const { isAdmin } = useUserRole();
+  const { isAdmin, role } = useUserRole();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorDetails, setErrorDetails] = useState('');
+
+  if (!isAdmin) {
+    return (
+      <Layout>
+        <AccessRestrictionAlert role={role} />
+      </Layout>
+    );
+  }
 
   const onSubmitDeepL = async (data: APIConfigData) => {
     setLoading(true);
