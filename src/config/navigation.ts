@@ -23,7 +23,7 @@ export const NAVIGATION: NavigationItem[] = [
   { href: "/", label: "Acasă", icon: Home },
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/reports", label: "Rapoarte", icon: FileText },
-  { href: "/roadmap", label: "Roadmap", icon: Map, adminOnly: true },
+  { href: "/roadmap", label: "Roadmap", icon: Map, superAdminOnly: true }, // Updated to superAdminOnly
   { href: "/admin", label: "Admin", icon: User, adminOnly: true },
   { href: "/pricing", label: "Prețuri", icon: DollarSign },
   { href: "/about", label: "Despre", icon: Info },
