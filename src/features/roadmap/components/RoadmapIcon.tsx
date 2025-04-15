@@ -1,9 +1,9 @@
-
 import React from "react";
 import { 
   ShieldCheck, FileCheck, MessagesSquare, Server, 
   BarChart2, Layers, UserCheck, BellRing, Lock,
-  Webhook, Globe, Users, Code
+  Webhook, Globe, Users, Code, CreditCard, 
+  Activity, GitMerge, LayoutDashboard
 } from "lucide-react";
 
 // Update the IconType to include all the values used in the data files
@@ -14,7 +14,8 @@ export type IconType =
   "shield-check" | "info" | "clock" | "shield" | "bar-chart-4" | 
   "test-tube-2" | "check" | "alert-circle" | "file-text" | "banknote" | 
   "smartphone" | "database" | "cloud" | "server-crash" | "server" | 
-  "server-cog" | "cloud-cog" | "network";
+  "server-cog" | "cloud-cog" | "network" | 
+  "git-merge" | "activity" | "credit-card" | "layout-dashboard";
 
 interface RoadmapIconProps {
   type: IconType;
@@ -54,7 +55,6 @@ export const RoadmapIcon: React.FC<RoadmapIconProps> = ({
       return <Users className={`${className} ${color}`} />;
     case "api":
       return <Code className={`${className} ${color}`} />;
-    // Map the rest of the icons from the roadmap data
     case "shield-check":
       return <ShieldCheck className={`${className} ${color}`} />;
     case "shield":
@@ -81,12 +81,19 @@ export const RoadmapIcon: React.FC<RoadmapIconProps> = ({
       return <NetworkIcon className={`${className} ${color}`} />;
     case "test-tube-2":
       return <TestTubeIcon className={`${className} ${color}`} />;
+    case "git-merge":
+      return <GitMerge className={`${className} ${color}`} />;
+    case "activity":
+      return <Activity className={`${className} ${color}`} />;
+    case "credit-card":
+      return <CreditCard className={`${className} ${color}`} />;
+    case "layout-dashboard":
+      return <LayoutDashboard className={`${className} ${color}`} />;
     default:
       return <FileCheck className={`${className} ${color}`} />;
   }
 };
 
-// Import additional icons that we need
 import { 
   Check as CheckIcon,
   Banknote as BanknoteIcon,
