@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, ArrowUpCircle, Filter } from "lucide-react";
+import { AlertTriangle, ArrowUpCircle, Filter, Clock } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Category } from "../types";
 
@@ -31,9 +31,16 @@ export const PriorityTaskFilter = ({
     </CardHeader>
 
     <CardContent className="space-y-4">
-      <div className="flex items-center gap-2 text-sm text-amber-700">
-        <Filter className="h-4 w-4 text-amber-500" />
-        <span>Filtrează task-urile după categorie pentru vizualizare mai bună</span>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2 text-sm text-amber-700">
+          <Filter className="h-4 w-4 text-amber-500" />
+          <span>Filtrează task-urile după categorie</span>
+        </div>
+        
+        <div className="flex items-center gap-2 text-sm text-amber-700">
+          <Clock className="h-4 w-4 text-amber-500" />
+          <span>Recomandare: Finalizează task-urile aproape complete</span>
+        </div>
       </div>
 
       <div className="flex flex-wrap gap-2">

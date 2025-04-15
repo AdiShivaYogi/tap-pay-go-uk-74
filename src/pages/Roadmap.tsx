@@ -31,11 +31,13 @@ const Roadmap = () => {
     return currentHour < 12;
   }, []);
 
+  // Get all high priority items
   const highPriorityItems = useMemo(() => 
     roadmapItems.filter(item => item.priority === "high"), 
     []
   );
 
+  // Calculate category counts for high priority items
   const categorizedHighPriorityItems = useMemo(() => {
     const counts: Record<Category | 'all' | 'other', number> = {
       product: highPriorityItems.filter(item => item.category === "product").length,
@@ -44,7 +46,7 @@ const Roadmap = () => {
       security: highPriorityItems.filter(item => item.category === "security").length,
       devops: highPriorityItems.filter(item => item.category === "devops").length,
       other: highPriorityItems.filter(item => !item.category || item.category === "other").length,
-      all: 0 // This will be calculated later, or you can remove if not needed
+      all: highPriorityItems.length // Set the total count here
     };
     
     return counts;
