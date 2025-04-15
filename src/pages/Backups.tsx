@@ -1,4 +1,3 @@
-
 import { Layout } from "@/components/layout/layout";
 import { useUserRole } from "@/hooks/use-user-role";
 import { AccessRestrictionAlert } from "@/features/roadmap/components/AccessRestrictionAlert";
@@ -9,6 +8,8 @@ import { PageHeader } from "@/components/ui/page-header";
 import { SectionContainer } from "@/components/ui/section-container";
 import { StyledCard } from "@/components/ui/card-variants";
 import { Button } from "@/components/ui/button";
+import { downloadBackupZip } from "@/utils/download-utils";
+import { useToast } from "@/hooks/use-toast";
 
 const backupTypes = [
   {
@@ -42,6 +43,7 @@ const backupTypes = [
 
 const Backups = () => {
   const { isAdmin, role } = useUserRole();
+  const { toast } = useToast();
 
   if (!isAdmin) {
     return (
@@ -51,9 +53,22 @@ const Backups = () => {
     );
   }
 
-  const handleDownload = (url: string) => {
-    // În implementarea reală, aici ar trebui să fie logica de download
-    console.log(`Downloading backup from: ${url}`);
+  const handleDownload = async (url: string, type: string) => {
+    try {
+      const date = new Date().toISOString().split('T')[0];
+      const filename = `backup-${type}-${date}.zip`;
+      await downloadBackupZip(url, filename);
+      toast({
+        title: "Descărcare inițiată",
+        description: "Arhiva va fi descărcată în câteva momente.",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Eroare",
+        description: "Nu s-a putut descărca arhiva. Vă rugăm încercați din nou.",
+      });
+    }
   };
 
   return (
@@ -95,7 +110,7 @@ const Backups = () => {
                           variant="outline" 
                           size="sm" 
                           className="w-full"
-                          onClick={() => handleDownload(backup.archiveUrl)}
+                          onClick={() => handleDownload(backup.archiveUrl, backup.title.toLowerCase())}
                         >
                           <FileArchive className="h-4 w-4 mr-1" />
                           Arhivă ZIP
@@ -104,7 +119,7 @@ const Backups = () => {
                           variant="outline" 
                           size="sm"
                           className="w-full"
-                          onClick={() => handleDownload(backup.archiveUrl)}
+                          onClick={() => handleDownload(backup.archiveUrl, backup.title.toLowerCase())}
                         >
                           <Download className="h-4 w-4 mr-1" />
                           Download
