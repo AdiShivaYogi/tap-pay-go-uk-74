@@ -1,6 +1,6 @@
 
 import { Layout } from "@/components/layout/layout";
-import { BarChart2 } from "lucide-react";
+import { BarChart2, RefreshCcw, Download, Filter } from "lucide-react";
 import { DeviceCompatibilityAlert } from "@/components/device-compatibility-alert";
 import { SecurityAlert } from "@/components/security/SecurityAlert";
 import { PaymentForm } from "@/components/dashboard/PaymentForm";
@@ -15,6 +15,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { useEffect } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const Dashboard = () => {
   const [searchParams] = useSearchParams();
@@ -108,31 +111,59 @@ const Dashboard = () => {
         <div className="space-y-6">
           <DeviceCompatibilityAlert compatibility={deviceCompatibility} />
           
+          <Tabs defaultValue="payment" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 lg:w-[400px]">
+              <TabsTrigger value="payment">Plată Nouă</TabsTrigger>
+              <TabsTrigger value="transactions">Tranzacții</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="payment" className="space-y-4">
+              <StyledCard className="border-primary/10">
+                <div className="p-6">
+                  <PaymentForm deviceCompatibility={deviceCompatibility} />
+                </div>
+              </StyledCard>
+            </TabsContent>
+
+            <TabsContent value="transactions" className="space-y-4">
+              <StyledCard className="border-primary/10">
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-semibold">Tranzacții Recente</h2>
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="icon"
+                        onClick={() => queryClient.invalidateQueries({ queryKey: ['transactions'] })}
+                      >
+                        <RefreshCcw className="h-4 w-4" />
+                      </Button>
+                      <Button variant="outline" size="icon">
+                        <Filter className="h-4 w-4" />
+                      </Button>
+                      <Button variant="outline" size="icon">
+                        <Download className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                  <ScrollArea className="h-[400px] w-full">
+                    <TransactionsList 
+                      transactions={transactions}
+                      isLoading={isLoading}
+                      onRefresh={() => queryClient.invalidateQueries({ queryKey: ['transactions'] })}
+                    />
+                  </ScrollArea>
+                </div>
+              </StyledCard>
+            </TabsContent>
+          </Tabs>
+
           <StyledCard className="border-primary/10">
             <div className="p-6">
-              <PaymentForm deviceCompatibility={deviceCompatibility} />
+              <h2 className="text-xl font-semibold mb-4">Informații Cont</h2>
+              <AccountInfo deviceCompatibility={deviceCompatibility} />
             </div>
           </StyledCard>
-
-          <div className="grid gap-6">
-            <StyledCard className="border-primary/10">
-              <div className="p-6">
-                <h2 className="text-xl font-semibold mb-4">Tranzacții Recente</h2>
-                <TransactionsList 
-                  transactions={transactions}
-                  isLoading={isLoading}
-                  onRefresh={() => queryClient.invalidateQueries({ queryKey: ['transactions'] })}
-                />
-              </div>
-            </StyledCard>
-
-            <StyledCard className="border-primary/10">
-              <div className="p-6">
-                <h2 className="text-xl font-semibold mb-4">Informații Cont</h2>
-                <AccountInfo deviceCompatibility={deviceCompatibility} />
-              </div>
-            </StyledCard>
-          </div>
 
           <SecurityAlert />
         </div>
