@@ -1,6 +1,6 @@
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent } from "@/components/ui/card";
+import { StyledCard, StyledCardContent } from "@/components/ui/styled-card";
 import { Calendar, Clock, CalendarDays } from "lucide-react";
 
 interface DateRangeSelectorProps {
@@ -19,8 +19,8 @@ export const DateRangeSelector = ({
   ];
 
   return (
-    <Card>
-      <CardContent className="py-3">
+    <StyledCard className="bg-gradient-to-br from-card to-secondary/5 backdrop-blur-sm">
+      <StyledCardContent className="py-3">
         <Tabs 
           defaultValue="week" 
           value={period} 
@@ -40,7 +40,7 @@ export const DateRangeSelector = ({
             ))}
           </TabsList>
         </Tabs>
-      </CardContent>
-    </Card>
+      </StyledCardContent>
+    </StyledCard>
   );
 };

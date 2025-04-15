@@ -1,5 +1,5 @@
 
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { StyledCard, StyledCardHeader, StyledCardTitle, StyledCardContent } from "@/components/ui/styled-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TransactionsBarChart } from "@/components/transactions/TransactionsBarChart";
 import { TransactionsPieChart } from "@/components/transactions/TransactionsPieChart";
@@ -19,19 +19,19 @@ export const ReportCharts = ({ transactions, isLoading, period }: ReportChartsPr
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-      <Card className="w-full">
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
+      <StyledCard className="bg-gradient-to-br from-card to-blue-500/5 backdrop-blur-sm">
+        <StyledCardHeader className="flex flex-row items-center justify-between pb-2">
           <div className="space-y-1">
-            <CardTitle>Evoluția tranzacțiilor</CardTitle>
-            <CardDescription>
+            <StyledCardTitle>Evoluția tranzacțiilor</StyledCardTitle>
+            <p className="text-sm text-muted-foreground">
               {period === "week" ? "Ultimele 7 zile" : 
                period === "month" ? "Luna curentă" : 
                "Toate tranzacțiile"}
-            </CardDescription>
+            </p>
           </div>
           <ChartBar className="h-5 w-5 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
+        </StyledCardHeader>
+        <StyledCardContent>
           {isLoading ? (
             <div className="h-[300px] flex items-center justify-center">
               <Skeleton className="h-full w-full" />
@@ -41,20 +41,20 @@ export const ReportCharts = ({ transactions, isLoading, period }: ReportChartsPr
               <TransactionsBarChart data={chartData} />
             </div>
           )}
-        </CardContent>
-      </Card>
+        </StyledCardContent>
+      </StyledCard>
 
-      <Card className="w-full">
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
+      <StyledCard className="bg-gradient-to-br from-card to-purple-500/5 backdrop-blur-sm">
+        <StyledCardHeader className="flex flex-row items-center justify-between pb-2">
           <div className="space-y-1">
-            <CardTitle>Distribuția statusurilor</CardTitle>
-            <CardDescription>
+            <StyledCardTitle>Distribuția statusurilor</StyledCardTitle>
+            <p className="text-sm text-muted-foreground">
               Vizualizarea tranzacțiilor după status
-            </CardDescription>
+            </p>
           </div>
           <PieChart className="h-5 w-5 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
+        </StyledCardHeader>
+        <StyledCardContent>
           {isLoading ? (
             <div className="h-[300px] flex items-center justify-center">
               <Skeleton className="h-full w-full" />
@@ -64,8 +64,8 @@ export const ReportCharts = ({ transactions, isLoading, period }: ReportChartsPr
               <TransactionsPieChart data={pieData} />
             </div>
           )}
-        </CardContent>
-      </Card>
+        </StyledCardContent>
+      </StyledCard>
     </div>
   );
 };
