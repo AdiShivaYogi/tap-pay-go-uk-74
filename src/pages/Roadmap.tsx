@@ -1,3 +1,4 @@
+
 import { Layout } from "@/components/layout/layout";
 import { RoadmapProgress } from "@/features/roadmap/components/RoadmapProgress";
 import { useUserRole } from "@/hooks/use-user-role";
@@ -9,7 +10,7 @@ import { MVPRoadmap } from "@/features/roadmap/components/MVPRoadmap";
 import { BackupProgress } from "@/features/roadmap/components/BackupProgress";
 import { PageHeader } from "@/components/ui/page-header";
 import { SectionContainer } from "@/components/ui/section-container";
-import { Compass, GitFork } from "lucide-react";
+import { Compass, GitFork, Globe } from "lucide-react";
 import { StyledCard } from "@/components/ui/card-variants";
 import { HeaderSecurityScore } from "@/features/roadmap/components/header/HeaderSecurityScore";
 import { HeaderExecutionScore } from "@/features/roadmap/components/header/HeaderExecutionScore";
@@ -27,12 +28,16 @@ const Roadmap = () => {
 
   const categoryGroups = [
     {
-      title: "Securitate și Infrastructură",
-      categories: ["security", "infrastructure"]
+      title: "Securitate și Conformitate",
+      categories: ["security"]
     },
     {
-      title: "DevOps și Monitorizare",
-      categories: ["devops"]
+      title: "Infrastructură și Disponibilitate",
+      categories: ["infrastructure", "devops"]
+    },
+    {
+      title: "Monitorizare și Performanță",
+      categories: ["monitoring"]
     },
     {
       title: "Dezvoltare Produs",
@@ -47,11 +52,17 @@ const Roadmap = () => {
           <PageHeader
             icon={Compass}
             title="Development Roadmap"
-            description="Urmărește progresul și obiectivele de dezvoltare"
+            description="Progresul și obiectivele de dezvoltare pentru piața UK și integrare Stripe"
           >
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <GitFork className="h-4 w-4" />
-              <span className="text-sm">Versiunea 2.0</span>
+            <div className="flex items-center gap-4 text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <GitFork className="h-4 w-4" />
+                <span className="text-sm">Versiunea 2.0</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Globe className="h-4 w-4" />
+                <span className="text-sm">UK & Global Stripe Markets</span>
+              </div>
             </div>
           </PageHeader>
 
@@ -78,7 +89,7 @@ const Roadmap = () => {
                 ))}
               </div>
               <div className="mt-8">
-                <h2 className="text-2xl font-semibold mb-4">MVP Roadmap</h2>
+                <h2 className="text-2xl font-semibold mb-4">MVP Roadmap pentru UK</h2>
                 <MVPRoadmap />
               </div>
             </RoadmapContextProvider>

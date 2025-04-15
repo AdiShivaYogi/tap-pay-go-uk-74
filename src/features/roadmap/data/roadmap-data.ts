@@ -9,14 +9,14 @@ import { devopsItems } from "./categories/devops-items";
 import { monitoringItems } from "./categories/monitoring-items";
 import { productItems } from "./categories/product-items";
 
-// Combine all roadmap items into a single array
+// Combine all roadmap items into a single array, prioritizing UK and Stripe compliance items
 export const roadmapItems: RoadmapItem[] = [
-  ...completedRoadmapItems,
-  ...inProgressRoadmapItems,
-  ...pendingRoadmapItems,
-  ...securityItems,
-  ...infrastructureItems,
-  ...devopsItems,
-  ...monitoringItems,
-  ...productItems
+  ...securityItems,           // Security first - critical for UK/Stripe compliance
+  ...infrastructureItems,     // Infrastructure foundation
+  ...completedRoadmapItems,   // Completed features
+  ...inProgressRoadmapItems,  // Current development
+  ...devopsItems,            // DevOps and automation
+  ...monitoringItems,        // Monitoring and analytics
+  ...productItems,           // Product features
+  ...pendingRoadmapItems     // Future developments
 ];
