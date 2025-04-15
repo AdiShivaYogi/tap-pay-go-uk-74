@@ -16,6 +16,8 @@ import { PriorityTasksAlert } from "@/features/roadmap/components/PriorityTasksA
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { BetaLaunchProgress } from "@/features/roadmap/components/BetaLaunchProgress";
+import { BetaUsersMonitoring } from "@/features/beta/components/BetaUsersMonitoring";
+import { FeedbackCollection } from "@/features/beta/components/FeedbackCollection";
 
 const Roadmap = () => {
   const { isAdmin, role } = useUserRole();
@@ -54,7 +56,11 @@ const Roadmap = () => {
       <div className="container py-8 space-y-8">
         <RoadmapHeader />
         <BetaLaunchProgress />
-        <RoadmapProgress />
+        
+        <div className="grid gap-6 md:grid-cols-2">
+          <BetaUsersMonitoring />
+          <FeedbackCollection />
+        </div>
 
         {highPriorityItems.length > 0 && (
           <PriorityTasksAlert 
