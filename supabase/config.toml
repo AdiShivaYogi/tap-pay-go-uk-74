@@ -4,6 +4,9 @@ project_id = "utraomhphgnnrpyfwwla"
 [functions.set-deepl-key]
 verify_jwt = true
 
+[functions.set-deepseek-key]
+verify_jwt = true
+
 [functions.create-payment]
 
 [functions.stripe-webhook]
