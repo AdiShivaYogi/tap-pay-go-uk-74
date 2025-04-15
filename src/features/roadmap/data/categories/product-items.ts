@@ -1,4 +1,3 @@
-
 import { RoadmapItem } from "../../types";
 
 export const productItems: RoadmapItem[] = [
@@ -89,22 +88,22 @@ export const productItems: RoadmapItem[] = [
   {
     title: "Sistem de Backup și Recuperare",
     description: "Implementare sistem robust de backup și recuperare",
-    status: "in-progress",
+    status: "completed",
     priority: "high",
     category: "devops",
     iconType: "server-cog",
-    iconColor: "text-amber-600",
+    iconColor: "text-green-500",
     timeEstimate: {
       total: 18,
-      spent: 13,
+      spent: 18,
       aiTotal: 15
     },
     details: [
-      "Configurare backup automat incremental",
-      "Implementare strategie de recuperare după dezastre",
-      "Testare regulată a procesului de restaurare",
-      "Configurare retenție și arhivare date",
-      "Documentare proceduri de urgență"
+      "Configurare backup automat incremental ✓",
+      "Implementare strategie de recuperare după dezastre ✓",
+      "Testare regulată a procesului de restaurare ✓",
+      "Configurare retenție și arhivare date ✓",
+      "Documentare proceduri de urgență ✓"
     ]
   },
   {
