@@ -154,7 +154,7 @@ export const MorningPriorityTasks = () => {
                 onClick={() => setCompletionFilter("nearly-done")}
                 className={completionFilter === "nearly-done" ? "bg-amber-600 hover:bg-amber-700" : "border-amber-300 text-amber-800"}
               >
-                Nearly Done (>70%)
+                Nearly Done ({'>'}70%)
               </Button>
               <Button 
                 size="sm" 
@@ -170,7 +170,7 @@ export const MorningPriorityTasks = () => {
                 onClick={() => setCompletionFilter("stuck")}
                 className={completionFilter === "stuck" ? "bg-amber-600 hover:bg-amber-700" : "border-amber-300 text-amber-800"}
               >
-                Just Started (<20%)
+                Just Started ({'<'}20%)
               </Button>
             </div>
           </div>
