@@ -1,3 +1,4 @@
+
 import { BadgeDollarSign, CreditCard, Wallet } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 
@@ -26,7 +27,7 @@ export const pricingPlans: PricingPlan[] = [
     price: "Gratuit",
     features: [
       "Fără taxă lunară",
-      "Comision: 1.5% + £0.20 per tranzacție",
+      "Comision: 1.0% + £0.20 per tranzacție",
       "Comision Stripe aplicabil separat",
       "Plăți nelimitate",
       "Suport 24/7"
@@ -42,7 +43,7 @@ export const pricingPlans: PricingPlan[] = [
     price: "£14.99",
     period: "pe lună",
     features: [
-      "Comision: 1.0% + £0.15 per tranzacție", 
+      "Comision: 0.7% + £0.15 per tranzacție", 
       "Comision Stripe aplicabil separat",
       "Suport prioritar",
       "Istoric tranzacții",
