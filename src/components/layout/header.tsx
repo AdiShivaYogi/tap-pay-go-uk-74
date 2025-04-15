@@ -53,6 +53,9 @@ export function Header() {
     // Moderator users can see moderator-only items
     if (item.moderatorOnly && !isModerator && !isAdmin) return false;
     
+    // Regular user-only items should only be shown to regular users
+    if (item.userOnly && isAdmin) return false;
+    
     return true;
   };
 
@@ -120,6 +123,9 @@ export function Header() {
                       )}
                       {isModerator && !isAdmin && !isSuperAdmin && (
                         <p className="text-xs font-semibold text-primary">Moderator</p>
+                      )}
+                      {!isAdmin && !isModerator && !isSuperAdmin && (
+                        <p className="text-xs font-semibold text-blue-500">Utilizator</p>
                       )}
                     </div>
                   </DropdownMenuLabel>

@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -21,6 +22,9 @@ import Account from "./pages/Account";
 import Api from "./pages/Api";
 import Backups from "./pages/Backups";
 import Translations from "./pages/Translations";
+import Payments from "./pages/Payments";
+import Statistics from "./pages/Statistics";
+import Help from "./pages/Help";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +41,9 @@ const App = () => (
             <Route path="/connect-stripe" element={<ConnectStripe />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/reports" element={<Reports />} />
+            <Route path="/payments" element={<Payments />} />
+            <Route path="/statistics" element={<Statistics />} />
+            <Route path="/help" element={<Help />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />

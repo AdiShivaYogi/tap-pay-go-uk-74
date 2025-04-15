@@ -10,7 +10,10 @@ import {
   CircleUserRound,
   FileCode,
   Database,
-  Languages
+  Languages,
+  CreditCard,
+  BarChart,
+  HelpCircle
 } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 
@@ -23,12 +26,16 @@ export interface NavigationItem {
   superAdminOnly?: boolean;
   hideWhenAuth?: boolean;
   showWhenAuth?: boolean;
+  userOnly?: boolean;
 }
 
 export const NAVIGATION: NavigationItem[] = [
   { href: "/", label: "Acasă", icon: Home, hideWhenAuth: true },
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, showWhenAuth: true },
+  { href: "/payments", label: "Plăți", icon: CreditCard, showWhenAuth: true, userOnly: true },
   { href: "/reports", label: "Rapoarte", icon: FileText, showWhenAuth: true },
+  { href: "/statistics", label: "Statistici", icon: BarChart, showWhenAuth: true, userOnly: true },
+  { href: "/help", label: "Ajutor", icon: HelpCircle, userOnly: true },
   { href: "/roadmap", label: "Roadmap", icon: Map, adminOnly: true },
   { href: "/admin", label: "Admin", icon: User, adminOnly: true },
   { href: "/api", label: "API", icon: FileCode, adminOnly: true },
