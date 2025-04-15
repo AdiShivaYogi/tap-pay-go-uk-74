@@ -1,4 +1,3 @@
-
 import { Layout } from "@/components/layout/layout";
 import { RoadmapProgress } from "@/features/roadmap/components/RoadmapProgress";
 import { useUserRole } from "@/hooks/use-user-role";
@@ -13,6 +12,7 @@ import { SectionContainer } from "@/components/ui/section-container";
 import { Compass, GitFork } from "lucide-react";
 import { StyledCard } from "@/components/ui/card-variants";
 import { HeaderSecurityScore } from "@/features/roadmap/components/header/HeaderSecurityScore";
+import { HeaderExecutionScore } from "@/features/roadmap/components/header/HeaderExecutionScore";
 
 const Roadmap = () => {
   const { isAdmin, role } = useUserRole();
@@ -57,8 +57,9 @@ const Roadmap = () => {
 
           <div className="space-y-8 max-w-[1400px] mx-auto">
             <StyledCard className="border-primary/10">
-              <div className="p-6">
+              <div className="p-6 space-y-6">
                 <HeaderSecurityScore />
+                <HeaderExecutionScore />
                 <div className="mt-6">
                   <BackupProgress />
                 </div>
