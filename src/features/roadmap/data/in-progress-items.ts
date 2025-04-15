@@ -1,4 +1,3 @@
-
 import { RoadmapItem } from "../types";
 
 export const inProgressRoadmapItems: RoadmapItem[] = [
@@ -91,7 +90,7 @@ export const inProgressRoadmapItems: RoadmapItem[] = [
     iconColor: "text-red-500",
     timeEstimate: {
       total: 40,
-      spent: 20,
+      spent: 30,
       aiTotal: 25
     },
     details: [
@@ -102,7 +101,7 @@ export const inProgressRoadmapItems: RoadmapItem[] = [
       "Monitorizare avansată cu detecție proactivă ✓",
       "Plan de recuperare în dezastre < 5 minute ✓",
       "Implementare filtre de securitate la nivel de rețea ✓",
-      "Teste periodice de rezistență și recuperare"
+      "Teste periodice de rezistență și recuperare ✓"
     ]
   },
   {
@@ -114,7 +113,7 @@ export const inProgressRoadmapItems: RoadmapItem[] = [
     iconColor: "text-blue-500", 
     timeEstimate: {
       total: 50,
-      spent: 35,
+      spent: 45,
       aiTotal: 30
     },
     details: [
@@ -123,8 +122,8 @@ export const inProgressRoadmapItems: RoadmapItem[] = [
       "Implementare balansare inteligentă a traficului ✓", 
       "Sistem de monitorizare unificat cu alertare automată ✓",
       "Mecanisme avansate de securitate între centre de date ✓",
-      "Optimizare costuri prin resurse cloud dinamice",
-      "Plan de tranziție și migrare între centre de date",
+      "Optimizare costuri prin resurse cloud dinamice ✓",
+      "Plan de tranziție și migrare între centre de date ✓",
       "Testare continuă a scenariilor de dezastre"
     ]
   },
@@ -137,7 +136,7 @@ export const inProgressRoadmapItems: RoadmapItem[] = [
     iconColor: "text-green-500",
     timeEstimate: {
       total: 35,
-      spent: 25,
+      spent: 32,
       aiTotal: 20
     },
     details: [
@@ -146,9 +145,55 @@ export const inProgressRoadmapItems: RoadmapItem[] = [
       "Implementare sisteme de auto-scaling inteligente ✓",
       "Optimizare costuri și utilizare resurse cloud ✓",
       "Configurare CDN global cu strategie de caching ✓",
-      "Audit și optimizare continuă a infrastructurii",
-      "Implementare politici de securitate cloud",
+      "Audit și optimizare continuă a infrastructurii ✓",
+      "Implementare politici de securitate cloud ✓",
       "Raportare automată a performanței și costurilor"
+    ]
+  },
+  {
+    title: "Securitate Avansată Cloud",
+    description: "Implementare măsuri de securitate cloud native",
+    status: "in-progress",
+    priority: "high",
+    iconType: "shield-check",
+    iconColor: "text-purple-500",
+    timeEstimate: {
+      total: 30,
+      spent: 20,
+      aiTotal: 25
+    },
+    details: [
+      "Implementare WAF (Web Application Firewall) ✓",
+      "Configurare DDoS protection și rate limiting ✓",
+      "Implementare sisteme de detecție a intruziunilor (IDS) ✓",
+      "Scanare automată de vulnerabilități ✓",
+      "Criptare end-to-end pentru date sensibile ✓",
+      "Implementare politici de acces bazate pe identitate",
+      "Monitorizare și alertare pentru evenimente de securitate",
+      "Conformitate cu standardele de securitate cloud"
+    ]
+  },
+  {
+    title: "Automatizare și DevOps",
+    description: "Implementare pipeline-uri și automatizări complexe",
+    status: "in-progress",
+    priority: "high",
+    iconType: "server-cog",
+    iconColor: "text-yellow-500",
+    timeEstimate: {
+      total: 25,
+      spent: 15,
+      aiTotal: 20
+    },
+    details: [
+      "Pipeline-uri CI/CD pentru deployment automat ✓",
+      "Automatizare provizionare infrastructură cu Terraform ✓",
+      "Implementare GitOps pentru management configurații ✓",
+      "Monitorizare automată și self-healing ✓",
+      "Sistem de rollback automat în caz de erori",
+      "Automatizare teste de performanță și securitate",
+      "Implementare chaos engineering pentru testare reziliență",
+      "Dashboard-uri pentru monitorizare pipeline-uri"
     ]
   }
 ];
