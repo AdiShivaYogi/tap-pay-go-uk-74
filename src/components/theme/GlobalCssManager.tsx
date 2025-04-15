@@ -1,10 +1,12 @@
+
 import React, { useState } from "react";
 import { StyledCard } from "@/components/ui/card-variants";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { InfoIcon, Sliders, Wand2 } from "lucide-react";
+import { InfoIcon, Sliders, Wand2, Pointer } from "lucide-react";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { theme } from "@/config/theme";
 import { useElementSelector } from "@/hooks/use-element-selector";
 import { CssEditor } from "./components/CssEditor";
