@@ -1,4 +1,3 @@
-
 import { Layout } from "@/components/layout/layout";
 import { PricingCard } from "@/components/pricing/PricingCard";
 import { PricingFAQ } from "@/components/pricing/PricingFAQ";
