@@ -1,12 +1,14 @@
 
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertTriangle, CheckCircle2, Circle } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Circle, Zap } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 interface TaskProgress {
   name: string;
   status: "completed" | "in-progress" | "pending";
   percentage: number;
+  priority?: "high";
 }
 
 const betaLaunchTasks: TaskProgress[] = [
@@ -24,6 +26,7 @@ const betaLaunchTasks: TaskProgress[] = [
     name: "Integrare Plăți (Test)",
     status: "in-progress",
     percentage: 85,
+    priority: "high",
   },
   {
     name: "Sistem Feedback",
@@ -66,14 +69,34 @@ export const BetaLaunchProgress = () => {
         
         <div className="grid gap-4">
           {betaLaunchTasks.map((task, index) => (
-            <div key={index} className="flex items-center gap-4">
+            <div 
+              key={index} 
+              className={cn(
+                "flex items-center gap-4 p-4 rounded-lg transition-colors",
+                task.priority === "high" && "bg-amber-50/50 border border-amber-200"
+              )}
+            >
               {getStatusIcon(task.status)}
               <div className="flex-1">
                 <div className="flex justify-between items-center mb-1">
-                  <span className="text-sm font-medium">{task.name}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium">{task.name}</span>
+                    {task.priority === "high" && (
+                      <Badge variant="outline" className="bg-amber-100 text-amber-700 border-amber-200">
+                        <Zap className="h-3 w-3 mr-1" />
+                        Prioritate Înaltă
+                      </Badge>
+                    )}
+                  </div>
                   <span className="text-sm text-muted-foreground">{task.percentage}%</span>
                 </div>
-                <Progress value={task.percentage} className="h-1.5" />
+                <Progress 
+                  value={task.percentage} 
+                  className={cn(
+                    "h-1.5",
+                    task.priority === "high" && "bg-amber-100 [&>[role=progressbar]]:bg-amber-500"
+                  )} 
+                />
               </div>
             </div>
           ))}
