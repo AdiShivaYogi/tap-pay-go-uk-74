@@ -14,20 +14,22 @@ export const SecurityImprovementCard: React.FC<SecurityImprovementCardProps> = (
     Math.round((item.timeEstimate.spent / item.timeEstimate.total) * 100) : 0;
 
   return (
-    <Card className="border-red-200 bg-red-50/30">
+    <Card className="border-red-200 bg-red-50/30 hover:shadow-md transition-all">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="flex items-center gap-2">
-          <Shield className="h-6 w-6 text-red-500" />
+        <CardTitle className="flex items-center gap-2 text-lg">
+          <Shield className="h-5 w-5 text-red-500" />
           {item.title}
         </CardTitle>
         {progress === 100 ? (
           <CheckCircle2 className="text-green-500" />
+        ) : progress > 90 ? (
+          <CheckCircle2 className="text-green-400" />
         ) : (
           <Clock className="text-blue-500" />
         )}
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-muted-foreground mb-2">{item.description}</p>
+        <p className="text-sm text-muted-foreground mb-3">{item.description}</p>
         
         <div className="space-y-2">
           <Progress value={progress} className="h-2" />
@@ -41,7 +43,7 @@ export const SecurityImprovementCard: React.FC<SecurityImprovementCardProps> = (
           {item.details.map((detail, index) => (
             <li key={index} className="flex items-start gap-2">
               <span className={`mt-1.5 w-1.5 h-1.5 rounded-full ${
-                index < (item.details.length * progress / 100) 
+                detail.includes("✓") 
                   ? "bg-green-500" 
                   : "bg-gray-300"
               }`} />

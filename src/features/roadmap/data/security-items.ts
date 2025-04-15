@@ -32,7 +32,7 @@ export const securityItems: RoadmapItem[] = [
     iconColor: "text-purple-500",
     timeEstimate: {
       total: 25,
-      spent: 20,
+      spent: 24,
       aiTotal: 20
     },
     details: [
@@ -40,7 +40,7 @@ export const securityItems: RoadmapItem[] = [
       "Implementare sisteme de detecție a intruziunilor (IDS) ✓",
       "Scanare automată de vulnerabilități ✓",
       "Criptare end-to-end pentru date sensibile ✓",
-      "Monitorizare și alertare pentru evenimente de securitate"
+      "Monitorizare și alertare pentru evenimente de securitate ✓"
     ]
   },
   {
@@ -53,7 +53,7 @@ export const securityItems: RoadmapItem[] = [
     iconColor: "text-red-500",
     timeEstimate: {
       total: 40,
-      spent: 36,
+      spent: 38,
       aiTotal: 25
     },
     details: [
@@ -61,8 +61,7 @@ export const securityItems: RoadmapItem[] = [
       "Consolidare politici de acces și autorizare ✓",
       "Auditare și logging avansate ✓",
       "Scanări automate de vulnerabilități ✓",
-      "Exerciții de penetration testing în desfășurare"
+      "Exerciții de penetration testing finale ✓"
     ]
   }
 ];
-
