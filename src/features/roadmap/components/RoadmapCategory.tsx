@@ -25,7 +25,7 @@ export const RoadmapCategory: React.FC<RoadmapCategoryProps> = ({
 
   const completedItems = categoryItems.filter(item => item.status === "completed").length;
   const totalItems = categoryItems.length;
-  const progress = Math.round((completedItems / totalItems) * 100);
+  const progress = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
 
   return (
     <div className="bg-card rounded-lg border border-border">
@@ -47,12 +47,12 @@ export const RoadmapCategory: React.FC<RoadmapCategoryProps> = ({
       </button>
       
       <div className={cn(
-        "grid gap-6 transition-all duration-300",
+        "grid transition-all duration-300",
         isExpanded 
           ? "grid-rows-[1fr] p-6" 
-          : "grid-rows-[0fr] overflow-hidden"
+          : "grid-rows-[0fr]"
       )}>
-        <div className="min-h-0">
+        <div className="min-h-0 overflow-hidden">
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {categoryItems.map((item, index) => (
               <RoadmapCard key={index} item={item} />
