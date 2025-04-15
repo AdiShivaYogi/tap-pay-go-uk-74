@@ -13,13 +13,29 @@ export const useUserRole = () => {
     queryFn: async (): Promise<UserRole> => {
       if (!user?.id) return 'user';
 
-      // Pentru demo, considerăm admin orice utilizator cu email admin@example.com
+      // Verificăm dacă utilizatorul are rol setat în contextul de autentificare
+      if (user.role === 'admin') {
+        console.log('Admin user detected from context');
+        return 'admin';
+      }
+
+      // Verificăm adresa de email pentru super admin
       if (user.email === 'admin@example.com') {
-        console.log('Admin user detected');
+        console.log('Super admin user detected by email');
         return 'admin';
       }
 
       try {
+        // Verificăm metadatele utilizatorului din Supabase
+        const { data: userData, error: userError } = await supabase.auth.getUser();
+        
+        if (userError) {
+          console.error('Error fetching user data:', userError);
+        } else if (userData?.user?.user_metadata?.role === 'admin') {
+          console.log('Admin user detected from metadata');
+          return 'admin';
+        }
+
         // Pentru utilizare reală, verificăm rolul din baza de date
         const { data: isAdmin, error: adminError } = await supabase
           .rpc('user_has_role', { _role: 'admin' as const });

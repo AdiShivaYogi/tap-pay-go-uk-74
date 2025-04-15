@@ -17,8 +17,15 @@ const UserAuth = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
-  const { signIn } = useAuth();
+  const { signIn, user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      navigate('/roadmap');
+    }
+  }, [user, navigate]);
 
   // Handle Supabase auth redirect with tokens in URL
   useEffect(() => {
@@ -66,21 +73,10 @@ const UserAuth = () => {
 
       if (isLoginMode) {
         try {
-          // Modificare pentru a captura eroarea direct
-          const { error } = await supabase.auth.signInWithPassword({ 
-            email, 
-            password 
-          });
+          // Utilizăm signIn din AuthProvider pentru a gestiona starea autentificării
+          await signIn(email, password);
           
-          if (error) {
-            throw error;
-          }
-          
-          toast({
-            title: "Autentificare reușită",
-            description: "Bine ați revenit!",
-          });
-          
+          // Redirecționarea se face în AuthProvider după autentificare reușită
           navigate("/roadmap");
         } catch (error: any) {
           console.error("Eroare la autentificare:", error);

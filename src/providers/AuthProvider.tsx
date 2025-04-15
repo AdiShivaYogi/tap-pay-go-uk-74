@@ -15,15 +15,56 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const checkSession = async () => {
       try {
         setLoading(true);
+        
+        // Mai întâi se configurează listener-ul pentru schimbările de stare
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+          async (event, session) => {
+            console.log('Auth state changed:', event);
+            
+            if (session) {
+              // Verificăm dacă utilizatorul este admin@example.com sau are metadate specifice
+              if (session.user.email === 'admin@example.com' || 
+                  (session.user.user_metadata && session.user.user_metadata.role === 'admin')) {
+                setUser({
+                  id: session.user.id,
+                  email: session.user.email,
+                  stripeConnected: true,
+                  stripeAccountId: 'demo-account-id',
+                  role: 'admin'
+                });
+              } else {
+                setUser({
+                  id: session.user.id,
+                  email: session.user.email,
+                  stripeConnected: false
+                });
+              }
+              
+              if (event === 'SIGNED_IN') {
+                toast({
+                  title: "Autentificare reușită",
+                  description: "Bine ați revenit!"
+                });
+              }
+            } else {
+              setUser(null);
+            }
+            setLoading(false);
+          }
+        );
+
+        // Apoi verificăm sesiunea curentă
         const { data: { session } } = await supabase.auth.getSession();
         
         if (session) {
-          if (session.user.email === 'admin@example.com') {
+          if (session.user.email === 'admin@example.com' || 
+              (session.user.user_metadata && session.user.user_metadata.role === 'admin')) {
             setUser({
               id: session.user.id,
               email: session.user.email,
               stripeConnected: true,
-              stripeAccountId: 'demo-account-id'
+              stripeAccountId: 'demo-account-id',
+              role: 'admin'
             });
           } else {
             setUser({
@@ -35,45 +76,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         } else {
           setUser(null);
         }
+        
+        setLoading(false);
+
+        return () => {
+          subscription.unsubscribe();
+        };
       } catch (error) {
         console.error('Eroare la verificarea sesiunii:', error);
         setUser(null);
-      } finally {
         setLoading(false);
       }
     };
 
     checkSession();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('Auth state changed:', event);
-        
-        if (session) {
-          if (session.user.email === 'admin@example.com') {
-            setUser({
-              id: session.user.id,
-              email: session.user.email,
-              stripeConnected: true,
-              stripeAccountId: 'demo-account-id'
-            });
-          } else {
-            setUser({
-              id: session.user.id,
-              email: session.user.email,
-              stripeConnected: false
-            });
-          }
-        } else {
-          setUser(null);
-        }
-        setLoading(false);
-      }
-    );
-
-    return () => {
-      subscription.unsubscribe();
-    };
   }, []);
 
   const signIn = async (email: string, password: string) => {
@@ -89,7 +105,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         throw error;
       }
 
-      // Toast notificarea va fi afișată după ce evenimentul onAuthStateChange actualizează sesiunea
+      // Toast-ul va fi afișat de listener-ul onAuthStateChange
     } catch (error) {
       console.error('Eroare la autentificare:', error);
       throw error;
