@@ -45,15 +45,15 @@ export const securityItems: RoadmapItem[] = [
   },
   {
     title: "Îmbunătățiri Securitate Internă",
-    description: "Consolidarea măsurilor de securitate pentru date sensibile",
-    status: "in-progress",
+    description: "Securitate consolidată pentru date sensibile - IMPLEMENTAT DE URGENȚĂ",
+    status: "completed",
     priority: "high",
     category: "security",
     iconType: "shield",
     iconColor: "text-red-500",
     timeEstimate: {
       total: 40,
-      spent: 38,
+      spent: 40,
       aiTotal: 25
     },
     details: [

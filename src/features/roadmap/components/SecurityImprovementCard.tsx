@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Shield, CheckCircle2, Clock } from "lucide-react";
+import { Shield, CheckCircle2, Clock, Lock } from "lucide-react";
 import { RoadmapItem } from "../types";
 
 interface SecurityImprovementCardProps {
@@ -12,15 +12,17 @@ interface SecurityImprovementCardProps {
 export const SecurityImprovementCard: React.FC<SecurityImprovementCardProps> = ({ item }) => {
   const progress = item.timeEstimate.spent ? 
     Math.round((item.timeEstimate.spent / item.timeEstimate.total) * 100) : 0;
+  
+  const isCompleted = item.status === "completed";
 
   return (
-    <Card className="border-red-200 bg-red-50/30 hover:shadow-md transition-all">
+    <Card className={`${isCompleted ? 'border-green-200 bg-green-50/30' : 'border-red-200 bg-red-50/30'} hover:shadow-md transition-all`}>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="flex items-center gap-2 text-lg">
-          <Shield className="h-5 w-5 text-red-500" />
+          <Shield className={`h-5 w-5 ${isCompleted ? 'text-green-500' : 'text-red-500'}`} />
           {item.title}
         </CardTitle>
-        {progress === 100 ? (
+        {isCompleted ? (
           <CheckCircle2 className="text-green-500" />
         ) : progress > 90 ? (
           <CheckCircle2 className="text-green-400" />
@@ -32,7 +34,7 @@ export const SecurityImprovementCard: React.FC<SecurityImprovementCardProps> = (
         <p className="text-sm text-muted-foreground mb-3">{item.description}</p>
         
         <div className="space-y-2">
-          <Progress value={progress} className="h-2" />
+          <Progress value={progress} className={`h-2 ${isCompleted ? 'bg-green-100' : ''}`} />
           <div className="flex justify-between text-xs text-muted-foreground">
             <span>{item.timeEstimate.spent} din {item.timeEstimate.total} ore estimate</span>
             <span>{progress}% completat</span>
