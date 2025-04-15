@@ -38,6 +38,9 @@ export function Header() {
     // Moderator users can see moderator-only items
     if (item.moderatorOnly && !isModerator && !isAdmin) return false;
     
+    // Super admin only items are only visible to super admins
+    if (item.superAdminOnly && user?.email !== 'admin@example.com') return false;
+    
     // All other items are visible to everyone
     return true;
   };

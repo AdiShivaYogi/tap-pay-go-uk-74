@@ -16,6 +16,7 @@ export interface NavigationItem {
   icon: LucideIcon;
   adminOnly?: boolean;
   moderatorOnly?: boolean;
+  superAdminOnly?: boolean; // Flag for pages that should only be visible to super admins
 }
 
 export const NAVIGATION: NavigationItem[] = [
