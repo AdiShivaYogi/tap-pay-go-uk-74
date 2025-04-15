@@ -5,7 +5,6 @@ import {
   FileText, 
   Map, 
   User, 
-  Key, 
   DollarSign, 
   Info 
 } from "lucide-react";
@@ -24,7 +23,6 @@ export const NAVIGATION: NavigationItem[] = [
   { href: "/reports", label: "Rapoarte", icon: FileText },
   { href: "/roadmap", label: "Roadmap", icon: Map, adminOnly: true },
   { href: "/admin", label: "Admin", icon: User, adminOnly: true },
-  { href: "/admin-auth", label: "Admin Auth", icon: Key },
   { href: "/pricing", label: "Prețuri", icon: DollarSign },
   { href: "/about", label: "Despre", icon: Info },
 ];

@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,7 +17,7 @@ import About from "./pages/About";
 import Reports from "./pages/Reports";
 import Admin from "./pages/Admin";
 import Roadmap from "./pages/Roadmap";
-import AdminAuth from "./pages/AdminAuth";
+import UserAuth from "./pages/UserAuth";
 
 const queryClient = new QueryClient();
 
@@ -39,7 +40,7 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/roadmap" element={<Roadmap />} />
-            <Route path="/admin-auth" element={<AdminAuth />} />
+            <Route path="/auth" element={<UserAuth />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
