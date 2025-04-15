@@ -22,6 +22,7 @@ import Onboarding from "./pages/Onboarding";
 import Api from "./pages/Api";
 import Status from "./pages/Status";
 import ConnectStripe from "./pages/ConnectStripe";
+import DesignSystem from "./pages/DesignSystem";
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
       <Route path="/backups" element={<Backups />} />
       <Route path="/translations" element={<Translations />} />
       <Route path="/style-guide" element={<StyleGuide />} />
+      <Route path="/design-system" element={<DesignSystem />} />
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/api" element={<Api />} />
       <Route path="/status" element={<Status />} />

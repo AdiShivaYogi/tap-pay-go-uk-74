@@ -10,6 +10,7 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Calculator } from "lucide-react";
 import { pricingPlans } from "@/config/pricing";
+import { Heading3 } from "@/components/ui/themed-components";
 
 export const PricingCalculator = () => {
   const [monthlyTransactions, setMonthlyTransactions] = useState<number>(100);

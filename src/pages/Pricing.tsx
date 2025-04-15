@@ -6,33 +6,30 @@ import { IncludedFeatures } from "@/components/pricing/IncludedFeatures";
 import { PricingCalculator } from "@/components/pricing/PricingCalculator";
 import { Separator } from "@/components/ui/separator";
 import { pricingPlans, pricingFAQs } from "@/config/pricing";
+import { Section, PageHeader, Grid3Cols } from "@/components/ui/themed-components";
 
 const PricingPage = () => {
   const standardPlans = pricingPlans;
   
   return (
     <Layout>
-      <div className="container py-12 px-4">
-        <div className="text-center mb-12 space-y-4">
-          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Prețuri Simple și Transparente
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Alegeți planul care se potrivește nevoilor afacerii dvs. Fără taxe ascunse.
-          </p>
-        </div>
+      <Section>
+        <PageHeader
+          title="Prețuri Simple și Transparente"
+          description="Alegeți planul care se potrivește nevoilor afacerii dvs. Fără taxe ascunse."
+        />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <Grid3Cols className="max-w-5xl mx-auto">
           {standardPlans.map((plan) => (
             <PricingCard key={plan.name} plan={plan} />
           ))}
-        </div>
+        </Grid3Cols>
         
         <PricingCalculator />
 
         <PricingFAQ faqs={pricingFAQs} />
         <IncludedFeatures />
-      </div>
+      </Section>
     </Layout>
   );
 };
