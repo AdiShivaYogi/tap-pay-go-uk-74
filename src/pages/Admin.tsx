@@ -1,3 +1,4 @@
+
 import { Layout } from "@/components/layout/layout";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/use-auth";
@@ -15,6 +16,7 @@ import { Loader2, LockIcon, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
+import { AccessRestrictionAlert } from "@/features/roadmap/components/AccessRestrictionAlert";
 
 const Admin = () => {
   const { user } = useAuth();
@@ -37,26 +39,7 @@ const Admin = () => {
   if (!isAdmin) {
     return (
       <Layout>
-        <div className="container py-12">
-          <Alert variant="destructive" className="mb-6">
-            <AlertTitle className="flex items-center gap-2">
-              <LockIcon className="h-4 w-4" /> Acces restricționat
-            </AlertTitle>
-            <AlertDescription>
-              <p className="mb-4">
-                Această pagină necesită privilegii de administrator. Rolul tău actual: <strong>{role || 'user'}</strong>
-              </p>
-              <div className="flex gap-4">
-                <Button asChild variant="outline">
-                  <Link to="/">Înapoi la Pagina Principală</Link>
-                </Button>
-                <Button asChild>
-                  <Link to="/admin-auth">Autentificare administrator</Link>
-                </Button>
-              </div>
-            </AlertDescription>
-          </Alert>
-        </div>
+        <AccessRestrictionAlert role={role} />
       </Layout>
     );
   }
@@ -91,66 +74,33 @@ const Admin = () => {
           </Tabs>
         </div>
 
-        {!user && (
-          <Alert>
-            <AlertDescription>
-              You must be logged in and have admin privileges to access this dashboard.
-            </AlertDescription>
-          </Alert>
-        )}
-
-        {isLoadingRole ? (
-          <div className="flex items-center justify-center py-8">
-            <Loader2 className="h-8 w-8 animate-spin" />
-          </div>
-        ) : !isAdmin ? (
-          <Alert variant="destructive">
-            <AlertTitle className="flex items-center gap-2">
-              <LockIcon className="h-4 w-4" /> Acces restricționat
-            </AlertTitle>
-            <AlertDescription>
-              <p className="mb-4">
-                Această pagină necesită privilegii de administrator. Rolul tău actual: <strong>{role || 'user'}</strong>
-              </p>
-              <div className="flex gap-4">
-                <Button asChild variant="outline">
-                  <Link to="/">Înapoi la Pagina Principală</Link>
-                </Button>
-                <Button asChild>
-                  <Link to="/admin-auth">Autentificare administrator</Link>
-                </Button>
-              </div>
-            </AlertDescription>
-          </Alert>
-        ) : (
-          <div className="grid gap-6">
-            <Card className="p-6">
-              <MonitoringStats 
-                isLoading={isLoading}
-                stats={monitoringStats}
-              />
-            </Card>
-
-            <AdminStats 
+        <div className="grid gap-6">
+          <Card className="p-6">
+            <MonitoringStats 
               isLoading={isLoading}
-              stats={financialStats}
+              stats={monitoringStats}
             />
+          </Card>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              <AdminCharts 
-                isLoading={isLoading}
-                monthlyData={monthlyData}
-                pieChartData={pieChartData}
-              />
-            </div>
+          <AdminStats 
+            isLoading={isLoading}
+            stats={financialStats}
+          />
 
-            <AdminTransactionsTable 
+          <div className="grid md:grid-cols-2 gap-6">
+            <AdminCharts 
               isLoading={isLoading}
-              transactions={transactions}
-              commissionRate={commissionRate}
+              monthlyData={monthlyData}
+              pieChartData={pieChartData}
             />
           </div>
-        )}
+
+          <AdminTransactionsTable 
+            isLoading={isLoading}
+            transactions={transactions}
+            commissionRate={commissionRate}
+          />
+        </div>
       </div>
     </Layout>
   );

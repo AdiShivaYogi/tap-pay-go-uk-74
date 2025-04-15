@@ -15,6 +15,7 @@ export interface NavigationItem {
   label: string;
   icon: LucideIcon;
   adminOnly?: boolean;
+  moderatorOnly?: boolean;
 }
 
 export const NAVIGATION: NavigationItem[] = [

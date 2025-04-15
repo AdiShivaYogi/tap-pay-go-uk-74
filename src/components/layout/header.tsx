@@ -25,7 +25,22 @@ import {
 
 export function Header() {
   const { signOut, user } = useAuth();
-  const { isAdmin } = useUserRole();
+  const { isAdmin, isModerator, role } = useUserRole();
+  
+  // Function to determine if a navigation item should be visible
+  const isVisible = (item: typeof NAVIGATION[0]) => {
+    // Super admin (email admin@example.com) always sees all menu items
+    if (user?.email === 'admin@example.com') return true;
+    
+    // Admin users can see admin-only items
+    if (item.adminOnly && !isAdmin) return false;
+    
+    // Moderator users can see moderator-only items
+    if (item.moderatorOnly && !isModerator && !isAdmin) return false;
+    
+    // All other items are visible to everyone
+    return true;
+  };
   
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -40,10 +55,8 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
-            {NAVIGATION.map((item) => {
-              if ((item.adminOnly || item.href === "/roadmap") && !isAdmin) return null;
-              
-              return (
+            {NAVIGATION.map((item) => (
+              isVisible(item) && (
                 <Link 
                   key={item.href} 
                   to={item.href}
@@ -52,8 +65,8 @@ export function Header() {
                   <item.icon className="h-4 w-4" />
                   {item.label}
                 </Link>
-              );
-            })}
+              )
+            ))}
           </nav>
 
           {/* User Menu & Mobile Menu */}
@@ -75,6 +88,9 @@ export function Header() {
                       <p className="text-xs leading-none text-muted-foreground">
                         {user.email}
                       </p>
+                      {user.email === 'admin@example.com' && (
+                        <p className="text-xs font-semibold text-primary">Super Admin</p>
+                      )}
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
@@ -84,7 +100,7 @@ export function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Link to="/onboarding">
+              <Link to="/auth">
                 <Button variant="default">Sign In</Button>
               </Link>
             )}
@@ -105,10 +121,8 @@ export function Header() {
                   </SheetDescription>
                 </SheetHeader>
                 <nav className="flex flex-col space-y-4 mt-4">
-                  {NAVIGATION.map((item) => {
-                    if ((item.adminOnly || item.href === "/roadmap") && !isAdmin) return null;
-                    
-                    return (
+                  {NAVIGATION.map((item) => (
+                    isVisible(item) && (
                       <Link
                         key={item.href}
                         to={item.href}
@@ -117,8 +131,8 @@ export function Header() {
                         <item.icon className="h-4 w-4" />
                         {item.label}
                       </Link>
-                    );
-                  })}
+                    )
+                  ))}
                 </nav>
               </SheetContent>
             </Sheet>
