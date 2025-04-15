@@ -21,6 +21,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
 
 export function Header() {
   const { signOut, user } = useAuth();
@@ -31,7 +32,15 @@ export function Header() {
   
   // Function to determine if a navigation item should be visible
   const isVisible = (item: typeof NAVIGATION[0]) => {
-    // Super admin (email 114.adrian.gheorghe@gmail.com) always sees all menu items
+    // If user is not authenticated
+    if (!user) {
+      return !item.showWhenAuth;
+    }
+    
+    // If user is authenticated
+    if (item.hideWhenAuth) return false;
+    
+    // Super admin sees all menu items
     if (isSuperAdmin) return true;
     
     // If item is superAdminOnly, only show to super admin
@@ -43,10 +52,9 @@ export function Header() {
     // Moderator users can see moderator-only items
     if (item.moderatorOnly && !isModerator && !isAdmin) return false;
     
-    // All other items are visible to everyone
     return true;
   };
-  
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4">
@@ -69,6 +77,11 @@ export function Header() {
                 >
                   <item.icon className="h-4 w-4" />
                   {item.label}
+                  {item.label === "Cont" && user?.stripeConnected && (
+                    <Badge variant="secondary" className="ml-2">
+                      Stripe conectat
+                    </Badge>
+                  )}
                 </Link>
               )
             ))}
@@ -89,10 +102,15 @@ export function Header() {
                 <DropdownMenuContent className="w-56" align="end" forceMount>
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">Account</p>
+                      <p className="text-sm font-medium leading-none">Cont</p>
                       <p className="text-xs leading-none text-muted-foreground">
                         {user.email}
                       </p>
+                      {user.stripeConnected && (
+                        <Badge variant="outline" className="w-fit">
+                          Stripe conectat
+                        </Badge>
+                      )}
                       {isSuperAdmin && (
                         <p className="text-xs font-semibold text-primary">Super Admin</p>
                       )}
@@ -110,7 +128,7 @@ export function Header() {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            ) : null /* Removed the Sign In button */}
+            ) : null}
 
             {/* Mobile Menu */}
             <Sheet>
@@ -137,6 +155,11 @@ export function Header() {
                       >
                         <item.icon className="h-4 w-4" />
                         {item.label}
+                        {item.label === "Cont" && user?.stripeConnected && (
+                          <Badge variant="secondary" className="ml-2">
+                            Stripe conectat
+                          </Badge>
+                        )}
                       </Link>
                     )
                   ))}
