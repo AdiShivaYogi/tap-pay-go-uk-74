@@ -1,10 +1,10 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/layout";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { z } from "zod";
 import { AuthForm } from "@/components/admin-auth/AuthForm";
@@ -16,8 +16,47 @@ type AdminFormValues = z.infer<typeof formSchema>;
 const UserAuth = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
   const { signIn } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+
+  // Handle Supabase auth redirect with tokens in URL
+  useEffect(() => {
+    const handleAuthRedirect = async () => {
+      // Check if we have a hash in the URL (for auth callbacks)
+      if (location.hash) {
+        setIsLoading(true);
+        
+        try {
+          // Process the hash fragment containing auth tokens
+          const { data, error } = await supabase.auth.getSession();
+          
+          if (error) {
+            throw error;
+          }
+          
+          if (data?.session) {
+            toast({
+              title: "Autentificare reușită",
+              description: "Bine ați revenit!",
+            });
+            navigate("/dashboard");
+          }
+        } catch (error: any) {
+          console.error("Eroare la procesarea redirecționării:", error);
+          toast({
+            title: "Eroare la autentificare",
+            description: error.message || "A apărut o eroare la procesarea autentificării",
+            variant: "destructive",
+          });
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    handleAuthRedirect();
+  }, [location.hash, navigate]);
 
   const handleSubmit = async (values: AdminFormValues) => {
     try {
