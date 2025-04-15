@@ -1,3 +1,4 @@
+
 import { RoadmapItem } from "../types";
 
 export const devopsItems: RoadmapItem[] = [
@@ -24,23 +25,23 @@ export const devopsItems: RoadmapItem[] = [
   },
   {
     title: "Backup și Recuperare",
-    description: "Sistem robust de backup și recuperare date",
-    status: "completed",
+    description: "Sistem simplificat de backup și recuperare date",
+    status: "in-progress",
     priority: "high",
     category: "devops",
     iconType: "database",
-    iconColor: "text-green-500",
+    iconColor: "text-yellow-500",
     timeEstimate: {
-      total: 25,
-      spent: 25,
+      total: 20,
+      spent: 18,
       aiTotal: 15
     },
     details: [
-      "Implementare backup automatizat multi-nivel ✓",
-      "Configurare retenție date pe termen lung ✓",
-      "Testare proceduri de recuperare ✓",
-      "Documentare politici de backup ✓",
-      "Optimizare strategii de backup incremental ✓"
+      "Configurare backup automat incremental ✓",
+      "Implementare strategie de recuperare după dezastre ✓",
+      "Testare proces de restaurare ✓",
+      "Configurare retenție date ✓",
+      "Documentare proceduri de urgență"
     ]
   },
   {
