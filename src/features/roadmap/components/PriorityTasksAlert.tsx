@@ -3,9 +3,8 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
 import { Category } from "../types";
 
-interface CategoryCount {
-  [key in Category]: number;
-}
+// Fix the interface by using Record instead of mapped type
+type CategoryCount = Record<Category, number>;
 
 interface PriorityTasksAlertProps {
   highPriorityItemsCount: number;

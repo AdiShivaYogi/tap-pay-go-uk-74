@@ -1,3 +1,4 @@
+
 import { Layout } from "@/components/layout/layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RoadmapCard } from "@/features/roadmap/components/RoadmapCard";
@@ -13,6 +14,8 @@ import { AccessRestrictionAlert } from "@/features/roadmap/components/AccessRest
 import { RoadmapHeader } from "@/features/roadmap/components/RoadmapHeader";
 import { PriorityTaskFilter } from "@/features/roadmap/components/PriorityTaskFilter";
 import { PriorityTasksAlert } from "@/features/roadmap/components/PriorityTasksAlert";
+import { Progress } from "@/components/ui/progress"; // Add missing Progress import
+import { cn } from "@/lib/utils"; // Add missing cn utility import
 
 const Roadmap = () => {
   const { isAdmin, role } = useUserRole();
@@ -27,13 +30,17 @@ const Roadmap = () => {
     []
   );
 
-  const categorizedHighPriorityItems = useMemo(() => ({
-    product: highPriorityItems.filter(item => item.category === "product"),
-    development: highPriorityItems.filter(item => item.category === "development"),
-    infrastructure: highPriorityItems.filter(item => item.category === "infrastructure"),
-    security: highPriorityItems.filter(item => item.category === "security"),
-    devops: highPriorityItems.filter(item => item.category === "devops"),
-  }), [highPriorityItems]);
+  const categorizedHighPriorityItems = useMemo(() => {
+    // Convert to Record type for proper type checking
+    return {
+      product: highPriorityItems.filter(item => item.category === "product").length,
+      development: highPriorityItems.filter(item => item.category === "development").length,
+      infrastructure: highPriorityItems.filter(item => item.category === "infrastructure").length,
+      security: highPriorityItems.filter(item => item.category === "security").length,
+      devops: highPriorityItems.filter(item => item.category === "devops").length,
+      other: highPriorityItems.filter(item => item.category === "other").length
+    };
+  }, [highPriorityItems]);
 
   if (!isAdmin) {
     return (
@@ -127,9 +134,11 @@ const Roadmap = () => {
             />
             
             <div className="grid gap-6 md:grid-cols-2">
-              {(categorizedHighPriorityItems[activeCategory] || []).map((item, index) => (
-                <RoadmapCard key={index} item={item} />
-              ))}
+              {highPriorityItems
+                .filter(item => activeCategory === "all" || item.category === activeCategory)
+                .map((item, index) => (
+                  <RoadmapCard key={index} item={item} />
+                ))}
             </div>
           </TabsContent>
 
