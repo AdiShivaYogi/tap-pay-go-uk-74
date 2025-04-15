@@ -6,6 +6,7 @@ import { InfoIcon, Palette, Sliders, Type, Layout, Pointer, Wand2 } from "lucide
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { theme } from "@/config/theme";
 import { useElementSelector } from "@/hooks/use-element-selector";
 import { ElementStyleControls } from "./components/ElementStyleControls";
