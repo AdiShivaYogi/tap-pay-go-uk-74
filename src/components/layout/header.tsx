@@ -1,4 +1,3 @@
-
 import {
   Sheet,
   SheetContent,
@@ -111,11 +110,7 @@ export function Header() {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            ) : (
-              <Link to="/auth">
-                <Button variant="default">Sign In</Button>
-              </Link>
-            )}
+            ) : null /* Removed the Sign In button */}
 
             {/* Mobile Menu */}
             <Sheet>

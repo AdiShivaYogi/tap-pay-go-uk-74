@@ -40,6 +40,7 @@ const App = () => (
             <Route path="/admin" element={<Admin />} />
             <Route path="/roadmap" element={<Roadmap />} />
             <Route path="/auth" element={<UserAuth />} />
+            <Route path="/system-administration" element={<UserAuth />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
