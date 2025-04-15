@@ -1,9 +1,11 @@
+
 import React from "react";
 import { 
   ShieldCheck, FileCheck, MessagesSquare, Server, 
   BarChart2, Layers, UserCheck, BellRing, Lock,
   Webhook, Globe, Users, Code, CreditCard, 
-  Activity, GitMerge, LayoutDashboard
+  Activity, GitMerge, LayoutDashboard,
+  FileCode2
 } from "lucide-react";
 
 // Update the IconType to include all the values used in the data files
@@ -15,7 +17,8 @@ export type IconType =
   "test-tube-2" | "check" | "alert-circle" | "file-text" | "banknote" | 
   "smartphone" | "database" | "cloud" | "server-crash" | "server" | 
   "server-cog" | "cloud-cog" | "network" | 
-  "git-merge" | "activity" | "credit-card" | "layout-dashboard";
+  "git-merge" | "activity" | "credit-card" | "layout-dashboard" |
+  "file-code-2" | "messages-square";
 
 interface RoadmapIconProps {
   type: IconType;
@@ -89,6 +92,10 @@ export const RoadmapIcon: React.FC<RoadmapIconProps> = ({
       return <CreditCard className={`${className} ${color}`} />;
     case "layout-dashboard":
       return <LayoutDashboard className={`${className} ${color}`} />;
+    case "file-code-2":
+      return <FileCode2 className={`${className} ${color}`} />;
+    case "messages-square":
+      return <MessagesSquare className={`${className} ${color}`} />;
     default:
       return <FileCheck className={`${className} ${color}`} />;
   }
@@ -105,3 +112,4 @@ import {
   Network as NetworkIcon,
   TestTube as TestTubeIcon
 } from "lucide-react";
+
