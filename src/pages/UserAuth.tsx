@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/layout";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/hooks/use-auth";
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,7 +9,6 @@ import { toast } from "@/hooks/use-toast";
 import { AuthForm } from "@/components/admin-auth/AuthForm";
 import { AuthModeToggle } from "@/components/admin-auth/AuthModeToggle";
 import { ResetPasswordForm } from "@/components/admin-auth/ResetPasswordForm";
-import { SuperAdminCreator } from "@/features/auth/components/SuperAdminCreator";
 import { AuthRedirectHandler } from "@/features/auth/components/AuthRedirectHandler";
 import { useAuthSubmit } from "@/features/auth/hooks/useAuthSubmit";
 
@@ -103,9 +102,6 @@ const UserAuth = () => {
               </>
             )}
           </CardContent>
-          <CardFooter>
-            <SuperAdminCreator />
-          </CardFooter>
         </Card>
       </div>
     </Layout>

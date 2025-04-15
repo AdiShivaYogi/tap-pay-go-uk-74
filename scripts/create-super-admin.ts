@@ -3,24 +3,21 @@ import { supabase } from "@/integrations/supabase/client";
 
 const createSuperAdmin = async () => {
   try {
-    // First check if the user already exists
-    const { data: existingUsers, error: userError } = await supabase
-      .from('auth.users')
-      .select('email')
-      .eq('email', '114.adrian.gheorghe@gmail.com')
-      .limit(1);
+    // Check if super admin already exists
+    const { data: { user: existingUser }, error: userError } = await supabase.auth.admin.getUserByEmail('114.adrian.gheorghe@gmail.com');
 
     if (userError) {
       console.log('Error checking for existing user:', userError.message);
     }
 
-    if (existingUsers && existingUsers.length > 0) {
-      console.log('Super admin account already exists. Attempting to update role...');
+    if (existingUser) {
+      console.log('Super admin account already exists');
       
       // Update the user's role if they exist
-      const { error: updateError } = await supabase.auth.updateUser({
-        data: { role: 'admin' }
-      });
+      const { error: updateError } = await supabase.auth.admin.updateUserById(
+        existingUser.id,
+        { user_metadata: { role: 'admin' } }
+      );
       
       if (updateError) {
         console.error('Error updating role:', updateError);
@@ -31,15 +28,14 @@ const createSuperAdmin = async () => {
       return;
     }
 
-    // Use direct sign-up method instead of admin.createUser
+    // Create the super admin account
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email: "114.adrian.gheorghe@gmail.com",
       password: "Alfasiomega!!!",
       options: {
         data: {
           role: 'admin'
-        },
-        emailRedirectTo: window.location.origin,
+        }
       }
     });
 
@@ -47,29 +43,9 @@ const createSuperAdmin = async () => {
       throw signUpError;
     }
 
-    // Try to auto-confirm the user (this only works in development if auto-confirm is enabled)
     if (signUpData?.user) {
-      console.log('Super admin account created:', signUpData.user.email);
-      console.log('IMPORTANT: You need to do one of the following:');
-      console.log('1. Go to Supabase dashboard > Authentication > Users and confirm the email manually');
-      console.log('2. Or disable email confirmation in Supabase dashboard > Authentication > Email');
-      console.log('   Then try logging in again with the super admin credentials');
-      
-      // Try to sign in immediately (will only work if email confirmation is disabled)
-      try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: "114.adrian.gheorghe@gmail.com",
-          password: "Alfasiomega!!!"
-        });
-        
-        if (error) {
-          console.log('Could not auto-sign in:', error.message);
-        } else if (data.user) {
-          console.log('Successfully signed in as super admin!');
-        }
-      } catch (signInError) {
-        console.error('Error during auto sign-in:', signInError);
-      }
+      console.log('Super admin account created successfully');
+      console.log('Please check your email to confirm the account or disable email confirmation in Supabase dashboard');
     }
 
   } catch (error) {
