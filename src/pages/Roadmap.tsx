@@ -1,4 +1,3 @@
-
 import { Layout } from "@/components/layout/layout";
 import { RoadmapProgress } from "@/features/roadmap/components/RoadmapProgress";
 import { useUserRole } from "@/hooks/use-user-role";
@@ -29,7 +28,7 @@ const Roadmap = () => {
   const categoryGroups = [
     {
       title: "Securitate și Conformitate",
-      categories: ["security", "payment"] // Added payment category here as it's related to compliance
+      categories: ["security", "payment"]
     },
     {
       title: "Infrastructură și Disponibilitate",
@@ -41,7 +40,11 @@ const Roadmap = () => {
     },
     {
       title: "Dezvoltare Produs",
-      categories: ["product", "ui"] // Added UI category here as it's related to product development
+      categories: ["product", "ui"]
+    },
+    {
+      title: "Parteneriate și Colaborări",
+      categories: ["partnership"]
     }
   ];
 
