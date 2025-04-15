@@ -1,10 +1,11 @@
 
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { FileText, ChevronDown, ChevronUp, CheckIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { mvpRoadmapData, RoadmapSection } from '../data/mvp-roadmap';
+import { StyledCard } from "@/components/ui/styled-card";
 
 export const MVPRoadmap = () => {
   const [expandedSections, setExpandedSections] = useState<{ [key: number]: boolean }>(
@@ -35,7 +36,7 @@ export const MVPRoadmap = () => {
   };
 
   return (
-    <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-primary/10">
+    <StyledCard>
       {mvpRoadmapData.map((section, index) => (
         <div key={index}>
           <CardHeader 
@@ -67,6 +68,6 @@ export const MVPRoadmap = () => {
           </CardContent>
         </div>
       ))}
-    </Card>
+    </StyledCard>
   );
 };

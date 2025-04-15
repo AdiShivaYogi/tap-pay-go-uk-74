@@ -1,11 +1,12 @@
 
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { RoadmapItem } from "../types";
 import { getStatusIcon, getStatusBadge, getPriorityBadge } from "./StatusBadges";
 import { RoadmapIcon } from "./RoadmapIcon";
 import { TimeEstimationBadge } from "./TimeEstimationBadge";
 import { AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { StyledCard } from "@/components/ui/styled-card";
 
 interface RoadmapCardProps {
   item: RoadmapItem;
@@ -26,12 +27,14 @@ export const RoadmapCard = ({ item }: RoadmapCardProps) => {
   };
 
   return (
-    <Card className={cn(
-      "hover:shadow-md transition-all duration-300 bg-gradient-to-br",
-      getCategoryColor(item.category),
-      isHighPriority && !isCompleted && "ring-1 ring-primary/20",
-      isCompleted && "opacity-95"
-    )}>
+    <StyledCard
+      className={cn(
+        "bg-gradient-to-br",
+        getCategoryColor(item.category),
+        isHighPriority && !isCompleted && "ring-1 ring-primary/20",
+        isCompleted && "opacity-95"
+      )}
+    >
       <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
         <div className="space-y-2">
           {item.iconType && (
@@ -76,6 +79,6 @@ export const RoadmapCard = ({ item }: RoadmapCardProps) => {
           status={item.status}
         />
       </CardContent>
-    </Card>
+    </StyledCard>
   );
 };

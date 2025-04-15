@@ -6,6 +6,7 @@ import { Category } from "../types";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useRoadmapContext } from '../context/RoadmapContext';
 import { cn } from '@/lib/utils';
+import { StyledCard } from "@/components/ui/styled-card";
 
 interface RoadmapCategoryProps {
   title: string;
@@ -30,10 +31,10 @@ export const RoadmapCategory: React.FC<RoadmapCategoryProps> = ({
   const progress = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
 
   return (
-    <div className="bg-card rounded-lg border border-border shadow-sm">
+    <StyledCard gradient={false}>
       <button
         onClick={() => toggleCategory(title)}
-        className="w-full px-6 py-4 flex items-center justify-between hover:bg-accent/50 transition-colors"
+        className="w-full px-6 py-4 flex items-center justify-between hover:bg-accent/50 transition-colors rounded-t-lg"
       >
         <div className="flex items-center gap-4">
           <h2 className="text-xl font-semibold">{title}</h2>
@@ -63,6 +64,6 @@ export const RoadmapCategory: React.FC<RoadmapCategoryProps> = ({
           )}
         </div>
       )}
-    </div>
+    </StyledCard>
   );
 };
