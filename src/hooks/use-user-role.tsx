@@ -19,9 +19,15 @@ export const useUserRole = () => {
         return 'admin';
       }
 
-      // Verificăm adresa de email pentru super admin
-      if (user.email === '114.adrian.gheorghe@gmail.com') {
-        console.log('Super admin user detected by email');
+      // Lista de emailuri admin
+      const adminEmails = [
+        '114.adrian.gheorghe@gmail.com',
+        '727.adrian.gheorghe@gmail.com'
+      ];
+      
+      // Verificăm adresa de email pentru admin
+      if (adminEmails.includes(user.email || '')) {
+        console.log('Admin user detected by email:', user.email);
         return 'admin';
       }
 

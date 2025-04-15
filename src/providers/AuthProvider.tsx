@@ -1,3 +1,4 @@
+
 import { createContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -9,6 +10,9 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // Lista de emailuri admin pentru referință rapidă
+  const adminEmails = ['114.adrian.gheorghe@gmail.com', '727.adrian.gheorghe@gmail.com'];
 
   useEffect(() => {
     const checkSession = async () => {
@@ -23,7 +27,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             if (session) {
               // Check if user is an admin
               const isAdmin = 
-                session.user.email === '114.adrian.gheorghe@gmail.com' || 
+                adminEmails.includes(session.user.email || '') || 
                 (session.user.user_metadata && session.user.user_metadata.role === 'admin');
               
               console.log('User info:', {
@@ -35,16 +39,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               if (isAdmin) {
                 setUser({
                   id: session.user.id,
-                  email: session.user.email,
+                  email: session.user.email || '',
                   stripeConnected: true,
                   stripeAccountId: 'demo-account-id',
                   role: 'admin'
                 });
-                console.log('Admin user detected and set');
+                console.log('Admin user detected and set:', session.user.email);
               } else {
                 setUser({
                   id: session.user.id,
-                  email: session.user.email,
+                  email: session.user.email || '',
                   stripeConnected: false,
                   role: 'user'
                 });
@@ -68,7 +72,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         
         if (session) {
           const isAdmin = 
-            session.user.email === '114.adrian.gheorghe@gmail.com' || 
+            adminEmails.includes(session.user.email || '') || 
             (session.user.user_metadata && session.user.user_metadata.role === 'admin');
             
           console.log('Initial session check:', {
@@ -80,7 +84,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           if (isAdmin) {
             setUser({
               id: session.user.id,
-              email: session.user.email,
+              email: session.user.email || '',
               stripeConnected: true,
               stripeAccountId: 'demo-account-id',
               role: 'admin'
@@ -88,7 +92,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           } else {
             setUser({
               id: session.user.id,
-              email: session.user.email,
+              email: session.user.email || '',
               stripeConnected: false,
               role: 'user'
             });

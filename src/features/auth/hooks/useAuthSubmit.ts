@@ -12,6 +12,9 @@ export const useAuthSubmit = () => {
   const navigate = useNavigate();
   const { signIn } = useAuth();
 
+  // Lista de emailuri admin pentru referință rapidă
+  const adminEmails = ['114.adrian.gheorghe@gmail.com', '727.adrian.gheorghe@gmail.com'];
+
   const handleSubmit = async (values: AuthFormValues, isLoginMode: boolean) => {
     try {
       const { email, password, inviteCode } = values;
@@ -24,8 +27,8 @@ export const useAuthSubmit = () => {
       if (isLoginMode) {
         try {
           // Try to authenticate with the special admin email directly
-          if (email === '114.adrian.gheorghe@gmail.com') {
-            console.log("Attempting admin login");
+          if (adminEmails.includes(email)) {
+            console.log("Attempting admin login with email:", email);
           }
           
           await signIn(email, password);
@@ -53,32 +56,35 @@ export const useAuthSubmit = () => {
         }
       } else {
         // Handle registration logic - first check if admin already exists
-        const { data: existingAdmins } = await supabase
-          .from('user_roles')
-          .select('user_id')
-          .eq('role', 'admin');
-
-        if (existingAdmins && existingAdmins.length > 0) {
-          setErrorMessage("Un cont de super admin există deja. Nu se mai pot crea conturi noi de admin.");
-          toast({
-            title: "Eroare",
-            description: "Un cont de super admin există deja",
-            variant: "destructive",
-          });
-          return;
-        }
-
-        if (inviteCode !== 'ADMIN2025') {
-          setErrorMessage("Cod de invitație invalid");
-          toast({
-            title: "Eroare",
-            description: "Cod de invitație invalid",
-            variant: "destructive",
-          });
-          return;
-        }
-        
         try {
+          // Check if trying to register with an email that is already in the admin list
+          if (adminEmails.includes(email)) {
+            setErrorMessage("Acest email este deja înregistrat ca administrator. Vă rugăm să vă autentificați.");
+            toast({
+              title: "Email admin existent",
+              description: "Acest email este deja înregistrat ca administrator",
+              variant: "destructive",
+            });
+            return;
+          }
+          
+          const { data: existingAdmins } = await supabase
+            .from('user_roles')
+            .select('user_id')
+            .eq('role', 'admin');
+
+          // Check invite code validity
+          const validInviteCodes = ['ADMIN2025', 'SUPERADMIN2025'];
+          if (!validInviteCodes.includes(inviteCode)) {
+            setErrorMessage("Cod de invitație invalid");
+            toast({
+              title: "Eroare",
+              description: "Cod de invitație invalid",
+              variant: "destructive",
+            });
+            return;
+          }
+          
           const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
             email,
             password,
