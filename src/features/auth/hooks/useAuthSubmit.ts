@@ -47,7 +47,7 @@ export const useAuthSubmit = () => {
           });
         }
       } else {
-        if (!inviteCode || inviteCode !== 'ADMIN2025') {
+        if (inviteCode !== 'ADMIN2025') {
           setErrorMessage("Cod de invitație invalid");
           toast({
             title: "Eroare",
