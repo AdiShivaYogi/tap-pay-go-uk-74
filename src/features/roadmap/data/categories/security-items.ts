@@ -1,3 +1,4 @@
+
 import { RoadmapItem } from "../../types";
 
 export const securityItems: RoadmapItem[] = [
@@ -15,7 +16,7 @@ export const securityItems: RoadmapItem[] = [
       aiTotal: 20
     },
     details: [
-      "Implementare autentificare multi-factor (MFA)",
+      "Implementare autentificare multi-factor (MFA) ✓",
       "Audit de securitate complet al codului sursă",
       "Actualizarea dependențelor la cele mai recente versiuni",
       "Monitorizare continuă a vulnerabilităților",

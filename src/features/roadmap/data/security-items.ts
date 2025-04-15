@@ -63,5 +63,26 @@ export const securityItems: RoadmapItem[] = [
       "Scanări automate de vulnerabilități ✓",
       "Exerciții de penetration testing finale ✓"
     ]
+  },
+  {
+    title: "Consolidarea securității serverelor și a datelor",
+    description: "Implementare măsuri avansate de securitate pentru protejarea datelor sensibile",
+    status: "in-progress",
+    priority: "high",
+    category: "security",
+    iconType: "shield",
+    iconColor: "text-blue-500",
+    timeEstimate: {
+      total: 45,
+      spent: 20,
+      aiTotal: 15
+    },
+    details: [
+      "Implementare autentificare multi-factor (MFA) ✓",
+      "Audit de securitate complet al codului sursă",
+      "Actualizarea dependențelor la cele mai recente versiuni",
+      "Monitorizare continuă a vulnerabilităților",
+      "Îmbunătățirea politicilor de acces și a permisiunilor"
+    ]
   }
 ];
