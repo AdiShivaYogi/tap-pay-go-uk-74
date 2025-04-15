@@ -39,8 +39,7 @@ const Roadmap = () => {
     development: highPriorityItems.filter(item => item.category === "development").length,
     infrastructure: highPriorityItems.filter(item => item.category === "infrastructure").length,
     security: highPriorityItems.filter(item => item.category === "security").length,
-    devops: highPriorityItems.filter(item => item.category === "devops").length,
-    other: highPriorityItems.filter(item => item.category === "other").length
+    devops: highPriorityItems.filter(item => item.category === "devops").length
   }), [highPriorityItems]);
 
   if (!isAdmin) {
@@ -56,17 +55,14 @@ const Roadmap = () => {
       <ScrollArea className="h-[calc(100vh-4rem)]">
         <div className="container py-8">
           <div className="space-y-8 max-w-[1400px] mx-auto">
-            {/* Header Section */}
             <RoadmapHeader />
             
-            {/* Morning Tasks Section - Conditional */}
             {isMorning && (
               <div className="animate-in slide-in-from-bottom fade-in duration-700">
                 <MorningPriorityTasks />
               </div>
             )}
             
-            {/* Priority Tasks Alert */}
             {highPriorityItems.length > 0 && (
               <PriorityTasksAlert 
                 highPriorityItemsCount={highPriorityItems.length}
@@ -74,7 +70,6 @@ const Roadmap = () => {
               />
             )}
 
-            {/* Tasks Tabs Section */}
             <div className="bg-card rounded-lg p-6">
               <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="grid w-full grid-cols-5 mb-6">
@@ -105,6 +100,7 @@ const Roadmap = () => {
                     activeCategory={activeCategory} 
                     onCategoryChange={setActiveCategory}
                     categoryCounts={categorizedHighPriorityItems}
+                    totalHighPriority={highPriorityItems.length}
                   />
                   
                   <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
