@@ -1,13 +1,5 @@
 
-project_id = "utraomhphgnnrpyfwwla"
+project_id = "your-project-id"
 
-[functions.set-deepl-key]
-verify_jwt = true
-
-[functions.set-deepseek-key]
-verify_jwt = true
-
-[functions.create-payment]
-
-[functions.stripe-webhook]
+[functions.detect-language-from-ip]
 verify_jwt = false

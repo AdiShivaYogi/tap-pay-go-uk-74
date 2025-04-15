@@ -96,8 +96,14 @@ const Translations = () => {
                 <Languages className="h-8 w-8 text-primary" />
                 Management Traduceri
               </h1>
-              <p className="text-muted-foreground mt-1">
-                Integrare cu DeepL API și Deepseek API pentru traducerea automată a conținutului
+              <p className="text-muted-foreground mt-1 space-y-2">
+                <span className="block">
+                  Integrare cu DeepL API și Deepseek API pentru traducerea automată a conținutului
+                </span>
+                <span className="block text-sm bg-muted p-2 rounded-md">
+                  Notă: Interfața de administrare va rămâne întotdeauna în limba română, 
+                  iar conținutul frontend-ului va fi tradus automat în funcție de IP-ul utilizatorului.
+                </span>
               </p>
             </div>
 
