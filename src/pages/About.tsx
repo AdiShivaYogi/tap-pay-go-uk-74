@@ -2,8 +2,7 @@
 import { Layout } from "@/components/layout/layout";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Shield, Heart, Handshake, Globe2, Users, CheckCircle2, LucideIcon } from "lucide-react";
-import { EthicalCommunicationGuide } from "@/components/ethics/EthicalCommunicationGuide";
+import { Shield, Tool, Hammer, Lock, HandCoins, CheckCircle2, LucideIcon } from "lucide-react";
 
 interface ValueProps {
   title: string;
@@ -13,34 +12,34 @@ interface ValueProps {
 
 const CoreValues: ValueProps[] = [
   {
-    title: "Securitate și Confidențialitate",
-    description: "Protecția datelor și siguranța utilizatorilor sunt fundamentul nostru.",
+    title: "Simplicitate",
+    description: "Link de plată, trimitere, încasare. Atât.",
+    icon: HandCoins
+  },
+  {
+    title: "Securitate",
+    description: "Nu stocăm date sensibile. Totul e gestionat de Stripe.",
     icon: Shield
   },
   {
-    title: "Transparență Totală",
-    description: "Comunicare deschisă și onestă în toate tranzacțiile și serviciile noastre.",
+    title: "Izolare completă",
+    description: "Fiecare utilizator vede doar datele lui. Punct.",
+    icon: Lock
+  },
+  {
+    title: "Unealtă, nu platformă",
+    description: "Mică, rapidă și de încredere. Fără complicații.",
+    icon: Tool
+  },
+  {
+    title: "Zero Tracking",
+    description: "Nu te spionăm, nu te vindem, nu te încurcăm.",
     icon: CheckCircle2
   },
   {
-    title: "Comunitate Sustenabilă",
-    description: "Construim relații bazate pe respect și creștere durabilă.",
-    icon: Users
-  },
-  {
-    title: "Impact Global",
-    description: "Democratizăm plățile digitale, cu accent pe România și extindere internațională.",
-    icon: Globe2
-  },
-  {
-    title: "Etică în Afaceri",
-    description: "Standard ridicat de integritate în toate aspectele activității noastre.",
-    icon: Heart
-  },
-  {
-    title: "Încredere prin Colaborare",
-    description: "Parteneriate bazate pe valori etice și standarde de calitate.",
-    icon: Handshake
+    title: "Construim pentru tine",
+    description: "Focus pe nevoile tale reale de business.",
+    icon: Hammer
   }
 ];
 
@@ -50,36 +49,32 @@ const AboutPage = () => {
       <div className="container py-12 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-6">TapPayGo: Plăți Etice, Simple și Sigure</h1>
+            <h1 className="text-4xl font-bold mb-6">Despre Noi</h1>
             <p className="text-xl text-muted-foreground">
-              Transformăm plățile mobile într-o experiență accesibilă și responsabilă
+              Suntem aici pentru freelanceri, creatori și mici afaceri care vor să se concentreze pe muncă, nu pe facturi, Stripe, sau taxe.
             </p>
           </div>
           
           <div className="prose prose-gray max-w-none space-y-8">
             <section className="bg-primary/5 p-8 rounded-lg">
-              <h2 className="text-3xl font-semibold mb-6">Misiunea Noastră</h2>
               <p className="text-lg mb-6">
-                La TapPayGo, ne dedicăm simplificării plăților pentru freelanceri și întreprinderi mici, 
-                oferind o soluție sigură, etică și transparentă.
+                Am construit o interfață care simplifică tot: creezi un link de plată, îl trimiți clientului, 
+                banii intră în contul tău. Fără să te întrebi dacă ai setat tot bine în Stripe, 
+                fără griji legate de GDPR, fără integrări complicate.
               </p>
-              <ul className="space-y-4 list-none pl-0">
-                {[
-                  "Protejăm datele utilizatorilor cu cele mai înalte standarde de securitate",
-                  "Oferim transparență deplină în operațiunile noastre",
-                  "Construim relații bazate pe încredere",
-                  "Inovăm constant, respectând principiile etice"
-                ].map((item, index) => (
-                  <li key={index} className="flex items-start gap-3">
-                    <CheckCircle2 className="h-6 w-6 text-primary mt-1" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
+              <p className="text-lg mb-6">
+                Nu stocăm date sensibile. Nu procesăm plăți. Nu ne băgăm în treaba ta.
+                Totul e gestionat de Stripe, iar noi ne ocupăm doar de experiența ta.
+              </p>
+              <p className="text-lg">
+                Nu vrem să fim o platformă.
+                Vrem să fim o unealtă: mică, rapidă și de încredere.
+                Unelte care nu te încurcă. Care nu te vând. Care nu te spionează.
+              </p>
             </section>
 
             <section className="mt-12">
-              <h2 className="text-3xl font-semibold mb-8">Valorile Noastre Fundamentale</h2>
+              <h2 className="text-3xl font-semibold mb-8">Ce Ne Face Diferiți</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {CoreValues.map((value, index) => (
                   <div key={index} className="bg-card p-6 rounded-lg border hover:shadow-sm transition-shadow">
@@ -95,12 +90,11 @@ const AboutPage = () => {
               </div>
             </section>
 
-            <EthicalCommunicationGuide />
-
             <section className="bg-muted/30 p-8 rounded-lg mt-12 text-center">
-              <h2 className="text-3xl font-semibold mb-6">Alătură-te Revoluției Plăților Digitale</h2>
+              <h2 className="text-3xl font-semibold mb-6">Alătură-te Nouă</h2>
               <p className="text-lg mb-6">
-                Construim viitorul tranzacțiilor digitale: simplu, etic și accesibil pentru toți.
+                Asta construim. Dacă vrei să vii alături de noi, începe să folosești aplicația. 
+                Dacă vrei să ajuți, scrie-ne.
               </p>
               <div className="flex justify-center gap-4">
                 <Link to="/onboarding">
