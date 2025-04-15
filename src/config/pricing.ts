@@ -1,4 +1,3 @@
-
 import { BadgeDollarSign, CreditCard, Wallet } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 
@@ -97,10 +96,21 @@ export const pricingFAQs: FAQItem[] = [
   {
     question: "What happens after I subscribe?",
     answer: "You'll get immediate access to all features included in your chosen plan. You'll also receive a confirmation email with your account details."
+  },
+  {
+    question: "Ce include planul API Enterprise?",
+    answer: "Planul API Enterprise oferă acces complet la API-ul nostru pentru integrări avansate. Include 10,000 de request-uri API pe lună, documentație exhaustivă, suport tehnic dedicat, autentificare OAuth pentru aplicațiile dvs., rate limiting configurabil și acces la un mediu sandbox pentru testare. Este ideal pentru afaceri care doresc să integreze serviciile noastre direct în sistemele lor."
+  },
+  {
+    question: "Cum pot începe să utilizez API-ul?",
+    answer: "După abonarea la planul API Enterprise, veți primi credențialele de acces și documentația completă. Echipa noastră tehnică vă va oferi o sesiune de onboarding pentru a vă ajuta să începeți. Oferim și un mediu sandbox unde puteți testa integrarea fără a afecta datele reale."
+  },
+  {
+    question: "Ce se întâmplă dacă depășesc numărul de request-uri API incluse?",
+    answer: "Dacă depășiți numărul de 10,000 de request-uri incluse în planul API Enterprise, se aplică o taxă suplimentară de £0.01 per request. Pentru volume foarte mari, vă recomandăm să ne contactați pentru a discuta despre un plan personalizat care să fie mai avantajos."
   }
 ];
 
-// Funcție pentru a calcula dacă un utilizator ar trebui să primească notificări despre upgrade de plan
 export const shouldRecommendPlanUpgrade = (
   currentPlan: string, 
   monthlyTransactions: number, 
@@ -110,7 +120,6 @@ export const shouldRecommendPlanUpgrade = (
   recommendedPlan: string, 
   monthlySavings: number 
 } => {
-  // Calculăm costurile pentru fiecare plan
   const payAsYouGoCost = 0.01 * averageTransactionAmount * monthlyTransactions + 0.2 * monthlyTransactions;
   const monthlyCost = 0.007 * averageTransactionAmount * monthlyTransactions + 0.15 * monthlyTransactions + 14.99;
   const lifetimeMonthlyCost = 0.005 * averageTransactionAmount * monthlyTransactions + 0.1 * monthlyTransactions;
@@ -122,10 +131,9 @@ export const shouldRecommendPlanUpgrade = (
       monthlySavings: +(payAsYouGoCost - monthlyCost).toFixed(2)
     };
   } else if (currentPlan === 'monthly' && monthlyTransactions > 500 && averageTransactionAmount > 30) {
-    // Calculăm în câte luni se amortizează planul Lifetime
     const lifetimeBreakEvenMonths = 1840 / (monthlyCost - lifetimeMonthlyCost);
     
-    if (lifetimeBreakEvenMonths < 18) { // Dacă se amortizează în mai puțin de 18 luni
+    if (lifetimeBreakEvenMonths < 18) {
       return {
         shouldUpgrade: true,
         recommendedPlan: 'Lifetime',
