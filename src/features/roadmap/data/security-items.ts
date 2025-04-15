@@ -1,25 +1,25 @@
-
 import { RoadmapItem } from "../types";
 
 export const securityItems: RoadmapItem[] = [
   {
     title: "Securitate Rețea",
     description: "Implementare măsuri avansate de securitate rețea",
-    status: "in-progress",
+    status: "completed",
     priority: "high",
+    category: "security",
     iconType: "shield",
-    iconColor: "text-red-500",
+    iconColor: "text-green-500",
     timeEstimate: {
       total: 35,
-      spent: 25,
+      spent: 35,
       aiTotal: 20
     },
     details: [
       "Implementare firewall multi-layer ✓",
       "Configurare VPN și access control ✓",
-      "Monitorizare și detecție intruziuni",
-      "Implementare politici de securitate",
-      "Testare penetrare și vulnerabilități"
+      "Monitorizare și detecție intruziuni ✓",
+      "Implementare politici de securitate ✓",
+      "Testare penetrare și vulnerabilități ✓"
     ]
   },
   {

@@ -1,45 +1,46 @@
-
 import { RoadmapItem } from "../types";
 
 export const devopsItems: RoadmapItem[] = [
   {
     title: "Management Configurații",
     description: "Sistem centralizat de management al configurațiilor",
-    status: "in-progress",
+    status: "completed",
     priority: "medium",
+    category: "devops",
     iconType: "server-cog",
-    iconColor: "text-amber-500",
+    iconColor: "text-green-500",
     timeEstimate: {
       total: 15,
-      spent: 10,
+      spent: 15,
       aiTotal: 8
     },
     details: [
       "Implementare sistem version control pentru configurații ✓",
       "Automatizare deployment configurații ✓",
-      "Validare și testare configurații",
-      "Rollback automat configurații invalide",
-      "Audit modificări configurații"
+      "Validare și testare configurații ✓",
+      "Rollback automat configurații invalide ✓",
+      "Audit modificări configurații ✓"
     ]
   },
   {
     title: "Backup și Recuperare",
     description: "Sistem robust de backup și recuperare date",
-    status: "in-progress",
+    status: "completed",
     priority: "high",
+    category: "devops",
     iconType: "database",
     iconColor: "text-green-500",
     timeEstimate: {
       total: 25,
-      spent: 18,
+      spent: 25,
       aiTotal: 15
     },
     details: [
       "Implementare backup automatizat multi-nivel ✓",
       "Configurare retenție date pe termen lung ✓",
       "Testare proceduri de recuperare ✓",
-      "Documentare politici de backup",
-      "Optimizare strategii de backup incremental"
+      "Documentare politici de backup ✓",
+      "Optimizare strategii de backup incremental ✓"
     ]
   },
   {

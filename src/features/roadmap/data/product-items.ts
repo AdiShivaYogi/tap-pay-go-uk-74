@@ -1,26 +1,25 @@
-
 import { RoadmapItem } from "../types";
 
 export const productItems: RoadmapItem[] = [
   {
     title: "Program Beta Limitat",
     description: "Lansare program beta cu primii 20 de utilizatori",
-    status: "in-progress",
+    status: "completed",
     priority: "high",
     category: "product",
     iconType: "test-tube-2",
-    iconColor: "text-primary",
+    iconColor: "text-green-500",
     timeEstimate: {
       total: 15,
-      spent: 5,
+      spent: 15,
       aiTotal: 6
     },
     details: [
-      "Identificare și recrutare primilor 20 de utilizatori",
-      "Oferă acces complet și gratuit la funcționalități",
-      "Colectare feedback pentru îmbunătățiri",
-      "Monitorizare și suport pentru experiența utilizatorilor",
-      "Validare model de business și flux de plăți"
+      "Identificare și recrutare primilor 20 de utilizatori ✓",
+      "Oferă acces complet și gratuit la funcționalități ✓",
+      "Colectare feedback pentru îmbunătățiri ✓",
+      "Monitorizare și suport pentru experiența utilizatorilor ✓",
+      "Validare model de business și flux de plăți ✓"
     ]
   },
   {

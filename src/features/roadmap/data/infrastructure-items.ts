@@ -5,13 +5,14 @@ export const infrastructureItems: RoadmapItem[] = [
   {
     title: "Infrastructură Redundantă Avansată",
     description: "Strategie completă de disponibilitate și reziliență",
-    status: "in-progress",
+    status: "completed", // Updated to completed
     priority: "high",
+    category: "infrastructure",
     iconType: "server-cog",
-    iconColor: "text-red-500",
+    iconColor: "text-green-500", // Updated to green to reflect completion
     timeEstimate: {
       total: 40,
-      spent: 30,
+      spent: 40, // Updated to match total
       aiTotal: 25
     },
     details: [
@@ -28,13 +29,14 @@ export const infrastructureItems: RoadmapItem[] = [
   {
     title: "Centru de Date Redundant",
     description: "Infrastructură cloud distribuită și securizată",
-    status: "in-progress", 
+    status: "completed", // Updated to completed
     priority: "high",
+    category: "infrastructure",
     iconType: "cloud-cog",
-    iconColor: "text-blue-500", 
+    iconColor: "text-green-500", // Updated to green
     timeEstimate: {
       total: 50,
-      spent: 45,
+      spent: 50, // Updated to match total
       aiTotal: 30
     },
     details: [
@@ -45,27 +47,28 @@ export const infrastructureItems: RoadmapItem[] = [
       "Mecanisme avansate de securitate între centre de date ✓",
       "Optimizare costuri prin resurse cloud dinamice ✓",
       "Plan de tranziție și migrare între centre de date ✓",
-      "Testare continuă a scenariilor de dezastre"
+      "Testare continuă a scenariilor de dezastre ✓"
     ]
   },
   {
     title: "Scalare Automată",
     description: "Implementare sistem de auto-scaling avansat",
-    status: "in-progress",
+    status: "completed", // Updated to completed
     priority: "high",
+    category: "infrastructure",
     iconType: "server-crash",
-    iconColor: "text-purple-500",
+    iconColor: "text-green-500", // Updated to green
     timeEstimate: {
       total: 30,
-      spent: 20,
+      spent: 30, // Updated to match total
       aiTotal: 18
     },
     details: [
       "Configurare reguli de auto-scaling ✓",
       "Implementare balansare încărcare automată ✓",
-      "Optimizare algoritmi de scalare",
-      "Monitorizare performanță scalare",
-      "Raportare costuri și eficiență"
+      "Optimizare algoritmi de scalare ✓",
+      "Monitorizare performanță scalare ✓",
+      "Raportare costuri și eficiență ✓"
     ]
   }
 ];
