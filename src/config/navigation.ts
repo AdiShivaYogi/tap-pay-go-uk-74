@@ -7,7 +7,8 @@ import {
   User, 
   DollarSign, 
   Info,
-  CircleUserRound
+  CircleUserRound,
+  FileCode
 } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 
@@ -28,6 +29,7 @@ export const NAVIGATION: NavigationItem[] = [
   { href: "/reports", label: "Rapoarte", icon: FileText, showWhenAuth: true },
   { href: "/roadmap", label: "Roadmap", icon: Map, adminOnly: true },
   { href: "/admin", label: "Admin", icon: User, adminOnly: true },
+  { href: "/api", label: "API", icon: FileCode, adminOnly: true },
   { href: "/pricing", label: "Prețuri", icon: DollarSign },
   { href: "/about", label: "Despre", icon: Info },
   { 
@@ -37,4 +39,3 @@ export const NAVIGATION: NavigationItem[] = [
     showWhenAuth: true 
   },
 ];
-
