@@ -1,3 +1,4 @@
+
 import { BadgeDollarSign, CreditCard, Wallet } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 
@@ -61,7 +62,7 @@ export const pricingPlans: PricingPlan[] = [
       "Fără plăți recurente",
       "Actualizări gratuite pe viață",
       "Serviciu clienți prioritar",
-      "Comision: 0% + £0.00 per tranzacție"
+      "Comision: 0.5% + £0.10 per tranzacție"
     ],
     cta: "Obține Acces pe Viață",
     popular: false,
