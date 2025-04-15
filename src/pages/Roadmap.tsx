@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { BetaLaunchProgress } from "@/features/roadmap/components/BetaLaunchProgress";
 import { BetaUsersMonitoring } from "@/features/beta/components/BetaUsersMonitoring";
 import { FeedbackCollection } from "@/features/beta/components/FeedbackCollection";
+import { PaymentTestingPanel } from "@/features/beta/components/PaymentTestingPanel";
 
 const Roadmap = () => {
   const { isAdmin, role } = useUserRole();
@@ -60,6 +61,7 @@ const Roadmap = () => {
         <div className="grid gap-6 md:grid-cols-2">
           <BetaUsersMonitoring />
           <FeedbackCollection />
+          <PaymentTestingPanel />
         </div>
 
         {highPriorityItems.length > 0 && (
