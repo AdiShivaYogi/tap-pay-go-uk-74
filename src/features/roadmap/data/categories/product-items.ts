@@ -1,4 +1,3 @@
-
 import { RoadmapItem } from "../../types";
 
 export const productItems: RoadmapItem[] = [
@@ -126,6 +125,27 @@ export const productItems: RoadmapItem[] = [
       "Testare regulată a procesului de restaurare",
       "Configurare retenție și arhivare date",
       "Documentare proceduri de urgență"
+    ]
+  },
+  {
+    title: "Integrare Chat în Timp Real",
+    description: "Adăugarea funcționalității de chat live pentru suport clienți",
+    status: "in-progress",
+    priority: "medium",
+    category: "product",
+    iconType: "communication",
+    iconColor: "text-purple-500",
+    timeEstimate: {
+      total: 24,
+      spent: 10,
+      aiTotal: 12
+    },
+    details: [
+      "Alegerea unei soluții de chat potrivită",
+      "Integrarea chat-ului în interfața web",
+      "Configurarea notificărilor și a alertelor",
+      "Training pentru echipa de suport clienți",
+      "Monitorizarea performanței chat-ului"
     ]
   }
 ];

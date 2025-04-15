@@ -1,7 +1,27 @@
-
 import { RoadmapItem } from "../../types";
 
 export const securityItems: RoadmapItem[] = [
+  {
+    title: "Îmbunătățiri Securitate Backend",
+    description: "Consolidarea securității serverelor și a datelor",
+    status: "in-progress",
+    priority: "high",
+    category: "security",
+    iconType: "security",
+    iconColor: "text-green-500",
+    timeEstimate: {
+      total: 40,
+      spent: 25,
+      aiTotal: 20
+    },
+    details: [
+      "Implementare autentificare multi-factor (MFA)",
+      "Audit de securitate complet al codului sursă",
+      "Actualizarea dependențelor la cele mai recente versiuni",
+      "Monitorizare continuă a vulnerabilităților",
+      "Îmbunătățirea politicilor de acces și a permisiunilor"
+    ]
+  },
   {
     title: "Securitate Rețea",
     description: "Implementare măsuri avansate de securitate rețea",
