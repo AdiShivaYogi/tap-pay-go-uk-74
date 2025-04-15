@@ -1,3 +1,4 @@
+
 import { RoadmapItem } from "../types";
 
 export const securityItems: RoadmapItem[] = [
@@ -24,25 +25,22 @@ export const securityItems: RoadmapItem[] = [
   },
   {
     title: "Securitate Avansată Cloud",
-    description: "Implementare măsuri de securitate cloud native",
+    description: "Implementare măsuri esențiale de securitate cloud",
     status: "in-progress",
     priority: "high",
     iconType: "shield-check",
     iconColor: "text-purple-500",
     timeEstimate: {
-      total: 30,
+      total: 25,
       spent: 20,
-      aiTotal: 25
+      aiTotal: 20
     },
     details: [
-      "Implementare WAF (Web Application Firewall) ✓",
       "Configurare DDoS protection și rate limiting ✓",
       "Implementare sisteme de detecție a intruziunilor (IDS) ✓",
       "Scanare automată de vulnerabilități ✓",
       "Criptare end-to-end pentru date sensibile ✓",
-      "Implementare politici de acces bazate pe identitate",
-      "Monitorizare și alertare pentru evenimente de securitate",
-      "Conformitate cu standardele de securitate cloud"
+      "Monitorizare și alertare pentru evenimente de securitate"
     ]
   },
   {
@@ -67,3 +65,4 @@ export const securityItems: RoadmapItem[] = [
     ]
   }
 ];
+
