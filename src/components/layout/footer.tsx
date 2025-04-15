@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { Mail, Github, Linkedin, MessageCircle, Phone, MapPin } from "lucide-react";
+import { Mail, Github, Linkedin, MessageCircle, Phone, MapPin, Heart } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 export function Footer() {
@@ -12,16 +12,32 @@ export function Footer() {
           <div className="space-y-4">
             <h3 className="font-bold text-primary text-xl">TapPayGo</h3>
             <p className="text-sm text-muted-foreground max-w-xs">
-              Transforming any phone into a secure and efficient payment terminal for your business.
+              Transforming every mobile device into a secure and efficient payment terminal for businesses.
             </p>
             <div className="flex space-x-4">
-              <a href="mailto:contact@tappaygo.com" className="text-muted-foreground hover:text-primary">
+              <a 
+                href="mailto:contact@tappaygo.com" 
+                className="text-muted-foreground hover:text-primary transition-colors"
+                title="Email"
+              >
                 <Mail className="h-5 w-5" />
               </a>
-              <a href="https://github.com" className="text-muted-foreground hover:text-primary">
+              <a 
+                href="https://github.com/tappaygo" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+                title="GitHub"
+              >
                 <Github className="h-5 w-5" />
               </a>
-              <a href="https://linkedin.com" className="text-muted-foreground hover:text-primary">
+              <a 
+                href="https://linkedin.com/company/tappaygo" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+                title="LinkedIn"
+              >
                 <Linkedin className="h-5 w-5" />
               </a>
             </div>
@@ -29,40 +45,55 @@ export function Footer() {
 
           {/* Quick Links */}
           <div className="space-y-4">
-            <h4 className="font-medium text-base">Quick Links</h4>
+            <h4 className="font-medium text-base text-foreground">Descoperă</h4>
             <nav className="flex flex-col space-y-2">
-              <Link to="/about" className="text-sm text-muted-foreground hover:text-foreground">
-                About Us
+              <Link 
+                to="/about" 
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Despre Noi
               </Link>
-              <Link to="/pricing" className="text-sm text-muted-foreground hover:text-foreground">
-                Pricing
+              <Link 
+                to="/pricing" 
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Prețuri
               </Link>
-              <Link to="/roadmap" className="text-sm text-muted-foreground hover:text-foreground">
-                Roadmap
+              <Link 
+                to="/roadmap" 
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Plan de dezvoltare
               </Link>
             </nav>
           </div>
 
           {/* Legal */}
           <div className="space-y-4">
-            <h4 className="font-medium text-base">Legal</h4>
+            <h4 className="font-medium text-base text-foreground">Legal</h4>
             <nav className="flex flex-col space-y-2">
-              <Link to="/terms" className="text-sm text-muted-foreground hover:text-foreground">
-                Terms & Conditions
+              <Link 
+                to="/terms" 
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Termeni și Condiții
               </Link>
-              <Link to="/privacy" className="text-sm text-muted-foreground hover:text-foreground">
-                Privacy Policy
+              <Link 
+                to="/privacy" 
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Politică de Confidențialitate
               </Link>
             </nav>
           </div>
 
           {/* Contact */}
           <div className="space-y-4">
-            <h4 className="font-medium text-base">Contact</h4>
+            <h4 className="font-medium text-base text-foreground">Contact</h4>
             <div className="space-y-3">
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <MessageCircle className="h-4 w-4" />
-                <span>Live Chat Support</span>
+                <span>Suport Live Chat</span>
               </div>
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <Phone className="h-4 w-4" />
@@ -70,7 +101,7 @@ export function Footer() {
               </div>
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <MapPin className="h-4 w-4" />
-                <span>London, United Kingdom</span>
+                <span>Londra, Regatul Unit</span>
               </div>
             </div>
           </div>
@@ -80,8 +111,12 @@ export function Footer() {
 
         {/* Bottom footer */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} TapPayGo. All rights reserved.</p>
-          <p>Made with ❤️ in the UK</p>
+          <p className="flex items-center">
+            &copy; {new Date().getFullYear()} TapPayGo. Toate drepturile rezervate.
+          </p>
+          <p className="flex items-center">
+            Realizat cu <Heart className="h-4 w-4 text-red-500 mx-1" fill="#ef4444" /> în Marea Britanie
+          </p>
         </div>
       </div>
     </footer>
