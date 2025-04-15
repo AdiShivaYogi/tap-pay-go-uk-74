@@ -29,7 +29,7 @@ export const TransactionsBarChart = ({ data }: TransactionsBarChartProps) => {
   };
 
   return (
-    <ChartContainer config={config} className="h-[300px]">
+    <ChartContainer config={config} className="h-full">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 10 }}>
           <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -39,7 +39,10 @@ export const TransactionsBarChart = ({ data }: TransactionsBarChartProps) => {
             width={60}
           />
           <Tooltip content={<CustomTooltip />} />
-          <Legend />
+          <Legend 
+            verticalAlign="bottom"
+            height={36}
+          />
           <Bar dataKey="completed" fill={config.completed.color} name="Finalizate" />
           <Bar dataKey="pending" fill={config.pending.color} name="În așteptare" />
           <Bar dataKey="failed" fill={config.failed.color} name="Eșuate" />

@@ -14,7 +14,7 @@ export const TransactionsPieChart = ({ data }: TransactionsPieChartProps) => {
   const COLORS = ["#10B981", "#F59E0B", "#EF4444", "#6B7280"];
   
   return (
-    <ChartContainer config={{}} className="h-[300px]">
+    <ChartContainer config={{}} className="h-full">
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
@@ -22,7 +22,7 @@ export const TransactionsPieChart = ({ data }: TransactionsPieChartProps) => {
             cx="50%"
             cy="50%"
             labelLine={false}
-            outerRadius={80}
+            outerRadius={100}
             fill="#8884d8"
             dataKey="value"
           >
@@ -31,9 +31,13 @@ export const TransactionsPieChart = ({ data }: TransactionsPieChartProps) => {
             ))}
           </Pie>
           <Tooltip content={<CustomTooltip />} />
-          <Legend formatter={(value, entry, index) => (
-            <span className="text-sm">{value}</span>
-          )} />
+          <Legend 
+            verticalAlign="bottom"
+            height={36}
+            formatter={(value, entry, index) => (
+              <span className="text-sm">{value}</span>
+            )}
+          />
         </PieChart>
       </ResponsiveContainer>
     </ChartContainer>

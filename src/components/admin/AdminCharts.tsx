@@ -16,9 +16,9 @@ interface AdminChartsProps {
 
 export const AdminCharts = ({ isLoading, monthlyData, pieChartData }: AdminChartsProps) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-      <Card>
-        <CardHeader>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <Card className="w-full h-[400px]">
+        <CardHeader className="space-y-1">
           <CardTitle>Distribuția tranzacțiilor</CardTitle>
           <CardDescription>Status tranzacții după valoare totală</CardDescription>
         </CardHeader>
@@ -26,13 +26,15 @@ export const AdminCharts = ({ isLoading, monthlyData, pieChartData }: AdminChart
           {isLoading ? (
             <Skeleton className="h-[300px] w-full" />
           ) : (
-            <TransactionsPieChart data={pieChartData} />
+            <div className="h-[300px] w-full">
+              <TransactionsPieChart data={pieChartData} />
+            </div>
           )}
         </CardContent>
       </Card>
       
-      <Card>
-        <CardHeader>
+      <Card className="w-full h-[400px]">
+        <CardHeader className="space-y-1">
           <CardTitle>Evoluția comisioanelor</CardTitle>
           <CardDescription>Vizualizarea comisioanelor lunare</CardDescription>
         </CardHeader>
@@ -40,7 +42,9 @@ export const AdminCharts = ({ isLoading, monthlyData, pieChartData }: AdminChart
           {isLoading ? (
             <Skeleton className="h-[300px] w-full" />
           ) : (
-            <TransactionsBarChart data={monthlyData} />
+            <div className="h-[300px] w-full">
+              <TransactionsBarChart data={monthlyData} />
+            </div>
           )}
         </CardContent>
       </Card>
