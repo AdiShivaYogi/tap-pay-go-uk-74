@@ -60,26 +60,5 @@ export const inProgressRoadmapItems: RoadmapItem[] = [
       "Training pentru echipa de suport clienți",
       "Monitorizarea performanței chat-ului"
     ]
-  },
-  
-  {
-    title: "Pregătire Integrări Viitoare",
-    description: "Pregătirea infrastructurii pentru API și integrări terțe",
-    status: "in-progress",
-    priority: "high",
-    iconType: "api",
-    iconColor: "text-indigo-500",
-    timeEstimate: {
-      total: 28,
-      spent: 12,
-      aiTotal: 18
-    },
-    details: [
-      "Definirea structurii de API și endpoints",
-      "Implementarea autentificării OAuth",
-      "Crearea documentației pentru dezvoltatori",
-      "Dezvoltarea unui mediu sandbox pentru teste",
-      "Configurarea rate limiting și protecție API"
-    ]
   }
 ];

@@ -47,22 +47,22 @@ export const productItems: RoadmapItem[] = [
   {
     title: "Pregătire Integrări Viitoare",
     description: "Pregătirea infrastructurii pentru API și integrări terțe",
-    status: "in-progress",
+    status: "completed",
     priority: "high",
     category: "infrastructure",
     iconType: "webhook",
-    iconColor: "text-purple-500",
+    iconColor: "text-green-500",
     timeEstimate: {
       total: 25,
-      spent: 5,
+      spent: 25,
       aiTotal: 15
     },
     details: [
-      "Definirea structurii de API și endpoints",
-      "Implementarea autentificării OAuth",
-      "Crearea documentației pentru dezvoltatori",
-      "Dezvoltarea unui mediu sandbox pentru teste",
-      "Configurarea rate limiting și protecție API"
+      "Definirea structurii de API și endpoints ✓",
+      "Implementarea autentificării OAuth ✓",
+      "Crearea documentației pentru dezvoltatori ✓",
+      "Dezvoltarea unui mediu sandbox pentru teste ✓",
+      "Configurarea rate limiting și protecție API ✓"
     ]
   },
   {
