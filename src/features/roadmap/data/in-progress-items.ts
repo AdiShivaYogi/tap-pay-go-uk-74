@@ -1,3 +1,4 @@
+
 import { RoadmapItem } from "../types";
 
 export const inProgressRoadmapItems: RoadmapItem[] = [
@@ -6,7 +7,7 @@ export const inProgressRoadmapItems: RoadmapItem[] = [
     description: "Sistem avansat de monitorizare și alertare",
     status: "in-progress",
     priority: "high",
-    iconType: "activity",
+    iconType: "bar-chart-4", // Changed from "activity"
     iconColor: "text-blue-500",
     timeEstimate: {
       total: 20,
@@ -46,7 +47,7 @@ export const inProgressRoadmapItems: RoadmapItem[] = [
     description: "Sistem centralizat de management al configurațiilor",
     status: "in-progress",
     priority: "medium",
-    iconType: "settings",
+    iconType: "server-cog", // Changed from "settings"
     iconColor: "text-amber-500",
     timeEstimate: {
       total: 15,
@@ -66,7 +67,7 @@ export const inProgressRoadmapItems: RoadmapItem[] = [
     description: "Implementare sistem de auto-scaling avansat",
     status: "in-progress",
     priority: "high",
-    iconType: "expand",
+    iconType: "server-crash", // Changed from "expand"
     iconColor: "text-purple-500",
     timeEstimate: {
       total: 30,
