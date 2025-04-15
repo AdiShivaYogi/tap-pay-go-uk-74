@@ -13,17 +13,23 @@ type FormValues = z.infer<typeof formSchema>;
 
 interface AuthFormProps {
   isLoginMode: boolean;
-  onSubmit: (values: FormValues) => Promise<void>;
+  onSubmit: (values: any) => Promise<void>;
   isLoading: boolean;
+  formSchema?: z.ZodType;
 }
 
-export const AuthForm = ({ isLoginMode, onSubmit, isLoading }: AuthFormProps) => {
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+export const AuthForm = ({ 
+  isLoginMode, 
+  onSubmit, 
+  isLoading, 
+  formSchema: customSchema = formSchema 
+}: AuthFormProps) => {
+  const form = useForm({
+    resolver: zodResolver(customSchema),
     defaultValues: {
       email: "",
       password: "",
-      inviteCode: ""
+      inviteCode: isLoginMode ? undefined : ""
     }
   });
 
@@ -37,7 +43,7 @@ export const AuthForm = ({ isLoginMode, onSubmit, isLoading }: AuthFormProps) =>
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="Email administrator" {...field} />
+                <Input placeholder="Email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -62,25 +68,27 @@ export const AuthForm = ({ isLoginMode, onSubmit, isLoading }: AuthFormProps) =>
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="inviteCode"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Cod de invitație</FormLabel>
-              <FormControl>
-                <Input placeholder="Cod de invitație administrator" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {!isLoginMode && (
+          <FormField
+            control={form.control}
+            name="inviteCode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Cod de invitație</FormLabel>
+                <FormControl>
+                  <Input placeholder="Cod de invitație" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? (
             <LoadingIndicator />
           ) : (
-            isLoginMode ? "Autentificare" : "Creare cont administrator"
+            isLoginMode ? "Autentificare" : "Înregistrare"
           )}
         </Button>
       </form>
