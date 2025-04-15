@@ -25,6 +25,7 @@ import Translations from "./pages/Translations";
 import Payments from "./pages/Payments";
 import Statistics from "./pages/Statistics";
 import Help from "./pages/Help";
+import Status from "./pages/Status";
 
 const queryClient = new QueryClient();
 
