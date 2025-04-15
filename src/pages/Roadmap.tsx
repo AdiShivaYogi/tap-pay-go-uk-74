@@ -6,14 +6,13 @@ import { AccessRestrictionAlert } from "@/features/roadmap/components/AccessRest
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { RoadmapCategory } from "@/features/roadmap/components/RoadmapCategory";
 import { RoadmapContextProvider } from "@/features/roadmap/context/RoadmapContext";
-import { MVPRoadmap } from "@/features/roadmap/components/MVPRoadmap";
-import { BackupProgress } from "@/features/roadmap/components/BackupProgress";
-import { PageHeader } from "@/components/ui/page-header";
-import { SectionContainer } from "@/components/ui/section-container";
-import { Compass, GitFork, Globe } from "lucide-react";
 import { StyledCard } from "@/components/ui/card-variants";
 import { HeaderSecurityScore } from "@/features/roadmap/components/header/HeaderSecurityScore";
 import { HeaderExecutionScore } from "@/features/roadmap/components/header/HeaderExecutionScore";
+import { Compass, GitFork, Globe } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
+import { SectionContainer } from "@/components/ui/section-container";
+import { BackupProgress } from "@/features/roadmap/components/BackupProgress";
 
 const Roadmap = () => {
   const { isAdmin, role } = useUserRole();
@@ -87,10 +86,6 @@ const Roadmap = () => {
                     categories={group.categories}
                   />
                 ))}
-              </div>
-              <div className="mt-8">
-                <h2 className="text-2xl font-semibold mb-4">MVP Roadmap pentru UK</h2>
-                <MVPRoadmap />
               </div>
             </RoadmapContextProvider>
           </div>
