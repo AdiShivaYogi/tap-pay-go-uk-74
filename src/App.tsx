@@ -20,6 +20,7 @@ import UserAuth from "./pages/UserAuth";
 import Account from "./pages/Account";
 import Api from "./pages/Api";
 import Backups from "./pages/Backups";
+import Translations from "./pages/Translations";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,7 @@ const App = () => (
             <Route path="/admin" element={<Admin />} />
             <Route path="/api" element={<Api />} />
             <Route path="/backups" element={<Backups />} />
+            <Route path="/translations" element={<Translations />} />
             <Route path="/roadmap" element={<Roadmap />} />
             <Route path="/auth" element={<UserAuth />} />
             <Route path="/account" element={<Account />} />
