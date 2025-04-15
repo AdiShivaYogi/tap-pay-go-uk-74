@@ -2,7 +2,8 @@
 import { Compass, ChevronRight, Star, BarChart2, Shield } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { roadmapItems } from "../data/roadmap-data";
-import { calculateSecurityScore, getSecurityDetails } from "@/utils/security-score";
+import { calculateSecurityScore, getSecurityDetails, getSecurityCriteria } from "@/utils/security-score";
+import { cn } from "@/lib/utils";
 
 export const RoadmapHeader = () => {
   const totalItems = roadmapItems.length;
@@ -10,7 +11,8 @@ export const RoadmapHeader = () => {
   const completionPercentage = Math.round((completedItems / totalItems) * 100);
   
   // Calculate security score
-  const securityScore = calculateSecurityScore(getSecurityDetails());
+  const securityCriteria = getSecurityCriteria();
+  const securityScore = calculateSecurityScore(securityCriteria);
   const securityDetails = getSecurityDetails();
   
   return (
@@ -54,8 +56,7 @@ export const RoadmapHeader = () => {
         
         <Progress 
           value={securityScore} 
-          className="h-2 bg-green-100" 
-          indicatorClassName="bg-green-600"
+          className={cn("h-2 bg-green-100", "data-[value]:bg-green-600")}
         />
         
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 text-sm">
