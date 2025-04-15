@@ -12,6 +12,7 @@ import { ResetPasswordForm } from "@/components/admin-auth/ResetPasswordForm";
 import { AuthRedirectHandler } from "@/features/auth/components/AuthRedirectHandler";
 import { useAuthSubmit } from "@/features/auth/hooks/useAuthSubmit";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { SecurityAlert } from "@/components/security/SecurityAlert";
 import { Info } from "lucide-react";
 
 const UserAuth = () => {
@@ -135,6 +136,12 @@ const UserAuth = () => {
                   onForgotPassword={() => setIsResetMode(true)}
                 />
               </>
+            )}
+            
+            {isLoginMode && (
+              <div className="mt-6">
+                <SecurityAlert />
+              </div>
             )}
           </CardContent>
         </Card>

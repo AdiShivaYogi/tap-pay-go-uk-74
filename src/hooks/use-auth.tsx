@@ -6,7 +6,7 @@ import { AuthContext } from '@/providers/AuthProvider';
 export const useAuth = () => {
   const context = useContext<AuthContextType | undefined>(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth trebuie folosit în interiorul unui AuthProvider');
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   
   // Check if user is super admin based on email, but only if user exists

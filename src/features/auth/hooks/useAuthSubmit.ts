@@ -12,7 +12,7 @@ export const useAuthSubmit = () => {
   const navigate = useNavigate();
   const { signIn } = useAuth();
 
-  // Lista de emailuri admin pentru referință rapidă
+  // Admin email reference list
   const adminEmails = ['114.adrian.gheorghe@gmail.com', '727.adrian.gheorghe@gmail.com'];
 
   const handleSubmit = async (values: AuthFormValues, isLoginMode: boolean) => {
