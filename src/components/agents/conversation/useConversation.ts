@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Agent, DEMO_RESPONSES } from "../agents-data";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface Message {
   id: string;
@@ -14,6 +15,33 @@ export const useConversation = (agent: Agent, isListening: boolean) => {
   const { toast } = useToast();
   const [messages, setMessages] = useState<Message[]>([]);
   const [typingIndicator, setTypingIndicator] = useState(false);
+  const [hasDeepseekKey, setHasDeepseekKey] = useState<boolean | null>(null);
+  
+  // Verificăm dacă există o cheie API Deepseek configurată
+  useEffect(() => {
+    const checkDeepseekKey = async () => {
+      try {
+        // Încercăm să obținem o confirmare că există o cheie API configurată
+        // Fără a expune cheia propriu-zisă în frontend
+        const { data, error } = await supabase.functions.invoke('check-deepseek-key', {
+          body: {}
+        });
+        
+        if (!error && data?.hasKey) {
+          setHasDeepseekKey(true);
+          console.log('Cheie Deepseek API configurată corect.');
+        } else {
+          setHasDeepseekKey(false);
+          console.log('Nu există o cheie Deepseek API configurată.');
+        }
+      } catch (err) {
+        console.error('Eroare la verificarea cheii Deepseek:', err);
+        setHasDeepseekKey(false);
+      }
+    };
+    
+    checkDeepseekKey();
+  }, []);
   
   // Simulează primirea unui mesaj de la agent
   useEffect(() => {
@@ -69,7 +97,7 @@ export const useConversation = (agent: Agent, isListening: boolean) => {
     return () => clearTimeout(listeningTimer);
   }, [isListening, agent.id, toast]);
 
-  const handleSendMessage = (text: string) => {
+  const handleSendMessage = async (text: string) => {
     // Adaugă mesajul utilizatorului
     const userMessage = {
       id: `user-${Date.now()}`,
@@ -83,26 +111,83 @@ export const useConversation = (agent: Agent, isListening: boolean) => {
     // Simulează tastarea agentului
     setTypingIndicator(true);
     
-    // Alege un răspuns aleatoriu din lista de demo
-    setTimeout(() => {
-      const responses = DEMO_RESPONSES[agent.id] || ["Îmi pare rău, dar nu am un răspuns pentru această întrebare."];
-      const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-      
-      const agentMessage = {
-        id: `agent-${Date.now()}`,
-        text: randomResponse,
-        sender: "agent" as const,
-        timestamp: new Date()
-      };
-      
-      setTypingIndicator(false);
-      setMessages(prev => [...prev, agentMessage]);
-    }, 2000);
+    // Verificăm dacă avem o cheie API Deepseek configurată
+    if (hasDeepseekKey === true) {
+      try {
+        // Apelăm edge function pentru a genera un răspuns folosind Deepseek API
+        const { data, error } = await supabase.functions.invoke('generate-agent-response', {
+          body: { 
+            message: text,
+            agentId: agent.id,
+            agentType: agent.name,
+            agentDescription: agent.description
+          }
+        });
+        
+        if (error) {
+          throw new Error(error.message);
+        }
+        
+        // Afișăm răspunsul generat
+        setTimeout(() => {
+          const agentMessage = {
+            id: `agent-${Date.now()}`,
+            text: data?.response || "Îmi pare rău, nu am putut genera un răspuns. Te rog încearcă din nou.",
+            sender: "agent" as const,
+            timestamp: new Date()
+          };
+          
+          setTypingIndicator(false);
+          setMessages(prev => [...prev, agentMessage]);
+        }, 1500);
+      } catch (err) {
+        console.error('Eroare la generarea răspunsului:', err);
+        
+        // Revenim la răspunsurile demo în caz de eroare
+        setTimeout(() => {
+          const responses = DEMO_RESPONSES[agent.id] || ["Îmi pare rău, dar nu am un răspuns pentru această întrebare."];
+          const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+          
+          const agentMessage = {
+            id: `agent-${Date.now()}`,
+            text: randomResponse,
+            sender: "agent" as const,
+            timestamp: new Date()
+          };
+          
+          setTypingIndicator(false);
+          setMessages(prev => [...prev, agentMessage]);
+          
+          toast({
+            variant: "destructive",
+            title: "Eroare",
+            description: "Nu s-a putut genera un răspuns. S-a folosit un răspuns predefinit.",
+          });
+        }, 2000);
+      }
+    } else {
+      // Folosim răspunsuri demo dacă nu avem cheie Deepseek
+      setTimeout(() => {
+        const responses = DEMO_RESPONSES[agent.id] || ["Îmi pare rău, dar nu am un răspuns pentru această întrebare."];
+        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+        
+        const agentMessage = {
+          id: `agent-${Date.now()}`,
+          text: randomResponse,
+          sender: "agent" as const,
+          timestamp: new Date()
+        };
+        
+        setTypingIndicator(false);
+        setMessages(prev => [...prev, agentMessage]);
+      }, 2000);
+    }
   };
 
   return {
     messages,
     typingIndicator,
-    handleSendMessage
+    handleSendMessage,
+    hasDeepseekKey
   };
 };
