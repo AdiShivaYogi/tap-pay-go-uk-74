@@ -31,15 +31,23 @@ const updatePasswordSchema = z.object({
 type RequestResetValues = z.infer<typeof requestResetSchema>;
 type UpdatePasswordValues = z.infer<typeof updatePasswordSchema>;
 
-interface ResetPasswordFormProps {
+export interface ResetPasswordFormProps {
   mode: 'request' | 'update';
   accessToken?: string;
   onSubmit: (values: RequestResetValues | UpdatePasswordValues) => Promise<void>;
   onCancel: () => void;
   isLoading: boolean;
+  errorMessage?: string;  // Added errorMessage as optional prop
 }
 
-export const ResetPasswordForm = ({ mode, accessToken, onSubmit, onCancel, isLoading }: ResetPasswordFormProps) => {
+export const ResetPasswordForm = ({ 
+  mode, 
+  accessToken, 
+  onSubmit, 
+  onCancel, 
+  isLoading,
+  errorMessage 
+}: ResetPasswordFormProps) => {
   const [submitted, setSubmitted] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -82,6 +90,12 @@ export const ResetPasswordForm = ({ mode, accessToken, onSubmit, onCancel, isLoa
             </Alert>
           )}
           
+          {errorMessage && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertDescription>{errorMessage}</AlertDescription>
+            </Alert>
+          )}
+          
           <FormField
             control={requestForm.control}
             name="email"
@@ -121,6 +135,12 @@ export const ResetPasswordForm = ({ mode, accessToken, onSubmit, onCancel, isLoa
             Linkul de resetare a parolei a fost validat. Setați acum noua parolă pentru contul dvs.
           </AlertDescription>
         </Alert>
+        
+        {errorMessage && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertDescription>{errorMessage}</AlertDescription>
+          </Alert>
+        )}
         
         <FormField
           control={updateForm.control}
