@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Crown, Brain, ThumbsUp, X, Check, AlertTriangle, BadgeInfo } from "lucide-react";
 import { StyledCard, StyledCardHeader, StyledCardTitle, StyledCardContent } from "@/components/ui/cards";
@@ -24,7 +23,6 @@ export const AgentGodMode = ({ userId }: AgentGodModeProps) => {
   const [feedback, setFeedback] = useState("");
   const [feedbackType, setFeedbackType] = useState<"submission" | "proposal" | null>(null);
 
-  // Funcție pentru a activa/dezactiva God Mode
   const toggleGodMode = () => {
     const newState = !isGodModeEnabled;
     setIsGodModeEnabled(newState);
@@ -34,11 +32,10 @@ export const AgentGodMode = ({ userId }: AgentGodModeProps) => {
       description: newState ? 
         "Propunerile vor fi aprobate automat cu feedback de îmbunătățire" : 
         "Propunerile vor primi doar feedback, fără aprobare automată",
-      variant: newState ? "default" : "destructive", // Fixed variant
+      variant: newState ? "default" : "destructive",
     });
   };
 
-  // Funcție pentru a genera feedback pentru o propunere
   const generateFeedback = async (type: "submission" | "proposal", item: any) => {
     setIsGeneratingFeedback(true);
     setFeedbackType(type);
@@ -52,7 +49,6 @@ export const AgentGodMode = ({ userId }: AgentGodModeProps) => {
     }
     
     try {
-      // Generăm feedback folosind DeepSeek
       const promptContent = type === "submission" ? 
         `Analizează această propunere de task de la agentul ${item.agent_id}: 
         Titlu: ${item.roadmap_tasks?.title || "Necunoscut"}
@@ -92,14 +88,12 @@ export const AgentGodMode = ({ userId }: AgentGodModeProps) => {
     }
   };
 
-  // Funcție pentru a trimite feedback și eventual aproba propunerea
   const submitFeedback = async () => {
     if (!feedback || !feedbackType) return;
     
     setIsProcessing(true);
     try {
       if (feedbackType === "submission" && currentSubmission) {
-        // Salvăm feedback-ul pentru submission
         const { error: feedbackError } = await supabase
           .from('agent_feedback')
           .insert({
@@ -111,7 +105,6 @@ export const AgentGodMode = ({ userId }: AgentGodModeProps) => {
           
         if (feedbackError) throw feedbackError;
         
-        // Dacă God Mode este activat, aprobăm automat propunerea
         if (isGodModeEnabled) {
           const { error: approveError } = await supabase
             .from('agent_task_submissions')
@@ -132,7 +125,6 @@ export const AgentGodMode = ({ userId }: AgentGodModeProps) => {
         });
         
       } else if (feedbackType === "proposal" && currentProposal) {
-        // Salvăm feedback-ul pentru proposal
         const { error: feedbackError } = await supabase
           .from('code_proposal_feedback')
           .insert({
@@ -144,7 +136,6 @@ export const AgentGodMode = ({ userId }: AgentGodModeProps) => {
           
         if (feedbackError) throw feedbackError;
         
-        // Dacă God Mode este activat, aprobăm automat propunerea
         if (isGodModeEnabled) {
           const currentDate = new Date().toISOString();
           
@@ -168,7 +159,6 @@ export const AgentGodMode = ({ userId }: AgentGodModeProps) => {
         });
       }
       
-      // Resetăm starea
       setCurrentSubmission(null);
       setCurrentProposal(null);
       setFeedback("");
@@ -186,7 +176,6 @@ export const AgentGodMode = ({ userId }: AgentGodModeProps) => {
     }
   };
 
-  // Funcție pentru a anula feedback-ul curent
   const cancelFeedback = () => {
     setCurrentSubmission(null);
     setCurrentProposal(null);
@@ -229,7 +218,7 @@ export const AgentGodMode = ({ userId }: AgentGodModeProps) => {
         </div>
         
         {isGodModeEnabled && (
-          <Alert variant="warning" className="mb-4">
+          <Alert variant="default" className="mb-4">
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>
               God Mode este activ! Toate propunerile pentru care generezi feedback vor fi aprobate automat.
@@ -238,7 +227,7 @@ export const AgentGodMode = ({ userId }: AgentGodModeProps) => {
         )}
         
         {!isGodModeEnabled && (
-          <Alert className="mb-4">
+          <Alert variant="default" className="mb-4">
             <BadgeInfo className="h-4 w-4" />
             <AlertDescription>
               God Mode este inactiv. Propunerile vor primi feedback pentru îmbunătățire, dar vor necesita aprobare manuală.
