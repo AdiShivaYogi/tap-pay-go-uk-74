@@ -26,6 +26,7 @@ import DesignSystem from "./pages/DesignSystem";
 import UserProfile from "./pages/UserProfile";
 import BillingSettings from "./pages/BillingSettings";
 import NotificationSettings from "./pages/NotificationSettings";
+import Agents from "./pages/Agents";
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
       <Route path="/api" element={<Api />} />
       <Route path="/status" element={<Status />} />
       <Route path="/connect-stripe" element={<ConnectStripe />} />
+      <Route path="/agents" element={<Agents />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
