@@ -3,23 +3,15 @@ import React, { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/layout";
 import { Section } from "@/components/ui/layout/section";
 import { PageHeader } from "@/components/ui/layout/page-header";
-import { Bot, Check, Clock, AlertCircle, ChevronRight } from "lucide-react";
+import { Bot } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useUserRole } from "@/hooks/use-user-role";
 import { AccessRestrictionAlert } from "@/features/roadmap/components/AccessRestrictionAlert";
-import { supabase } from "@/integrations/supabase/types-extension"; // Import the extended supabase client
-import { 
-  StyledCard, 
-  StyledCardHeader, 
-  StyledCardTitle, 
-  StyledCardContent 
-} from "@/components/ui/cards";
+import { supabase } from "@/integrations/supabase/types-extension"; 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
+import { SubmissionsTab } from "@/components/agent-admin/SubmissionsTab";
+import { HistoryTab } from "@/components/agent-admin/HistoryTab";
 
 const AgentAdmin = () => {
   const { user } = useAuth();
@@ -35,7 +27,6 @@ const AgentAdmin = () => {
       try {
         setLoading(true);
         
-        // Using the extended Supabase client with properly typed tables
         const { data: submissionsData, error: submissionsError } = await supabase
           .from('agent_task_submissions')
           .select('*, roadmap_tasks(*)')
@@ -44,7 +35,6 @@ const AgentAdmin = () => {
           
         if (submissionsError) throw submissionsError;
         
-        // Using the extended Supabase client with properly typed tables
         const { data: progressData, error: progressError } = await supabase
           .from('agent_task_progress')
           .select('*, roadmap_tasks(*)')
@@ -136,33 +126,6 @@ const AgentAdmin = () => {
     }
   };
   
-  // Component pentru afișarea unui status badge
-  const StatusBadge = ({ status }: { status: string }) => {
-    switch (status) {
-      case "completed":
-        return (
-          <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200 flex gap-1 items-center">
-            <Check className="h-3 w-3" />
-            <span>Finalizat</span>
-          </Badge>
-        );
-      case "inProgress":
-        return (
-          <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-200 flex gap-1 items-center">
-            <Clock className="h-3 w-3" />
-            <span>În progres</span>
-          </Badge>
-        );
-      default:
-        return (
-          <Badge variant="outline" className="bg-gray-100 text-gray-800 border-gray-200 flex gap-1 items-center">
-            <AlertCircle className="h-3 w-3" />
-            <span>Planificat</span>
-          </Badge>
-        );
-    }
-  };
-  
   if (!user) {
     return (
       <Layout>
@@ -199,144 +162,15 @@ const AgentAdmin = () => {
           </TabsList>
           
           <TabsContent value="submissions">
-            <StyledCard>
-              <StyledCardHeader>
-                <StyledCardTitle>Propuneri de la agenți în așteptarea aprobării</StyledCardTitle>
-              </StyledCardHeader>
-              
-              <StyledCardContent>
-                {submissions.length > 0 ? (
-                  <div className="space-y-4">
-                    {submissions.map((submission) => (
-                      <StyledCard key={submission.id} className="border-primary/10">
-                        <div className="p-4">
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <h3 className="font-medium text-lg">{submission.roadmap_tasks?.title}</h3>
-                              <p className="text-sm text-muted-foreground">{submission.roadmap_tasks?.description}</p>
-                            </div>
-                            
-                            <div className="flex items-center gap-2">
-                              <StatusBadge status={submission.roadmap_tasks?.status} />
-                              <ChevronRight className="h-4 w-4" />
-                              <StatusBadge status={submission.proposed_status} />
-                            </div>
-                          </div>
-                          
-                          <div className="mt-4">
-                            <div className="flex justify-between items-center mb-1">
-                              <span className="text-sm">Progres curent: {submission.roadmap_tasks?.progress || 0}%</span>
-                              <span className="text-sm font-medium">Propus: {submission.proposed_progress}%</span>
-                            </div>
-                            
-                            <div className="relative h-2">
-                              <Progress value={submission.roadmap_tasks?.progress || 0} className="h-2" />
-                              <div 
-                                className="absolute top-0 h-2 bg-primary/30" 
-                                style={{ 
-                                  width: `${submission.proposed_progress}%`,
-                                  left: `${submission.roadmap_tasks?.progress || 0}%` 
-                                }}
-                              ></div>
-                            </div>
-                          </div>
-                          
-                          <div className="mt-4">
-                            <h4 className="font-medium text-sm mb-1">Modificări propuse:</h4>
-                            <p className="text-sm p-3 bg-muted rounded-md">{submission.proposed_changes}</p>
-                          </div>
-                          
-                          {submission.notes && (
-                            <div className="mt-3">
-                              <h4 className="font-medium text-sm mb-1">Note:</h4>
-                              <p className="text-sm italic text-muted-foreground">{submission.notes}</p>
-                            </div>
-                          )}
-                          
-                          <div className="mt-4 flex justify-end gap-3">
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              onClick={() => handleRejectSubmission(submission.id)}
-                            >
-                              Respinge
-                            </Button>
-                            
-                            <Button 
-                              size="sm"
-                              onClick={() => handleApproveSubmission(submission.id)}
-                            >
-                              Aprobă
-                            </Button>
-                          </div>
-                        </div>
-                      </StyledCard>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-12">
-                    <p className="text-muted-foreground">
-                      Nu există propuneri în așteptare de la agenți.
-                    </p>
-                  </div>
-                )}
-              </StyledCardContent>
-            </StyledCard>
+            <SubmissionsTab 
+              submissions={submissions}
+              onApproveSubmission={handleApproveSubmission}
+              onRejectSubmission={handleRejectSubmission}
+            />
           </TabsContent>
           
           <TabsContent value="history">
-            <StyledCard>
-              <StyledCardHeader>
-                <StyledCardTitle>Istoric activitate agenți</StyledCardTitle>
-              </StyledCardHeader>
-              
-              <StyledCardContent>
-                {progressHistory.length > 0 ? (
-                  <div className="space-y-3">
-                    {progressHistory.map((progress) => (
-                      <div key={progress.id} className="border rounded-md p-3">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h4 className="font-medium">{progress.roadmap_tasks?.title}</h4>
-                            <p className="text-xs text-muted-foreground mt-1">
-                              Agent: {progress.agent_id} • 
-                              {new Date(progress.created_at).toLocaleDateString('ro-RO', {
-                                day: 'numeric', month: 'short', year: 'numeric',
-                                hour: '2-digit', minute: '2-digit'
-                              })}
-                            </p>
-                          </div>
-                          
-                          <Badge variant={progress.status === 'approved' ? 'default' : 'outline'}>
-                            {progress.status === 'approved' ? 'Aprobat' : 'În progres'}
-                          </Badge>
-                        </div>
-                        
-                        <Separator className="my-2" />
-                        
-                        <div className="flex justify-between items-center text-sm">
-                          <span>Progres: {progress.progress_percentage}%</span>
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs text-muted-foreground">Task status:</span>
-                            <StatusBadge status={progress.roadmap_tasks?.status} />
-                          </div>
-                        </div>
-                        
-                        {progress.notes && (
-                          <p className="text-xs italic mt-2 text-muted-foreground">{progress.notes}</p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-12">
-                    <p className="text-muted-foreground">
-                      Nu există activitate înregistrată de la agenți.
-                    </p>
-                  </div>
-                )}
-              </StyledCardContent>
-            </StyledCard>
+            <HistoryTab progressHistory={progressHistory} />
           </TabsContent>
         </Tabs>
       </Section>
