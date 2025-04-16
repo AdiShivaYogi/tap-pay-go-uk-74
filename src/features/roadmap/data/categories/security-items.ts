@@ -3,6 +3,7 @@ import { RoadmapItem } from "../../types";
 
 export const securityItems: RoadmapItem[] = [
   {
+    id: "security-1",
     title: "Îmbunătățiri Securitate Backend",
     description: "Consolidarea securității serverelor și a datelor",
     status: "completed",
@@ -24,6 +25,7 @@ export const securityItems: RoadmapItem[] = [
     ]
   },
   {
+    id: "security-2",
     title: "Securitate Rețea",
     description: "Implementare măsuri avansate de securitate rețea",
     status: "completed",
@@ -45,16 +47,17 @@ export const securityItems: RoadmapItem[] = [
     ]
   },
   {
+    id: "security-3",
     title: "Securitate API & Cloud",
     description: "Implementare măsuri esențiale de securitate API și cloud",
-    status: "completed",  // Am schimbat statusul la "completed"
+    status: "completed",
     priority: "high",
     category: "security",
     iconType: "shield-check",
-    iconColor: "text-green-500",  // Am schimbat și culoarea pentru a indica finalizarea
+    iconColor: "text-green-500",
     timeEstimate: {
       total: 25,
-      spent: 25,  // Am actualizat și timpul total petrecut
+      spent: 25,
       aiTotal: 20
     },
     details: [
@@ -67,6 +70,7 @@ export const securityItems: RoadmapItem[] = [
     ]
   },
   {
+    id: "security-4",
     title: "Îmbunătățiri Securitate Internă",
     description: "Securitate consolidată pentru date sensibile",
     status: "completed",

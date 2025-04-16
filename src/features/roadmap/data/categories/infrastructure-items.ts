@@ -1,7 +1,9 @@
+
 import { RoadmapItem } from "../../types";
 
 export const infrastructureItems: RoadmapItem[] = [
   {
+    id: "infrastructure-1",
     title: "Centru de Date Redundant",
     description: "Infrastructură cloud distribuită și securizată",
     status: "completed",

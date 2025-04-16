@@ -1,7 +1,9 @@
+
 import { RoadmapItem } from "../../types";
 
 export const devopsItems: RoadmapItem[] = [
   {
+    id: "devops-1",
     title: "Management Configurații",
     description: "Sistem centralizat de management al configurațiilor",
     status: "completed",
@@ -23,6 +25,7 @@ export const devopsItems: RoadmapItem[] = [
     ]
   },
   {
+    id: "devops-2",
     title: "Backup și Recuperare",
     description: "Sistem simplificat și eficient de backup și recuperare date",
     status: "completed",
@@ -44,9 +47,10 @@ export const devopsItems: RoadmapItem[] = [
     ]
   },
   {
+    id: "devops-3",
     title: "Automatizare și DevOps",
     description: "Implementare pipeline-uri și automatizări complexe",
-    status: "in-progress",
+    status: "inProgress",
     priority: "high",
     iconType: "server-cog",
     iconColor: "text-yellow-500",

@@ -3,11 +3,12 @@ import { RoadmapItem } from "../../types";
 
 export const partnershipItems: RoadmapItem[] = [
   {
+    id: "partnership-1",
     title: "Program Parteneriat",
     description: "Sistem de afiliere și parteneriate",
     status: "pending",
     priority: "low",
-    category: "partnership", // Make sure category is explicitly set to "partnership"
+    category: "partnership",
     iconType: "users",
     iconColor: "text-yellow-500",
     timeEstimate: {

@@ -104,3 +104,5 @@ export const RoadmapCard = ({ item }: RoadmapCardProps) => {
     </StyledCard>
   );
 };
+
+export type { RoadmapItem };

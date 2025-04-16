@@ -7,8 +7,8 @@ import { devopsItems } from "../categories/devops-items";
 
 // Combine all in-progress items from different categories, excluding the integration preparation task
 export const inProgressRoadmapItems: RoadmapItem[] = [
-  ...securityItems.filter(item => item.status === "in-progress"),
-  ...monitoringItems.filter(item => item.status === "in-progress"),
-  ...productItems.filter(item => item.status === "in-progress"),
-  ...devopsItems.filter(item => item.status === "in-progress")
+  ...securityItems.filter(item => item.status === "inProgress"),
+  ...monitoringItems.filter(item => item.status === "inProgress"),
+  ...productItems.filter(item => item.status === "inProgress"),
+  ...devopsItems.filter(item => item.status === "inProgress")
 ].filter(item => item.title !== "Pregătire Integrări Viitoare");

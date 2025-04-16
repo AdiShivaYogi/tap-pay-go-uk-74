@@ -3,6 +3,7 @@ import { RoadmapItem } from "../../types";
 
 export const localizationItems: RoadmapItem[] = [
   {
+    id: "localization-1",
     title: "Localizare și Internaționalizare",
     description: "Suport pentru multiple limbi și regiuni",
     status: "pending",

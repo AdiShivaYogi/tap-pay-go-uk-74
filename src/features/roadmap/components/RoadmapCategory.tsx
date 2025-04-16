@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { StyledCard } from "@/components/ui/cards";
-import { RoadmapItem } from "./RoadmapCard";
+import { RoadmapItem } from "../types";
 
 interface RoadmapCategoryProps {
   title: string;

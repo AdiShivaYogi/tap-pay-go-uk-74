@@ -1,7 +1,9 @@
+
 import { RoadmapItem } from "../../types";
 
 export const productItems: RoadmapItem[] = [
   {
+    id: "product-1",
     title: "Program Beta Limitat",
     description: "Lansare program beta cu primii 20 de utilizatori",
     status: "completed",
@@ -23,9 +25,10 @@ export const productItems: RoadmapItem[] = [
     ]
   },
   {
+    id: "product-2",
     title: "Optimizare UX Mobile",
     description: "Îmbunătățirea experienței pe dispozitive mobile",
-    status: "in-progress",
+    status: "inProgress",
     priority: "high",
     category: "development",
     iconType: "smartphone",
@@ -44,9 +47,10 @@ export const productItems: RoadmapItem[] = [
     ]
   },
   {
+    id: "product-3",
     title: "Îmbunătățiri Securitate Internă",
     description: "Consolidarea măsurilor de securitate pentru date sensibile",
-    status: "in-progress",
+    status: "inProgress",
     priority: "high",
     category: "security",
     iconType: "shield-check",
@@ -65,6 +69,7 @@ export const productItems: RoadmapItem[] = [
     ]
   },
   {
+    id: "product-4",
     title: "Optimizare Performanță Back-end",
     description: "Îmbunătățirea performanței și scalabilității back-end",
     status: "completed",
@@ -86,6 +91,7 @@ export const productItems: RoadmapItem[] = [
     ]
   },
   {
+    id: "product-5",
     title: "Sistem de Backup și Recuperare",
     description: "Implementare sistem robust de backup și recuperare",
     status: "completed",
@@ -107,9 +113,10 @@ export const productItems: RoadmapItem[] = [
     ]
   },
   {
+    id: "product-6",
     title: "Integrare Chat în Timp Real",
     description: "Adăugarea funcționalității de chat live pentru suport clienți",
-    status: "in-progress",
+    status: "inProgress",
     priority: "medium",
     category: "product",
     iconType: "communication",

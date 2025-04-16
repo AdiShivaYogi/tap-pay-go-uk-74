@@ -3,6 +3,7 @@ import { RoadmapItem } from "../../types";
 
 export const paymentItems: RoadmapItem[] = [
   {
+    id: "payment-1",
     title: "Integrare Multi-Payment",
     description: "Suport pentru procesarea plăților prin multiple metode",
     status: "completed",
@@ -24,6 +25,7 @@ export const paymentItems: RoadmapItem[] = [
     ]
   },
   {
+    id: "payment-2",
     title: "Integrare Stripe Complex",
     description: "Delegare completă a procesării plăților",
     status: "completed",

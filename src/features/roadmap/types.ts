@@ -11,7 +11,8 @@ export type Category =
   | "product" 
   | "devops" 
   | "localization" 
-  | "partnership";
+  | "partnership"
+  | "development";
 
 export type RoadmapIconType = 
   | "code" 
@@ -28,7 +29,19 @@ export type RoadmapIconType =
   | "users" 
   | "banknote" 
   | "search" 
-  | "zap";
+  | "zap"
+  | "server-cog"
+  | "database"
+  | "cloud-cog"
+  | "shield"
+  | "shield-check"
+  | "bar-chart-4"
+  | "network"
+  | "test-tube-2"
+  | "smartphone"
+  | "documentation"
+  | "globe"
+  | "communication";
 
 export interface TimeEstimate {
   total: number;

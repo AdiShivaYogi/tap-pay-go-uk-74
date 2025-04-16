@@ -3,9 +3,10 @@ import { RoadmapItem } from "../../types";
 
 export const monitoringItems: RoadmapItem[] = [
   {
+    id: "monitoring-1",
     title: "Documentație API Publică",
     description: "Crearea documentației detaliate pentru API",
-    status: "in-progress",
+    status: "inProgress",
     priority: "medium",
     iconType: "documentation",
     iconColor: "text-blue-500",

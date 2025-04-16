@@ -10,7 +10,7 @@ export const usePriorityTasks = (excludeBetaTasks: boolean = true) => {
   const highPriorityItems = useMemo(() => {
     const inProgressItems = roadmapItems.filter(item => 
       item.priority === "high" && 
-      item.status === "in-progress"
+      item.status === "inProgress"
     );
     
     return excludeBetaTasks 
