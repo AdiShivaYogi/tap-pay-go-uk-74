@@ -1,10 +1,74 @@
-
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
+
+// Updated pricing constants for DeepSeek API
+const DEEPSEEK_PRICING = {
+  standard: {
+    inputCacheHit: 0.00007,   // $0.07 per 1M tokens
+    inputCacheMiss: 0.00027,  // $0.27 per 1M tokens
+    output: 0.0011            // $1.10 per 1M tokens
+  },
+  offPeak: {
+    inputCacheHit: 0.000035,   // $0.035 per 1M tokens (50% off)
+    inputCacheMiss: 0.000135,  // $0.135 per 1M tokens (50% off)
+    output: 0.00055            // $0.550 per 1M tokens (50% off)
+  }
+};
+
+// Function to determine if current time is during off-peak hours (16:30-00:30 UTC)
+function isOffPeakHours() {
+  const currentUTC = new Date();
+  const hours = currentUTC.getUTCHours();
+  const minutes = currentUTC.getUTCMinutes();
+  
+  // Off-peak is between 16:30 UTC and 00:30 UTC
+  return (hours > 16 || hours < 0) || (hours === 16 && minutes >= 30);
+}
+
+// Function to calculate token costs
+function calculateTokenCost(inputTokens, outputTokens, isCacheHit = false) {
+  const pricing = isOffPeakHours() ? DEEPSEEK_PRICING.offPeak : DEEPSEEK_PRICING.standard;
+  
+  const inputCost = (inputTokens / 1000000) * (isCacheHit ? pricing.inputCacheHit : pricing.inputCacheMiss);
+  const outputCost = (outputTokens / 1000000) * pricing.output;
+  
+  return {
+    inputCost,
+    outputCost,
+    totalCost: inputCost + outputCost,
+    timePeriod: isOffPeakHours() ? 'off-peak' : 'standard'
+  };
+}
+
+// Function to record token usage in the database
+async function recordTokenUsage(supabase, inputTokens, outputTokens, responseTime, promptType, isCacheHit = false) {
+  try {
+    const costDetails = calculateTokenCost(inputTokens, outputTokens, isCacheHit);
+    
+    const { error } = await supabase.from('deepseek_api_usage').insert({
+      input_tokens: inputTokens,
+      output_tokens: outputTokens,
+      total_tokens: inputTokens + outputTokens,
+      input_cost: costDetails.inputCost,
+      output_cost: costDetails.outputCost,
+      total_cost: costDetails.totalCost,
+      response_time_seconds: responseTime,
+      prompt_type: promptType,
+      time_period: costDetails.timePeriod,
+      is_cache_hit: isCacheHit
+    });
+
+    if (error) {
+      console.error('Error recording token usage:', error);
+    }
+  } catch (err) {
+    console.error('Exception while recording token usage:', err);
+  }
 }
 
 const SYSTEM_PROMPT_TEMPLATES = {
@@ -97,32 +161,6 @@ const DEEPSEEK_COST_PER_1K_TOKENS = {
   input: 0.001, // $0.001 per 1K input tokens
   output: 0.002 // $0.002 per 1K output tokens
 };
-
-// Function to record token usage in the database
-async function recordTokenUsage(supabase, inputTokens, outputTokens, responseTime, promptType) {
-  try {
-    const inputCost = (inputTokens / 1000) * DEEPSEEK_COST_PER_1K_TOKENS.input;
-    const outputCost = (outputTokens / 1000) * DEEPSEEK_COST_PER_1K_TOKENS.output;
-    const totalCost = inputCost + outputCost;
-    
-    const { error } = await supabase.from('deepseek_api_usage').insert({
-      input_tokens: inputTokens,
-      output_tokens: outputTokens,
-      total_tokens: inputTokens + outputTokens,
-      input_cost: inputCost,
-      output_cost: outputCost,
-      total_cost: totalCost,
-      response_time_seconds: responseTime,
-      prompt_type: promptType
-    });
-
-    if (error) {
-      console.error('Error recording token usage:', error);
-    }
-  } catch (err) {
-    console.error('Exception while recording token usage:', err);
-  }
-}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {

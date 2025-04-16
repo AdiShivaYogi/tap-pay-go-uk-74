@@ -22,10 +22,8 @@ serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
     
-    // Get parameters from request if needed (e.g., date range)
     const { timeframe } = await req.json().catch(() => ({ timeframe: '30d' }));
     
-    // Set time filter based on timeframe parameter
     let timeFilter;
     switch(timeframe) {
       case '7d':
@@ -43,7 +41,7 @@ serve(async (req) => {
         break;
     }
 
-    // Get aggregated stats
+    // Fetch aggregated stats with new detailed cost tracking
     const { data: statsData, error: statsError } = await supabase
       .from('deepseek_api_usage')
       .select(`
@@ -53,7 +51,10 @@ serve(async (req) => {
         input_cost,
         output_cost,
         total_cost,
-        response_time_seconds
+        response_time_seconds,
+        time_period,
+        is_cache_hit,
+        prompt_type
       `)
       .when(timeFilter !== '', true, query => query.filter('created_at', 'gte', timeFilter));
 
@@ -61,53 +62,49 @@ serve(async (req) => {
       throw statsError;
     }
 
-    // If there's no data yet, return mock stats
-    if (!statsData || statsData.length === 0) {
-      const mockStats = {
-        totalTokens: 15234,
-        totalCost: 2.45,
-        totalPrompts: 127,
-        avgResponseTime: 2.3
-      };
-      
-      return new Response(
-        JSON.stringify(mockStats),
-        { 
-          headers: { 
-            ...corsHeaders, 
-            'Content-Type': 'application/json' 
-          }
-        }
-      );
-    }
-
-    // Calculate aggregated metrics
+    // Calculate comprehensive metrics
     const totalTokens = statsData.reduce((sum, item) => sum + (item.total_tokens || 0), 0);
     const totalCost = statsData.reduce((sum, item) => sum + (item.total_cost || 0), 0);
     const totalPrompts = statsData.length;
     
-    // Calculate average response time
     const totalResponseTime = statsData.reduce((sum, item) => sum + (item.response_time_seconds || 0), 0);
     const avgResponseTime = totalPrompts > 0 ? totalResponseTime / totalPrompts : 0;
     
-    // Get prompt type distribution
-    const { data: promptTypeStats, error: promptTypeError } = await supabase
-      .from('deepseek_api_usage')
-      .select('prompt_type, count')
-      .when(timeFilter !== '', true, query => query.filter('created_at', 'gte', timeFilter))
-      .group('prompt_type');
+    // Break down costs and tokens by time period and cache hit status
+    const periodBreakdown = statsData.reduce((acc, item) => {
+      if (!acc[item.time_period]) {
+        acc[item.time_period] = { 
+          totalTokens: 0, 
+          totalCost: 0, 
+          promptCount: 0,
+          cacheHitRate: 0
+        };
+      }
+      
+      acc[item.time_period].totalTokens += item.total_tokens || 0;
+      acc[item.time_period].totalCost += item.total_cost || 0;
+      acc[item.time_period].promptCount++;
+      
+      return acc;
+    }, {});
 
-    if (promptTypeError) {
-      console.error('Error fetching prompt type stats:', promptTypeError);
-    }
+    // Prompt type distribution
+    const promptTypeDistribution = statsData.reduce((acc, item) => {
+      if (!acc[item.prompt_type]) {
+        acc[item.prompt_type] = { count: 0, totalCost: 0 };
+      }
+      acc[item.prompt_type].count++;
+      acc[item.prompt_type].totalCost += item.total_cost || 0;
+      return acc;
+    }, {});
 
-    // Prepare response data
     const stats = {
       totalTokens,
-      totalCost,
+      totalCost: parseFloat(totalCost.toFixed(4)),
       totalPrompts,
-      avgResponseTime,
-      promptTypeDistribution: promptTypeStats || []
+      avgResponseTime: parseFloat(avgResponseTime.toFixed(2)),
+      periodBreakdown,
+      promptTypeDistribution
     };
 
     return new Response(
