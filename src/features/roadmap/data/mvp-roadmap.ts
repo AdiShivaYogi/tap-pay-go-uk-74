@@ -1,37 +1,54 @@
 
-export const mvpRoadmapText = [
+import { Status } from "../types";
+
+interface MvpRoadmapItem {
+  id: string;
+  title: string;
+  description: string;
+  status: Status;
+  progress: number;
+}
+
+export const mvpRoadmapText: MvpRoadmapItem[] = [
   {
-    id: 1,
-    title: "Integrare cu Stripe",
-    description: "Implementarea procesării plăților prin Stripe API",
+    id: "mvp-1",
+    title: "Procesare plăți prin Stripe",
+    description: "Implementare integrare completă Stripe pentru procesarea plăților",
     status: "completed",
     progress: 100
   },
   {
-    id: 2,
-    title: "Autentificare multifactor",
-    description: "Implementarea autentificării în doi pași pentru securitate sporită",
+    id: "mvp-2",
+    title: "Configurare securitate de bază",
+    description: "Setarea măsurilor esențiale de securitate",
     status: "completed",
     progress: 100
   },
   {
-    id: 3,
-    title: "Dashboard de analiză",
-    description: "Dezvoltarea dashboard-ului cu statistici și rapoarte",
+    id: "mvp-3",
+    title: "Dashboard administrativ",
+    description: "Panou de control pentru monitorizarea activității",
     status: "inProgress",
     progress: 75
   },
   {
-    id: 4,
-    title: "Suport pentru plăți recurente",
-    description: "Adăugarea funcționalității de abonamente și plăți recurente",
+    id: "mvp-4",
+    title: "Raportare de bază",
+    description: "Rapoarte esențiale pentru activitatea financiară",
     status: "inProgress",
-    progress: 50
+    progress: 60
   },
   {
-    id: 5,
-    title: "Aplicație mobilă iOS",
-    description: "Dezvoltarea aplicației native pentru iOS",
+    id: "mvp-5",
+    title: "Optimizare UX/UI",
+    description: "Îmbunătățiri ale interfeței utilizator",
+    status: "inProgress",
+    progress: 45
+  },
+  {
+    id: "mvp-6",
+    title: "API documentat",
+    description: "API public cu documentație completă",
     status: "planned",
     progress: 20
   }

@@ -1,52 +1,42 @@
 
-import React, { createContext, useContext, useState } from 'react';
-import { Category, RoadmapItem } from '../types';
+import React, { createContext, useState, useContext, useMemo } from 'react';
+import { RoadmapContextType, RoadmapItem, Category } from '../types';
 import { roadmapItems } from '../data/roadmap-data';
 
-interface RoadmapContextType {
-  activeCategory: Category | 'all';
-  setActiveCategory: (category: Category | 'all') => void;
-  expandedCategories: string[];
-  toggleCategory: (category: string) => void;
-  items: RoadmapItem[];
-  categories: Category[];
-}
-
+// Create the RoadmapContext
 const RoadmapContext = createContext<RoadmapContextType | undefined>(undefined);
 
-export const RoadmapProvider = ({ children }: { children: React.ReactNode }) => {
-  const [activeCategory, setActiveCategory] = useState<Category | 'all'>('all');
-  const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
+// Create a provider component
+export const RoadmapProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [activeCategory, setActiveCategory] = useState<Category | null | 'all'>('all');
 
-  // Extract unique categories from roadmapItems
-  const categories = [...new Set(roadmapItems.map(item => item.category).filter(Boolean))] as Category[];
+  // Extract unique categories from roadmap items
+  const categories = useMemo(() => {
+    const uniqueCategories = new Set<Category>();
+    roadmapItems.forEach((item) => {
+      if (item.category) {
+        uniqueCategories.add(item.category);
+      }
+    });
+    return Array.from(uniqueCategories);
+  }, []);
 
-  const toggleCategory = (category: string) => {
-    setExpandedCategories(prev => 
-      prev.includes(category) 
-        ? prev.filter(c => c !== category)
-        : [...prev, category]
-    );
+  // Create context value
+  const value: RoadmapContextType = {
+    items: roadmapItems,
+    categories,
+    activeCategory,
+    setActiveCategory,
   };
 
-  return (
-    <RoadmapContext.Provider value={{
-      activeCategory,
-      setActiveCategory,
-      expandedCategories,
-      toggleCategory,
-      items: roadmapItems,
-      categories
-    }}>
-      {children}
-    </RoadmapContext.Provider>
-  );
+  return <RoadmapContext.Provider value={value}>{children}</RoadmapContext.Provider>;
 };
 
+// Create a hook for using the RoadmapContext
 export const useRoadmapContext = () => {
   const context = useContext(RoadmapContext);
-  if (!context) {
-    throw new Error('useRoadmapContext must be used within a RoadmapContextProvider');
+  if (context === undefined) {
+    throw new Error('useRoadmapContext must be used within a RoadmapProvider');
   }
   return context;
 };

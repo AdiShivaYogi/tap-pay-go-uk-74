@@ -1,80 +1,59 @@
 
-import { useState, useMemo } from "react";
-import { roadmapItems } from "../data/roadmap-data";
+import { useState, useMemo } from 'react';
+import { useRoadmapContext } from '../context/RoadmapContext';
+import { TaskWithProgress } from '../types/task-types';
+import { RoadmapItem } from '../types';
 
-export const usePriorityTasks = (excludeBetaTasks: boolean = true) => {
-  const [sortBy, setSortBy] = useState<"progress" | "estimate" | "priority">("progress");
-  const [completionFilter, setCompletionFilter] = useState<"all" | "nearly-done" | "started" | "stuck">("all");
+export const usePriorityTasks = (excludeBetaTasks: boolean) => {
+  const { items } = useRoadmapContext();
+  const [sortBy, setSortBy] = useState<'priority' | 'progress' | 'time'>('priority');
+  const [completionFilter, setCompletionFilter] = useState<'all' | 'active' | 'completed'>('active');
 
-  // Get all high priority items, excluding beta-related tasks if needed
-  const highPriorityItems = useMemo(() => {
-    const inProgressItems = roadmapItems.filter(item => 
-      item.priority === "high" && 
-      item.status === "inProgress"
-    );
-    
-    return excludeBetaTasks 
-      ? inProgressItems.filter(item => 
-          !item.title.toLowerCase().includes("beta") && 
-          !item.description.toLowerCase().includes("beta")
-        )
-      : inProgressItems;
-  }, [excludeBetaTasks]);
+  const priorityTasks = useMemo(() => {
+    // Filter based on beta exclusion and completion status
+    let filteredTasks = items.filter(task => {
+      const isBeta = task.title.toLowerCase().includes('beta');
+      const isActive = task.status === "inProgress" || task.status === "planned";
+      
+      if (excludeBetaTasks && isBeta) return false;
+      if (completionFilter === 'active' && !isActive) return false;
+      if (completionFilter === 'completed' && task.status !== 'completed') return false;
+      
+      return true;
+    });
 
-  // Calculate estimated time remaining for each task
-  const tasksWithTimeRemaining = useMemo(() => {
-    return highPriorityItems.map(task => {
-      const timeSpent = task.timeEstimate.spent || 0;
+    // Calculate progress percentage and remaining time
+    const tasksWithProgress: TaskWithProgress[] = filteredTasks.map(task => {
+      const timeSpent = task.timeEstimate.spent;
       const totalTime = task.timeEstimate.total;
-      const timeRemaining = totalTime - timeSpent;
-      const progressPercentage = Math.round((timeSpent / totalTime) * 100);
+      const progressPercentage = Math.min(100, Math.round((timeSpent / totalTime) * 100));
+      const timeRemaining = Math.max(0, totalTime - timeSpent);
       
       return {
         ...task,
-        timeRemaining,
         progressPercentage,
+        timeRemaining
       };
     });
-  }, [highPriorityItems]);
 
-  // Filter tasks based on completion status
-  const filteredTasks = useMemo(() => {
-    switch (completionFilter) {
-      case "nearly-done":
-        return tasksWithTimeRemaining.filter(task => task.progressPercentage >= 70);
-      case "started":
-        return tasksWithTimeRemaining.filter(task => task.progressPercentage >= 20 && task.progressPercentage < 70);
-      case "stuck":
-        return tasksWithTimeRemaining.filter(task => task.progressPercentage < 20);
-      default:
-        return tasksWithTimeRemaining;
-    }
-  }, [tasksWithTimeRemaining, completionFilter]);
-
-  // Sort tasks based on selected criteria
-  const sortedTasks = useMemo(() => {
-    switch (sortBy) {
-      case "progress":
-        return [...filteredTasks].sort((a, b) => b.progressPercentage - a.progressPercentage);
-      case "estimate":
-        return [...filteredTasks].sort((a, b) => a.timeRemaining - b.timeRemaining);
-      case "priority":
-        const priorityMapping = { high: 3, medium: 2, low: 1 };
-        return [...filteredTasks].sort((a, b) => {
-          const priorityDiff = (priorityMapping[b.priority || "medium"] || 0) - (priorityMapping[a.priority || "medium"] || 0);
-          if (priorityDiff !== 0) return priorityDiff;
-          return b.progressPercentage - a.progressPercentage;
-        });
-      default:
-        return filteredTasks;
-    }
-  }, [filteredTasks, sortBy]);
+    // Sort based on selected criteria
+    return tasksWithProgress.sort((a, b) => {
+      if (sortBy === 'priority') {
+        const priorityOrder: Record<string, number> = { high: 1, medium: 2, low: 3 };
+        return (priorityOrder[a.priority || 'low'] - priorityOrder[b.priority || 'low']);
+      } else if (sortBy === 'progress') {
+        return b.progressPercentage - a.progressPercentage;
+      } else {
+        return a.timeRemaining - b.timeRemaining;
+      }
+    });
+  }, [items, excludeBetaTasks, completionFilter, sortBy]);
 
   return {
     sortBy,
     setSortBy,
     completionFilter,
     setCompletionFilter,
-    sortedTasks,
+    sortedTasks: priorityTasks
   };
 };

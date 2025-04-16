@@ -11,8 +11,7 @@ export type Category =
   | "product" 
   | "devops" 
   | "localization" 
-  | "partnership"
-  | "development";
+  | "partnership";
 
 export type RoadmapIconType = 
   | "code" 
@@ -65,6 +64,6 @@ export interface RoadmapItem {
 export interface RoadmapContextType {
   items: RoadmapItem[];
   categories: Category[];
-  setActiveCategory: (category: Category | null) => void;
-  activeCategory: Category | null;
+  setActiveCategory: (category: Category | null | 'all') => void;
+  activeCategory: Category | null | 'all';
 }

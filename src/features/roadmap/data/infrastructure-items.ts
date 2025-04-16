@@ -3,6 +3,7 @@ import { RoadmapItem } from "../types";
 
 export const infrastructureItems: RoadmapItem[] = [
   {
+    id: "infrastructure-1",
     title: "Infrastructură Redundantă Avansată",
     description: "Strategie completă de disponibilitate și reziliență",
     status: "completed",
@@ -27,6 +28,7 @@ export const infrastructureItems: RoadmapItem[] = [
     ]
   },
   {
+    id: "infrastructure-2",
     title: "Centru de Date Redundant",
     description: "Infrastructură cloud distribuită și securizată",
     status: "completed",

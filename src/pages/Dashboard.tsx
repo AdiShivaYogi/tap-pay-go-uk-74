@@ -1,30 +1,66 @@
-import { useState } from "react";
+
+import { useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Layout } from "@/components/layout/layout";
 import { PageHeader } from "@/components/ui/layout/page-header";
 import { Section } from "@/components/ui/layout/section";
-import { Grid2Cols, Grid3Cols } from "@/components/ui/layout/grid";
+import { Grid2Cols } from "@/components/ui/layout/grid";
 import { PaymentForm } from "@/components/dashboard/PaymentForm";
 import { TransactionsList } from "@/components/dashboard/TransactionsList";
-import { StyledCard } from "@/components/ui/cards";
 import { useDeviceCompatibility } from "@/hooks/use-device-compatibility";
-import { CreditCard, Activity } from "lucide-react";
+import { CreditCard } from "lucide-react";
 
 const Dashboard = () => {
   const deviceCompatibility = useDeviceCompatibility();
-  const [isDemo, setIsDemo] = useState(true);
-
-  // Placeholder for fetching user data
-  const { data: user, isLoading, isError } = useQuery('user', async () => {
-    // Simulate fetching user data
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return {
-      name: "John Doe",
-      email: "john.doe@example.com",
-      subscription: "Premium",
-      lastLogin: new Date()
-    };
+  const [isDemo] = useState(true);
+  
+  // Placeholder for fetching user data with proper query options
+  const { data: user, isLoading, isError } = useQuery({
+    queryKey: ['user'],
+    queryFn: async () => {
+      // Simulate fetching user data
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      return {
+        name: "John Doe",
+        email: "john.doe@example.com",
+        subscription: "Premium",
+        lastLogin: new Date()
+      };
+    }
   });
+
+  // Mock transaction data
+  const mockTransactions = [
+    {
+      id: "tx_1",
+      user_id: "user_123",
+      amount: 50,
+      status: "completed",
+      created_at: "2023-05-15T10:30:00Z",
+      currency: "GBP"
+    },
+    {
+      id: "tx_2",
+      user_id: "user_123",
+      amount: 25.50,
+      status: "completed",
+      created_at: "2023-05-12T14:22:00Z",
+      currency: "GBP"
+    },
+    {
+      id: "tx_3",
+      user_id: "user_123",
+      amount: 75,
+      status: "pending",
+      created_at: "2023-05-10T09:15:00Z",
+      currency: "GBP"
+    }
+  ];
+
+  const handleRefreshTransactions = useCallback(() => {
+    // This would typically trigger a refetch of the transactions
+    console.log("Refreshing transactions");
+  }, []);
 
   return (
     <Layout>
@@ -41,7 +77,11 @@ const Dashboard = () => {
           </div>
 
           <div>
-            <TransactionsList />
+            <TransactionsList 
+              transactions={mockTransactions}
+              isLoading={false}
+              onRefresh={handleRefreshTransactions}
+            />
           </div>
         </Grid2Cols>
       </Section>

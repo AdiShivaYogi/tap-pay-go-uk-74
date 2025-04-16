@@ -3,9 +3,10 @@ import { RoadmapItem } from "../types";
 
 export const monitoringItems: RoadmapItem[] = [
   {
+    id: "monitoring-1",
     title: "Monitorizare și Alertare",
     description: "Sistem avansat de monitorizare și alertare",
-    status: "in-progress",
+    status: "inProgress",
     priority: "high",
     iconType: "bar-chart-4",
     iconColor: "text-blue-500",
@@ -23,9 +24,10 @@ export const monitoringItems: RoadmapItem[] = [
     ]
   },
   {
+    id: "monitoring-2",
     title: "Optimizare și Monitorizare Cloud",
     description: "Îmbunătățirea performanței și controlului infrastructurii",
-    status: "in-progress",
+    status: "inProgress",
     priority: "high", 
     iconType: "network",
     iconColor: "text-green-500",

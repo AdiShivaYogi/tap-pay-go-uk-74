@@ -12,12 +12,34 @@ import { Section } from "@/components/ui/layout/section";
 
 const Admin = () => {
   const mockStats = {
-    activeUsers: 256,
     totalTransactions: 1289,
-    monthlyRevenue: 15750.50,
-    failedPayments: 12,
-    conversionRate: 4.2,
+    totalAmount: 15750.50,
+    totalCommission: 945.03,
+    successfulCommission: 892.48
   };
+
+  const mockChartData = {
+    monthlyData: [
+      { name: "Jan", value: 1500 },
+      { name: "Feb", value: 2300 },
+      { name: "Mar", value: 3200 },
+      { name: "Apr", value: 2800 },
+      { name: "May", value: 3600 }
+    ],
+    pieChartData: [
+      { name: "Successful", value: 85 },
+      { name: "Failed", value: 15 }
+    ]
+  };
+
+  const mockMonitoringStats = {
+    serverUptime: 99.98,
+    averageResponseTime: 235,
+    errorRate: 0.03,
+    activeSessions: 128
+  };
+
+  const mockTransactions = [];
 
   return (
     <Layout>
@@ -33,17 +55,25 @@ const Admin = () => {
             <AdminStats isLoading={false} stats={mockStats} />
           </div>
           <div>
-            <MonitoringStats />
+            <MonitoringStats isLoading={false} stats={mockMonitoringStats} />
           </div>
         </div>
       </Section>
 
       <Section>
-        <AdminCharts />
+        <AdminCharts 
+          isLoading={false} 
+          monthlyData={mockChartData.monthlyData} 
+          pieChartData={mockChartData.pieChartData} 
+        />
       </Section>
 
       <Section>
-        <AdminTransactionsTable />
+        <AdminTransactionsTable 
+          isLoading={false} 
+          transactions={mockTransactions} 
+          commissionRate={0.06} 
+        />
       </Section>
       
       <Section>
