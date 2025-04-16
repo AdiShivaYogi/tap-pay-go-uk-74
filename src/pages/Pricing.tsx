@@ -4,9 +4,9 @@ import { PricingCard } from "@/components/pricing/PricingCard";
 import { PricingFAQ } from "@/components/pricing/PricingFAQ";
 import { IncludedFeatures } from "@/components/pricing/IncludedFeatures";
 import { PricingCalculator } from "@/components/pricing/PricingCalculator";
-import { Separator } from "@/components/ui/separator";
 import { pricingPlans, pricingFAQs } from "@/config/pricing";
 import { Section, PageHeader, Grid3Cols } from "@/components/ui/themed-components";
+import { CreditCard } from "lucide-react";
 
 const PricingPage = () => {
   const standardPlans = pricingPlans;
@@ -17,6 +17,8 @@ const PricingPage = () => {
         <PageHeader
           title="Prețuri Simple și Transparente"
           description="Alegeți planul care se potrivește nevoilor afacerii dvs. Fără taxe ascunse."
+          icon={CreditCard}
+          gradient={true}
         />
 
         <Grid3Cols className="max-w-5xl mx-auto">
@@ -25,10 +27,17 @@ const PricingPage = () => {
           ))}
         </Grid3Cols>
         
-        <PricingCalculator />
+        <div className="py-8">
+          <PricingCalculator />
+        </div>
 
-        <PricingFAQ faqs={pricingFAQs} />
-        <IncludedFeatures />
+        <Section variant="alt">
+          <PricingFAQ faqs={pricingFAQs} />
+        </Section>
+        
+        <Section>
+          <IncludedFeatures />
+        </Section>
       </Section>
     </Layout>
   );

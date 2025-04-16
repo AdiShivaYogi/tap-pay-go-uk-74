@@ -2,7 +2,6 @@
 import { Layout } from "@/components/layout/layout";
 import { CreditCard, ArrowRight, ShieldCheck, ExternalLink } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
-import { SectionContainer } from "@/components/ui/section-container";
 import { StyledCard } from "@/components/ui/styled-card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -10,6 +9,7 @@ import { toast } from "@/hooks/use-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
 import { useState } from "react";
+import { Section } from "@/components/ui/themed-components";
 
 const ConnectStripe = () => {
   const { connectStripe, user } = useAuth();
@@ -40,11 +40,12 @@ const ConnectStripe = () => {
 
   return (
     <Layout>
-      <SectionContainer>
+      <Section>
         <PageHeader
           icon={CreditCard}
           title="Conectare cu Stripe"
           description="Simplu și rapid - conectează-te pentru a începe să procesezi plăți"
+          gradient={true}
         />
         
         <div className="space-y-6 max-w-2xl mx-auto">
@@ -139,7 +140,7 @@ const ConnectStripe = () => {
             </div>
           </StyledCard>
         </div>
-      </SectionContainer>
+      </Section>
     </Layout>
   );
 };

@@ -10,21 +10,22 @@ import {
   CheckCircle2, 
   Rocket 
 } from "lucide-react";
-import { StyledCard } from "@/components/ui/card-variants";
-import { PageHeader } from "@/components/ui/page-header";
+import { ThemedCard } from "@/components/ui/themed-components";
+import { PageHeader, Section, Grid3Cols } from "@/components/ui/themed-components";
 
 const AboutPage = () => {
   return (
     <Layout>
-      <div className="container py-8 px-4">
-        <div className="max-w-5xl mx-auto space-y-8">
-          <PageHeader 
-            icon={Smartphone}
-            title="Despre noi"
-            description="Transformăm iPhone-ul în instrument de plată profesionist"
-          />
+      <Section>
+        <PageHeader 
+          icon={Smartphone}
+          title="Despre noi"
+          description="Transformăm iPhone-ul în instrument de plată profesionist"
+          gradient={true}
+        />
 
-          <StyledCard className="border-primary/10">
+        <div className="max-w-5xl mx-auto space-y-8">
+          <ThemedCard className="border-primary/10">
             <div className="p-6 space-y-4">
               <h2 className="text-2xl font-semibold">TapGo: Plăți moderne, simple și sigure</h2>
               <div className="space-y-4 text-muted-foreground">
@@ -38,27 +39,29 @@ const AboutPage = () => {
                 </p>
               </div>
             </div>
-          </StyledCard>
+          </ThemedCard>
 
-          <StyledCard className="border-primary/10">
-            <div className="p-6 space-y-4">
-              <h2 className="text-2xl font-semibold mb-4">Misiunea Noastră</h2>
-              <div className="space-y-4 text-muted-foreground">
-                <p>
-                  Să facem plățile moderne accesibile, rapide și sigure, fără costuri ascunse și fără echipamente greoaie.
-                </p>
-                <p>
-                  Folosim tehnologia Apple Tap to Pay și infrastructura de plată de la Stripe, unul dintre cei mai siguri 
-                  și respectați procesatori de plăți din lume. Asta înseamnă că datele clienților tăi sunt în siguranță, 
-                  iar tu poți încasa bani direct în contul tău Stripe, fără complicații legale sau financiare.
-                </p>
+          <Section variant="alt">
+            <ThemedCard variant="highlight">
+              <div className="p-6 space-y-4">
+                <h2 className="text-2xl font-semibold mb-4">Misiunea Noastră</h2>
+                <div className="space-y-4 text-muted-foreground">
+                  <p>
+                    Să facem plățile moderne accesibile, rapide și sigure, fără costuri ascunse și fără echipamente greoaie.
+                  </p>
+                  <p>
+                    Folosim tehnologia Apple Tap to Pay și infrastructura de plată de la Stripe, unul dintre cei mai siguri 
+                    și respectați procesatori de plăți din lume. Asta înseamnă că datele clienților tăi sunt în siguranță, 
+                    iar tu poți încasa bani direct în contul tău Stripe, fără complicații legale sau financiare.
+                  </p>
+                </div>
               </div>
-            </div>
-          </StyledCard>
+            </ThemedCard>
+          </Section>
 
           <div className="space-y-4">
             <h2 className="text-2xl font-semibold">Avantajele Noastre</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Grid3Cols>
               {[
                 { 
                   icon: Smartphone, 
@@ -91,7 +94,7 @@ const AboutPage = () => {
                   description: "Tehnologie modernă pentru antreprenori" 
                 }
               ].map((feature, index) => (
-                <StyledCard key={index} className="border-primary/10">
+                <ThemedCard key={index} variant="interactive" className="border-primary/10">
                   <div className="p-6">
                     <div className="flex items-center gap-4 mb-3">
                       <div className="p-2 rounded-full bg-primary/10">
@@ -101,33 +104,35 @@ const AboutPage = () => {
                     </div>
                     <p className="text-muted-foreground">{feature.description}</p>
                   </div>
-                </StyledCard>
+                </ThemedCard>
               ))}
-            </div>
+            </Grid3Cols>
           </div>
 
-          <StyledCard className="border-primary/10">
-            <div className="p-6 text-center">
-              <h2 className="text-2xl font-semibold mb-4">Suntem Pasionați de Inovație</h2>
-              <p className="text-muted-foreground mb-6">
-                Suntem o echipă pasionată de tehnologie și inovație în fintech, și ne dorim să susținem 
-                afacerile mici și munca independentă într-un mod modern și eficient.
-              </p>
-              <p className="text-muted-foreground mb-6 font-semibold">
-                Fără hardware. Fără comisioane ascunse. Doar plăți simple, directe și sigure.
-              </p>
-              <div className="flex justify-center gap-4">
-                <Link to="/roadmap">
-                  <Button variant="outline">Planul Nostru</Button>
-                </Link>
-                <Link to="/onboarding">
-                  <Button>Începe Acum</Button>
-                </Link>
+          <Section variant="alt">
+            <ThemedCard className="border-primary/10">
+              <div className="p-6 text-center">
+                <h2 className="text-2xl font-semibold mb-4">Suntem Pasionați de Inovație</h2>
+                <p className="text-muted-foreground mb-6">
+                  Suntem o echipă pasionată de tehnologie și inovație în fintech, și ne dorim să susținem 
+                  afacerile mici și munca independentă într-un mod modern și eficient.
+                </p>
+                <p className="text-muted-foreground mb-6 font-semibold">
+                  Fără hardware. Fără comisioane ascunse. Doar plăți simple, directe și sigure.
+                </p>
+                <div className="flex justify-center gap-4">
+                  <Link to="/roadmap">
+                    <Button variant="outline">Planul Nostru</Button>
+                  </Link>
+                  <Link to="/onboarding">
+                    <Button>Începe Acum</Button>
+                  </Link>
+                </div>
               </div>
-            </div>
-          </StyledCard>
+            </ThemedCard>
+          </Section>
         </div>
-      </div>
+      </Section>
     </Layout>
   );
 };

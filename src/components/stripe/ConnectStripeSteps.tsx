@@ -6,22 +6,41 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Steps } from "@/components/ui/steps";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "@/hooks/use-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export const ConnectStripeSteps = () => {
   const [currentStep, setCurrentStep] = useState(0);
-  const { user } = useAuth();
+  const { user, connectStripe } = useAuth();
+  const navigate = useNavigate();
+  const [isConnecting, setIsConnecting] = useState(false);
   
-  const handleConnect = () => {
-    // Aici ar trebui să fie logica de conectare cu Stripe
-    // În mod normal, ar trebui să redirecționăm către Stripe Connect sau să folosim Stripe OAuth
-    setTimeout(() => {
+  const handleConnect = async () => {
+    try {
+      setIsConnecting(true);
+      // Simulăm conectarea cu Stripe (într-o aplicație reală ar trebui implementată OAuth)
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      await connectStripe('demo-account-id');
+      
       toast({
         title: "Cont Stripe conectat cu succes",
         description: "Poți începe să procesezi plăți imediat",
       });
+      
       setCurrentStep(3);
-    }, 1500);
+      
+      // După o scurtă pauză, redirecționăm către dashboard
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 2000);
+    } catch (error) {
+      toast({
+        title: "Eroare la conectare",
+        description: "Nu s-a putut realiza conexiunea cu Stripe",
+        variant: "destructive"
+      });
+    } finally {
+      setIsConnecting(false);
+    }
   };
 
   const steps = [
@@ -59,8 +78,9 @@ export const ConnectStripeSteps = () => {
           variant="default" 
           className="gap-2"
           onClick={handleConnect}
+          disabled={isConnecting}
         >
-          Conectează cu Stripe <ArrowRight className="h-4 w-4" />
+          {isConnecting ? "Se conectează..." : "Conectează cu Stripe"} <ArrowRight className="h-4 w-4" />
         </Button>
       ),
     },

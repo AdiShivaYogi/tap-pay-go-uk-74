@@ -3,6 +3,7 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight, Sparkles, CreditCard } from "lucide-react";
+import { theme } from "@/config/theme";
 
 export const HeroSection = () => {
   return (
@@ -16,12 +17,12 @@ export const HeroSection = () => {
             Lansare în curând - Program Beta
           </span>
         </div>
-        <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 text-center max-w-4xl mx-auto leading-tight">
+        <h1 className={`${theme.typography.h1} mb-6 text-center max-w-4xl mx-auto leading-tight`}>
           Transformă-ți Telefonul într-un <span className="text-primary relative">Terminal de Plată
             <span className="absolute -bottom-2 left-0 w-full h-2 bg-primary/20 -z-10 rounded-full"></span>
           </span>
         </h1>
-        <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto text-center leading-relaxed">
+        <p className={`${theme.typography.lead} mb-10 max-w-2xl mx-auto text-center leading-relaxed`}>
           Acceptă plăți contactless instant ca freelancer sau afacere mică.
           Nu ai nevoie de hardware suplimentar - doar telefonul tău și Stripe.
         </p>
