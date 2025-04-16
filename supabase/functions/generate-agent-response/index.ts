@@ -1,5 +1,6 @@
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -91,12 +92,53 @@ const CODE_GENERATION_TEMPLATES = {
 
 const deepseekApiKey = Deno.env.get("DEEPSEEK_API_KEY") || "";
 
+// Define the cost per 1000 tokens (in USD)
+const DEEPSEEK_COST_PER_1K_TOKENS = {
+  input: 0.001, // $0.001 per 1K input tokens
+  output: 0.002 // $0.002 per 1K output tokens
+};
+
+// Function to record token usage in the database
+async function recordTokenUsage(supabase, inputTokens, outputTokens, responseTime, promptType) {
+  try {
+    const inputCost = (inputTokens / 1000) * DEEPSEEK_COST_PER_1K_TOKENS.input;
+    const outputCost = (outputTokens / 1000) * DEEPSEEK_COST_PER_1K_TOKENS.output;
+    const totalCost = inputCost + outputCost;
+    
+    const { error } = await supabase.from('deepseek_api_usage').insert({
+      input_tokens: inputTokens,
+      output_tokens: outputTokens,
+      total_tokens: inputTokens + outputTokens,
+      input_cost: inputCost,
+      output_cost: outputCost,
+      total_cost: totalCost,
+      response_time_seconds: responseTime,
+      prompt_type: promptType
+    });
+
+    if (error) {
+      console.error('Error recording token usage:', error);
+    }
+  } catch (err) {
+    console.error('Exception while recording token usage:', err);
+  }
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+
+    if (!supabaseUrl || !supabaseServiceRoleKey) {
+      throw new Error('Missing Supabase environment variables');
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+
     const { 
       message, 
       agentId, 
@@ -136,7 +178,15 @@ serve(async (req) => {
       .replace('{activeTask ? "TASK ACTIV: Lucrezi la taskul \\"" + activeTask.title + "\\" - " + activeTask.description + ". Progres curent: " + activeTask.progress + "%." : ""}', 
         activeTask ? `TASK ACTIV: Lucrezi la taskul "${activeTask.title}" - ${activeTask.description}. Progres curent: ${activeTask.progress}%.` : '');
 
+    // Determine prompt type for logging
+    let promptType = 'standard';
+    if (isConversationStarter) promptType = 'conversation_starter';
+    else if (isTaskProposal) promptType = 'task_proposal';
+    else if (isCodeProposal) promptType = 'code_proposal';
+
     console.log('Se trimite cererea la Deepseek API...');
+    const startTime = Date.now();
+    
     const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -154,12 +204,33 @@ serve(async (req) => {
       })
     });
 
+    const responseTime = (Date.now() - startTime) / 1000; // Convert to seconds
     const data = await response.json();
+    
+    // Extract token usage information
+    const inputTokens = data.usage?.prompt_tokens || 0;
+    const outputTokens = data.usage?.completion_tokens || 0;
+    
+    // Record token usage in the database
+    await recordTokenUsage(
+      supabase, 
+      inputTokens, 
+      outputTokens, 
+      responseTime,
+      promptType
+    );
+
     const generatedResponse = data.choices?.[0]?.message?.content || "Nu am putut genera un răspuns.";
 
     return new Response(JSON.stringify({ 
       response: generatedResponse,
-      isCodeProposal: isCodeProposal
+      isCodeProposal: isCodeProposal,
+      usage: {
+        inputTokens,
+        outputTokens,
+        totalTokens: inputTokens + outputTokens,
+        responseTime
+      }
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200
