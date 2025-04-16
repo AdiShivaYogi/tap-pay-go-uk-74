@@ -1,173 +1,286 @@
+
 import { Layout } from "@/components/layout/layout";
+import { ArrowRight, CheckCircle2, CreditCard, FileCheck, Lock, Shield, ShieldCheck, User } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
+import { SectionContainer } from "@/components/ui/section-container";
+import { StyledCard } from "@/components/ui/card-variants";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Steps } from "@/components/ui/steps";
+import { useState } from "react";
+import { toast } from "@/hooks/use-toast";
+import { Link } from "react-router-dom";
+import { 
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle 
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
-const OnboardingPage = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const selectedPlan = searchParams.get('plan');
-  const totalSteps = 3;
-
-  useEffect(() => {
-    if (!selectedPlan) {
-      navigate('/pricing');
-    }
-  }, [selectedPlan, navigate]);
-
-  const handleNext = () => {
-    if (currentStep === totalSteps) {
-      navigate("/connect-stripe");
-    } else {
+const OnboardingSteps = () => {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [progress, setProgress] = useState(0);
+  
+  const handleNextStep = () => {
+    if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
+      setProgress(Math.round(((currentStep + 1) / (steps.length - 1)) * 100));
+      toast({
+        title: `Pas ${currentStep + 1} completat!`,
+        description: "Configurarea progresează cu succes.",
+      });
     }
   };
-
-  const handlePrevious = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    } else {
-      navigate('/pricing');
-    }
-  };
-
-  if (!selectedPlan) {
-    return null;
-  }
-
-  return (
-    <Layout>
-      <div className="container max-w-4xl mx-auto py-12 px-4">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Getting Started</h1>
-          <div className="text-sm text-muted-foreground">
-            Step {currentStep} of {totalSteps}
+  
+  const steps = [
+    {
+      title: "Profil",
+      icon: User,
+      description: "Completează informațiile despre tine și afacerea ta",
+      content: (
+        <div className="space-y-4">
+          <p className="text-muted-foreground">
+            Completează informațiile de bază despre tine și afacerea ta pentru a configura contul TapPayGo.
+            Aceste informații sunt necesare pentru procesarea plăților și pentru a-ți oferi o experiență personalizată.
+          </p>
+          <div className="bg-muted/30 p-4 rounded-lg">
+            <h4 className="font-medium mb-2">Informații necesare:</h4>
+            <ul className="space-y-2">
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-primary" />
+                <span>Nume complet</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-primary" />
+                <span>Email de contact</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-primary" />
+                <span>Număr de telefon</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-primary" />
+                <span>Numele afacerii (opțional)</span>
+              </li>
+            </ul>
+          </div>
+          <Button onClick={handleNextStep} className="w-full">Completează profilul</Button>
+        </div>
+      ),
+    },
+    {
+      title: "Conectare Stripe",
+      icon: CreditCard,
+      description: "Conectează contul tău Stripe pentru procesarea plăților",
+      content: (
+        <div className="space-y-4">
+          <p className="text-muted-foreground">
+            TapPayGo folosește Stripe pentru procesarea sigură a plăților. Conectează contul tău Stripe existent 
+            sau creează unul nou pentru a începe să primești plăți.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Am deja un cont Stripe</CardTitle>
+              </CardHeader>
+              <CardFooter>
+                <Button onClick={handleNextStep} variant="outline" className="w-full">Conectează cont</Button>
+              </CardFooter>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Creează cont nou</CardTitle>
+              </CardHeader>
+              <CardFooter>
+                <Button onClick={handleNextStep} className="w-full">Creează cont</Button>
+              </CardFooter>
+            </Card>
           </div>
         </div>
+      ),
+    },
+    {
+      title: "Verificare cont",
+      icon: Shield,
+      description: "Verifică-ți contul pentru a evita limitările",
+      content: (
+        <div className="space-y-4">
+          <p className="text-muted-foreground">
+            Verificarea contului tău este necesară pentru a procesa plăți fără limitări. Aceasta include
+            verificarea identității tale și a informațiilor bancare.
+          </p>
+          <div className="bg-muted/30 p-4 rounded-lg">
+            <h4 className="font-medium mb-2">Documente necesare:</h4>
+            <ul className="space-y-2">
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-primary" />
+                <span>Act de identitate (CI sau pașaport)</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-primary" />
+                <span>Detalii cont bancar</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-primary" />
+                <span>Adresă fizică</span>
+              </li>
+            </ul>
+          </div>
+          <Button onClick={handleNextStep} className="w-full">Verifică cont</Button>
+        </div>
+      ),
+    },
+    {
+      title: "Configurare completă",
+      icon: FileCheck,
+      description: "Contul tău este configurat și gata de utilizare",
+      content: (
+        <div className="space-y-4">
+          <Alert className="bg-green-50 border-green-200">
+            <CheckCircle2 className="h-4 w-4 text-green-500" />
+            <AlertDescription className="text-green-700">
+              Felicitări! Contul tău TapPayGo este complet configurat și gata de utilizare.
+              Poți acum să procesezi plăți utilizând iPhone-ul tău.
+            </AlertDescription>
+          </Alert>
+          <div className="bg-muted/30 p-4 rounded-lg">
+            <h4 className="font-medium mb-2">Următorii pași:</h4>
+            <ul className="space-y-2">
+              <li className="flex items-center gap-2">
+                <ArrowRight className="h-4 w-4 text-primary" />
+                <span>Procesează prima ta plată</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <ArrowRight className="h-4 w-4 text-primary" />
+                <span>Explorează dashboardul și rapoartele</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <ArrowRight className="h-4 w-4 text-primary" />
+                <span>Configurează notificările pentru plăți</span>
+              </li>
+            </ul>
+          </div>
+          <Link to="/dashboard">
+            <Button className="w-full">Mergi la Dashboard</Button>
+          </Link>
+        </div>
+      ),
+    },
+  ];
 
-        <div className="flex space-x-2 mb-10">
-          {Array.from({ length: totalSteps }).map((_, index) => (
-            <div
+  return (
+    <div className="space-y-8">
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-muted-foreground">Progres configurare</p>
+          <p className="text-sm font-medium">{progress}%</p>
+        </div>
+        <Progress value={progress} className="h-2" />
+      </div>
+      
+      <Steps currentStep={currentStep} totalSteps={steps.length} />
+      
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="col-span-1 space-y-4">
+          {steps.map((step, index) => (
+            <div 
               key={index}
-              className={`h-1 flex-1 rounded-full ${
-                index + 1 <= currentStep ? "bg-primary" : "bg-muted"
+              className={`p-4 rounded-lg border cursor-pointer transition-colors ${
+                currentStep === index 
+                  ? "border-primary bg-primary/5" 
+                  : "border-muted bg-card"
               }`}
-            />
+              onClick={() => {
+                if (index <= currentStep) {
+                  setCurrentStep(index);
+                }
+              }}
+            >
+              <div className="flex items-center gap-3">
+                <div className={`p-2 rounded-full ${
+                  currentStep >= index ? "bg-primary/10" : "bg-muted"
+                }`}>
+                  <step.icon className={`h-5 w-5 ${
+                    currentStep >= index ? "text-primary" : "text-muted-foreground"
+                  }`} />
+                </div>
+                <div>
+                  <p className={`font-medium ${
+                    currentStep >= index ? "text-foreground" : "text-muted-foreground"
+                  }`}>
+                    {step.title}
+                  </p>
+                  <p className="text-xs text-muted-foreground hidden md:block">
+                    {step.description}
+                  </p>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
-
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle>
-              {currentStep === 1 && "Selected Plan"}
-              {currentStep === 2 && "How It Works"}
-              {currentStep === 3 && "Connect Stripe"}
-            </CardTitle>
-            <CardDescription>
-              {currentStep === 1 && "You've chosen the perfect plan. Let's start setting things up."}
-              {currentStep === 2 && "A simple 3-step process to start receiving payments."}
-              {currentStep === 3 && "Securely connect with Stripe to receive payments directly."}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {currentStep === 1 && (
-              <div className="space-y-6">
-                <div className="p-6 bg-muted/50 rounded-lg text-center">
-                  <h3 className="text-xl font-semibold mb-2">
-                    {selectedPlan === 'pay-as-you-go' && "Pay-as-you-go"}
-                    {selectedPlan === 'monthly' && "Plan Lunar"}
-                    {selectedPlan === 'lifetime' && "Plan Lifetime"}
-                  </h3>
-                  <p className="text-muted-foreground">
-                    {selectedPlan === 'pay-as-you-go' && "Plătești doar când folosești serviciul"}
-                    {selectedPlan === 'monthly' && "Acces complet cu plată lunară"}
-                    {selectedPlan === 'lifetime' && "Acces nelimitat pe viață"}
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {currentStep === 2 && (
-              <div className="space-y-8">
-                <div className="flex flex-col items-center text-center">
-                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                    <div className="text-2xl font-bold text-primary">1</div>
-                  </div>
-                  <h3 className="font-medium mb-2">Connect Stripe</h3>
-                  <p className="text-sm text-muted-foreground max-w-xs">
-                    Link your existing Stripe account or create a new one through our secure portal.
-                  </p>
-                </div>
-
-                <div className="flex flex-col items-center text-center">
-                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                    <div className="text-2xl font-bold text-primary">2</div>
-                  </div>
-                  <h3 className="font-medium mb-2">Enter Amount</h3>
-                  <p className="text-sm text-muted-foreground max-w-xs">
-                    Input the payment amount you want to receive from your customer.
-                  </p>
-                </div>
-
-                <div className="flex flex-col items-center text-center">
-                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                    <div className="text-2xl font-bold text-primary">3</div>
-                  </div>
-                  <h3 className="font-medium mb-2">Accept Payment</h3>
-                  <p className="text-sm text-muted-foreground max-w-xs">
-                    Your customer pays with their contactless card or device, and you get paid instantly.
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {currentStep === 3 && (
-              <div className="space-y-6 text-center">
-                <div className="bg-muted/50 p-6 rounded-lg">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-4 text-primary">
-                    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1"></path>
-                    <line x1="4" y1="22" x2="4" y2="15"></line>
-                  </svg>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    To start accepting payments, you'll need to connect your Stripe account. This connection is secure and we don't store any of your API keys.
-                  </p>
-                  <div className="flex justify-center">
-                    <Button variant="outline" className="w-full">
-                      <svg viewBox="0 0 60 25" xmlns="http://www.w3.org/2000/svg" width="60" height="25" className="mr-2">
-                        <path fill="#635BFF" d="M59.64 14.28h-8.06v1.2h5.92v2.2h-5.92v1.2h8.03v2.32H48.16v-9.24h11.48v2.32zm-13.68 5.72L42.2 14.28h-2.77v-2.13h4.02c1.08 0 1.94.88 1.94 1.96 0 .77-.45 1.43-1.1 1.75l3.27 4.23-1.6-.09zm-14.33-3.52h-3.8v3.43h-3.43V10.76h11.07v2.37h-3.84v7.06h-3.42v-7.01l3.42.3zm-12.35 3.52L15.7 14.28h-2.66v-2.21h3.92c1.07 0 1.94.88 1.94 1.96 0 .77-.45 1.43-1.1 1.75l3.27 4.23-2.87-.09zm-3.25-3.52h-3.46v3.43H9.14V10.76h3.43v6.72h3.46v-6.72h3.42v9.24h-3.42v-3.52zm44.15-3.52c1 0 1.81.8 1.81 1.79a1.8 1.8 0 0 1-1.8 1.8c-1 0-1.8-.81-1.8-1.8 0-1 .8-1.8 1.8-1.8z"/>
-                      </svg>
-                      Connect with Stripe
-                    </Button>
-                  </div>
-                </div>
-
-                <p className="text-xs text-muted-foreground">
-                  By connecting your Stripe account, you agree to our 
-                  <a href="/terms" className="text-primary hover:underline mx-1">Terms of Service</a> and 
-                  <a href="/privacy" className="text-primary hover:underline mx-1">Privacy Policy</a>.
-                </p>
-              </div>
-            )}
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <Button 
-              variant="outline" 
-              onClick={handlePrevious}
-              disabled={currentStep === 1}
-            >
-              {currentStep === 1 ? "Change Plan" : "Back"}
-            </Button>
-            <Button onClick={handleNext}>
-              {currentStep === totalSteps ? "Connect Stripe" : "Continue"}
-            </Button>
-          </CardFooter>
-        </Card>
+        
+        <div className="col-span-1 md:col-span-3">
+          <StyledCard className="border-primary/10">
+            <div className="p-6">
+              <h3 className="text-xl font-semibold mb-4">{steps[currentStep].title}</h3>
+              {steps[currentStep].content}
+            </div>
+          </StyledCard>
+        </div>
       </div>
+    </div>
+  );
+};
+
+const Onboarding = () => {
+  return (
+    <Layout>
+      <SectionContainer>
+        <PageHeader
+          icon={FileCheck}
+          title="Configurare Cont"
+          description="Parcurge pașii pentru configurarea contului TapPayGo"
+        />
+        
+        <div className="space-y-6">
+          <StyledCard className="border-primary/10">
+            <div className="p-6">
+              <Alert className="mb-6 bg-blue-50 border-blue-200">
+                <Lock className="h-4 w-4 text-blue-500" />
+                <AlertDescription className="text-blue-700">
+                  Configurarea contului tău este necesară pentru a începe să procesezi plăți.
+                  Informațiile tale sunt securizate și protejate.
+                </AlertDescription>
+              </Alert>
+              
+              <OnboardingSteps />
+            </div>
+          </StyledCard>
+          
+          <StyledCard className="border-primary/10">
+            <div className="p-6">
+              <div className="flex items-start gap-4">
+                <div className="p-2 rounded-full bg-primary/10">
+                  <ShieldCheck className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-medium mb-2">Siguranță și confidențialitate</h3>
+                  <p className="text-sm text-muted-foreground">
+                    TapPayGo ia în serios siguranța și confidențialitatea datelor tale. Toate informațiile sunt 
+                    criptate și stocate în siguranță, iar procesarea plăților respectă cele mai înalte standarde 
+                    de securitate. Pentru mai multe informații, consultă <Link to="/privacy" className="text-primary hover:underline">Politica de Confidențialitate</Link>.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </StyledCard>
+        </div>
+      </SectionContainer>
     </Layout>
   );
 };
 
-export default OnboardingPage;
+export default Onboarding;

@@ -53,7 +53,6 @@ export function MutedText({ className, children, ...props }: React.HTMLAttribute
 }
 
 // Componente pentru layout
-
 interface SectionProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: "default" | "alt";
   container?: boolean;

@@ -1,151 +1,140 @@
 
 import { Layout } from "@/components/layout/layout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, LineChart, PieChart, Activity, Calendar } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TransactionsBarChart } from "@/components/transactions/TransactionsBarChart";
-import { TransactionsPieChart } from "@/components/transactions/TransactionsPieChart";
+import { BarChart2, PieChart, RefreshCcw } from "lucide-react";
+import { useDeviceCompatibility } from "@/hooks/use-device-compatibility";
+import { PageHeader } from "@/components/ui/page-header";
+import { SectionContainer } from "@/components/ui/section-container";
+import { StyledCard } from "@/components/ui/card-variants";
 import { useQuery } from "@tanstack/react-query";
-import { prepareChartData, preparePieData } from "@/utils/chart-utils";
-import { Transaction } from "@/types/transactions";
-
-// Mock data for demonstration purposes
-const mockTransactions: Transaction[] = [
-  { id: "1", user_id: "1", amount: 120, status: "completed", created_at: new Date().toISOString() },
-  { id: "2", user_id: "1", amount: 75, status: "pending", created_at: new Date().toISOString() },
-  { id: "3", user_id: "1", amount: 50, status: "failed", created_at: new Date().toISOString() },
-  { id: "4", user_id: "1", amount: 200, status: "completed", created_at: new Date(Date.now() - 86400000).toISOString() },
-  { id: "5", user_id: "1", amount: 100, status: "completed", created_at: new Date(Date.now() - 86400000 * 2).toISOString() },
-  { id: "6", user_id: "1", amount: 80, status: "failed", created_at: new Date(Date.now() - 86400000 * 3).toISOString() },
-  { id: "7", user_id: "1", amount: 60, status: "pending", created_at: new Date(Date.now() - 86400000 * 4).toISOString() },
-];
+import { supabase } from "@/integrations/supabase/client";
+import { ReportStats } from "@/components/reports/ReportStats";
+import { ReportCharts } from "@/components/reports/ReportCharts";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useState } from "react";
 
 const Statistics = () => {
-  const { data: transactions = mockTransactions } = useQuery({
-    queryKey: ['transactions'],
+  const [period, setPeriod] = useState<"week" | "month" | "all">("month");
+  const deviceCompatibility = useDeviceCompatibility();
+  
+  const { data: transactions = [], isLoading, refetch } = useQuery({
+    queryKey: ['transactions', period],
     queryFn: async () => {
-      // In a real app, this would fetch from an API
-      return mockTransactions;
-    },
+      let query = supabase
+        .from('transactions')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      // Filtrare după perioadă
+      const now = new Date();
+      if (period === "week") {
+        const weekAgo = new Date(now);
+        weekAgo.setDate(now.getDate() - 7);
+        query = query.gte('created_at', weekAgo.toISOString());
+      } else if (period === "month") {
+        const monthAgo = new Date(now);
+        monthAgo.setMonth(now.getMonth() - 1);
+        query = query.gte('created_at', monthAgo.toISOString());
+      }
+      
+      const { data, error } = await query;
+      if (error) throw error;
+      return data;
+    }
   });
-
-  const barChartData = prepareChartData(transactions);
-  const pieChartData = preparePieData(transactions);
 
   return (
     <Layout>
-      <div className="container py-8">
+      <SectionContainer>
+        <PageHeader
+          icon={BarChart2}
+          title="Statistici"
+          description="Analizează tendințele plăților și performanța tranzacțiilor"
+        />
+        
         <div className="space-y-6">
-          <div>
-            <h1 className="text-3xl font-bold flex items-center gap-2">
-              <Activity className="h-8 w-8 text-primary" />
-              Statistici
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              Analizează activitatea și tranzacțiile tale
-            </p>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="flex items-center gap-2">
+              <h2 className="text-xl font-semibold">Privire de Ansamblu</h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => refetch()}
+                className="h-8 w-8"
+              >
+                <RefreshCcw className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">Perioadă:</span>
+              <Select value={period} onValueChange={(value: "week" | "month" | "all") => setPeriod(value)}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Selectează perioada" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="week">Ultima săptămână</SelectItem>
+                  <SelectItem value="month">Ultima lună</SelectItem>
+                  <SelectItem value="all">Tot istoricul</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-
-          <Tabs defaultValue="daily">
-            <TabsList>
-              <TabsTrigger value="daily">Zilnic</TabsTrigger>
-              <TabsTrigger value="weekly">Săptămânal</TabsTrigger>
-              <TabsTrigger value="monthly">Lunar</TabsTrigger>
-              <TabsTrigger value="yearly">Anual</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="daily" className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Plăți totale</CardTitle>
-                    <BarChart className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">12</div>
-                    <p className="text-xs text-muted-foreground">
-                      +2.5% față de ieri
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Sumă încasată</CardTitle>
-                    <LineChart className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">1,250 Lei</div>
-                    <p className="text-xs text-muted-foreground">
-                      +18.1% față de ieri
-                    </p>
-                  </CardContent>
-                </Card>
+          
+          <ReportStats transactions={transactions} isLoading={isLoading} />
+          
+          <ReportCharts transactions={transactions} isLoading={isLoading} period={period} />
+          
+          <StyledCard className="border-primary/10">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold flex items-center gap-2">
+                  <PieChart className="h-5 w-5 text-primary" />
+                  <span>Analiza Plăților</span>
+                </h2>
               </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <Card className="col-span-2 md:col-span-1">
-                  <CardHeader>
-                    <CardTitle>Activitate pe ore</CardTitle>
-                  </CardHeader>
-                  <CardContent className="pl-2">
-                    <div className="h-[350px]">
-                      <TransactionsBarChart data={barChartData} />
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card className="col-span-2 md:col-span-1">
-                  <CardHeader>
-                    <CardTitle>Tipuri de plăți</CardTitle>
-                  </CardHeader>
-                  <CardContent className="pl-2">
-                    <div className="h-[350px]">
-                      <TransactionsPieChart data={pieChartData} />
-                    </div>
-                  </CardContent>
-                </Card>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <h3 className="font-medium">Metode de Plată Populare</h3>
+                  <ul className="space-y-2">
+                    <li className="flex justify-between">
+                      <span className="text-muted-foreground">Visa</span>
+                      <span className="font-medium">73%</span>
+                    </li>
+                    <li className="flex justify-between">
+                      <span className="text-muted-foreground">MasterCard</span>
+                      <span className="font-medium">24%</span>
+                    </li>
+                    <li className="flex justify-between">
+                      <span className="text-muted-foreground">Alte carduri</span>
+                      <span className="font-medium">3%</span>
+                    </li>
+                  </ul>
+                </div>
+                
+                <div className="space-y-2">
+                  <h3 className="font-medium">Ore de Vârf pentru Plăți</h3>
+                  <ul className="space-y-2">
+                    <li className="flex justify-between">
+                      <span className="text-muted-foreground">Dimineață (8-12)</span>
+                      <span className="font-medium">32%</span>
+                    </li>
+                    <li className="flex justify-between">
+                      <span className="text-muted-foreground">După-amiază (12-17)</span>
+                      <span className="font-medium">45%</span>
+                    </li>
+                    <li className="flex justify-between">
+                      <span className="text-muted-foreground">Seara (17-22)</span>
+                      <span className="font-medium">23%</span>
+                    </li>
+                  </ul>
+                </div>
               </div>
-            </TabsContent>
-
-            {/* Alte conținuturi de taburi (similar structurate) */}
-            <TabsContent value="weekly">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Statistici săptămânale</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    Statisticile săptămânale vor fi disponibile în curând.
-                  </p>
-                </CardContent>
-              </Card>
-            </TabsContent>
-            <TabsContent value="monthly">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Statistici lunare</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    Statisticile lunare vor fi disponibile în curând.
-                  </p>
-                </CardContent>
-              </Card>
-            </TabsContent>
-            <TabsContent value="yearly">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Statistici anuale</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    Statisticile anuale vor fi disponibile în curând.
-                  </p>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
+            </div>
+          </StyledCard>
         </div>
-      </div>
+      </SectionContainer>
     </Layout>
   );
 };
