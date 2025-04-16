@@ -1,10 +1,10 @@
 
 // Import the existing Supabase client
-import { supabase as originalSupabase } from './client';
+import { supabase } from './client';
 import { ExtendedSupabaseClient } from './types/supabase-client';
 
 // Create and export a properly typed extended client
-export const extendedSupabase = originalSupabase as unknown as ExtendedSupabaseClient;
+export const extendedSupabase = supabase as unknown as ExtendedSupabaseClient;
 
 // For backward compatibility
 export const createExtendedSupabaseClient = () => {

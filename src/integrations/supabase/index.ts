@@ -1,7 +1,7 @@
 
 // Main entry point for Supabase integration
-import { supabase as originalSupabase } from './client';
-export { originalSupabase as supabase } from './client';
+import { supabase } from './client';
+export { supabase } from './client';
 export * from './extended-client';
 export * from './types-extension';
 export * from './types/extended-database';
