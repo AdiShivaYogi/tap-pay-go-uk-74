@@ -1,10 +1,11 @@
+
 import { Button } from "@/components/ui/button";
 import { Check, InfoIcon } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
-import { StyledCard, StyledCardHeader, StyledCardContent, StyledCardTitle, StyledCardDescription, StyledCardFooter } from "@/components/ui/card-variants";
+import { StyledCard, StyledCardHeader, StyledCardContent, StyledCardTitle, StyledCardDescription, StyledCardFooter } from "@/components/ui/cards";
 
 interface PricingPlan {
   name: string;

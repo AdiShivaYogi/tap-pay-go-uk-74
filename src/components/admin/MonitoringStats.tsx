@@ -1,4 +1,5 @@
-import { StyledCard, StyledCardHeader, StyledCardContent, StyledCardTitle, StyledCardDescription } from "@/components/ui/card-variants";
+
+import { StyledCard, StyledCardHeader, StyledCardContent, StyledCardTitle, StyledCardDescription } from "@/components/ui/cards";
 import { Badge } from "@/components/ui/badge";
 import { Bell, AlertTriangle, CheckCircle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";

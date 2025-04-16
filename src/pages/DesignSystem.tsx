@@ -1,4 +1,3 @@
-
 import { Layout } from "@/components/layout/layout";
 import { Button } from "@/components/ui/button";
 import { 
@@ -12,7 +11,8 @@ import {
   Grid2Cols,
   Grid3Cols,
   Grid4Cols,
-  ThemedCard
+  ThemedCard,
+  StyledCard
 } from "@/components/ui/themed-components";
 import { theme } from "@/config/theme";
 import { Separator } from "@/components/ui/separator";
@@ -112,10 +112,34 @@ const DesignSystem = () => {
               </ThemedCard>
               <ThemedCard variant="highlight">
                 <h3 className={theme.typography.h3}>Card Evidențiat</h3>
-                <Paragraph>Card evidențiat pentru informații importante.</Paragraph>
+                <Paragraph>Card pentru informații importante.</Paragraph>
                 <MutedText>variant="highlight"</MutedText>
               </ThemedCard>
             </Grid3Cols>
+            
+            <div className="mt-8">
+              <Heading3 className="mb-4">Carduri Stilizate</Heading3>
+              <Grid3Cols>
+                <StyledCard variant="default">
+                  <div className="p-4">
+                    <h3 className="text-lg font-semibold">Card Default</h3>
+                    <p className="text-muted-foreground">Cu gradient animat</p>
+                  </div>
+                </StyledCard>
+                <StyledCard variant="gradient" gradient={false}>
+                  <div className="p-4">
+                    <h3 className="text-lg font-semibold">Card Gradient</h3>
+                    <p className="text-muted-foreground">Fără gradient animat</p>
+                  </div>
+                </StyledCard>
+                <StyledCard variant="transparent" gradient={false}>
+                  <div className="p-4">
+                    <h3 className="text-lg font-semibold">Card Transparent</h3>
+                    <p className="text-muted-foreground">Cu fundal semi-transparent</p>
+                  </div>
+                </StyledCard>
+              </Grid3Cols>
+            </div>
           </div>
 
           <Separator />

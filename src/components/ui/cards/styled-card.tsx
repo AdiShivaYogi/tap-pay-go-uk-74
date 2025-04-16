@@ -1,17 +1,8 @@
 
-import { cn } from "@/lib/utils";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "./card";
+import React from "react";
 import { LucideIcon } from "lucide-react";
-
-export interface StyledCardProps extends React.ComponentProps<typeof Card> {
-  children: React.ReactNode;
-  variant?: "default" | "pricing" | "gradient" | "transparent";
-  hover?: boolean;
-  gradient?: boolean;
-  icon?: LucideIcon;
-  iconClassName?: string;
-  animate?: boolean;
-}
+import { cn } from "@/lib/utils";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "../card";
 
 export const CardVariants = {
   default: "border-[1px] border-primary/10 relative overflow-hidden",
@@ -20,7 +11,17 @@ export const CardVariants = {
   transparent: "bg-background/50 border-[1px] border-primary/20"
 };
 
-export const StyledCard = ({ 
+export interface StyledCardProps extends React.ComponentProps<typeof Card> {
+  children: React.ReactNode;
+  variant?: keyof typeof CardVariants;
+  hover?: boolean;
+  gradient?: boolean;
+  icon?: LucideIcon;
+  iconClassName?: string;
+  animate?: boolean;
+}
+
+export function StyledCard({ 
   children,
   className,
   variant = "default",
@@ -30,7 +31,7 @@ export const StyledCard = ({
   iconClassName,
   animate = true,
   ...props
-}: StyledCardProps) => {
+}: StyledCardProps) {
   return (
     <Card
       className={cn(
@@ -47,13 +48,15 @@ export const StyledCard = ({
         </div>
       )}
       {children}
+      {gradient && variant === "default" && (
+        <div className="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-primary to-transparent animate-pulse" />
+      )}
     </Card>
   );
-};
+}
 
 export const StyledCardHeader = CardHeader;
 export const StyledCardContent = CardContent;
 export const StyledCardTitle = CardTitle;
 export const StyledCardDescription = CardDescription;
 export const StyledCardFooter = CardFooter;
-

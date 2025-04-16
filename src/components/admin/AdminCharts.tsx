@@ -1,5 +1,5 @@
 
-import { StyledCard, StyledCardContent, StyledCardHeader, StyledCardTitle, StyledCardDescription } from "@/components/ui/card-variants";
+import { StyledCard, StyledCardContent, StyledCardHeader, StyledCardTitle, StyledCardDescription } from "@/components/ui/cards";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TransactionsBarChart } from "@/components/transactions/TransactionsBarChart";
 import { TransactionsPieChart } from "@/components/transactions/TransactionsPieChart";

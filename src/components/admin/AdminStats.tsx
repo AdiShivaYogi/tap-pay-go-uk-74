@@ -1,5 +1,5 @@
 
-import { StyledCard, StyledCardHeader, StyledCardContent, StyledCardDescription, StyledCardTitle } from "@/components/ui/card-variants";
+import { StyledCard, StyledCardHeader, StyledCardContent, StyledCardDescription, StyledCardTitle } from "@/components/ui/cards";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BadgeDollarSign, Wallet, CreditCard, TrendingUp } from "lucide-react";
 
