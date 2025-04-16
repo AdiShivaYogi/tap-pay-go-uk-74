@@ -51,8 +51,13 @@ const UserAuth = () => {
       setLocalLoading(true);
       setErrorMessage(undefined);
       
+      // Utilizăm URL-ul curent al aplicației pentru redirecționare
+      const currentUrl = window.location.origin;
+      
+      console.log(`Sending password reset email with redirect URL: ${currentUrl}/auth?reset=true`);
+      
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth?reset=true`,
+        redirectTo: `${currentUrl}/auth?reset=true`,
       });
 
       if (error) {

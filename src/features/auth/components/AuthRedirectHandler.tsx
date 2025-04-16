@@ -60,7 +60,7 @@ export const AuthRedirectHandler = ({ locationHash, setIsLoading }: AuthRedirect
               (data.session.user.user_metadata && data.session.user.user_metadata.role === 'admin');
               
             toast({
-              title: "Autentificare reușită",
+              title: resetRequested ? "Parolă resetată cu succes" : "Autentificare reușită",
               description: isAdmin ? "Bine ați revenit, admin!" : "Bine ați revenit!",
             });
             
@@ -80,7 +80,7 @@ export const AuthRedirectHandler = ({ locationHash, setIsLoading }: AuthRedirect
     };
 
     handleAuthRedirect();
-  }, [locationHash, navigate, setIsLoading]);
+  }, [locationHash, navigate, setIsLoading, resetRequested]);
 
   return null;
 };
