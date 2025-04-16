@@ -1,6 +1,6 @@
 
 import { Layout } from "@/components/layout/layout";
-import { BarChart2, RefreshCcw, Download, Filter } from "lucide-react";
+import { BarChart2, RefreshCcw, Download, Filter, CreditCard as CreditCardIcon } from "lucide-react";
 import { DeviceCompatibilityAlert } from "@/components/device-compatibility-alert";
 import { SecurityAlert } from "@/components/security/SecurityAlert";
 import { PaymentForm } from "@/components/dashboard/PaymentForm";
@@ -9,7 +9,7 @@ import { AccountInfo } from "@/components/dashboard/AccountInfo";
 import { useDeviceCompatibility } from "@/hooks/use-device-compatibility";
 import { PageHeader } from "@/components/ui/page-header";
 import { SectionContainer } from "@/components/ui/section-container";
-import { StyledCard } from "@/components/ui/card-variants";
+import { StyledCard } from "@/components/ui/styled-card";
 import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -18,11 +18,14 @@ import { useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useAuth } from "@/hooks/use-auth";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const [searchParams] = useSearchParams();
   const queryClient = useQueryClient();
   const deviceCompatibility = useDeviceCompatibility();
+  const { user } = useAuth();
 
   const { data: transactions = [], isLoading } = useQuery({
     queryKey: ['transactions'],
@@ -99,13 +102,41 @@ const Dashboard = () => {
     }
   }, [searchParams, queryClient]);
 
+  // Redirect to connect Stripe if not connected
+  if (!user?.stripeConnected) {
+    return (
+      <Layout>
+        <SectionContainer>
+          <PageHeader
+            icon={CreditCardIcon}
+            title="Conectare necesară"
+            description="Conectează-te cu Stripe pentru a accesa Dashboard-ul"
+          />
+          
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <CreditCardIcon className="h-12 w-12 text-primary mb-4" />
+            <h2 className="text-2xl font-semibold mb-4">Conectează-te cu Stripe pentru a continua</h2>
+            <p className="text-muted-foreground max-w-md mb-8">
+              Pentru a putea procesa plăți și accesa Dashboard-ul, trebuie să-ți conectezi contul Stripe.
+            </p>
+            <Link to="/connect-stripe">
+              <Button size="lg" className="h-12">
+                Conectează-te cu Stripe
+              </Button>
+            </Link>
+          </div>
+        </SectionContainer>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <SectionContainer>
         <PageHeader
           icon={BarChart2}
           title="Panou de Control"
-          description="Gestionează tranzacțiile și monitorizează activitatea"
+          description="Gestionează tranzacțiile și procesează plăți"
         />
 
         <div className="space-y-6">
@@ -160,7 +191,7 @@ const Dashboard = () => {
 
           <StyledCard className="border-primary/10">
             <div className="p-6">
-              <h2 className="text-xl font-semibold mb-4">Informații Cont</h2>
+              <h2 className="text-xl font-semibold mb-4">Informații Cont Stripe</h2>
               <AccountInfo deviceCompatibility={deviceCompatibility} />
             </div>
           </StyledCard>

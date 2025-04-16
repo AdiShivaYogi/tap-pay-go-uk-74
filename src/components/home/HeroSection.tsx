@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, CreditCard } from "lucide-react";
 
 export const HeroSection = () => {
   return (
@@ -22,14 +22,15 @@ export const HeroSection = () => {
           </span>
         </h1>
         <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto text-center leading-relaxed">
-          Acceptă plăți contactless instant ca freelancer sau afacere mică. 
-          Nu ai nevoie de hardware suplimentar - doar telefonul tău și aplicația noastră.
+          Acceptă plăți contactless instant ca freelancer sau afacere mică.
+          Nu ai nevoie de hardware suplimentar - doar telefonul tău și Stripe.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <Link to="/onboarding">
-            <Button size="lg" className="h-14 px-8 text-lg w-full sm:w-auto group">
-              Începe Acum 
-              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+          <Link to="/connect-stripe">
+            <Button size="lg" className="h-14 px-8 text-lg w-full sm:w-auto group flex items-center gap-2">
+              <CreditCard className="h-5 w-5" />
+              Conectează-te cu Stripe 
+              <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>
           <Link to="/pricing">

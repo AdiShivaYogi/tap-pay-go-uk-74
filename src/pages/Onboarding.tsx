@@ -1,26 +1,18 @@
 
+import { useState } from "react";
 import { Layout } from "@/components/layout/layout";
-import { ArrowRight, CheckCircle2, CreditCard, FileCheck, Lock, Shield, ShieldCheck, User } from "lucide-react";
+import { ArrowRight, CreditCard, Info, Shield, ShieldCheck } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { SectionContainer } from "@/components/ui/section-container";
-import { StyledCard } from "@/components/ui/card-variants";
+import { StyledCard } from "@/components/ui/styled-card";
 import { Button } from "@/components/ui/button";
 import { Steps } from "@/components/ui/steps";
-import { useState } from "react";
-import { toast } from "@/hooks/use-toast";
-import { Link } from "react-router-dom";
-import { 
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle 
-} from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Link } from "react-router-dom";
+import { toast } from "@/hooks/use-toast";
 
-const OnboardingSteps = () => {
+const Onboarding = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [progress, setProgress] = useState(0);
   
@@ -28,235 +20,160 @@ const OnboardingSteps = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
       setProgress(Math.round(((currentStep + 1) / (steps.length - 1)) * 100));
-      toast({
-        title: `Pas ${currentStep + 1} completat!`,
-        description: "Configurarea progresează cu succes.",
-      });
     }
+  };
+  
+  const handleStripeConnect = () => {
+    // Aici ar fi logica de conectare cu Stripe
+    toast({
+      title: "Cont Stripe conectat cu succes",
+      description: "Poți începe să procesezi plăți imediat",
+    });
+    setCurrentStep(3);  // Salt la ultimul pas
+    setProgress(100);
   };
   
   const steps = [
     {
-      title: "Profil",
-      icon: User,
-      description: "Completează informațiile despre tine și afacerea ta",
+      title: "Bun venit",
       content: (
-        <div className="space-y-4">
-          <p className="text-muted-foreground">
-            Completează informațiile de bază despre tine și afacerea ta pentru a configura contul TapPayGo.
-            Aceste informații sunt necesare pentru procesarea plăților și pentru a-ți oferi o experiență personalizată.
-          </p>
-          <div className="bg-muted/30 p-4 rounded-lg">
-            <h4 className="font-medium mb-2">Informații necesare:</h4>
-            <ul className="space-y-2">
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-primary" />
-                <span>Nume complet</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-primary" />
-                <span>Email de contact</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-primary" />
-                <span>Număr de telefon</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-primary" />
-                <span>Numele afacerii (opțional)</span>
-              </li>
-            </ul>
+        <div className="space-y-6">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold mb-4">Bun venit la TapPayGo</h2>
+            <p className="text-muted-foreground text-lg">
+              Transformă-ți iPhone-ul într-un cititor de carduri. Fără hardware. Fără cont separat. Doar Stripe.
+            </p>
           </div>
-          <Button onClick={handleNextStep} className="w-full">Completează profilul</Button>
+          
+          <div className="flex justify-center">
+            <img 
+              src="/lovable-uploads/8d8d7578-89fa-456f-b552-520d487871a5.png" 
+              alt="TapPayGo Demo" 
+              className="rounded-lg shadow-lg max-w-md"
+            />
+          </div>
+          
+          <Button 
+            onClick={handleNextStep} 
+            className="w-full h-14 text-lg"
+          >
+            Continuă <ArrowRight className="ml-2 h-5 w-5" />
+          </Button>
+        </div>
+      ),
+    },
+    {
+      title: "Despre Stripe",
+      content: (
+        <div className="space-y-6">
+          <div className="flex justify-center mb-6">
+            <div className="bg-white p-4 rounded-lg shadow-md inline-flex items-center gap-4">
+              <CreditCard className="h-8 w-8 text-blue-600" />
+              <span className="text-xl font-semibold">Stripe</span>
+            </div>
+          </div>
+          
+          <div className="text-center mb-6">
+            <p className="text-lg text-muted-foreground">
+              TapPayGo nu procesează plăți. Toate încasările se fac în siguranță prin Stripe — una dintre cele mai sigure platforme de plăți din lume.
+            </p>
+          </div>
+          
+          <Alert className="bg-blue-50 border-blue-200 mb-6">
+            <Info className="h-4 w-4 text-blue-600" />
+            <AlertDescription className="text-blue-700">
+              Stripe gestionează toate informațiile bancare și financiare. TapPayGo nu stochează niciodată datele cardurilor clienților.
+            </AlertDescription>
+          </Alert>
+          
+          <Button 
+            onClick={handleNextStep}
+            className="w-full h-14 text-lg"
+          >
+            Continuă <ArrowRight className="ml-2 h-5 w-5" />
+          </Button>
         </div>
       ),
     },
     {
       title: "Conectare Stripe",
-      icon: CreditCard,
-      description: "Conectează contul tău Stripe pentru procesarea plăților",
       content: (
-        <div className="space-y-4">
-          <p className="text-muted-foreground">
-            TapPayGo folosește Stripe pentru procesarea sigură a plăților. Conectează contul tău Stripe existent 
-            sau creează unul nou pentru a începe să primești plăți.
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">Am deja un cont Stripe</CardTitle>
-              </CardHeader>
-              <CardFooter>
-                <Button onClick={handleNextStep} variant="outline" className="w-full">Conectează cont</Button>
-              </CardFooter>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">Creează cont nou</CardTitle>
-              </CardHeader>
-              <CardFooter>
-                <Button onClick={handleNextStep} className="w-full">Creează cont</Button>
-              </CardFooter>
-            </Card>
+        <div className="space-y-6">
+          <div className="text-center mb-6">
+            <h2 className="text-xl font-semibold mb-4">Conectează-te cu Stripe</h2>
+            <p className="text-muted-foreground">
+              Pentru a începe să procesezi plăți, conectează-te cu contul tău Stripe existent sau creează unul nou.
+            </p>
+          </div>
+          
+          <div className="bg-muted/30 p-6 rounded-lg space-y-4 text-center">
+            <p className="text-sm text-muted-foreground mb-4">
+              După conectare, vei reveni automat în aplicație.
+              Stripe gestionează tot procesul de creare sau autentificare.
+            </p>
+            
+            <Button 
+              onClick={handleStripeConnect}
+              className="w-full sm:w-auto h-14 px-8 text-lg mx-auto"
+            >
+              <CreditCard className="mr-2 h-5 w-5" />
+              Conectează-te cu Stripe
+            </Button>
           </div>
         </div>
       ),
     },
     {
-      title: "Verificare cont",
-      icon: Shield,
-      description: "Verifică-ți contul pentru a evita limitările",
+      title: "Gata de încasare",
       content: (
-        <div className="space-y-4">
-          <p className="text-muted-foreground">
-            Verificarea contului tău este necesară pentru a procesa plăți fără limitări. Aceasta include
-            verificarea identității tale și a informațiilor bancare.
-          </p>
-          <div className="bg-muted/30 p-4 rounded-lg">
-            <h4 className="font-medium mb-2">Documente necesare:</h4>
-            <ul className="space-y-2">
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-primary" />
-                <span>Act de identitate (CI sau pașaport)</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-primary" />
-                <span>Detalii cont bancar</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-primary" />
-                <span>Adresă fizică</span>
-              </li>
-            </ul>
+        <div className="space-y-6">
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-6">
+              <ShieldCheck className="h-8 w-8 text-green-600" />
+            </div>
+            <h2 className="text-2xl font-semibold mb-4">Ești gata să accepți plăți!</h2>
+            <p className="text-lg text-muted-foreground mb-6">
+              Contul tău Stripe este conectat. Poți începe să procesezi plăți cu cardul NFC direct pe iPhone.
+            </p>
           </div>
-          <Button onClick={handleNextStep} className="w-full">Verifică cont</Button>
-        </div>
-      ),
-    },
-    {
-      title: "Configurare completă",
-      icon: FileCheck,
-      description: "Contul tău este configurat și gata de utilizare",
-      content: (
-        <div className="space-y-4">
-          <Alert className="bg-green-50 border-green-200">
-            <CheckCircle2 className="h-4 w-4 text-green-500" />
-            <AlertDescription className="text-green-700">
-              Felicitări! Contul tău TapPayGo este complet configurat și gata de utilizare.
-              Poți acum să procesezi plăți utilizând iPhone-ul tău.
-            </AlertDescription>
-          </Alert>
-          <div className="bg-muted/30 p-4 rounded-lg">
-            <h4 className="font-medium mb-2">Următorii pași:</h4>
-            <ul className="space-y-2">
-              <li className="flex items-center gap-2">
-                <ArrowRight className="h-4 w-4 text-primary" />
-                <span>Procesează prima ta plată</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <ArrowRight className="h-4 w-4 text-primary" />
-                <span>Explorează dashboardul și rapoartele</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <ArrowRight className="h-4 w-4 text-primary" />
-                <span>Configurează notificările pentru plăți</span>
-              </li>
-            </ul>
-          </div>
+          
           <Link to="/dashboard">
-            <Button className="w-full">Mergi la Dashboard</Button>
+            <Button className="w-full h-14 text-lg">
+              Încasează prima plată <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
           </Link>
         </div>
       ),
-    },
+    }
   ];
 
-  return (
-    <div className="space-y-8">
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">Progres configurare</p>
-          <p className="text-sm font-medium">{progress}%</p>
-        </div>
-        <Progress value={progress} className="h-2" />
-      </div>
-      
-      <Steps currentStep={currentStep} totalSteps={steps.length} />
-      
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="col-span-1 space-y-4">
-          {steps.map((step, index) => (
-            <div 
-              key={index}
-              className={`p-4 rounded-lg border cursor-pointer transition-colors ${
-                currentStep === index 
-                  ? "border-primary bg-primary/5" 
-                  : "border-muted bg-card"
-              }`}
-              onClick={() => {
-                if (index <= currentStep) {
-                  setCurrentStep(index);
-                }
-              }}
-            >
-              <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-full ${
-                  currentStep >= index ? "bg-primary/10" : "bg-muted"
-                }`}>
-                  <step.icon className={`h-5 w-5 ${
-                    currentStep >= index ? "text-primary" : "text-muted-foreground"
-                  }`} />
-                </div>
-                <div>
-                  <p className={`font-medium ${
-                    currentStep >= index ? "text-foreground" : "text-muted-foreground"
-                  }`}>
-                    {step.title}
-                  </p>
-                  <p className="text-xs text-muted-foreground hidden md:block">
-                    {step.description}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-        
-        <div className="col-span-1 md:col-span-3">
-          <StyledCard className="border-primary/10">
-            <div className="p-6">
-              <h3 className="text-xl font-semibold mb-4">{steps[currentStep].title}</h3>
-              {steps[currentStep].content}
-            </div>
-          </StyledCard>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const Onboarding = () => {
   return (
     <Layout>
       <SectionContainer>
         <PageHeader
-          icon={FileCheck}
-          title="Configurare Cont"
-          description="Parcurge pașii pentru configurarea contului TapPayGo"
+          icon={CreditCard}
+          title="Onboarding TapPayGo"
+          description="Configurează rapid aplicația pentru a începe să procesezi plăți"
         />
         
-        <div className="space-y-6">
+        <div className="space-y-6 max-w-2xl mx-auto">
           <StyledCard className="border-primary/10">
             <div className="p-6">
-              <Alert className="mb-6 bg-blue-50 border-blue-200">
-                <Lock className="h-4 w-4 text-blue-500" />
-                <AlertDescription className="text-blue-700">
-                  Configurarea contului tău este necesară pentru a începe să procesezi plăți.
-                  Informațiile tale sunt securizate și protejate.
-                </AlertDescription>
-              </Alert>
-              
-              <OnboardingSteps />
+              <div className="space-y-8">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-muted-foreground">Progres onboarding</p>
+                    <p className="text-sm font-medium">{progress}%</p>
+                  </div>
+                  <Progress value={progress} className="h-2" />
+                </div>
+                
+                <Steps currentStep={currentStep} totalSteps={steps.length} />
+                
+                <div className="py-4">
+                  {steps[currentStep].content}
+                </div>
+              </div>
             </div>
           </StyledCard>
           
@@ -264,14 +181,15 @@ const Onboarding = () => {
             <div className="p-6">
               <div className="flex items-start gap-4">
                 <div className="p-2 rounded-full bg-primary/10">
-                  <ShieldCheck className="h-6 w-6 text-primary" />
+                  <Shield className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-medium mb-2">Siguranță și confidențialitate</h3>
+                  <h3 className="text-lg font-medium mb-2">Securitate și confidențialitate</h3>
                   <p className="text-sm text-muted-foreground">
-                    TapPayGo ia în serios siguranța și confidențialitatea datelor tale. Toate informațiile sunt 
-                    criptate și stocate în siguranță, iar procesarea plăților respectă cele mai înalte standarde 
-                    de securitate. Pentru mai multe informații, consultă <Link to="/privacy" className="text-primary hover:underline">Politica de Confidențialitate</Link>.
+                    TapPayGo este o aplicație care doar intermediază conexiunea ta cu Stripe. 
+                    Noi nu stocăm date bancare sau informații personale sensibile. Toate plățile 
+                    și tranzacțiile sunt gestionate de Stripe, unul dintre liderii globali în 
+                    procesarea plăților securizate.
                   </p>
                 </div>
               </div>
