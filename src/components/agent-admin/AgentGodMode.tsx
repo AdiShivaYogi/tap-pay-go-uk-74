@@ -34,7 +34,7 @@ export const AgentGodMode = ({ userId }: AgentGodModeProps) => {
       description: newState ? 
         "Propunerile vor fi aprobate automat cu feedback de îmbunătățire" : 
         "Propunerile vor primi doar feedback, fără aprobare automată",
-      variant: newState ? "default" : "destructive",
+      variant: newState ? "default" : "destructive", // Fixed variant
     });
   };
 
