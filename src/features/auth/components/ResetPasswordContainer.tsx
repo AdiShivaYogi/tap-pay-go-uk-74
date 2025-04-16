@@ -1,0 +1,107 @@
+
+import { useState } from "react";
+import { ResetPasswordForm } from "@/components/admin-auth/ResetPasswordForm";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
+
+interface ResetPasswordContainerProps {
+  mode: "request" | "update";
+  accessToken?: string;
+  onCancel: () => void;
+}
+
+export const ResetPasswordContainer = ({ 
+  mode, 
+  accessToken, 
+  onCancel 
+}: ResetPasswordContainerProps) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | undefined>();
+  
+  const handleResetPassword = async ({ email }: { email: string }) => {
+    try {
+      setIsLoading(true);
+      setErrorMessage(undefined);
+      
+      // Utilizăm URL-ul curent al aplicației pentru redirecționare
+      const currentUrl = window.location.origin;
+      
+      console.log(`Sending password reset email with redirect URL: ${currentUrl}/auth?reset=true`);
+      
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${currentUrl}/auth?reset=true`,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: "Email trimis",
+        description: "Verificați email-ul pentru a reseta parola",
+      });
+      onCancel(); // Close reset form and go back to login
+    } catch (error: any) {
+      console.error("Eroare la trimiterea emailului de resetare:", error);
+      setErrorMessage(error.message || "A apărut o eroare la trimiterea emailului");
+      toast({
+        title: "Eroare",
+        description: error.message || "A apărut o eroare la trimiterea emailului",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleUpdatePassword = async ({ password }: { password: string, confirmPassword: string }) => {
+    try {
+      setIsLoading(true);
+      setErrorMessage(undefined);
+      
+      if (!accessToken) {
+        throw new Error("Lipsește token-ul de acces pentru resetarea parolei");
+      }
+      
+      console.log("Updating password with access token");
+      
+      const { error } = await supabase.auth.updateUser({ 
+        password: password
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: "Parolă actualizată",
+        description: "Parola dvs. a fost actualizată cu succes. Acum vă puteți autentifica.",
+        variant: "default"
+      });
+      
+      onCancel(); // Close update form and go back to login
+      
+    } catch (error: any) {
+      console.error("Eroare la actualizarea parolei:", error);
+      setErrorMessage(error.message || "A apărut o eroare la actualizarea parolei");
+      toast({
+        title: "Eroare",
+        description: error.message || "A apărut o eroare la actualizarea parolei",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <ResetPasswordForm
+      mode={mode}
+      accessToken={accessToken}
+      onSubmit={mode === "request" ? handleResetPassword : handleUpdatePassword}
+      onCancel={onCancel}
+      isLoading={isLoading}
+      errorMessage={errorMessage}
+    />
+  );
+};
