@@ -1,4 +1,3 @@
-
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 
 const corsHeaders = {
@@ -64,19 +63,32 @@ const SYSTEM_PROMPT_TEMPLATES = {
   `
 };
 
+const CODE_GENERATION_TEMPLATES = {
+  codeProposal: `
+    Ești un agent AI specializat în generarea de cod pentru platforma TapPayGo.
+    
+    Regulile tale sunt:
+    1. Generează cod curat, modular și în conformitate cu practicile curente de programare
+    2. Respectă stilul existent de codare din proiect 
+    3. Oferă comentarii clare și explicative
+    4. Propune îmbunătățiri care adaugă valoare reală platformei
+    5. Oferă cod complet funcțional, nu schițe sau pseudo-cod
+    
+    Context proiect: Platformă de procesare plăți cu agenți AI autonomi
+    
+    Specifică în răspunsul tău:
+    - Fișierele care trebuie modificate/create
+    - Codul propriu-zis
+    - Motivația tehnică pentru schimbări
+  `
+};
+
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const deepseekApiKey = Deno.env.get('DEEPSEEK_API_KEY');
-    if (!deepseekApiKey) {
-      throw new Error('Cheia API Deepseek nu este configurată');
-    }
-
-    // Obținem parametrii din cerere
     const { 
       message, 
       agentId, 
@@ -85,7 +97,8 @@ serve(async (req) => {
       context, 
       activeTask,
       isConversationStarter,
-      isTaskProposal
+      isTaskProposal,
+      isCodeProposal
     } = await req.json();
     
     if (!message) {
@@ -98,15 +111,15 @@ serve(async (req) => {
       );
     }
 
-    // Alegem template-ul potrivit pentru prompt
     let promptTemplate = SYSTEM_PROMPT_TEMPLATES.standard;
     if (isConversationStarter) {
       promptTemplate = SYSTEM_PROMPT_TEMPLATES.conversationStarter;
     } else if (isTaskProposal) {
       promptTemplate = SYSTEM_PROMPT_TEMPLATES.taskProposal;
+    } else if (isCodeProposal) {
+      promptTemplate = CODE_GENERATION_TEMPLATES.codeProposal;
     }
     
-    // Înlocuim variabilele din template
     const systemPrompt = promptTemplate
       .replace('{agentId}', agentId)
       .replace('{agentType}', agentType)
@@ -115,7 +128,6 @@ serve(async (req) => {
       .replace('{activeTask ? "TASK ACTIV: Lucrezi la taskul \\"" + activeTask.title + "\\" - " + activeTask.description + ". Progres curent: " + activeTask.progress + "%." : ""}', 
         activeTask ? `TASK ACTIV: Lucrezi la taskul "${activeTask.title}" - ${activeTask.description}. Progres curent: ${activeTask.progress}%.` : '');
 
-    // Facem cererea către API-ul Deepseek
     console.log('Se trimite cererea la Deepseek API...');
     const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
       method: 'POST',
@@ -130,97 +142,29 @@ serve(async (req) => {
           { role: 'user', content: message }
         ],
         temperature: 0.7,
-        max_tokens: 800
+        max_tokens: 1500
       })
     });
 
-    // Verificăm răspunsul de la Deepseek
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Eroare API Deepseek:', errorData);
-      throw new Error(`Eroare API Deepseek: ${errorData.error?.message || response.statusText}`);
-    }
-
     const data = await response.json();
-    console.log('Răspuns primit de la Deepseek API:', data);
     const generatedResponse = data.choices?.[0]?.message?.content || "Nu am putut genera un răspuns.";
 
-    // Analizăm răspunsul pentru a extrage informații despre progresul taskului
-    let taskUpdate = null;
-    if (activeTask && 
-       (generatedResponse.includes("progres") || 
-        generatedResponse.includes("implement") || 
-        generatedResponse.includes("dezvolt"))) {
-      // Extindem analiza pentru a detecta diverse moduri de specificare a progresului
-      const progressPatterns = [
-        /progres[^\d]*(\d+)%/i,
-        /(\d+)%\s+din\s+task/i,
-        /avansat\s+la\s+(\d+)%/i,
-        /acum\s+la\s+(\d+)%/i,
-        /estimez\s+([a-z]*\s+)?(\d+)%/i
-      ];
-      
-      let progress = null;
-      
-      for (const pattern of progressPatterns) {
-        const match = generatedResponse.match(pattern);
-        if (match) {
-          const matchedGroup = match[1] || match[2];
-          const potentialProgress = parseInt(matchedGroup);
-          if (!isNaN(potentialProgress) && potentialProgress >= 0 && potentialProgress <= 100) {
-            progress = potentialProgress;
-            break;
-          }
-        }
-      }
-      
-      // Dacă am găsit un progres valid, creăm un obiect de actualizare
-      if (progress !== null) {
-        // Extragem și o notă din răspuns pentru context
-        const sentences = generatedResponse.split(/[.!?]+/);
-        let relevantNote = "";
-        
-        for (const sentence of sentences) {
-          if (sentence.toLowerCase().includes("implement") || 
-              sentence.toLowerCase().includes("dezvolt") || 
-              sentence.toLowerCase().includes("lucr")) {
-            relevantNote = sentence.trim();
-            break;
-          }
-        }
-        
-        if (!relevantNote) {
-          relevantNote = "Actualizare automată din conversație";
-        }
-        
-        taskUpdate = {
-          progress: progress,
-          notes: relevantNote
-        };
-      }
-    }
+    return new Response(JSON.stringify({ 
+      response: generatedResponse,
+      isCodeProposal: true
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 200
+    });
 
-    return new Response(
-      JSON.stringify({ 
-        response: generatedResponse,
-        taskUpdate: taskUpdate
-      }), 
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200
-      }
-    );
   } catch (err) {
     console.error('Eroare în generate-agent-response:', err);
-    return new Response(
-      JSON.stringify({ 
-        error: 'Eroare la generarea răspunsului', 
-        details: err instanceof Error ? err.message : 'Eroare necunoscută' 
-      }), 
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500
-      }
-    );
+    return new Response(JSON.stringify({ 
+      error: 'Eroare la generarea răspunsului', 
+      details: err instanceof Error ? err.message : 'Eroare necunoscută' 
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 500
+    });
   }
 });

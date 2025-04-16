@@ -1,4 +1,3 @@
-
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Database } from './types';
 
@@ -130,6 +129,27 @@ export interface ExtendedDatabase extends Database {
         };
         Relationships: [];
       };
+      
+      code_proposals: {
+        Row: {
+          id: string;
+          agent_id: string;
+          proposed_files: string;
+          proposed_code: string;
+          motivation: string;
+          status: 'pending' | 'approved' | 'rejected';
+          created_at: string;
+        },
+        Insert: {
+          id?: string;
+          agent_id: string;
+          proposed_files: string;
+          proposed_code: string;
+          motivation: string;
+          status?: 'pending' | 'approved' | 'rejected';
+          created_at?: string;
+        }
+      }
     };
     
     // Păstrăm restul definițiilor

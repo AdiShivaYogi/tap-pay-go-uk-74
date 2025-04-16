@@ -1,4 +1,3 @@
-
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
@@ -19,7 +18,7 @@ serve(async (req) => {
   }
 
   try {
-    const { action, agentId, taskId, progressData, taskUpdate, taskProposal } = await req.json();
+    const { action, agentId, taskId, progressData, taskUpdate, taskProposal, codeProposal } = await req.json();
     console.log(`Acțiune primită: ${action}`, { agentId, taskId });
 
     let result;
@@ -44,6 +43,10 @@ serve(async (req) => {
       case 'proposeNewTask':
         // Permite agentului să propună un task complet nou
         result = await proposeNewTask(agentId, taskProposal);
+        break;
+      case 'proposeCodeChange':
+        // Permite agentului să propună o modificare de cod
+        result = await proposeCodeChange(agentId, codeProposal);
         break;
       case 'getAgentContributions':
         // Obține toate contribuțiile unui agent (istoric)
@@ -194,6 +197,24 @@ async function proposeNewTask(agentId, taskProposal) {
       notes: taskProposal.notes || "Propunere nouă de task",
       approval_status: 'pending',
       is_new_task_proposal: true
+    })
+    .select()
+    .single();
+    
+  if (error) throw error;
+  return data;
+}
+
+async function proposeCodeChange(agentId, codeProposal) {
+  const { data, error } = await supabase
+    .from('code_proposals')
+    .insert({
+      agent_id: agentId,
+      proposed_files: JSON.stringify(codeProposal.files),
+      proposed_code: JSON.stringify(codeProposal.code),
+      motivation: codeProposal.motivation,
+      status: 'pending',
+      created_at: new Date().toISOString()
     })
     .select()
     .single();
