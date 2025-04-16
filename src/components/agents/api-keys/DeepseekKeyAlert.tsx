@@ -2,13 +2,13 @@
 import { CheckCircle2, AlertTriangle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-interface OpenRouterKeyAlertProps {
+interface DeepseekKeyAlertProps {
   status: "idle" | "loading" | "success" | "error";
   hasKey: boolean;
   errorMessage?: string;
 }
 
-export function OpenRouterKeyAlert({ status, hasKey, errorMessage }: OpenRouterKeyAlertProps) {
+export function DeepseekKeyAlert({ status, hasKey, errorMessage }: DeepseekKeyAlertProps) {
   if (status === "error") {
     return (
       <Alert variant="destructive">
@@ -27,19 +27,19 @@ export function OpenRouterKeyAlert({ status, hasKey, errorMessage }: OpenRouterK
         <CheckCircle2 className="h-4 w-4 text-green-600" />
         <AlertTitle className="text-green-800">Cheie API salvată cu succes</AlertTitle>
         <AlertDescription className="text-green-700">
-          Agenții AI pot acum utiliza modelele Claude prin OpenRouter.
+          Agenții AI pot acum utiliza capacități avansate.
         </AlertDescription>
       </Alert>
     );
   }
 
-  if (hasKey && (status === "idle" || status === "loading")) {
+  if (hasKey && status !== "error") {
     return (
       <Alert className="bg-green-50 border-green-200">
         <CheckCircle2 className="h-4 w-4 text-green-600" />
         <AlertTitle className="text-green-800">Cheie API configurată</AlertTitle>
         <AlertDescription className="text-green-700">
-          Există deja o cheie API OpenRouter configurată. Poți introduce o nouă cheie pentru a o înlocui.
+          Există deja o cheie API Deepseek configurată. Poți introduce o nouă cheie pentru a o înlocui.
         </AlertDescription>
       </Alert>
     );
