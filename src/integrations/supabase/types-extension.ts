@@ -1,3 +1,4 @@
+
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Database } from './types';
 
@@ -9,6 +10,7 @@ export interface ExtendedDatabase extends Database {
       login_attempts: Database['public']['Tables']['login_attempts'];
       transactions: Database['public']['Tables']['transactions'];
       user_roles: Database['public']['Tables']['user_roles'];
+      code_proposals: Database['public']['Tables']['code_proposals'];
       
       // Adăugăm tabelele noi
       agent_task_submissions: {
@@ -129,27 +131,6 @@ export interface ExtendedDatabase extends Database {
         };
         Relationships: [];
       };
-      
-      code_proposals: {
-        Row: {
-          id: string;
-          agent_id: string;
-          proposed_files: string;
-          proposed_code: string;
-          motivation: string;
-          status: 'pending' | 'approved' | 'rejected';
-          created_at: string;
-        },
-        Insert: {
-          id?: string;
-          agent_id: string;
-          proposed_files: string;
-          proposed_code: string;
-          motivation: string;
-          status?: 'pending' | 'approved' | 'rejected';
-          created_at?: string;
-        }
-      }
     };
     
     // Păstrăm restul definițiilor
@@ -167,7 +148,7 @@ import { supabase as originalSupabase } from './client';
 export type ExtendedSupabaseClient = SupabaseClient<ExtendedDatabase>;
 
 // Create and export a properly typed extended client
-export const supabase = originalSupabase as ExtendedSupabaseClient;
+export const supabase = originalSupabase as unknown as ExtendedSupabaseClient;
 
 // For backward compatibility
 export const createExtendedSupabaseClient = () => {

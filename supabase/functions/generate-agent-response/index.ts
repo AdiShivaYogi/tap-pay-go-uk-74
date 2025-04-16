@@ -82,7 +82,7 @@ const CODE_GENERATION_TEMPLATES = {
     Răspunde cu următoarea structură:
     1. Explicarea motivației schimbărilor propuse
     2. Lista de fișiere care trebuie modificate
-    3. Codul efectiv pentru fiecare fișier (pune codul între ```typescript și ```)
+    3. Codul efectiv pentru fiecare fișier (pune codul între \`\`\` și \`\`\`)
     4. Explicarea beneficiilor și impactului schimbărilor
     
     Fii concis dar complet în explicațiile tale.
