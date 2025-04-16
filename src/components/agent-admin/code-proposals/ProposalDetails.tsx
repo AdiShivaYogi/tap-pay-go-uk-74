@@ -3,7 +3,7 @@ import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { CodeViewer } from "./CodeViewer";
 import { Button } from "@/components/ui/button";
-import { Check, X, Code, Loader2, Calendar, Clock, FileCode } from "lucide-react";
+import { Check, X, Code, Loader2, Calendar, Clock, FileCode, Brain } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LoadingIndicator } from "@/components/admin-auth/LoadingIndicator";
 import { Separator } from "@/components/ui/separator";
@@ -14,6 +14,7 @@ interface ProposalDetailsProps {
   setRejectionReason: (reason: string) => void;
   onApprove: (id: string) => Promise<void>;
   onReject: (id: string, reason?: string) => Promise<void>;
+  onGenerateFeedback?: () => void;
   isSubmitting?: boolean;
   loading?: boolean;
 }
@@ -24,6 +25,7 @@ export const ProposalDetails = ({
   setRejectionReason,
   onApprove,
   onReject,
+  onGenerateFeedback,
   isSubmitting = false,
   loading = false
 }: ProposalDetailsProps) => {
@@ -112,6 +114,7 @@ export const ProposalDetails = ({
         setRejectionReason={setRejectionReason}
         onApprove={onApprove}
         onReject={onReject}
+        onGenerateFeedback={onGenerateFeedback}
         isSubmitting={isSubmitting}
       />
     </div>
@@ -163,6 +166,7 @@ interface ActionButtonsProps {
   setRejectionReason: (reason: string) => void;
   onApprove: (id: string) => Promise<void>;
   onReject: (id: string, reason?: string) => Promise<void>;
+  onGenerateFeedback?: () => void;
   isSubmitting: boolean;
 }
 
@@ -172,6 +176,7 @@ const ActionButtons = ({
   setRejectionReason,
   onApprove,
   onReject,
+  onGenerateFeedback,
   isSubmitting
 }: ActionButtonsProps) => (
   <div className="flex justify-between items-center pt-2">
@@ -197,6 +202,19 @@ const ActionButtons = ({
         {isSubmitting ? <Loader2 size={16} className="animate-spin" /> : <X size={16} />}
         Respinge
       </Button>
+      
+      {onGenerateFeedback && (
+        <Button
+          variant="outline"
+          size="sm"
+          className="flex items-center gap-1"
+          onClick={onGenerateFeedback}
+          disabled={isSubmitting}
+        >
+          <Brain size={16} />
+          Feedback
+        </Button>
+      )}
       
       <Button 
         size="sm"

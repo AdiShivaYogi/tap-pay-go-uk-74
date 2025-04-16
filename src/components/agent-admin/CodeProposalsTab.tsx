@@ -12,12 +12,14 @@ interface CodeProposalsTabProps {
   onApproveProposal: (proposalId: string) => Promise<void>;
   onRejectProposal: (proposalId: string, reason?: string) => Promise<void>;
   loading?: boolean;
+  onGenerateFeedback?: (type: "proposal", item: any) => Promise<void>;
 }
 
 export const CodeProposalsTab = ({ 
   proposals = [], 
   onApproveProposal, 
   onRejectProposal,
+  onGenerateFeedback,
   loading = false
 }: CodeProposalsTabProps) => {
   const [selectedProposal, setSelectedProposal] = useState<any>(null);
@@ -53,6 +55,13 @@ export const CodeProposalsTab = ({
       console.error("Eroare la respingerea propunerii:", err);
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleGenerateFeedback = () => {
+    if (selectedProposal && onGenerateFeedback) {
+      onGenerateFeedback("proposal", selectedProposal);
+      // Nu deselectăm propunerea, deoarece folosim feedback-ul pentru ea
     }
   };
   
@@ -95,6 +104,7 @@ export const CodeProposalsTab = ({
               setRejectionReason={setRejectionReason}
               onApprove={handleApprove}
               onReject={handleReject}
+              onGenerateFeedback={onGenerateFeedback ? handleGenerateFeedback : undefined}
               isSubmitting={isSubmitting}
               loading={loading}
             />

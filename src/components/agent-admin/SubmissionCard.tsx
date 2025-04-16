@@ -4,7 +4,7 @@ import { StyledCard } from "@/components/ui/cards";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ChevronRight, CalendarClock, MessagesSquare, CheckCircle2, AlertTriangle } from "lucide-react";
+import { ChevronRight, CalendarClock, MessagesSquare, CheckCircle2, AlertTriangle, Brain } from "lucide-react";
 import { StatusBadge } from "./StatusBadge";
 import { Separator } from "@/components/ui/separator";
 
@@ -12,9 +12,10 @@ interface SubmissionCardProps {
   submission: any;
   onApprove: (submissionId: string) => Promise<void>;
   onReject: (submissionId: string) => Promise<void>;
+  onGenerateFeedback?: () => void;
 }
 
-export const SubmissionCard = ({ submission, onApprove, onReject }: SubmissionCardProps) => {
+export const SubmissionCard = ({ submission, onApprove, onReject, onGenerateFeedback }: SubmissionCardProps) => {
   const createdDate = new Date(submission.created_at).toLocaleDateString('ro-RO', {
     day: 'numeric',
     month: 'long',
@@ -120,6 +121,18 @@ export const SubmissionCard = ({ submission, onApprove, onReject }: SubmissionCa
           >
             Respinge
           </Button>
+          
+          {onGenerateFeedback && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-1"
+              onClick={onGenerateFeedback}
+            >
+              <Brain className="h-4 w-4" />
+              Generează feedback
+            </Button>
+          )}
           
           <Button 
             size="sm"

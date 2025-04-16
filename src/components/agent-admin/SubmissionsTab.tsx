@@ -3,18 +3,22 @@ import React from "react";
 import { StyledCard, StyledCardHeader, StyledCardTitle, StyledCardContent } from "@/components/ui/cards";
 import { SubmissionCard } from "./SubmissionCard";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Brain } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface SubmissionsTabProps {
   submissions: any[];
   onApproveSubmission: (submissionId: string) => Promise<void>;
   onRejectSubmission: (submissionId: string) => Promise<void>;
   loading?: boolean;
+  onGenerateFeedback?: (type: "submission", item: any) => Promise<void>;
 }
 
 export const SubmissionsTab = ({ 
   submissions,
   onApproveSubmission,
   onRejectSubmission,
+  onGenerateFeedback,
   loading = false
 }: SubmissionsTabProps) => {
   if (loading) {
@@ -36,6 +40,7 @@ export const SubmissionsTab = ({
                 submission={submission}
                 onApprove={onApproveSubmission}
                 onReject={onRejectSubmission}
+                onGenerateFeedback={onGenerateFeedback ? () => onGenerateFeedback("submission", submission) : undefined}
               />
             ))}
           </div>

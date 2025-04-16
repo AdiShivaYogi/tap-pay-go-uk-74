@@ -5,84 +5,102 @@ import { SubmissionsTab } from "./SubmissionsTab";
 import { CodeProposalsTab } from "./CodeProposalsTab";
 import { HistoryTab } from "./HistoryTab";
 import { ApiUsageStats } from "./ApiUsageStats";
+import { useSubmissionHandlers } from "./handlers/submission-handlers";
+import { useCodeProposalHandlers } from "./handlers/code-proposal-handlers";
 import { AgentGodMode } from "./AgentGodMode";
-import { handleApproveSubmission, handleRejectSubmission } from "./handlers/submission-handlers";
-import { handleApproveCodeProposal, handleRejectCodeProposal } from "./handlers/code-proposal-handlers";
 
 interface AgentAdminTabsProps {
   submissions: any[];
   codeProposals: any[];
   progressHistory: any[];
   userId: string | undefined;
-  setSubmissions: React.Dispatch<React.SetStateAction<any[]>>;
-  setCodeProposals: React.Dispatch<React.SetStateAction<any[]>>;
+  setSubmissions: (submissions: any[]) => void;
+  setCodeProposals: (codeProposals: any[]) => void;
   loading?: boolean;
 }
 
 export const AgentAdminTabs = ({ 
   submissions, 
-  codeProposals,
+  codeProposals, 
   progressHistory,
   userId,
   setSubmissions,
   setCodeProposals,
   loading = false
 }: AgentAdminTabsProps) => {
-  const pendingSubmissionsCount = submissions.length;
-  const pendingCodeProposalsCount = codeProposals.length;
+  const { handleApproveSubmission, handleRejectSubmission } = useSubmissionHandlers({ 
+    submissions, 
+    setSubmissions 
+  });
+  
+  const { handleApproveProposal, handleRejectProposal } = useCodeProposalHandlers({ 
+    proposals: codeProposals, 
+    setProposals: setCodeProposals 
+  });
 
-  const onApproveSubmission = async (submissionId: string) => {
-    await handleApproveSubmission(submissionId, submissions, setSubmissions);
-  };
-
-  const onRejectSubmission = async (submissionId: string) => {
-    await handleRejectSubmission(submissionId, submissions, setSubmissions);
-  };
-
-  const onApproveCodeProposal = async (proposalId: string) => {
-    await handleApproveCodeProposal(proposalId, userId, codeProposals, setCodeProposals);
-  };
-
-  const onRejectCodeProposal = async (proposalId: string, reason?: string) => {
-    await handleRejectCodeProposal(proposalId, userId, reason, codeProposals, setCodeProposals);
-  };
+  const { 
+    isGodModeEnabled,
+    isProcessing,
+    isGeneratingFeedback,
+    currentSubmission,
+    currentProposal,
+    feedback,
+    feedbackType,
+    toggleGodMode,
+    generateFeedback,
+    submitFeedback,
+    cancelFeedback,
+    setFeedback
+  } = useAgentGodMode({ userId });
 
   return (
     <>
-      <AgentGodMode userId={userId} />
+      <AgentGodMode 
+        userId={userId} 
+      />
       
-      <ApiUsageStats />
-      <Tabs defaultValue="submissions" className="mt-6">
-        <TabsList className="grid grid-cols-3 mb-6">
+      <Tabs defaultValue="submissions" className="w-full">
+        <TabsList className="grid grid-cols-4 mb-4">
           <TabsTrigger value="submissions">
-            Propuneri task-uri {pendingSubmissionsCount > 0 && `(${pendingSubmissionsCount})`}
+            Propuneri task-uri ({submissions.length})
           </TabsTrigger>
           <TabsTrigger value="code">
-            Propuneri cod {pendingCodeProposalsCount > 0 && `(${pendingCodeProposalsCount})`}
+            Propuneri cod ({codeProposals.length})
           </TabsTrigger>
-          <TabsTrigger value="history">Istoric activitate</TabsTrigger>
+          <TabsTrigger value="history">
+            Istoric activități
+          </TabsTrigger>
+          <TabsTrigger value="api-usage">
+            Utilizare API
+          </TabsTrigger>
         </TabsList>
         
         <TabsContent value="submissions">
           <SubmissionsTab 
-            submissions={submissions}
-            onApproveSubmission={onApproveSubmission}
-            onRejectSubmission={onRejectSubmission}
+            submissions={submissions} 
+            onApproveSubmission={handleApproveSubmission} 
+            onRejectSubmission={handleRejectSubmission}
+            onGenerateFeedback={generateFeedback}
             loading={loading}
           />
         </TabsContent>
-
+        
         <TabsContent value="code">
           <CodeProposalsTab 
-            proposals={codeProposals}
-            onApproveProposal={onApproveCodeProposal}
-            onRejectProposal={onRejectCodeProposal}
+            proposals={codeProposals} 
+            onApproveProposal={handleApproveProposal} 
+            onRejectProposal={handleRejectProposal}
+            onGenerateFeedback={generateFeedback}
             loading={loading}
           />
         </TabsContent>
         
         <TabsContent value="history">
           <HistoryTab progressHistory={progressHistory} loading={loading} />
+        </TabsContent>
+        
+        <TabsContent value="api-usage">
+          <ApiUsageStats />
         </TabsContent>
       </Tabs>
     </>
