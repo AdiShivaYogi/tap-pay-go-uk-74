@@ -1,45 +1,29 @@
-import { useMemo } from "react";
+
 import { useRoadmapContext } from "../context/RoadmapContext";
 
-export const calculateTaskDifficulty = (difficulty: string): string => {
-  switch (difficulty) {
-    case "easy":
-      return "text-green-600";
-    case "medium":
-      return "text-yellow-600";
-    case "hard":
-      return "text-red-600";
-    default:
-      return "text-muted-foreground";
-  }
-};
-
-export const useRoadmapProgress = (categoryId?: string) => {
-  const { progressStats } = useRoadmapContext();
+export const useRoadmapProgress = () => {
+  const { items } = useRoadmapContext();
   
-  const stats = useMemo(() => {
-    // If a category is specified, return category-specific stats
-    if (categoryId && progressStats.categoryProgress[categoryId]) {
-      const categoryStats = progressStats.categoryProgress[categoryId];
-      
-      return {
-        totalTasks: categoryStats.totalItems,
-        completedTasks: categoryStats.completedItems,
-        completionPercentage: categoryStats.progressPercentage,
-        difficultySum: categoryStats.difficultyScore || 5,
-        estimatedTimeSum: categoryStats.timeEstimation || 7,
-      };
+  // Calculează statisticile bazate pe elementele disponibile
+  const totalTasks = items.length;
+  const completedTasks = items.filter(item => item.status === "completed").length;
+  const completionPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+  
+  // Calculează suma dificultăților și a timpului estimat
+  let difficultySum = 0;
+  let estimatedTimeSum = 0;
+  
+  items.forEach(item => {
+    if (item.timeEstimate?.total) {
+      estimatedTimeSum += item.timeEstimate.total;
     }
-    
-    // Otherwise return overall stats
-    return {
-      totalTasks: progressStats.totalItems,
-      completedTasks: progressStats.completedItems,
-      completionPercentage: Math.round((progressStats.completedItems / progressStats.totalItems) * 100),
-      difficultySum: 8,
-      estimatedTimeSum: 14,
-    };
-  }, [categoryId, progressStats]);
-
-  return stats;
+  });
+  
+  return {
+    totalTasks,
+    completedTasks,
+    completionPercentage,
+    difficultySum,
+    estimatedTimeSum
+  };
 };

@@ -71,8 +71,8 @@ export const ConnectStripeSteps = () => {
       ),
     },
     {
-      title: "Conectează API Keys",
-      description: "Conectează contul TapPayGo cu credențialele Stripe",
+      title: "Conectează contul",
+      description: "Conectează contul TapPayGo cu Stripe",
       action: (
         <Button 
           variant="default" 

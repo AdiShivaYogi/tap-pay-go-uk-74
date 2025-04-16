@@ -1,30 +1,44 @@
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 import { GlobalCssManager } from './GlobalCssManager';
 
-interface GlobalCssManagerContextType {
-  isOpen: boolean;
-  toggleManager: () => void;
+interface GlobalCssContextType {
+  css: string;
+  updateCss: (css: string) => void;
 }
 
-const GlobalCssManagerContext = createContext<GlobalCssManagerContextType>({
-  isOpen: false,
-  toggleManager: () => {},
+export const GlobalCssContext = createContext<GlobalCssContextType>({
+  css: '',
+  updateCss: () => {},
 });
 
-export const useGlobalCssManager = () => useContext(GlobalCssManagerContext);
+interface GlobalCssManagerProviderProps {
+  children: React.ReactNode;
+}
 
-export const GlobalCssManagerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isOpen, setIsOpen] = useState(false);
+export const GlobalCssManagerProvider: React.FC<GlobalCssManagerProviderProps> = ({ 
+  children 
+}) => {
+  const [css, setCss] = useState<string>('');
 
-  const toggleManager = () => {
-    setIsOpen(!isOpen);
+  // Încarcă CSS-ul din localStorage la montarea componentei
+  useEffect(() => {
+    const savedCss = localStorage.getItem('global-css');
+    if (savedCss) {
+      setCss(savedCss);
+    }
+  }, []);
+
+  // Actualizează CSS-ul și îl salvează în localStorage
+  const updateCss = (newCss: string) => {
+    setCss(newCss);
+    localStorage.setItem('global-css', newCss);
   };
 
   return (
-    <GlobalCssManagerContext.Provider value={{ isOpen, toggleManager }}>
+    <GlobalCssContext.Provider value={{ css, updateCss }}>
+      <GlobalCssManager css={css} />
       {children}
-      {isOpen && <GlobalCssManager isSheet={true} />}
-    </GlobalCssManagerContext.Provider>
+    </GlobalCssContext.Provider>
   );
 };
