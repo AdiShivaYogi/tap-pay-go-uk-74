@@ -69,11 +69,11 @@ export interface ExtendedDatabase extends Database {
         };
         Insert: {
           id?: string;
-          task_id: string;
+          task_id?: string; // Făcut opțional pentru a fi compatibil cu tipul din Database
           agent_id: string;
           progress_percentage: number;
           notes?: string | null;
-          status?: string;
+          status: string; // Făcut obligatoriu pentru a corespunde cu tipul original
           created_at?: string;
         };
         Update: {
