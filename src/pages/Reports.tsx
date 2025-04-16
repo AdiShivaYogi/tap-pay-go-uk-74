@@ -43,11 +43,11 @@ const Reports = () => {
             </StyledCardContent>
           </StyledCard>
 
-          <ReportStats startDate={date} endDate={date} />
+          <ReportStats />
         </Grid2Cols>
 
         <Section variant="alt">
-          <ReportCharts dateRange={{ startDate: date, endDate: date }} />
+          <ReportCharts dateRange={dateRange} />
         </Section>
       </Section>
     </Layout>

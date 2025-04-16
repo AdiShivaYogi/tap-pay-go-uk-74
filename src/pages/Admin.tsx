@@ -18,25 +18,25 @@ const Admin = () => {
     successfulCommission: 892.48
   };
 
-  const mockChartData = {
-    monthlyData: [
-      { name: "Jan", value: 1500 },
-      { name: "Feb", value: 2300 },
-      { name: "Mar", value: 3200 },
-      { name: "Apr", value: 2800 },
-      { name: "May", value: 3600 }
-    ],
-    pieChartData: [
-      { name: "Successful", value: 85 },
-      { name: "Failed", value: 15 }
-    ]
-  };
-
   const mockMonitoringStats = {
     serverUptime: 99.98,
     averageResponseTime: 235,
     errorRate: 0.03,
     activeSessions: 128
+  };
+
+  const mockChartData = {
+    monthlyData: [
+      { name: "Jan", value: 1500, count: 50 },
+      { name: "Feb", value: 2300, count: 75 },
+      { name: "Mar", value: 3200, count: 90 },
+      { name: "Apr", value: 2800, count: 85 },
+      { name: "May", value: 3600, count: 110 }
+    ],
+    pieChartData: [
+      { name: "Successful", value: 85, count: 85 },
+      { name: "Failed", value: 15, count: 15 }
+    ]
   };
 
   const mockTransactions = [];
@@ -55,7 +55,23 @@ const Admin = () => {
             <AdminStats isLoading={false} stats={mockStats} />
           </div>
           <div>
-            <MonitoringStats isLoading={false} stats={mockMonitoringStats} />
+            <MonitoringStats 
+              isLoading={false} 
+              stats={{
+                totalTransactions: 1289,
+                suspiciousTransactions: 12,
+                successRate: 98.5,
+                averageAmount: 125.75,
+                recentAlerts: [
+                  {
+                    id: "alert-1",
+                    type: "warning",
+                    message: "Multiple failed login attempts",
+                    timestamp: "2023-05-15T10:30:00Z"
+                  }
+                ]
+              }} 
+            />
           </div>
         </div>
       </Section>

@@ -1,12 +1,13 @@
 
 import { Filter, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CompletionFilterType, SortByType } from "../../hooks/usePriorityTasks";
 
 interface TaskFiltersProps {
-  completionFilter: "all" | "nearly-done" | "started" | "stuck";
-  setCompletionFilter: (filter: "all" | "nearly-done" | "started" | "stuck") => void;
-  sortBy: "progress" | "estimate" | "priority";
-  setSortBy: (sort: "progress" | "estimate" | "priority") => void;
+  completionFilter: CompletionFilterType;
+  setCompletionFilter: (filter: CompletionFilterType) => void;
+  sortBy: SortByType;
+  setSortBy: (sort: SortByType) => void;
 }
 
 export const TaskFilters = ({

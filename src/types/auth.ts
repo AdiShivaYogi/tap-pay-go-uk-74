@@ -4,7 +4,8 @@ export interface User {
   email: string | undefined;
   stripeConnected: boolean;
   stripeAccountId?: string;
-  role?: 'admin' | 'user' | 'moderator';  // Adăugat câmpul role
+  role?: 'admin' | 'user' | 'moderator';
+  isAdmin?: boolean;
 }
 
 export interface AuthContextType {

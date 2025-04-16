@@ -4,20 +4,27 @@ import { useRoadmapContext } from '../context/RoadmapContext';
 import { TaskWithProgress } from '../types/task-types';
 import { RoadmapItem } from '../types';
 
+export type CompletionFilterType = 'all' | 'nearly-done' | 'started' | 'stuck';
+export type SortByType = 'priority' | 'progress' | 'estimate';
+
 export const usePriorityTasks = (excludeBetaTasks: boolean) => {
   const { items } = useRoadmapContext();
-  const [sortBy, setSortBy] = useState<'priority' | 'progress' | 'time'>('priority');
-  const [completionFilter, setCompletionFilter] = useState<'all' | 'active' | 'completed'>('active');
+  const [sortBy, setSortBy] = useState<SortByType>('priority');
+  const [completionFilter, setCompletionFilter] = useState<CompletionFilterType>('all');
 
   const priorityTasks = useMemo(() => {
     // Filter based on beta exclusion and completion status
     let filteredTasks = items.filter(task => {
       const isBeta = task.title.toLowerCase().includes('beta');
-      const isActive = task.status === "inProgress" || task.status === "planned";
       
       if (excludeBetaTasks && isBeta) return false;
-      if (completionFilter === 'active' && !isActive) return false;
-      if (completionFilter === 'completed' && task.status !== 'completed') return false;
+      
+      // Apply completion filter
+      const progressPercent = task.timeEstimate.spent / task.timeEstimate.total * 100;
+      
+      if (completionFilter === 'nearly-done' && progressPercent < 70) return false;
+      if (completionFilter === 'started' && (progressPercent < 20 || progressPercent > 70)) return false;
+      if (completionFilter === 'stuck' && progressPercent >= 20) return false;
       
       return true;
     });

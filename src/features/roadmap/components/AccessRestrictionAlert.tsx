@@ -1,27 +1,20 @@
 
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { LockIcon } from "lucide-react";
+import { ShieldAlert } from "lucide-react";
 
-export const AccessRestrictionAlert = () => {
+interface AccessRestrictionAlertProps {
+  role?: string;
+}
+
+export const AccessRestrictionAlert = ({ role }: AccessRestrictionAlertProps) => {
   return (
-    <Alert variant="destructive">
-      <AlertTitle className="flex items-center gap-2">
-        <LockIcon className="h-4 w-4" /> Acces restricționat
-      </AlertTitle>
-      <AlertDescription>
-        <p className="mb-4">
-          Această pagină necesită privilegii de administrator. Contactați administratorul pentru acces.
-        </p>
-        <div className="flex gap-4">
-          <Button asChild variant="outline">
-            <Link to="/">Înapoi la Pagina Principală</Link>
-          </Button>
-          <Button asChild>
-            <Link to="/auth">Autentificare</Link>
-          </Button>
-        </div>
+    <Alert variant="destructive" className="bg-red-50 border-red-200">
+      <ShieldAlert className="h-5 w-5 text-red-600" />
+      <AlertTitle className="text-red-800">Acces restricționat</AlertTitle>
+      <AlertDescription className="text-red-700">
+        Nu ai permisiuni suficiente pentru a accesa această secțiune. 
+        {role && ` Rolul tău curent este "${role}".`} 
+        Te rugăm să contactezi administratorul pentru asistență.
       </AlertDescription>
     </Alert>
   );

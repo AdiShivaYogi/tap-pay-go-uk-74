@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { MorningHeader } from "./morning-tasks/MorningHeader";
 import { ImmediateTasksList } from "./morning-tasks/ImmediateTasksList";
 import { TaskFilters } from "./morning-tasks/TaskFilters";
-import { usePriorityTasks } from "../hooks/usePriorityTasks";
+import { usePriorityTasks, CompletionFilterType, SortByType } from "../hooks/usePriorityTasks";
 
 export const MorningPriorityTasks = () => {
   const [excludeBetaTasks, setExcludeBetaTasks] = useState<boolean>(true);
@@ -55,9 +55,9 @@ export const MorningPriorityTasks = () => {
         {/* Task filtering controls */}
         <TaskFilters
           completionFilter={completionFilter}
-          setCompletionFilter={setCompletionFilter}
+          setCompletionFilter={(filter: CompletionFilterType) => setCompletionFilter(filter)}
           sortBy={sortBy}
-          setSortBy={setSortBy}
+          setSortBy={(sort: SortByType) => setSortBy(sort)}
         />
 
         {/* Task cards */}

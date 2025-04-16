@@ -1,137 +1,50 @@
 
-import { RoadmapItem } from "../../types";
+import { RoadmapItem, Category } from "../../types";
 
+// Define the product items
 export const productItems: RoadmapItem[] = [
   {
     id: "product-1",
-    title: "Program Beta Limitat",
-    description: "Lansare program beta cu primii 20 de utilizatori",
+    title: "Testare și QA Avansată",
+    description: "Implementare procese complexe de testare și QA",
     status: "completed",
     priority: "high",
     category: "product",
-    iconType: "test-tube-2",
-    iconColor: "text-green-500",
+    iconType: "code",
+    iconColor: "text-purple-500",
     timeEstimate: {
-      total: 15,
-      spent: 15,
-      aiTotal: 6
+      total: 30,
+      spent: 30,
+      aiTotal: 15
     },
     details: [
-      "Identificare și recrutare primilor 20 de utilizatori ✓",
-      "Oferă acces complet și gratuit la funcționalități ✓",
-      "Colectare feedback pentru îmbunătățiri ✓",
-      "Monitorizare și suport pentru experiența utilizatorilor ✓",
-      "Validare model de business și flux de plăți ✓"
+      "Implementare teste unitare și de integrare ✓",
+      "Configurare CI/CD pentru rulare automată teste ✓",
+      "Implementare teste end-to-end ✓", 
+      "Raportare bug-uri și monitorizare remediere ✓",
+      "Testare de securitate și penetrare ✓"
     ]
   },
   {
     id: "product-2",
-    title: "Optimizare UX Mobile",
-    description: "Îmbunătățirea experienței pe dispozitive mobile",
+    title: "Aplicație Mobilă",
+    description: "Dezvoltare aplicație mobilă pentru iOS și Android",
     status: "inProgress",
     priority: "high",
-    category: "development",
+    category: "product",
     iconType: "smartphone",
     iconColor: "text-blue-500",
     timeEstimate: {
-      total: 18,
-      spent: 8,
-      aiTotal: 10
+      total: 60,
+      spent: 25,
+      aiTotal: 30
     },
     details: [
-      "Design responsive pentru toate ecranele",
-      "Optimizare viteza de încărcare pe conexiuni mobile",
-      "Fluxuri de plată adaptate pentru touch",
-      "Testare pe multiple dispozitive și browsere",
-      "Animații și tranziții optimizate pentru mobile"
-    ]
-  },
-  {
-    id: "product-3",
-    title: "Îmbunătățiri Securitate Internă",
-    description: "Consolidarea măsurilor de securitate pentru date sensibile",
-    status: "inProgress",
-    priority: "high",
-    category: "security",
-    iconType: "shield-check",
-    iconColor: "text-green-600",
-    timeEstimate: {
-      total: 20,
-      spent: 18,
-      aiTotal: 15
-    },
-    details: [
-      "Implementare criptare end-to-end pentru date utilizator ✓",
-      "Consolidare politici de acces și autorizare ✓",
-      "Auditare și logging avansate ✓",
-      "Scanări automate de vulnerabilități ✓",
-      "Exerciții de penetration testing"
-    ]
-  },
-  {
-    id: "product-4",
-    title: "Optimizare Performanță Back-end",
-    description: "Îmbunătățirea performanței și scalabilității back-end",
-    status: "completed",
-    priority: "high",
-    category: "infrastructure",
-    iconType: "database",
-    iconColor: "text-blue-600",
-    timeEstimate: {
-      total: 22,
-      spent: 22,
-      aiTotal: 18
-    },
-    details: [
-      "Optimizare interogări și indexare bază de date ✓",
-      "Implementare mecanism de caching distribuit ✓",
-      "Configurare load balancing avansat ✓",
-      "Reducere latență API ✓",
-      "Testare și măsurare performanță ✓"
-    ]
-  },
-  {
-    id: "product-5",
-    title: "Sistem de Backup și Recuperare",
-    description: "Implementare sistem robust de backup și recuperare",
-    status: "completed",
-    priority: "high",
-    category: "devops",
-    iconType: "server-cog",
-    iconColor: "text-green-500",
-    timeEstimate: {
-      total: 18,
-      spent: 18,
-      aiTotal: 15
-    },
-    details: [
-      "Configurare backup automat incremental ✓",
-      "Implementare strategie de recuperare după dezastre ✓",
-      "Testare regulată a procesului de restaurare ✓",
-      "Configurare retenție și arhivare date ✓",
-      "Documentare proceduri de urgență ✓"
-    ]
-  },
-  {
-    id: "product-6",
-    title: "Integrare Chat în Timp Real",
-    description: "Adăugarea funcționalității de chat live pentru suport clienți",
-    status: "inProgress",
-    priority: "medium",
-    category: "product",
-    iconType: "communication",
-    iconColor: "text-purple-500",
-    timeEstimate: {
-      total: 24,
-      spent: 10,
-      aiTotal: 12
-    },
-    details: [
-      "Alegerea unei soluții de chat potrivită",
-      "Integrarea chat-ului în interfața web",
-      "Configurarea notificărilor și a alertelor",
-      "Training pentru echipa de suport clienți",
-      "Monitorizarea performanței chat-ului"
+      "Design UI/UX pentru aplicație mobilă ✓",
+      "Dezvoltare funcționalități de bază",
+      "Integrare cu API-ul principal", 
+      "Optimizare performanță pe diverse dispozitive",
+      "Testare și lansare în App Store și Google Play"
     ]
   }
 ];

@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Layout } from "@/components/layout/layout";
 import { PageHeader } from "@/components/ui/layout/page-header";
@@ -17,8 +18,8 @@ const Payments = () => {
         />
 
         <Grid3Cols>
-          <StyledCard variant="interactive" hover={true}>
-            <div className="p-6 space-y-2">
+          <StyledCard>
+            <div className="p-6 space-y-2 hover:bg-muted/30 transition-colors cursor-pointer">
               <div className="flex items-center space-x-2">
                 <CreditCard className="h-5 w-5 text-primary" />
                 <h3 className="text-sm font-medium">Card de credit/debit</h3>
@@ -29,8 +30,8 @@ const Payments = () => {
             </div>
           </StyledCard>
 
-          <StyledCard variant="interactive" hover={true}>
-            <div className="p-6 space-y-2">
+          <StyledCard>
+            <div className="p-6 space-y-2 hover:bg-muted/30 transition-colors cursor-pointer">
               <div className="flex items-center space-x-2">
                 <QrCode className="h-5 w-5 text-primary" />
                 <h3 className="text-sm font-medium">Plată prin cod QR</h3>
@@ -41,8 +42,8 @@ const Payments = () => {
             </div>
           </StyledCard>
 
-          <StyledCard variant="interactive" hover={true}>
-            <div className="p-6 space-y-2">
+          <StyledCard>
+            <div className="p-6 space-y-2 hover:bg-muted/30 transition-colors cursor-pointer">
               <div className="flex items-center space-x-2">
                 <Wallet className="h-5 w-5 text-primary" />
                 <h3 className="text-sm font-medium">Portofel electronic</h3>
@@ -53,8 +54,8 @@ const Payments = () => {
             </div>
           </StyledCard>
 
-          <StyledCard variant="interactive" hover={true}>
-            <div className="p-6 space-y-2">
+          <StyledCard>
+            <div className="p-6 space-y-2 hover:bg-muted/30 transition-colors cursor-pointer">
               <div className="flex items-center space-x-2">
                 <ArrowDownUp className="h-5 w-5 text-primary" />
                 <h3 className="text-sm font-medium">Transfer bancar</h3>
@@ -65,8 +66,8 @@ const Payments = () => {
             </div>
           </StyledCard>
 
-          <StyledCard variant="interactive" hover={true}>
-            <div className="p-6 space-y-2">
+          <StyledCard>
+            <div className="p-6 space-y-2 hover:bg-muted/30 transition-colors cursor-pointer">
               <div className="flex items-center space-x-2">
                 <ChevronsUpDown className="h-5 w-5 text-primary" />
                 <h3 className="text-sm font-medium">Plăți recurente</h3>
