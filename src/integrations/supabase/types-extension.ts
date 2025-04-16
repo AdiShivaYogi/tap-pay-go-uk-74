@@ -1,4 +1,3 @@
-
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Database } from './types';
 
@@ -30,7 +29,7 @@ export interface ExtendedDatabase extends Database {
           task_id: string;
           agent_id: string;
           proposed_changes: string;
-          proposed_status?: string;
+          proposed_status: string; // Made this required to match the base interface
           proposed_progress: number;
           notes?: string | null;
           approval_status?: 'pending' | 'approved' | 'rejected';
@@ -70,11 +69,11 @@ export interface ExtendedDatabase extends Database {
         };
         Insert: {
           id?: string;
-          task_id?: string; // Făcut opțional pentru a fi compatibil cu tipul din Database
+          task_id?: string; 
           agent_id: string;
           progress_percentage: number;
           notes?: string | null;
-          status: string; // Făcut obligatoriu pentru a corespunde cu tipul original
+          status: string; // This is already required, which is correct
           created_at?: string;
         };
         Update: {
