@@ -196,7 +196,7 @@ export const useConversation = (agent: Agent, isListening: boolean) => {
         
         if (hasDeepseekKey === false) {
           toast({
-            variant: "warning",
+            variant: "default",  // Changed from "warning" to "default"
             title: "Mod demonstrativ",
             description: "Folosim răspunsuri predefinite. Configurați cheia API pentru răspunsuri avansate."
           });
