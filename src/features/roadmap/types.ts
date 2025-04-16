@@ -1,8 +1,34 @@
 
 export type Status = "completed" | "inProgress" | "planned" | "pending";
 export type Priority = "high" | "medium" | "low";
-export type Category = "security" | "payment" | "ui" | "monitoring" | "infrastructure" | "integration" | "product" | "devops" | "localization" | "partnership";
-export type RoadmapIconType = "code" | "security" | "payment" | "monitoring" | "infrastructure" | "ui" | "settings" | "integration" | "product" | "partnership" | "check" | "users" | "banknote" | "search" | "zap";
+export type Category = 
+  | "security" 
+  | "payment" 
+  | "ui" 
+  | "monitoring" 
+  | "infrastructure" 
+  | "integration" 
+  | "product" 
+  | "devops" 
+  | "localization" 
+  | "partnership";
+
+export type RoadmapIconType = 
+  | "code" 
+  | "security" 
+  | "payment" 
+  | "monitoring" 
+  | "infrastructure" 
+  | "ui" 
+  | "settings" 
+  | "integration" 
+  | "product" 
+  | "partnership" 
+  | "check" 
+  | "users" 
+  | "banknote" 
+  | "search" 
+  | "zap";
 
 export interface TimeEstimate {
   total: number;

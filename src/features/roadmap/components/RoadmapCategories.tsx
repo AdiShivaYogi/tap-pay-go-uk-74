@@ -1,18 +1,37 @@
 
 import { useState } from "react";
 import { RoadmapCard } from "./RoadmapCard";
-import { RoadmapCategory } from "./RoadmapCategory";
 import { useRoadmapContext } from "../context/RoadmapContext";
 import { RoadmapLegend } from "./RoadmapLegend";
 import { StyledCard } from "@/components/ui/cards";
+import { Category } from "../types";
+
+interface CategoryButtonProps {
+  name: string | Category;
+  label: string;
+  isSelected: boolean;
+  onSelect: () => void;
+}
+
+const RoadmapCategory = ({ name, label, isSelected, onSelect }: CategoryButtonProps) => (
+  <button
+    onClick={onSelect}
+    className={`px-3 py-1 text-sm font-medium rounded-md ${
+      isSelected 
+        ? 'bg-primary text-primary-foreground' 
+        : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+    }`}
+  >
+    {label}
+  </button>
+);
 
 export const RoadmapCategories = () => {
-  const { categories, items } = useRoadmapContext();
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-
+  const { items, categories, activeCategory, setActiveCategory } = useRoadmapContext();
+  
   // Filtrează elementele în funcție de categoria selectată sau afișează toate dacă nu e selectată nicio categorie
-  const filteredItems = selectedCategory
-    ? items.filter(item => item.category === selectedCategory)
+  const filteredItems = activeCategory !== 'all'
+    ? items.filter(item => item.category === activeCategory)
     : items;
 
   return (
@@ -24,16 +43,16 @@ export const RoadmapCategories = () => {
           <RoadmapCategory
             name="all"
             label="Toate"
-            isSelected={selectedCategory === null}
-            onSelect={() => setSelectedCategory(null)}
+            isSelected={activeCategory === 'all'}
+            onSelect={() => setActiveCategory('all')}
           />
           {categories.map((category) => (
             <RoadmapCategory
               key={category}
               name={category}
               label={category.charAt(0).toUpperCase() + category.slice(1)}
-              isSelected={selectedCategory === category}
-              onSelect={() => setSelectedCategory(category)}
+              isSelected={activeCategory === category}
+              onSelect={() => setActiveCategory(category)}
             />
           ))}
         </div>

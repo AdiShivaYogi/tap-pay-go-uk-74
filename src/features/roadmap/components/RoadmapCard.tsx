@@ -37,10 +37,10 @@ export const RoadmapCard = ({ item }: RoadmapCardProps) => {
             variant="outline"
             className={`${
               item.status === "completed" 
-                ? "border-green-200 bg-green-50 text-green-700" 
+                ? 'border-green-200 bg-green-50 text-green-700' 
                 : item.status === "inProgress"
-                ? "border-blue-200 bg-blue-50 text-blue-700"
-                : "border-amber-200 bg-amber-50 text-amber-700"
+                ? 'border-blue-200 bg-blue-50 text-blue-700'
+                : 'border-amber-200 bg-amber-50 text-amber-700'
             }`}
           >
             {item.status === "completed" 
@@ -55,10 +55,10 @@ export const RoadmapCard = ({ item }: RoadmapCardProps) => {
               variant="outline"
               className={`${
                 item.priority === "high"
-                  ? "border-red-200 bg-red-50 text-red-700"
+                  ? 'border-red-200 bg-red-50 text-red-700'
                   : item.priority === "medium"
-                  ? "border-amber-200 bg-amber-50 text-amber-700"
-                  : "border-green-200 bg-green-50 text-green-700"
+                  ? 'border-amber-200 bg-amber-50 text-amber-700'
+                  : 'border-green-200 bg-green-50 text-green-700'
               }`}
             >
               {item.priority === "high" 

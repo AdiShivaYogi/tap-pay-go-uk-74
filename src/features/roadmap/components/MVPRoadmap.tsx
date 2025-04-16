@@ -73,21 +73,21 @@ export const MVPRoadmap = () => {
           <Badge 
             variant={selectedFilter === "completed" ? "default" : "outline"}
             className="cursor-pointer"
-            onClick={() => setSelectedFilter("completed" as Status)}
+            onClick={() => setSelectedFilter("completed")}
           >
             Finalizat
           </Badge>
           <Badge 
             variant={selectedFilter === "inProgress" ? "default" : "outline"} 
             className="cursor-pointer"
-            onClick={() => setSelectedFilter("inProgress" as Status)}
+            onClick={() => setSelectedFilter("inProgress")}
           >
             În progres
           </Badge>
           <Badge 
             variant={selectedFilter === "planned" ? "default" : "outline"} 
             className="cursor-pointer"
-            onClick={() => setSelectedFilter("planned" as Status)}
+            onClick={() => setSelectedFilter("planned")}
           >
             Planificat
           </Badge>

@@ -5,61 +5,52 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 export interface DatePickerProps {
   date?: Date;
   setDate?: (date: Date | undefined) => void;
   className?: string;
   mode?: "single" | "range" | "multiple";
-  selected?: Date | Date[] | undefined;
-  onSelect?: (date: Date | undefined) => void;
-  defaultDate?: Date;
-  showTodayButton?: boolean;
+  selected?: Date | Date[];
+  onSelect?: (selectedDate: Date | undefined | Date[]) => void;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  defaultDate?: Date;
+  showTodayButton?: boolean;
+  disabled?: (date: Date) => boolean;
 }
 
 export function DatePicker({
+  date,
+  setDate,
   className,
   mode = "single",
   selected,
   onSelect,
-  defaultDate,
-  showTodayButton = false,
   open,
   onOpenChange,
+  defaultDate = new Date(),
+  showTodayButton = false,
+  disabled = () => false,
 }: DatePickerProps) {
-  const [date, setDate] = React.useState<Date | undefined>(
-    selected instanceof Date ? selected : undefined
-  );
+  const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(date);
+
+  React.useEffect(() => {
+    if (date) {
+      setSelectedDate(date);
+    }
+  }, [date]);
 
   const handleSelect = (selectedDate: Date | undefined) => {
-    setDate(selectedDate);
+    setSelectedDate(selectedDate);
+    if (setDate) {
+      setDate(selectedDate);
+    }
     if (onSelect) {
       onSelect(selectedDate);
     }
   };
-
-  const handleToday = () => {
-    const today = new Date();
-    setDate(today);
-    if (onSelect) {
-      onSelect(today);
-    }
-  };
-
-  // Componente de control interne
-  const DateDisplay = React.useCallback(() => {
-    if (!date) {
-      return <span>Selectează o dată</span>;
-    }
-    return <span>{format(date, "PPP")}</span>;
-  }, [date]);
 
   return (
     <div className={cn("grid gap-2", className)}>
@@ -69,31 +60,31 @@ export function DatePicker({
             variant={"outline"}
             className={cn(
               "w-full justify-start text-left font-normal",
-              !date && "text-muted-foreground"
+              !selectedDate && "text-muted-foreground"
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            <DateDisplay />
+            {selectedDate ? format(selectedDate, "PPP") : "Alege o dată"}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
+        <PopoverContent className="w-auto p-0">
           <Calendar
-            mode={mode as "single"}
-            selected={selected}
-            onSelect={(selectedDate) => handleSelect(selectedDate)}
-            defaultMonth={defaultDate || date}
-            disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
-            initialFocus
+            mode="single"
+            selected={selected as Date}
+            onSelect={onSelect as (date: Date | undefined) => void}
+            defaultMonth={defaultDate}
+            disabled={disabled}
+            initialFocus={true}
           />
-
           {showTodayButton && (
-            <div className="p-2 border-t border-border">
+            <div className="p-3 border-t">
               <Button
-                variant="ghost"
-                className="w-full justify-center"
-                onClick={handleToday}
+                variant="outline"
+                size="sm"
+                className="w-full"
+                onClick={() => handleSelect(new Date())}
               >
-                Azi
+                Astăzi
               </Button>
             </div>
           )}

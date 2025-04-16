@@ -1,39 +1,53 @@
 
 import React from 'react';
-import { Code, Database, Globe, Lock, Server, Settings, Share2, Shield, BarChart2, Layers } from "lucide-react";
+import { 
+  Code, Lock, CreditCard, Activity, Server, Layout, 
+  Settings, Layers, Package, Users, CheckCircle, Search, Zap
+} from "lucide-react";
+import { RoadmapIconType } from '../types';
 
 export interface RoadmapIconProps {
-  categoryType?: string;
-  className?: string;
+  type: RoadmapIconType;
+  color: string;
 }
 
-export const RoadmapIcon: React.FC<RoadmapIconProps> = ({ categoryType = 'default', className = 'h-4 w-4' }) => {
-  const getIcon = () => {
-    switch (categoryType.toLowerCase()) {
-      case 'security':
-        return <Shield className={className} />;
-      case 'infrastructure':
-        return <Server className={className} />;
-      case 'product':
-        return <Layers className={className} />;
-      case 'integration':
-        return <Share2 className={className} />;
-      case 'devops':
-        return <Settings className={className} />;
-      case 'monitoring':
-        return <BarChart2 className={className} />;
-      case 'database':
-        return <Database className={className} />;
-      case 'ui':
-        return <Layers className={className} />;
-      case 'localization':
-        return <Globe className={className} />;
-      case 'payments':
-        return <Database className={className} />;
-      default:
-        return <Code className={className} />;
-    }
+export const RoadmapIcon: React.FC<RoadmapIconProps> = ({ type, color }) => {
+  const iconProps = {
+    className: `h-5 w-5 ${color}`,
   };
 
-  return getIcon();
+  switch (type) {
+    case "code":
+      return <Code {...iconProps} />;
+    case "security":
+      return <Lock {...iconProps} />;
+    case "payment":
+      return <CreditCard {...iconProps} />;
+    case "monitoring":
+      return <Activity {...iconProps} />;
+    case "infrastructure":
+      return <Server {...iconProps} />;
+    case "ui":
+      return <Layout {...iconProps} />;
+    case "settings":
+      return <Settings {...iconProps} />;
+    case "integration":
+      return <Layers {...iconProps} />;
+    case "product":
+      return <Package {...iconProps} />;
+    case "partnership":
+      return <Users {...iconProps} />;
+    case "check":
+      return <CheckCircle {...iconProps} />;
+    case "search":
+      return <Search {...iconProps} />;
+    case "zap":
+      return <Zap {...iconProps} />;
+    case "banknote":
+      return <CreditCard {...iconProps} />;
+    case "users":
+      return <Users {...iconProps} />;
+    default:
+      return <Package {...iconProps} />;
+  }
 };
