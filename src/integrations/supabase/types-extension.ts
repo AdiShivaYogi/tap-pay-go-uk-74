@@ -146,7 +146,7 @@ export type ExtendedSupabaseClient = ReturnType<typeof createExtendedSupabaseCli
 // Funcție pentru crearea unui client Supabase extins
 export const createExtendedSupabaseClient = () => {
   // Returnăm clientul supabase original, dar cu tipurile extinse
-  return supabase as unknown as any;
+  return supabase as unknown as ExtendedSupabaseClient;
 };
 
 // Re-exportăm clientul Supabase existent pentru a-l folosi cu noile tipuri

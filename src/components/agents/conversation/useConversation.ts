@@ -1,7 +1,8 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Agent } from "../agents-data";
+import { DEMO_RESPONSES } from "../agents-data";
 import { useAgentApi } from "./hooks/useAgentApi";
 import { useAgentMessages } from "./hooks/useAgentMessages";
 import { useAgentTasks } from "./hooks/useAgentTasks";
@@ -23,9 +24,6 @@ export const useConversation = (agent: Agent, isListening: boolean) => {
   const { activeTask, setActiveTask, assignTaskToAgent } = useAgentTasks(agent.id);
 
   // Efect pentru simularea ascultării active
-  import { useEffect } from "react";
-  import { DEMO_RESPONSES } from "../agents-data";
-  
   useEffect(() => {
     let listeningTimer: ReturnType<typeof setTimeout>;
     
