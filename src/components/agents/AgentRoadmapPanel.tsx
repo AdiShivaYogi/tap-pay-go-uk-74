@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { StyledCard, StyledCardHeader, StyledCardTitle, StyledCardContent } from "@/components/ui/cards";
 import { Badge } from "@/components/ui/badge";
@@ -22,7 +21,6 @@ export const AgentRoadmapPanel = ({ agentId, onSelectTask }: AgentRoadmapPanelPr
   const [isCreatingTask, setIsCreatingTask] = useState(false);
   const [sortBy, setSortBy] = useState<string>("recommended");
   
-  // Încarcă taskurile disponibile pentru agent
   useEffect(() => {
     const fetchTasks = async () => {
       if (!agentId) return;
@@ -33,13 +31,12 @@ export const AgentRoadmapPanel = ({ agentId, onSelectTask }: AgentRoadmapPanelPr
           body: { 
             action: 'getAssignedTasks',
             agentId: agentId,
-            includeAllAvailable: true // Solicită toate taskurile disponibile, nu doar cele atribuite
+            includeAllAvailable: true
           }
         });
         
         if (error) throw error;
         
-        // Adăugăm informații de dificultate și cost estimate pentru fiecare task
         const enrichedTasks = (data?.data || []).map((task: any) => ({
           ...task,
           difficulty: calculateDifficulty(task),
@@ -65,7 +62,6 @@ export const AgentRoadmapPanel = ({ agentId, onSelectTask }: AgentRoadmapPanelPr
     try {
       const success = await onSelectTask(taskId);
       if (success) {
-        // Marcăm taskul ca fiind atribuit
         setTasks(tasks.map(task => 
           task.id === taskId ? {...task, assigned: true} : task
         ));
@@ -91,13 +87,9 @@ export const AgentRoadmapPanel = ({ agentId, onSelectTask }: AgentRoadmapPanelPr
     if (!agentId) return;
     
     setIsCreatingTask(true);
-    toast({
-      title: "Generare propunere",
-      description: "Agentul generează o propunere nouă de task...",
-    });
+    console.log(`Generare propunere task pentru agent: ${agentId}`);
     
     try {
-      // Generează o propunere de task utilizând AI
       const { data: responseData, error: responseError } = await supabase.functions.invoke('generate-agent-response', {
         body: { 
           message: "Creează o propunere detaliată pentru un task nou de dezvoltare care ar ajuta platforma TapPayGo",
@@ -112,7 +104,6 @@ export const AgentRoadmapPanel = ({ agentId, onSelectTask }: AgentRoadmapPanelPr
       
       const proposalResponse = responseData.response;
       
-      // Parsează răspunsul pentru a extrage componentele propunerii
       const titleMatch = proposalResponse.match(/Titlu:?\s*(.*?)(?:\n|$)/i);
       const descriptionMatch = proposalResponse.match(/Descriere:?\s*(.*?)(?:\n\n|\n[A-Z]|$)/is);
       const benefitsMatch = proposalResponse.match(/Beneficii:?\s*(.*?)(?:\n\n|\n[A-Z]|$)/is);
@@ -125,7 +116,6 @@ export const AgentRoadmapPanel = ({ agentId, onSelectTask }: AgentRoadmapPanelPr
       
       const fullDetails = `${description}\n\nBeneficii: ${benefits}\n\nImplementare: ${implementation}`;
       
-      // Determină categoria potrivită pentru agent
       const agentToCategory = {
         'payment-agent': 'payment',
         'support-agent': 'product',
@@ -136,7 +126,6 @@ export const AgentRoadmapPanel = ({ agentId, onSelectTask }: AgentRoadmapPanelPr
       
       const category = agentToCategory[agentId as keyof typeof agentToCategory] || 'product';
       
-      // Trimite propunerea către backend
       const { data, error } = await supabase.functions.invoke('agent-roadmap-tasks', {
         body: { 
           action: 'proposeNewTask',
@@ -150,6 +139,9 @@ export const AgentRoadmapPanel = ({ agentId, onSelectTask }: AgentRoadmapPanelPr
           }
         }
       });
+      
+      console.log('Răspuns generare propunere:', proposalResponse);
+      console.log('Rezultat trimitere propunere:', { data, error });
       
       if (error) throw error;
       
@@ -182,7 +174,6 @@ export const AgentRoadmapPanel = ({ agentId, onSelectTask }: AgentRoadmapPanelPr
     return agentTypes[id as keyof typeof agentTypes] || 'Agent AI';
   };
   
-  // Funcții pentru calcule și sortarea taskurilor
   const calculateDifficulty = (task: any): string => {
     const progressNeeded = 100 - (task.progress || 0);
     if (progressNeeded <= 20) return "Ușor";
@@ -205,13 +196,11 @@ export const AgentRoadmapPanel = ({ agentId, onSelectTask }: AgentRoadmapPanelPr
   const calculateRecommendationScore = (task: any, agentId: string): number => {
     let score = 0;
     
-    // Scor bazat pe progres - taskurile începute au prioritate
     const progress = task.progress || 0;
     if (progress > 0 && progress < 80) score += 30;
     else if (progress === 0) score += 20;
     else score += 10;
     
-    // Scor bazat pe potrivirea agentului cu categoria
     const agentCategory: {[key: string]: string[]} = {
       'payment-agent': ['payment', 'product'],
       'support-agent': ['product', 'localization'],
@@ -223,9 +212,7 @@ export const AgentRoadmapPanel = ({ agentId, onSelectTask }: AgentRoadmapPanelPr
     const preferredCategories = agentCategory[agentId] || [];
     if (preferredCategories.includes(task.category?.toLowerCase())) score += 25;
     
-    // Scor pentru dificultate - agentii preferă taskurile de dificultate medie
-    const difficulty = calculateDifficulty(task);
-    switch (difficulty) {
+    switch (calculateDifficulty(task)) {
       case "Ușor": score += 15; break;
       case "Moderat": score += 25; break;
       case "Dificil": score += 20; break;
@@ -235,7 +222,6 @@ export const AgentRoadmapPanel = ({ agentId, onSelectTask }: AgentRoadmapPanelPr
     return score;
   };
   
-  // Sortăm taskurile în funcție de criterii
   const sortedTasks = [...tasks].sort((a, b) => {
     switch (sortBy) {
       case "difficulty":
@@ -286,7 +272,6 @@ export const AgentRoadmapPanel = ({ agentId, onSelectTask }: AgentRoadmapPanelPr
       </StyledCardHeader>
       
       <StyledCardContent>
-        {/* Filtre pentru sortare */}
         <div className="mb-4 flex items-center gap-2">
           <span className="text-sm font-medium">Sortează după:</span>
           <div className="flex flex-wrap gap-1">
@@ -434,7 +419,6 @@ export const AgentRoadmapPanel = ({ agentId, onSelectTask }: AgentRoadmapPanelPr
   );
 };
 
-// Helper pentru afișarea dificultății estimate
 const getTaskDifficultyLabel = (progress: number): string => {
   if (progress >= 80) return "Aproape gata";
   if (progress >= 50) return "În dezvoltare";

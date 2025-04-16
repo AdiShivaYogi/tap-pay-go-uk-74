@@ -10,6 +10,8 @@ interface GodModeToggleProps {
 }
 
 export const GodModeToggle = ({ isGodModeEnabled, toggleGodMode }: GodModeToggleProps) => {
+  console.log('God Mode Status:', isGodModeEnabled);
+  
   return (
     <div className="flex items-center justify-between mb-4">
       <div>
@@ -31,7 +33,10 @@ export const GodModeToggle = ({ isGodModeEnabled, toggleGodMode }: GodModeToggle
       
       <Switch
         checked={isGodModeEnabled}
-        onCheckedChange={toggleGodMode}
+        onCheckedChange={() => {
+          console.log('Schimbare God Mode');
+          toggleGodMode();
+        }}
       />
     </div>
   );
