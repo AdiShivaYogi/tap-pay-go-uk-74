@@ -6,7 +6,7 @@ import { AccessRestrictionAlert } from "@/features/roadmap/components/AccessRest
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { RoadmapCategory } from "@/features/roadmap/components/RoadmapCategory";
 import { RoadmapContextProvider } from "@/features/roadmap/context/RoadmapContext";
-import { StyledCard } from "@/components/ui/card-variants";
+import { StyledCard } from "@/components/ui/styled-card";
 import { HeaderSecurityScore } from "@/features/roadmap/components/header/HeaderSecurityScore";
 import { HeaderExecutionScore } from "@/features/roadmap/components/header/HeaderExecutionScore";
 import { Compass, GitFork, Globe, Wand2 } from "lucide-react";
@@ -18,6 +18,7 @@ import { ThemeManagerCard } from "@/components/theme/ThemeManagerCard";
 import { GlobalCssManager } from "@/components/theme/GlobalCssManager";
 import { Button } from "@/components/ui/button";
 import { useGlobalCssManager } from "@/components/theme/GlobalCssManagerProvider";
+import { CurrentRoadmapFocus } from "@/features/roadmap/components/CurrentRoadmapFocus";
 
 const Roadmap = () => {
   const { isAdmin, role } = useUserRole();
@@ -95,6 +96,11 @@ const Roadmap = () => {
               </div>
             </StyledCard>
             
+            <div className="grid gap-8 grid-cols-1">
+              {/* Highlighted Focus and Recent Achievements */}
+              <CurrentRoadmapFocus />
+            </div>
+
             <GlobalCssManager />
             
             <ThemeManagerCard />
@@ -103,7 +109,7 @@ const Roadmap = () => {
             
             <RoadmapContextProvider>
               <RoadmapProgress />
-              <div className="space-y-6">
+              <div className="space-y-6 mt-8">
                 {categoryGroups.map((group, index) => (
                   <RoadmapCategory
                     key={index}

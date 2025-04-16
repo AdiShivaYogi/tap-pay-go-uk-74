@@ -6,9 +6,10 @@ import {
   ArrowUpRight, 
   CheckCircle2, 
   Clock, 
-  AlertCircle 
+  AlertCircle,
+  Award
 } from "lucide-react";
-import { StyledCard, StyledCardHeader, StyledCardTitle, StyledCardContent } from "@/components/ui/card-variants";
+import { StyledCard, StyledCardHeader, StyledCardTitle, StyledCardContent } from "@/components/ui/styled-card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
@@ -60,6 +61,25 @@ export const CurrentRoadmapFocus = () => {
       priority: "medium"
     }
   ];
+  
+  // Adăugăm realizările recente
+  const recentAchievements = [
+    {
+      title: "Integrare completă API Stripe",
+      date: "10 Apr 2025",
+      description: "Sistemul de procesare plăți este acum integrat cu API-ul Stripe"
+    },
+    {
+      title: "Certificare GDPR pentru piața UK",
+      date: "5 Apr 2025",
+      description: "Am obținut certificarea pentru conformitatea cu reglementările GDPR în UK"
+    },
+    {
+      title: "Refactorizare componentă autentificare",
+      date: "1 Apr 2025",
+      description: "Componentă de autentificare separată în componente mai mici și mai reutilizabile"
+    }
+  ];
 
   return (
     <StyledCard className="border-primary/10 bg-gradient-to-br from-primary/5 to-accent/10">
@@ -70,6 +90,29 @@ export const CurrentRoadmapFocus = () => {
         </StyledCardTitle>
       </StyledCardHeader>
       <StyledCardContent className="space-y-6">
+        {/* Recent Achievements */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold flex items-center gap-2">
+            <Award className="h-4 w-4 text-amber-500" />
+            <span>Realizări Recente</span>
+          </h3>
+          
+          <div className="grid gap-4 md:grid-cols-3">
+            {recentAchievements.map((achievement, index) => (
+              <div key={index} className="border rounded-lg p-4 bg-gradient-to-br from-green-50 to-green-100/30 backdrop-blur-sm">
+                <div className="flex justify-between items-start mb-2">
+                  <h4 className="font-medium">{achievement.title}</h4>
+                </div>
+                <p className="text-sm text-muted-foreground mb-2">{achievement.description}</p>
+                <div className="flex items-center gap-1 text-xs text-green-600 mt-auto">
+                  <Calendar className="h-3 w-3" />
+                  <span>{achievement.date}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      
         {/* Current Focus */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold flex items-center gap-2">
