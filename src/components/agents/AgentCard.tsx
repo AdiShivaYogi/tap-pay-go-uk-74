@@ -1,8 +1,9 @@
 
 import { useState } from "react";
-import { LucideIcon } from "lucide-react";
+import { LucideIcon, PowerIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
 
 interface Agent {
   id: string;
@@ -11,6 +12,8 @@ interface Agent {
   icon: LucideIcon;
   color: string;
   status: "online" | "offline" | "busy";
+  powerLevel: number;
+  relevance: "core" | "support" | "auxiliary";
 }
 
 interface AgentCardProps {
@@ -26,8 +29,8 @@ export const AgentCard = ({ agent, isSelected, onSelect }: AgentCardProps) => {
         ${isSelected ? 'border-primary bg-primary/5' : 'hover:border-primary/50'}`}
       onClick={onSelect}
     >
-      <div className={`h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center ${agent.color}`}>
-        <agent.icon className="h-5 w-5" />
+      <div className={`h-10 w-10 rounded-full ${agent.color.replace('text', 'bg')}/20 flex items-center justify-center`}>
+        <agent.icon className={`h-5 w-5 ${agent.color}`} />
       </div>
       
       <div className="ml-3 flex-1">
@@ -51,6 +54,41 @@ export const AgentCard = ({ agent, isSelected, onSelect }: AgentCardProps) => {
           </TooltipProvider>
         </div>
         <p className="text-xs text-muted-foreground line-clamp-1">{agent.description}</p>
+        
+        <div className="flex items-center gap-1 mt-1">
+          <Badge 
+            variant={
+              agent.relevance === "core" ? "default" : 
+              agent.relevance === "support" ? "outline" : "secondary"
+            }
+            className="text-[10px] h-5"
+          >
+            {agent.relevance === "core" ? "Core" : 
+             agent.relevance === "support" ? "Support" : "Auxiliary"}
+          </Badge>
+          
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex items-center gap-1">
+                  <span className="text-xs text-muted-foreground">Nivel: {agent.powerLevel}/10</span>
+                  <div className="bg-gray-200 h-1.5 w-12 rounded-full">
+                    <div 
+                      className={`h-full rounded-full ${
+                        agent.powerLevel >= 8 ? 'bg-green-500' : 
+                        agent.powerLevel >= 5 ? 'bg-amber-500' : 'bg-red-500'
+                      }`}
+                      style={{ width: `${agent.powerLevel * 10}%` }}
+                    ></div>
+                  </div>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="top">
+                <p>Nivel de putere: {agent.powerLevel}/10</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
       </div>
       
       {isSelected && (

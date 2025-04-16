@@ -8,6 +8,8 @@ export interface Agent {
   icon: LucideIcon;
   color: string;
   status: "online" | "offline" | "busy";
+  powerLevel: number;  // Nivel de putere pe o scară de la 1 la 10
+  relevance: "core" | "support" | "auxiliary"; // Relevanța pentru autodezvoltarea platformei
 }
 
 export const DEMO_RESPONSES: Record<string, string[]> = {
@@ -50,7 +52,9 @@ export const agents: Agent[] = [
     description: "Specialist în procesarea plăților și integrare Stripe",
     icon: CreditCard,
     color: "text-green-500",
-    status: "online" as const
+    status: "online" as const,
+    powerLevel: 8,
+    relevance: "core"
   },
   {
     id: "support-agent",
@@ -58,7 +62,9 @@ export const agents: Agent[] = [
     description: "Agenți pentru suport tehnic și întrebări frecvente",
     icon: Headphones,
     color: "text-blue-500",
-    status: "online" as const
+    status: "online" as const,
+    powerLevel: 6,
+    relevance: "support"
   },
   {
     id: "analytics-agent",
@@ -66,7 +72,9 @@ export const agents: Agent[] = [
     description: "Analist pentru interpretarea datelor și rapoartelor",
     icon: BarChart3,
     color: "text-purple-500",
-    status: "online" as const
+    status: "online" as const,
+    powerLevel: 9,
+    relevance: "core"
   },
   {
     id: "security-agent",
@@ -74,7 +82,9 @@ export const agents: Agent[] = [
     description: "Specialist în securitate cibernetică și protecția datelor",
     icon: Shield,
     color: "text-red-500",
-    status: "online" as const
+    status: "online" as const,
+    powerLevel: 10,
+    relevance: "core"
   },
   {
     id: "ai-assistant",
@@ -82,6 +92,8 @@ export const agents: Agent[] = [
     description: "Asistent general pentru diverse întrebări despre platformă",
     icon: Brain,
     color: "text-amber-500",
-    status: "online" as const
+    status: "online" as const,
+    powerLevel: 7,
+    relevance: "support"
   }
 ];
