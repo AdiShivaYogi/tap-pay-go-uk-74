@@ -4,7 +4,7 @@
 
 import { ExtendedDatabase } from './types/extended-database';
 import { ExtendedSupabaseClient } from './types/supabase-client';
-import { supabase, createExtendedSupabaseClient } from './extended-client';
+import { extendedSupabase, createExtendedSupabaseClient } from './extended-client';
 
 export type { ExtendedDatabase, ExtendedSupabaseClient };
-export { supabase, createExtendedSupabaseClient };
+export { extendedSupabase as supabase, createExtendedSupabaseClient };

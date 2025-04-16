@@ -1,5 +1,6 @@
+
 import { toast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/extended-client";
+import { extendedSupabase as supabase } from "@/integrations/supabase/extended-client";
 
 export const handleApproveSubmission = async (
   submissionId: string,

@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/extended-client";
+import { extendedSupabase as supabase } from "@/integrations/supabase/extended-client";
 import { Card, CardContent } from "@/components/ui/card";
 import { ApiStatsCards } from "./components/ApiStatsCards";
 import { TimeframeSelector } from "./components/TimeframeSelector";
