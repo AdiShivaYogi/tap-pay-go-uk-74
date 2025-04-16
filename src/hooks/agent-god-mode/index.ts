@@ -21,6 +21,7 @@ export const useAgentGodMode = ({ userId }: UseAgentGodModeProps): UseAgentGodMo
   const [currentProposal, setCurrentProposal] = useState<FeedbackItem | null>(null);
   const [feedback, setFeedback] = useState("");
   const [feedbackType, setFeedbackType] = useState<"submission" | "proposal" | null>(null);
+  const [preferredModel, setPreferredModel] = useState<"deepseek" | "claude">("deepseek");
 
   const toggleGodMode = () => {
     const newState = !isGodModeEnabled;
@@ -48,7 +49,7 @@ export const useAgentGodMode = ({ userId }: UseAgentGodModeProps): UseAgentGodMo
     }
     
     try {
-      const generatedFeedback = await generateAgentFeedback(type, item, toast);
+      const generatedFeedback = await generateAgentFeedback(type, item, toast, preferredModel);
       setFeedback(generatedFeedback);
     } finally {
       setIsGeneratingFeedback(false);
@@ -113,11 +114,13 @@ export const useAgentGodMode = ({ userId }: UseAgentGodModeProps): UseAgentGodMo
     currentProposal,
     feedback,
     feedbackType,
+    preferredModel,
     toggleGodMode,
     generateFeedback,
     submitFeedback,
     cancelFeedback,
-    setFeedback
+    setFeedback,
+    setPreferredModel
   };
 };
 

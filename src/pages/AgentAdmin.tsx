@@ -9,6 +9,8 @@ import { useUserRole } from "@/hooks/use-user-role";
 import { AccessRestrictionAlert } from "@/features/roadmap/components/AccessRestrictionAlert";
 import { AgentAdminTabs } from "@/components/agent-admin/AgentAdminTabs";
 import { useAgentAdminData } from "@/hooks/use-agent-admin-data";
+import { AgentApiKeyDialog } from "@/components/agents/AgentApiKeyDialog";
+import { OpenRouterApiKeyDialog } from "@/components/agents/OpenRouterApiKeyDialog";
 
 const AgentAdmin = () => {
   const { user } = useAuth();
@@ -53,6 +55,11 @@ const AgentAdmin = () => {
           title="Administrare Agenți"
           description="Gestionează activitatea și contribuțiile agenților la dezvoltarea platformei"
         />
+        
+        <div className="flex flex-wrap gap-3 mb-4">
+          <AgentApiKeyDialog />
+          <OpenRouterApiKeyDialog />
+        </div>
         
         <AgentAdminTabs 
           submissions={submissionsState}

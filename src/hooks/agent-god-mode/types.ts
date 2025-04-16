@@ -20,6 +20,7 @@ export interface AgentGodModeState {
   currentProposal: FeedbackItem | null;
   feedback: string;
   feedbackType: "submission" | "proposal" | null;
+  preferredModel: "deepseek" | "claude";
 }
 
 export interface UseAgentGodModeProps {
@@ -32,4 +33,5 @@ export interface UseAgentGodModeReturn extends AgentGodModeState {
   submitFeedback: () => Promise<void>;
   cancelFeedback: () => void;
   setFeedback: (feedback: string) => void;
+  setPreferredModel: (model: "deepseek" | "claude") => void;
 }

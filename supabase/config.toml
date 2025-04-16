@@ -3,3 +3,9 @@ project_id = "utraomhphgnnrpyfwwla"
 
 [functions.generate-agent-feedback]
 verify_jwt = true
+
+[functions.check-openrouter-key]
+verify_jwt = true
+
+[functions.set-openrouter-key]
+verify_jwt = true

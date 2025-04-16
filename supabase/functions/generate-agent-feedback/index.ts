@@ -3,6 +3,7 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const deepseekApiKey = Deno.env.get('DEEPSEEK_API_KEY');
+const openrouterApiKey = Deno.env.get('OPENROUTER_API_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -16,8 +17,8 @@ serve(async (req) => {
   }
 
   try {
-    if (!deepseekApiKey) {
-      throw new Error("DEEPSEEK_API_KEY nu este configurat.");
+    if (!deepseekApiKey && !openrouterApiKey) {
+      throw new Error("Nu este configurată nicio cheie API (DeepSeek sau OpenRouter).");
     }
 
     const { 
@@ -26,7 +27,8 @@ serve(async (req) => {
       agentId, 
       content, 
       type, 
-      isGodMode 
+      isGodMode,
+      preferredModel
     } = await req.json();
 
     // Construim promptul pentru generarea feedback-ului
@@ -39,39 +41,67 @@ serve(async (req) => {
       systemPrompt += `\nPropunerea necesită îmbunătățiri înainte de a fi aprobată. Oferă sugestii concrete pentru îmbunătățiri.`;
     }
 
-    // Trimitem prompt-ul către Deepseek API
+    // Determinăm ce API să folosim în funcție de cheile disponibile și preferința utilizatorului
+    const useOpenRouter = openrouterApiKey && (preferredModel === 'claude' || !deepseekApiKey);
     const startTime = Date.now();
     
-    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${deepseekApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'deepseek-chat',
-        messages: [
-          {
-            role: 'system',
-            content: systemPrompt
-          },
-          {
-            role: 'user',
-            content: `Evaluează această propunere de la agentul ${agentId}:\n\n${content}`
-          }
-        ],
-        temperature: 0.7,
-      }),
-    });
+    let responseData;
+    
+    if (useOpenRouter) {
+      // Folosim OpenRouter pentru a accesa modelele Claude
+      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${openrouterApiKey}`,
+          'HTTP-Referer': Deno.env.get('SUPABASE_URL') || 'https://tappaygo.com',
+          'X-Title': 'TapPayGo Platform',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'anthropic/claude-3-sonnet',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: `Evaluează această propunere de la agentul ${agentId}:\n\n${content}` }
+          ],
+          temperature: 0.7,
+        }),
+      });
 
-    if (!response.ok) {
-      throw new Error(`Deepseek API a returnat status ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`OpenRouter API a returnat status ${response.status}`);
+      }
+
+      responseData = await response.json();
+
+    } else {
+      // Folosim Deepseek API ca fallback
+      const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${deepseekApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'deepseek-chat',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: `Evaluează această propunere de la agentul ${agentId}:\n\n${content}` }
+          ],
+          temperature: 0.7,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Deepseek API a returnat status ${response.status}`);
+      }
+
+      responseData = await response.json();
     }
 
-    const responseData = await response.json();
     const feedback = responseData.choices[0].message.content;
     const endTime = Date.now();
     const responseTimeSeconds = (endTime - startTime) / 1000;
+    const modelUsed = useOpenRouter ? 'claude-3-sonnet' : 'deepseek-chat';
 
     // Înregistrăm utilizarea API-ului
     await fetch(`${Deno.env.get('SUPABASE_URL')}/rest/v1/deepseek_api_usage`, {
@@ -85,11 +115,15 @@ serve(async (req) => {
         input_tokens: responseData.usage.prompt_tokens,
         output_tokens: responseData.usage.completion_tokens,
         total_tokens: responseData.usage.total_tokens,
-        input_cost: (responseData.usage.prompt_tokens * 0.0000005), // Aproximează costul pentru deepseek-chat
-        output_cost: (responseData.usage.completion_tokens * 0.0000015), // Aproximează costul pentru deepseek-chat
-        total_cost: ((responseData.usage.prompt_tokens * 0.0000005) + (responseData.usage.completion_tokens * 0.0000015)),
+        input_cost: useOpenRouter ? (responseData.usage.prompt_tokens * 0.000003) : (responseData.usage.prompt_tokens * 0.0000005), 
+        output_cost: useOpenRouter ? (responseData.usage.completion_tokens * 0.000015) : (responseData.usage.completion_tokens * 0.0000015),
+        total_cost: useOpenRouter 
+          ? ((responseData.usage.prompt_tokens * 0.000003) + (responseData.usage.completion_tokens * 0.000015))
+          : ((responseData.usage.prompt_tokens * 0.0000005) + (responseData.usage.completion_tokens * 0.0000015)),
         response_time_seconds: responseTimeSeconds,
         prompt_type: 'agent-feedback',
+        time_period: 'standard',
+        is_cache_hit: false
       }),
     });
 
@@ -169,6 +203,7 @@ serve(async (req) => {
       JSON.stringify({
         feedback,
         is_god_mode: isGodMode,
+        model_used: modelUsed,
         message: isGodMode ? 'Feedback generat și propunere aprobată automat.' : 'Feedback generat cu succes.'
       }),
       {

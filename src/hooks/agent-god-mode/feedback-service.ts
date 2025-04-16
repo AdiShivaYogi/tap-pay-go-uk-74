@@ -6,7 +6,8 @@ import { useToast } from "@/hooks/use-toast";
 export const generateAgentFeedback = async (
   type: "submission" | "proposal", 
   item: FeedbackItem, 
-  toast: ReturnType<typeof useToast>["toast"]
+  toast: ReturnType<typeof useToast>["toast"],
+  preferredModel: "deepseek" | "claude" = "deepseek"
 ): Promise<string> => {
   try {
     const promptContent = type === "submission" ? 
@@ -23,17 +24,31 @@ export const generateAgentFeedback = async (
       
       Oferă un feedback constructiv și sugestii de îmbunătățire pentru acest cod propus.`;
     
-    const { data, error } = await supabase.functions.invoke('generate-agent-response', {
+    const { data, error } = await supabase.functions.invoke('generate-agent-feedback', {
       body: { 
         message: promptContent,
         agentType: "Agent Supervisor",
         agentDescription: "Agent specializat în evaluarea și îmbunătățirea propunerilor de la alți agenți",
-        isFeedback: true
+        isFeedback: true,
+        preferredModel: preferredModel,
+        content: promptContent,
+        agentId: item.agent_id,
+        submissionId: type === "submission" ? item.id : undefined,
+        proposalId: type === "proposal" ? item.id : undefined,
+        type: type
       }
     });
     
     if (error) throw error;
-    return data?.response || "Nu s-a putut genera un feedback. Te rugăm încearcă din nou.";
+    
+    // Adăugăm informații despre modelul folosit în toast
+    const modelInfo = data?.model_used || "AI";
+    toast({
+      title: `Feedback generat cu ${modelInfo}`,
+      description: "Feedback-ul a fost generat cu succes.",
+    });
+    
+    return data?.feedback || "Nu s-a putut genera un feedback. Te rugăm încearcă din nou.";
     
   } catch (err) {
     console.error("Eroare la generarea feedbackului:", err);

@@ -1,20 +1,22 @@
 
 import React from "react";
-import { Brain, X, Check, Crown } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Loader2, CheckSquare, X } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FeedbackItem } from "@/hooks/agent-god-mode/types";
 
 interface FeedbackFormProps {
   feedbackType: "submission" | "proposal" | null;
-  currentSubmission: any | null;
-  currentProposal: any | null;
+  currentSubmission: FeedbackItem | null;
+  currentProposal: FeedbackItem | null;
   feedback: string;
   isGeneratingFeedback: boolean;
   isProcessing: boolean;
   isGodModeEnabled: boolean;
-  onFeedbackChange: (value: string) => void;
-  onSubmit: () => void;
+  onFeedbackChange: (feedback: string) => void;
+  onSubmit: () => Promise<void>;
   onCancel: () => void;
 }
 
@@ -30,90 +32,100 @@ export const FeedbackForm = ({
   onSubmit,
   onCancel
 }: FeedbackFormProps) => {
+  const [preferredModel, setPreferredModel] = React.useState<string>("deepseek");
   
-  if (!feedbackType) return null;
+  const currentItem = currentSubmission || currentProposal;
+  if (!currentItem) return null;
+
+  const title = feedbackType === "submission" 
+    ? currentSubmission?.roadmap_tasks?.title || "Propunere task"
+    : "Propunere cod";
 
   return (
-    <div className="mt-4 space-y-4 border rounded-lg p-4">
-      <div className="flex justify-between items-center">
-        <h3 className="font-medium">
-          {feedbackType === "submission" 
-            ? "Feedback pentru propunere task" 
-            : "Feedback pentru propunere cod"}
+    <Card className="p-4 mt-4">
+      <div className="space-y-3 mb-4">
+        <h3 className="font-semibold flex items-center gap-2">
+          Feedback pentru: <span className="text-primary">{title}</span>
         </h3>
-        <Badge variant="outline" className="flex items-center gap-1">
-          <Brain className="h-3.5 w-3.5" />
-          {feedbackType === "submission" 
-            ? currentSubmission?.agent_id 
-            : currentProposal?.agent_id}
-        </Badge>
-      </div>
-      
-      {feedbackType === "submission" && currentSubmission && (
-        <div className="text-sm">
-          <p><span className="font-medium">Titlu:</span> {currentSubmission?.roadmap_tasks?.title || "N/A"}</p>
-          <p><span className="font-medium">Descriere:</span> {currentSubmission?.roadmap_tasks?.description || "N/A"}</p>
-          <p><span className="font-medium">Schimbări propuse:</span> {currentSubmission?.proposed_changes}</p>
-          <p><span className="font-medium">Progres propus:</span> {currentSubmission?.proposed_progress}%</p>
-        </div>
-      )}
-      
-      {feedbackType === "proposal" && currentProposal && (
-        <div className="text-sm">
-          <p><span className="font-medium">Fișiere propuse:</span> {currentProposal?.proposed_files}</p>
-          <p><span className="font-medium">Motivație:</span> {currentProposal?.motivation}</p>
-        </div>
-      )}
-      
-      <div className="space-y-2">
-        <div className="flex justify-between items-center">
-          <label htmlFor="feedback" className="text-sm font-medium">
-            Feedback pentru agent
-          </label>
-          {isGeneratingFeedback && <span className="text-xs text-muted-foreground">Generare feedback...</span>}
-        </div>
         
+        {feedbackType === "submission" ? (
+          <div className="text-sm text-muted-foreground">
+            <p>
+              <span className="font-medium">Progres propus:</span> {currentSubmission?.proposed_progress}%
+            </p>
+            <p>
+              <span className="font-medium">Schimbări propuse:</span> {currentSubmission?.proposed_changes}
+            </p>
+          </div>
+        ) : (
+          <div className="text-sm text-muted-foreground">
+            <p>
+              <span className="font-medium">Fișiere propuse:</span> {currentProposal?.proposed_files}
+            </p>
+            <p>
+              <span className="font-medium">Motivație:</span> {currentProposal?.motivation}
+            </p>
+          </div>
+        )}
+      </div>
+
+      <div className="mb-4">
+        <div className="flex justify-between items-center mb-2">
+          <label htmlFor="feedback" className="block text-sm font-medium">
+            {isGeneratingFeedback ? "Se generează feedback..." : "Feedback pentru agent:"}
+          </label>
+          <Select 
+            value={preferredModel} 
+            onValueChange={setPreferredModel}
+            disabled={isGeneratingFeedback || isProcessing}
+          >
+            <SelectTrigger className="w-[180px] h-8">
+              <SelectValue placeholder="Model AI" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="deepseek">DeepSeek Chat</SelectItem>
+              <SelectItem value="claude">Claude (OpenRouter)</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <Textarea
           id="feedback"
+          placeholder="Introduceți feedback pentru agent sau folosiți butonul pentru a genera automat..."
+          className="min-h-[150px]"
           value={feedback}
           onChange={(e) => onFeedbackChange(e.target.value)}
-          placeholder="Scrie feedback constructiv pentru îmbunătățirea propunerii..."
-          rows={5}
-          disabled={isGeneratingFeedback}
+          disabled={isGeneratingFeedback || isProcessing}
         />
       </div>
-      
-      <div className="flex justify-end gap-2">
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onClick={onCancel}
-          disabled={isProcessing}
-        >
-          <X className="h-4 w-4 mr-1" />
-          Anulează
-        </Button>
-        
-        <Button 
-          variant={isGodModeEnabled ? "default" : "outline"} 
+
+      <div className="flex justify-end space-x-2">
+        <Button
+          variant="outline"
           size="sm"
-          onClick={onSubmit}
-          disabled={!feedback || isProcessing}
-          className={isGodModeEnabled ? "bg-amber-500 hover:bg-amber-600" : ""}
+          onClick={onCancel}
+          disabled={isGeneratingFeedback || isProcessing}
+          className="gap-1"
         >
-          {isGodModeEnabled ? (
+          <X className="h-4 w-4" /> Anulează
+        </Button>
+        <Button
+          onClick={onSubmit}
+          disabled={!feedback.trim() || isGeneratingFeedback || isProcessing}
+          size="sm"
+          className="gap-1"
+        >
+          {isProcessing ? (
             <>
-              <Crown className="h-4 w-4 mr-1" />
-              Trimite feedback și aprobă
+              <Loader2 className="h-4 w-4 animate-spin" /> Se procesează...
             </>
           ) : (
             <>
-              <Check className="h-4 w-4 mr-1" />
-              Trimite doar feedback
+              <CheckSquare className="h-4 w-4" />
+              {isGodModeEnabled ? "Aprobă și trimite feedback" : "Trimite feedback"}
             </>
           )}
         </Button>
       </div>
-    </div>
+    </Card>
   );
 };
