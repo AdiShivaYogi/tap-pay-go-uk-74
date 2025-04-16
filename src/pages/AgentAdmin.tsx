@@ -7,7 +7,7 @@ import { Bot, Check, Clock, AlertCircle, ChevronRight } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useUserRole } from "@/hooks/use-user-role";
 import { AccessRestrictionAlert } from "@/features/roadmap/components/AccessRestrictionAlert";
-import { supabase } from "@/integrations/supabase/types-extension"; // Folosim supabase din noul fișier de tipuri
+import { supabase } from "@/integrations/supabase/types-extension"; // Import the extended supabase client
 import { 
   StyledCard, 
   StyledCardHeader, 

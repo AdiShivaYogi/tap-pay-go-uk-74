@@ -1,4 +1,5 @@
 
+import { createClient } from '@supabase/supabase-js';
 import { Database } from './types';
 
 // Extinde tipurile Database pentru a include tabelele noi folosite de agenți
