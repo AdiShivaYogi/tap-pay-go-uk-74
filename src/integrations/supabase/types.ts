@@ -136,6 +136,51 @@ export type Database = {
         }
         Relationships: []
       }
+      deepseek_api_usage: {
+        Row: {
+          created_at: string
+          id: string
+          input_cost: number
+          input_tokens: number
+          is_cache_hit: boolean | null
+          output_cost: number
+          output_tokens: number
+          prompt_type: string
+          response_time_seconds: number
+          time_period: string | null
+          total_cost: number
+          total_tokens: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input_cost?: number
+          input_tokens?: number
+          is_cache_hit?: boolean | null
+          output_cost?: number
+          output_tokens?: number
+          prompt_type?: string
+          response_time_seconds?: number
+          time_period?: string | null
+          total_cost?: number
+          total_tokens?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input_cost?: number
+          input_tokens?: number
+          is_cache_hit?: boolean | null
+          output_cost?: number
+          output_tokens?: number
+          prompt_type?: string
+          response_time_seconds?: number
+          time_period?: string | null
+          total_cost?: number
+          total_tokens?: number
+        }
+        Relationships: []
+      }
       login_attempts: {
         Row: {
           attempt_count: number | null
@@ -264,6 +309,10 @@ export type Database = {
           is_locked: boolean
           minutes_left: number
         }[]
+      }
+      create_deepseek_api_usage_table: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
       record_failed_attempt: {
         Args: { p_email: string }

@@ -6,7 +6,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-// Updated pricing constants for DeepSeek API
+// Updated pricing constants for DeepSeek API based on the provided pricing details
 const DEEPSEEK_PRICING = {
   standard: {
     inputCacheHit: 0.00007,   // $0.07 per 1M tokens
@@ -14,9 +14,9 @@ const DEEPSEEK_PRICING = {
     output: 0.0011            // $1.10 per 1M tokens
   },
   offPeak: {
-    inputCacheHit: 0.000035,   // $0.035 per 1M tokens (50% off)
-    inputCacheMiss: 0.000135,  // $0.135 per 1M tokens (50% off)
-    output: 0.00055            // $0.550 per 1M tokens (50% off)
+    inputCacheHit: 0.000035,  // $0.035 per 1M tokens (50% off)
+    inputCacheMiss: 0.000135, // $0.135 per 1M tokens (50% off)
+    output: 0.00055           // $0.550 per 1M tokens (50% off)
   }
 };
 
@@ -27,7 +27,7 @@ function isOffPeakHours() {
   const minutes = currentUTC.getUTCMinutes();
   
   // Off-peak is between 16:30 UTC and 00:30 UTC
-  return (hours > 16 || hours < 0) || (hours === 16 && minutes >= 30);
+  return (hours > 16 || hours === 0) || (hours === 16 && minutes >= 30) || (hours === 0 && minutes <= 30);
 }
 
 // Function to calculate token costs
@@ -156,12 +156,6 @@ const CODE_GENERATION_TEMPLATES = {
 
 const deepseekApiKey = Deno.env.get("DEEPSEEK_API_KEY") || "";
 
-// Define the cost per 1000 tokens (in USD)
-const DEEPSEEK_COST_PER_1K_TOKENS = {
-  input: 0.001, // $0.001 per 1K input tokens
-  output: 0.002 // $0.002 per 1K output tokens
-};
-
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -249,13 +243,18 @@ serve(async (req) => {
     const inputTokens = data.usage?.prompt_tokens || 0;
     const outputTokens = data.usage?.completion_tokens || 0;
     
+    // For now, we assume cache miss by default 
+    // In a future version, we could track real cache hits from API response
+    const isCacheHit = false;
+    
     // Record token usage in the database
     await recordTokenUsage(
       supabase, 
       inputTokens, 
       outputTokens, 
       responseTime,
-      promptType
+      promptType,
+      isCacheHit
     );
 
     const generatedResponse = data.choices?.[0]?.message?.content || "Nu am putut genera un răspuns.";

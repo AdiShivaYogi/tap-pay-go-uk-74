@@ -1,15 +1,22 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { StatsCard } from "@/components/ui/cards/stats-card";
 import { Brain, DollarSign, MessageSquare, Clock, BarChart3 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/types-extension";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend, PieChart, Pie, Cell } from "recharts";
 
 export const ApiUsageStats = () => {
-  const [timeframe, setTimeframe] = React.useState('30d');
+  const [timeframe, setTimeframe] = useState('30d');
   
-  const { data: stats, isLoading } = useQuery({
+  const { data: stats, isLoading, error } = useQuery({
     queryKey: ['api-usage-stats', timeframe],
     queryFn: async () => {
       const { data, error } = await supabase.functions.invoke('get-deepseek-stats', {
@@ -28,6 +35,36 @@ export const ApiUsageStats = () => {
       ))}
     </div>;
   }
+
+  if (error) {
+    return <Card className="bg-destructive/10 border-destructive">
+      <CardContent className="pt-6">
+        <p className="text-destructive">Eroare la încărcarea statisticilor: {String(error)}</p>
+      </CardContent>
+    </Card>;
+  }
+
+  // Prepare data for charts
+  const periodData = stats?.periodBreakdown ? 
+    Object.entries(stats.periodBreakdown).map(([period, data]: [string, any]) => ({
+      name: period === 'standard' ? 'Standard' : 'Ore reduse',
+      tokens: data.totalTokens,
+      cost: parseFloat(data.totalCost.toFixed(2)),
+      count: data.promptCount
+    })) : [];
+
+  const promptTypeData = stats?.promptTypeDistribution ?
+    Object.entries(stats.promptTypeDistribution).map(([type, data]: [string, any]) => ({
+      name: type === 'standard' ? 'Standard' : 
+            type === 'conversation_starter' ? 'Inițiere conversație' :
+            type === 'task_proposal' ? 'Propunere task' : 
+            type === 'code_proposal' ? 'Propunere cod' : type,
+      value: data.count,
+      cost: parseFloat(data.totalCost.toFixed(2))
+    })) : [];
+
+  // Colors for pie chart
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
   return (
     <div className="space-y-4 mb-6">
@@ -53,7 +90,7 @@ export const ApiUsageStats = () => {
         
         <StatsCard
           title="Cost total"
-          value={`$${stats?.totalCost.toFixed(2)}`}
+          value={`$${stats?.totalCost.toFixed(2) || '0.00'}`}
           icon={DollarSign}
           colorClass="text-green-500"
           description="Cost total API"
@@ -69,12 +106,72 @@ export const ApiUsageStats = () => {
         
         <StatsCard
           title="Timp mediu răspuns"
-          value={`${stats?.avgResponseTime.toFixed(1)}s`}
+          value={`${stats?.avgResponseTime.toFixed(1) || '0.0'}s`}
           icon={Clock}
           colorClass="text-purple-500"
           description="Timp mediu de procesare"
         />
       </div>
+
+      {stats && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
+          {/* Cost by Period Chart */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base font-medium">Cost după perioada de utilizare</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={periodData}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 30 }}
+                  >
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip content={<ChartTooltipContent />} />
+                    <Legend />
+                    <Bar dataKey="cost" name="Cost ($)" fill="#8884d8" />
+                    <Bar dataKey="count" name="Nr. prompt-uri" fill="#82ca9d" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+
+          {/* Prompt Type Distribution Chart */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base font-medium">Distribuție după tipul de prompt</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={promptTypeData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                      nameKey="name"
+                      label={({name, percent}) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                    >
+                      {promptTypeData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(value, name, props) => [value, props.payload.name]} />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 };

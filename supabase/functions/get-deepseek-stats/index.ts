@@ -41,7 +41,7 @@ serve(async (req) => {
         break;
     }
 
-    // Fetch aggregated stats with new detailed cost tracking
+    // Fetch aggregated stats with detailed cost tracking
     const { data: statsData, error: statsError } = await supabase
       .from('deepseek_api_usage')
       .select(`
