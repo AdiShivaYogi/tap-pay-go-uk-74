@@ -15,6 +15,14 @@ const Reports = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [selectedRange, setSelectedRange] = useState<{ label: string; value: string } | null>(null);
 
+  // Sample report data
+  const reportData = {
+    totalRevenue: 15789.42,
+    newCustomers: 24,
+    averageOrderValue: 657.89,
+    transactionSuccessRate: 94.3
+  };
+
   const dateRange = {
     startDate: date,
     endDate: date
@@ -43,7 +51,13 @@ const Reports = () => {
             </StyledCardContent>
           </StyledCard>
 
-          <ReportStats />
+          <ReportStats 
+            totalRevenue={reportData.totalRevenue}
+            newCustomers={reportData.newCustomers}
+            averageOrderValue={reportData.averageOrderValue}
+            transactionSuccessRate={reportData.transactionSuccessRate}
+            dateRange={dateRange}
+          />
         </Grid2Cols>
 
         <Section variant="alt">
