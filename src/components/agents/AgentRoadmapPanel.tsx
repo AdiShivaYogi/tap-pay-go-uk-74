@@ -4,7 +4,7 @@ import { StyledCard, StyledCardHeader, StyledCardTitle, StyledCardContent } from
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Check, Loader2, Play, BarChart4, PlusCircle, Brain, Sparkles } from "lucide-react";
+import { Check, Loader2, Play, BarChart4, PlusCircle, Brain, Sparkles, Clock, Zap, DollarSign } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/types-extension"; 
 import { useToast } from "@/hooks/use-toast";
@@ -20,6 +20,7 @@ export const AgentRoadmapPanel = ({ agentId, onSelectTask }: AgentRoadmapPanelPr
   const [loading, setLoading] = useState(false);
   const [assigningTask, setAssigningTask] = useState<string | null>(null);
   const [isCreatingTask, setIsCreatingTask] = useState(false);
+  const [sortBy, setSortBy] = useState<string>("recommended");
   
   // Încarcă taskurile disponibile pentru agent
   useEffect(() => {
@@ -31,12 +32,22 @@ export const AgentRoadmapPanel = ({ agentId, onSelectTask }: AgentRoadmapPanelPr
         const { data, error } = await supabase.functions.invoke('agent-roadmap-tasks', {
           body: { 
             action: 'getAssignedTasks',
-            agentId: agentId
+            agentId: agentId,
+            includeAllAvailable: true // Solicită toate taskurile disponibile, nu doar cele atribuite
           }
         });
         
         if (error) throw error;
-        setTasks(data?.data || []);
+        
+        // Adăugăm informații de dificultate și cost estimate pentru fiecare task
+        const enrichedTasks = (data?.data || []).map((task: any) => ({
+          ...task,
+          difficulty: calculateDifficulty(task),
+          costEstimate: calculateCost(task),
+          recommendationScore: calculateRecommendationScore(task, agentId)
+        }));
+        
+        setTasks(enrichedTasks);
       } catch (err) {
         console.error('Eroare la încărcarea taskurilor:', err);
       } finally {
@@ -171,6 +182,76 @@ export const AgentRoadmapPanel = ({ agentId, onSelectTask }: AgentRoadmapPanelPr
     return agentTypes[id as keyof typeof agentTypes] || 'Agent AI';
   };
   
+  // Funcții pentru calcule și sortarea taskurilor
+  const calculateDifficulty = (task: any): string => {
+    const progressNeeded = 100 - (task.progress || 0);
+    if (progressNeeded <= 20) return "Ușor";
+    if (progressNeeded <= 50) return "Moderat";
+    if (progressNeeded <= 80) return "Dificil";
+    return "Complex";
+  };
+  
+  const calculateCost = (task: any): string => {
+    const difficulty = calculateDifficulty(task);
+    switch (difficulty) {
+      case "Ușor": return "Scăzut (1-2 zile)";
+      case "Moderat": return "Mediu (3-5 zile)";
+      case "Dificil": return "Ridicat (1-2 săptămâni)";
+      case "Complex": return "Foarte ridicat (2+ săptămâni)";
+      default: return "Nedeterminat";
+    }
+  };
+  
+  const calculateRecommendationScore = (task: any, agentId: string): number => {
+    let score = 0;
+    
+    // Scor bazat pe progres - taskurile începute au prioritate
+    const progress = task.progress || 0;
+    if (progress > 0 && progress < 80) score += 30;
+    else if (progress === 0) score += 20;
+    else score += 10;
+    
+    // Scor bazat pe potrivirea agentului cu categoria
+    const agentCategory: {[key: string]: string[]} = {
+      'payment-agent': ['payment', 'product'],
+      'support-agent': ['product', 'localization'],
+      'analytics-agent': ['monitoring', 'devops'],
+      'security-agent': ['security', 'infrastructure'],
+      'ai-assistant': ['product', 'ui']
+    };
+    
+    const preferredCategories = agentCategory[agentId] || [];
+    if (preferredCategories.includes(task.category?.toLowerCase())) score += 25;
+    
+    // Scor pentru dificultate - agentii preferă taskurile de dificultate medie
+    const difficulty = calculateDifficulty(task);
+    switch (difficulty) {
+      case "Ușor": score += 15; break;
+      case "Moderat": score += 25; break;
+      case "Dificil": score += 20; break;
+      case "Complex": score += 10; break;
+    }
+    
+    return score;
+  };
+  
+  // Sortăm taskurile în funcție de criterii
+  const sortedTasks = [...tasks].sort((a, b) => {
+    switch (sortBy) {
+      case "difficulty":
+        const difficultyOrder = { "Ușor": 1, "Moderat": 2, "Dificil": 3, "Complex": 4 };
+        return difficultyOrder[a.difficulty as keyof typeof difficultyOrder] - difficultyOrder[b.difficulty as keyof typeof difficultyOrder];
+      case "cost":
+        const costOrder = { "Scăzut (1-2 zile)": 1, "Mediu (3-5 zile)": 2, "Ridicat (1-2 săptămâni)": 3, "Foarte ridicat (2+ săptămâni)": 4 };
+        return costOrder[a.costEstimate as keyof typeof costOrder] - costOrder[b.costEstimate as keyof typeof costOrder];
+      case "progress":
+        return (b.progress || 0) - (a.progress || 0);
+      case "recommended":
+      default:
+        return b.recommendationScore - a.recommendationScore;
+    }
+  });
+  
   if (!agentId) {
     return null;
   }
@@ -205,13 +286,48 @@ export const AgentRoadmapPanel = ({ agentId, onSelectTask }: AgentRoadmapPanelPr
       </StyledCardHeader>
       
       <StyledCardContent>
+        {/* Filtre pentru sortare */}
+        <div className="mb-4 flex items-center gap-2">
+          <span className="text-sm font-medium">Sortează după:</span>
+          <div className="flex flex-wrap gap-1">
+            <Badge 
+              variant={sortBy === "recommended" ? "default" : "outline"}
+              className="cursor-pointer"
+              onClick={() => setSortBy("recommended")}
+            >
+              Recomandat
+            </Badge>
+            <Badge 
+              variant={sortBy === "difficulty" ? "default" : "outline"}
+              className="cursor-pointer"
+              onClick={() => setSortBy("difficulty")}
+            >
+              Dificultate
+            </Badge>
+            <Badge 
+              variant={sortBy === "cost" ? "default" : "outline"}
+              className="cursor-pointer"
+              onClick={() => setSortBy("cost")}
+            >
+              Cost
+            </Badge>
+            <Badge 
+              variant={sortBy === "progress" ? "default" : "outline"}
+              className="cursor-pointer"
+              onClick={() => setSortBy("progress")}
+            >
+              Progres
+            </Badge>
+          </div>
+        </div>
+        
         {loading ? (
           <div className="flex justify-center py-8">
             <Loader2 className="h-6 w-6 animate-spin text-primary" />
           </div>
-        ) : tasks.length > 0 ? (
+        ) : sortedTasks.length > 0 ? (
           <div className="space-y-4">
-            {tasks.map((task) => (
+            {sortedTasks.map((task) => (
               <div key={task.id} className="border rounded-md p-3">
                 <div className="flex justify-between items-start mb-2">
                   <div>
@@ -233,6 +349,21 @@ export const AgentRoadmapPanel = ({ agentId, onSelectTask }: AgentRoadmapPanelPr
                     <span className="text-xs font-medium">{task.progress || 0}%</span>
                   </div>
                   <Progress value={task.progress || 0} className="h-1" />
+                </div>
+                
+                <div className="mt-3 grid grid-cols-3 gap-2 mb-3">
+                  <div className="flex items-center gap-1 text-xs">
+                    <Zap className={`h-3.5 w-3.5 ${getDifficultyColor(task.difficulty)}`} />
+                    <span>Dificultate: <span className="font-medium">{task.difficulty}</span></span>
+                  </div>
+                  <div className="flex items-center gap-1 text-xs">
+                    <Clock className="h-3.5 w-3.5 text-orange-500" />
+                    <span>Timp: <span className="font-medium">{getTimeEstimate(task.difficulty)}</span></span>
+                  </div>
+                  <div className="flex items-center gap-1 text-xs">
+                    <DollarSign className="h-3.5 w-3.5 text-green-500" />
+                    <span>Prioritate: <span className="font-medium">{getPriorityLevel(task.recommendationScore)}</span></span>
+                  </div>
                 </div>
                 
                 <div className="mt-3 flex justify-between items-center">
@@ -309,4 +440,30 @@ const getTaskDifficultyLabel = (progress: number): string => {
   if (progress >= 50) return "În dezvoltare";
   if (progress >= 20) return "Început";
   return "Nou";
+};
+
+const getDifficultyColor = (level: string): string => {
+  switch (level) {
+    case "Ușor": return "text-green-500";
+    case "Moderat": return "text-blue-500";
+    case "Dificil": return "text-amber-500";
+    case "Complex": return "text-red-500";
+    default: return "text-muted-foreground";
+  }
+};
+
+const getTimeEstimate = (difficulty: string): string => {
+  switch (difficulty) {
+    case "Ușor": return "1-2 zile";
+    case "Moderat": return "3-5 zile";
+    case "Dificil": return "1-2 săpt.";
+    case "Complex": return "2+ săpt.";
+    default: return "Necunoscut";
+  }
+};
+
+const getPriorityLevel = (score: number): string => {
+  if (score >= 70) return "Înaltă";
+  if (score >= 50) return "Medie";
+  return "Scăzută";
 };

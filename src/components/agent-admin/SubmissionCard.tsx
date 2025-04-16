@@ -4,7 +4,7 @@ import { StyledCard } from "@/components/ui/cards";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ChevronRight, CalendarClock, MessagesSquare, CheckCircle2, AlertTriangle, Brain } from "lucide-react";
+import { ChevronRight, CalendarClock, MessagesSquare, CheckCircle2, AlertTriangle, Brain, Zap } from "lucide-react";
 import { StatusBadge } from "./StatusBadge";
 import { Separator } from "@/components/ui/separator";
 
@@ -12,7 +12,7 @@ interface SubmissionCardProps {
   submission: any;
   onApprove: (submissionId: string) => Promise<void>;
   onReject: (submissionId: string) => Promise<void>;
-  onGenerateFeedback?: () => void;
+  onGenerateFeedback?: (type: "submission", item: any) => Promise<void>;
 }
 
 export const SubmissionCard = ({ submission, onApprove, onReject, onGenerateFeedback }: SubmissionCardProps) => {
@@ -26,6 +26,10 @@ export const SubmissionCard = ({ submission, onApprove, onReject, onGenerateFeed
     hour: '2-digit',
     minute: '2-digit'
   });
+
+  // Calculăm nivelul estimat de dificultate bazat pe procentul de progres
+  const difficultyLevel = getDifficultyLevel(submission.proposed_progress - (submission.roadmap_tasks?.progress || 0));
+  const estimatedCost = getEstimatedCost(difficultyLevel);
   
   return (
     <StyledCard key={submission.id} className="border-primary/10">
@@ -78,6 +82,28 @@ export const SubmissionCard = ({ submission, onApprove, onReject, onGenerateFeed
           </div>
         </div>
         
+        {/* Informații despre dificultate și cost */}
+        <div className="mb-4 grid grid-cols-2 gap-4">
+          <div className="p-3 bg-muted/50 rounded-md border border-muted-foreground/10">
+            <div className="flex items-center gap-2 mb-1">
+              <Zap className={`h-4 w-4 ${getDifficultyColor(difficultyLevel)}`} />
+              <h4 className="font-medium text-sm">Dificultate estimată:</h4>
+            </div>
+            <p className="text-sm font-medium">{difficultyLevel}</p>
+          </div>
+          <div className="p-3 bg-muted/50 rounded-md border border-muted-foreground/10">
+            <div className="flex items-center gap-2 mb-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-amber-500">
+                <circle cx="12" cy="12" r="8"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12" y2="8"></line>
+              </svg>
+              <h4 className="font-medium text-sm">Cost estimat:</h4>
+            </div>
+            <p className="text-sm font-medium">{estimatedCost}</p>
+          </div>
+        </div>
+        
         {/* Secțiunea de modificări propuse */}
         <div className="mb-4">
           <div className="flex items-center gap-2 mb-2">
@@ -112,6 +138,22 @@ export const SubmissionCard = ({ submission, onApprove, onReject, onGenerateFeed
           </div>
         )}
         
+        {/* Secțiunea de ordine logică */}
+        <div className="mb-4 p-3 bg-blue-50/50 rounded-md border border-blue-200/50">
+          <div className="flex items-center gap-2 mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-blue-500">
+              <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+              <path d="M7 8h10"></path>
+              <path d="M7 12h10"></path>
+              <path d="M7 16h10"></path>
+            </svg>
+            <h4 className="font-medium text-sm">Ordine logică de implementare:</h4>
+          </div>
+          <p className="text-sm">
+            {getImplementationOrder(submission.roadmap_tasks?.category, submission.proposed_status)}
+          </p>
+        </div>
+        
         {/* Secțiunea de acțiuni */}
         <div className="mt-4 flex justify-end gap-3">
           <Button 
@@ -127,7 +169,7 @@ export const SubmissionCard = ({ submission, onApprove, onReject, onGenerateFeed
               variant="outline"
               size="sm"
               className="flex items-center gap-1"
-              onClick={onGenerateFeedback}
+              onClick={() => onGenerateFeedback("submission", submission)}
             >
               <Brain className="h-4 w-4" />
               Generează feedback
@@ -145,3 +187,71 @@ export const SubmissionCard = ({ submission, onApprove, onReject, onGenerateFeed
     </StyledCard>
   );
 };
+
+// Funcții helper pentru estimarea dificultății și costului
+const getDifficultyLevel = (progressDelta: number): string => {
+  if (progressDelta <= 10) return "Ușor";
+  if (progressDelta <= 30) return "Moderat";
+  if (progressDelta <= 50) return "Dificil";
+  return "Complex";
+};
+
+const getDifficultyColor = (level: string): string => {
+  switch (level) {
+    case "Ușor": return "text-green-500";
+    case "Moderat": return "text-blue-500";
+    case "Dificil": return "text-amber-500";
+    case "Complex": return "text-red-500";
+    default: return "text-muted-foreground";
+  }
+};
+
+const getEstimatedCost = (level: string): string => {
+  switch (level) {
+    case "Ușor": return "Scăzut (1-2 zile)";
+    case "Moderat": return "Mediu (3-5 zile)";
+    case "Dificil": return "Ridicat (1-2 săptămâni)";
+    case "Complex": return "Foarte ridicat (2+ săptămâni)";
+    default: return "Nedeterminat";
+  }
+};
+
+const getImplementationOrder = (category: string, status: string): string => {
+  if (!category) return "Acest task nu are o categorie specificată pentru a determina ordinea logică.";
+  
+  const categoryOrder: Record<string, string[]> = {
+    "security": ["Analiză de securitate", "Implementare măsuri de bază", "Testare", "Monitorizare continuă"],
+    "payment": ["Integrare API", "Implementare UI plăți", "Testare tranzacții", "Optimizare performanță"],
+    "product": ["Definire funcționalitate", "Prototipare", "Implementare", "Testare utilizator"],
+    "monitoring": ["Configurare metrici", "Implementare dashboard", "Setare alerte", "Optimizare"],
+    "devops": ["Setup infrastructură", "Automatizare CI/CD", "Monitorizare", "Optimizare performanță"],
+  };
+  
+  const baseOrder = categoryOrder[category.toLowerCase()] || [
+    "Analiză cerințe", 
+    "Design", 
+    "Implementare", 
+    "Testare", 
+    "Lansare"
+  ];
+  
+  // Determinăm la ce pas suntem bazat pe status și progress
+  let currentStep = 1;
+  if (status === "inProgress") currentStep = 2;
+  if (status === "completed") currentStep = baseOrder.length;
+  
+  return (
+    <>
+      {baseOrder.map((step, index) => (
+        <div key={index} className={`flex items-center gap-1 ${index < currentStep ? "font-medium" : "text-muted-foreground"}`}>
+          <span className={`inline-block w-5 h-5 rounded-full text-xs flex items-center justify-center mr-1 ${
+            index < currentStep ? "bg-primary text-white" : "bg-muted-foreground/20 text-muted-foreground"
+          }`}>{index + 1}</span>
+          {step}
+          {index < currentStep - 1 && " ✓"}
+        </div>
+      ))}
+    </>
+  );
+};
+

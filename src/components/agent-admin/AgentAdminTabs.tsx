@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SubmissionsTab } from "./SubmissionsTab";
 import { CodeProposalsTab } from "./CodeProposalsTab";
@@ -9,6 +9,7 @@ import { useAgentGodMode } from "@/hooks/agent-god-mode";
 import { useSubmissionHandlers } from "./handlers/submission-handlers";
 import { useCodeProposalHandlers } from "./handlers/code-proposal-handlers";
 import { AgentGodMode } from "./AgentGodMode";
+import { useToast } from "@/hooks/use-toast";
 
 interface AgentAdminTabsProps {
   submissions: any[];
@@ -29,6 +30,7 @@ export const AgentAdminTabs = ({
   setCodeProposals,
   loading = false
 }: AgentAdminTabsProps) => {
+  const { toast } = useToast();
   const { handleApproveSubmission, handleRejectSubmission } = useSubmissionHandlers({ 
     submissions, 
     setSubmissions 
@@ -40,19 +42,21 @@ export const AgentAdminTabs = ({
   });
 
   const { 
-    isGodModeEnabled,
-    isProcessing,
     isGeneratingFeedback,
-    currentSubmission,
-    currentProposal,
-    feedback,
-    feedbackType,
-    toggleGodMode,
     generateFeedback,
-    submitFeedback,
-    cancelFeedback,
-    setFeedback
   } = useAgentGodMode({ userId });
+  
+  // Notificare despre numărul de propuneri
+  useEffect(() => {
+    if (!loading && (submissions.length > 0 || codeProposals.length > 0)) {
+      const totalProposals = submissions.length + codeProposals.length;
+      toast({
+        title: `${totalProposals} propuneri în așteptare`,
+        description: `Aveți ${submissions.length} propuneri de task-uri și ${codeProposals.length} propuneri de cod care așteaptă revizuirea dumneavoastră.`,
+        duration: 5000,
+      });
+    }
+  }, [loading, submissions.length, codeProposals.length, toast]);
 
   return (
     <>

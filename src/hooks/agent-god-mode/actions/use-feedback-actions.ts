@@ -35,6 +35,19 @@ export function useFeedbackActions(state: any) {
     try {
       const generatedFeedback = await generateAgentFeedback(type, item, toast, preferredModel);
       setFeedback(generatedFeedback);
+      
+      // Notificare de succes pentru utilizator
+      toast({
+        title: "Feedback generat cu succes",
+        description: `S-a generat feedback pentru ${type === "submission" ? "propunerea de task" : "propunerea de cod"}.`,
+      });
+    } catch (err) {
+      console.error("Eroare la generarea feedback-ului:", err);
+      toast({
+        title: "Nu s-a putut genera feedback",
+        description: "A apărut o eroare la generarea feedback-ului automat.",
+        variant: "destructive"
+      });
     } finally {
       setIsGeneratingFeedback(false);
     }

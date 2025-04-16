@@ -26,7 +26,8 @@ export const useAgentAdminData = (isAdmin: boolean): AgentAdminData => {
           .from('agent_task_submissions')
           .select('*, roadmap_tasks(*)')
           .eq('approval_status', 'pending')
-          .order('created_at', { ascending: false });
+          .order('created_at', { ascending: false })
+          .limit(50); // Măresc limita pentru a afișa mai multe propuneri
           
         if (submissionsError) throw submissionsError;
         
@@ -34,7 +35,7 @@ export const useAgentAdminData = (isAdmin: boolean): AgentAdminData => {
           .from('agent_task_progress')
           .select('*, roadmap_tasks(*)')
           .order('created_at', { ascending: false })
-          .limit(20);
+          .limit(30); // Măresc limita pentru a afișa mai multe înregistrări
           
         if (progressError) throw progressError;
         
@@ -42,9 +43,13 @@ export const useAgentAdminData = (isAdmin: boolean): AgentAdminData => {
           .from('code_proposals')
           .select('*')
           .eq('status', 'pending')
-          .order('created_at', { ascending: false });
+          .order('created_at', { ascending: false })
+          .limit(50); // Măresc limita pentru a afișa mai multe propuneri
           
         if (codeProposalsError) throw codeProposalsError;
+        
+        // Adăugăm un mic delay pentru a evita solicitările prea rapide
+        await new Promise(resolve => setTimeout(resolve, 300));
         
         setSubmissions(submissionsData || []);
         setProgressHistory(progressData || []);
@@ -57,6 +62,11 @@ export const useAgentAdminData = (isAdmin: boolean): AgentAdminData => {
     };
     
     fetchData();
+    
+    // Reîmprospătăm datele la fiecare 2 minute
+    const interval = setInterval(fetchData, 2 * 60 * 1000);
+    
+    return () => clearInterval(interval);
   }, [isAdmin]);
 
   return {
