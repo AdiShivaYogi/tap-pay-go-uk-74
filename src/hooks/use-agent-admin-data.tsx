@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/types-extension";
+import { supabase } from "@/integrations/supabase/extended-client";
 
 export type AgentAdminData = {
   submissions: any[];

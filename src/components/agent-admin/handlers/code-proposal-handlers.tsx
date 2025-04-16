@@ -1,6 +1,5 @@
-
 import { toast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/types-extension";
+import { supabase } from "@/integrations/supabase/extended-client";
 
 export const handleApproveCodeProposal = async (
   proposalId: string,
