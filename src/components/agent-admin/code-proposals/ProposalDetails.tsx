@@ -3,9 +3,10 @@ import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { CodeViewer } from "./CodeViewer";
 import { Button } from "@/components/ui/button";
-import { Check, X, Code, Loader2 } from "lucide-react";
+import { Check, X, Code, Loader2, Calendar, Clock, FileCode } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LoadingIndicator } from "@/components/admin-auth/LoadingIndicator";
+import { Separator } from "@/components/ui/separator";
 
 interface ProposalDetailsProps {
   proposal: any;
@@ -34,36 +35,76 @@ export const ProposalDetails = ({
     return <EmptyState />;
   }
   
+  const formattedDate = new Date(proposal.created_at).toLocaleDateString('ro-RO', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+  
+  const formattedTime = new Date(proposal.created_at).toLocaleTimeString('ro-RO', {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+  
   const proposedFiles = JSON.parse(proposal.proposed_files);
   const proposedCode = JSON.parse(proposal.proposed_code);
   
   return (
     <div className="space-y-4">
-      <div>
-        <h3 className="text-lg font-medium">Propunere de la agentul {proposal.agent_id}</h3>
-        <p className="text-sm text-muted-foreground">
-          Creată la {new Date(proposal.created_at).toLocaleString()}
-        </p>
+      {/* Header */}
+      <div className="flex justify-between items-start">
+        <div>
+          <h3 className="text-lg font-medium flex items-center gap-2">
+            <Code className="h-5 w-5 text-primary" />
+            Propunere de la agentul {proposal.agent_id}
+          </h3>
+          <p className="text-sm text-muted-foreground flex items-center mt-1">
+            <Calendar className="h-3.5 w-3.5 mr-1" />
+            {formattedDate}
+            <Clock className="h-3.5 w-3.5 ml-3 mr-1" />
+            {formattedTime}
+          </p>
+        </div>
+        
+        <Badge variant="outline" className="bg-primary/5 border-primary/20">
+          {proposedFiles.length} fișiere
+        </Badge>
       </div>
       
+      <Separator />
+      
+      {/* Motivație */}
       <div>
-        <h4 className="text-sm font-medium mb-1">Motivație:</h4>
-        <p className="text-sm p-3 bg-muted rounded-md">{proposal.motivation}</p>
+        <h4 className="text-sm font-medium mb-2 flex items-center gap-1">
+          <FileCode className="h-4 w-4 text-primary/70" /> 
+          Motivație propunere:
+        </h4>
+        <div className="p-3 bg-muted rounded-md border border-muted-foreground/10">
+          <p className="text-sm whitespace-pre-line">{proposal.motivation}</p>
+        </div>
       </div>
       
+      {/* Fișiere propuse */}
       <div>
-        <h4 className="text-sm font-medium mb-1">Fișiere propuse ({proposedFiles.length}):</h4>
-        <div className="flex flex-wrap gap-2">
+        <h4 className="text-sm font-medium mb-2">Fișiere propuse ({proposedFiles.length}):</h4>
+        <div className="flex flex-wrap gap-2 mb-2">
           {proposedFiles.map((file: string, index: number) => (
-            <Badge key={index} variant="outline">{file}</Badge>
+            <Badge key={index} variant="outline" className="bg-primary/5 text-xs px-2 py-1">
+              {file}
+            </Badge>
           ))}
         </div>
       </div>
       
+      {/* Cod propus */}
       <div>
-        <h4 className="text-sm font-medium mb-1">Cod propus:</h4>
-        <CodeViewer proposedFiles={proposedFiles} proposedCode={proposedCode} />
+        <h4 className="text-sm font-medium mb-2">Cod propus:</h4>
+        <div className="border rounded-md overflow-hidden">
+          <CodeViewer proposedFiles={proposedFiles} proposedCode={proposedCode} />
+        </div>
       </div>
+      
+      <Separator />
       
       <ActionButtons 
         proposalId={proposal.id}
@@ -92,6 +133,8 @@ const LoadingProposalDetails = () => (
       <Skeleton className="h-6 w-64 mb-2" />
       <Skeleton className="h-4 w-40" />
     </div>
+    
+    <Skeleton className="h-px w-full my-4" />
     
     <div>
       <Skeleton className="h-4 w-24 mb-1" />

@@ -9,6 +9,88 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      agent_task_progress: {
+        Row: {
+          agent_id: string
+          created_at: string | null
+          id: string
+          notes: string | null
+          progress_percentage: number
+          status: string
+          task_id: string | null
+        }
+        Insert: {
+          agent_id: string
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          progress_percentage: number
+          status: string
+          task_id?: string | null
+        }
+        Update: {
+          agent_id?: string
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          progress_percentage?: number
+          status?: string
+          task_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_task_progress_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "roadmap_tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agent_task_submissions: {
+        Row: {
+          agent_id: string
+          approval_status: string
+          created_at: string | null
+          id: string
+          notes: string | null
+          proposed_changes: string
+          proposed_progress: number
+          proposed_status: string
+          task_id: string | null
+        }
+        Insert: {
+          agent_id: string
+          approval_status?: string
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          proposed_changes: string
+          proposed_progress: number
+          proposed_status: string
+          task_id?: string | null
+        }
+        Update: {
+          agent_id?: string
+          approval_status?: string
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          proposed_changes?: string
+          proposed_progress?: number
+          proposed_status?: string
+          task_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_task_submissions_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "roadmap_tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       code_proposals: {
         Row: {
           agent_id: string
@@ -78,6 +160,42 @@ export type Database = {
           id?: string
           last_attempt?: string | null
           locked_until?: string | null
+        }
+        Relationships: []
+      }
+      roadmap_tasks: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string
+          id: string
+          last_updated_at: string | null
+          last_updated_by: string | null
+          progress: number | null
+          status: string
+          title: string
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          description: string
+          id?: string
+          last_updated_at?: string | null
+          last_updated_by?: string | null
+          progress?: number | null
+          status?: string
+          title: string
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string
+          id?: string
+          last_updated_at?: string | null
+          last_updated_by?: string | null
+          progress?: number | null
+          status?: string
+          title?: string
         }
         Relationships: []
       }
