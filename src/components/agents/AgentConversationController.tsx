@@ -31,6 +31,21 @@ export const AgentConversationController = ({
     }
     return `Rol important în ecosistemul platformei`;
   };
+
+  // Adăugăm referința la funcțiile din conversație
+  const conversationRef = React.useRef<any>(null);
+  
+  const setConversationRef = (ref: any) => {
+    conversationRef.current = ref;
+  };
+  
+  const handleAssignTask = async (taskId: string) => {
+    if (!conversationRef.current || !conversationRef.current.assignTaskToAgent) {
+      return false;
+    }
+    
+    return await conversationRef.current.assignTaskToAgent(taskId);
+  };
   
   return (
     <div className="space-y-6">
@@ -102,7 +117,11 @@ export const AgentConversationController = ({
         
         <StyledCardContent className="p-0">
           {activeAgentData ? (
-            <AgentConversation agent={activeAgentData} isListening={isListening} />
+            <AgentConversation 
+              agent={activeAgentData} 
+              isListening={isListening} 
+              setRef={setConversationRef}
+            />
           ) : (
             <div className="flex items-center justify-center p-12 text-center text-muted-foreground border-t">
               <div>
@@ -119,25 +138,32 @@ export const AgentConversationController = ({
       </StyledCard>
       
       {activeAgentData && (
-        <div className="flex justify-center">
-          <Button 
-            onClick={toggleListening}
-            size="lg" 
-            className={`w-64 gap-2 ${isListening ? 'bg-red-500 hover:bg-red-600' : 'bg-primary hover:bg-primary/90'}`}
-          >
-            {isListening ? (
-              <>
-                <PauseCircle className="h-5 w-5" />
-                Oprește Ascultarea
-              </>
-            ) : (
-              <>
-                <PlayCircle className="h-5 w-5" />
-                Începe Conversația
-              </>
-            )}
-          </Button>
-        </div>
+        <>
+          <div className="flex justify-center">
+            <Button 
+              onClick={toggleListening}
+              size="lg" 
+              className={`w-64 gap-2 ${isListening ? 'bg-red-500 hover:bg-red-600' : 'bg-primary hover:bg-primary/90'}`}
+            >
+              {isListening ? (
+                <>
+                  <PauseCircle className="h-5 w-5" />
+                  Oprește Ascultarea
+                </>
+              ) : (
+                <>
+                  <PlayCircle className="h-5 w-5" />
+                  Începe Conversația
+                </>
+              )}
+            </Button>
+          </div>
+          
+          <AgentRoadmapPanel 
+            agentId={activeAgentData.id}
+            onSelectTask={handleAssignTask}
+          />
+        </>
       )}
     </div>
   );

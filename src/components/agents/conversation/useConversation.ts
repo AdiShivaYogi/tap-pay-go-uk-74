@@ -17,6 +17,7 @@ export const useConversation = (agent: Agent, isListening: boolean) => {
   const [typingIndicator, setTypingIndicator] = useState(false);
   const [hasDeepseekKey, setHasDeepseekKey] = useState<boolean | null>(null);
   const [isApiLoading, setIsApiLoading] = useState(false);
+  const [activeTask, setActiveTask] = useState<any>(null);
   
   // Verificăm dacă există o cheie API Deepseek configurată
   useEffect(() => {
@@ -62,6 +63,45 @@ export const useConversation = (agent: Agent, isListening: boolean) => {
       }, 500);
     }
   }, [agent.id]);
+
+  // Verifică dacă există taskuri asignate pentru acest agent
+  useEffect(() => {
+    const checkAgentTasks = async () => {
+      if (agent && hasDeepseekKey === true) {
+        try {
+          const { data, error } = await supabase.functions.invoke('agent-roadmap-tasks', {
+            body: { 
+              action: 'getAssignedTasks',
+              agentId: agent.id
+            }
+          });
+          
+          if (!error && data?.data && data.data.length > 0) {
+            // Dacă există taskuri, setează unul activ
+            setActiveTask(data.data[0]);
+            
+            // Informează utilizatorul despre taskul activ
+            const taskMessage = {
+              id: `agent-task-${Date.now()}`,
+              text: `Am observat că lucrez la taskul "${data.data[0].title}". Pot continua progresul la acesta sau te pot asista cu orice altă întrebare legată de ${agent.name}.`,
+              sender: "agent" as const,
+              timestamp: new Date()
+            };
+            
+            if (messages.length === 1) {  // Doar după mesajul de bun venit
+              setTimeout(() => {
+                setMessages(prev => [...prev, taskMessage]);
+              }, 1000);
+            }
+          }
+        } catch (err) {
+          console.error('Eroare la verificarea taskurilor agentului:', err);
+        }
+      }
+    };
+    
+    checkAgentTasks();
+  }, [agent, hasDeepseekKey]);
 
   // Efect pentru simularea ascultării active
   useEffect(() => {
@@ -118,13 +158,21 @@ export const useConversation = (agent: Agent, isListening: boolean) => {
     if (hasDeepseekKey === true) {
       try {
         console.log('Generăm răspuns folosind Deepseek API');
+        
+        // Pregătim contextul pentru agent, inclusiv despre taskurile active dacă există
+        const context = activeTask ? 
+          `Lucrezi la taskul: ${activeTask.title} - ${activeTask.description}` : 
+          '';
+        
         // Apelăm edge function pentru a genera un răspuns folosind Deepseek API
         const { data, error } = await supabase.functions.invoke('generate-agent-response', {
           body: { 
             message: text,
             agentId: agent.id,
             agentType: agent.name,
-            agentDescription: agent.description
+            agentDescription: agent.description,
+            context: context,
+            activeTask: activeTask
           }
         });
         
@@ -134,6 +182,29 @@ export const useConversation = (agent: Agent, isListening: boolean) => {
         }
         
         console.log('Răspuns primit de la Deepseek API:', data);
+        
+        // Verificăm dacă răspunsul conține actualizări de task
+        if (data?.taskUpdate && activeTask) {
+          // Actualizăm progresul taskului în baza de date
+          await supabase.functions.invoke('agent-roadmap-tasks', {
+            body: { 
+              action: 'updateTaskProgress',
+              agentId: agent.id,
+              taskId: activeTask.id,
+              progressData: {
+                progress: data.taskUpdate.progress || activeTask.progress + 5,
+                notes: `Progres actualizat în urma conversației: ${text}`,
+                updateMainTask: true
+              }
+            }
+          });
+          
+          // Actualizăm starea taskului activ local
+          setActiveTask(prev => ({
+            ...prev,
+            progress: data.taskUpdate.progress || prev.progress + 5
+          }));
+        }
         
         // Afișăm răspunsul generat
         setTimeout(() => {
@@ -205,11 +276,49 @@ export const useConversation = (agent: Agent, isListening: boolean) => {
     }
   };
 
+  const assignTaskToAgent = async (taskId) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('agent-roadmap-tasks', {
+        body: { 
+          action: 'getTaskDetails',
+          taskId: taskId
+        }
+      });
+      
+      if (error) throw error;
+      
+      setActiveTask(data.data);
+      
+      const taskAssignedMessage = {
+        id: `agent-${Date.now()}`,
+        text: `Am primit taskul "${data.data.title}". Voi începe să lucrez la acest task și te voi ține la curent cu progresul. Ai vreo instrucțiune specifică pentru mine?`,
+        sender: "agent" as const,
+        timestamp: new Date()
+      };
+      
+      setMessages(prev => [...prev, taskAssignedMessage]);
+      
+      return true;
+    } catch (err) {
+      console.error('Eroare la asignarea taskului:', err);
+      
+      toast({
+        variant: "destructive",
+        title: "Eroare",
+        description: "Nu s-a putut asigna taskul către agent."
+      });
+      
+      return false;
+    }
+  };
+
   return {
     messages,
     typingIndicator,
     handleSendMessage,
     hasDeepseekKey,
-    isApiLoading
+    isApiLoading,
+    activeTask,
+    assignTaskToAgent
   };
 };
