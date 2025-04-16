@@ -1,27 +1,21 @@
 
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+import React from 'react';
 import { Textarea } from "@/components/ui/textarea";
 
 interface CssEditorProps {
   css: string;
-  onChange: (value: string) => void;
-  onApply: () => void;
+  onChange: (css: string) => void;
 }
 
-export function CssEditor({ css, onChange, onApply }: CssEditorProps) {
+export const CssEditor: React.FC<CssEditorProps> = ({ css, onChange }) => {
   return (
-    <div className="space-y-4">
-      <Label>CSS Personalizat</Label>
-      <Textarea 
+    <div className="border rounded-md">
+      <Textarea
+        className="font-mono text-sm h-48 resize-none p-4"
         value={css}
         onChange={(e) => onChange(e.target.value)}
-        placeholder="Introduceți CSS personalizat aici..."
-        className="font-mono text-sm h-32"
+        placeholder=":root { --primary-color: #0070f3; }"
       />
-      <Button onClick={onApply} className="w-full">
-        Aplică Modificările
-      </Button>
     </div>
   );
-}
+};

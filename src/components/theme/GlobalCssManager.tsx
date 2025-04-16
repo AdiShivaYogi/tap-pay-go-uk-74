@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { StyledCard } from "@/components/ui/cards";
@@ -31,7 +32,7 @@ export const GlobalCssManager: React.FC<GlobalCssManagerProps> = ({ initialCss =
         Editează stilurile CSS globale pentru a personaliza aspectul aplicației.
       </p>
 
-      <CssEditor css={css} onCssChange={handleCssChange} />
+      <CssEditor css={css} onChange={handleCssChange} />
 
       <div className="flex justify-end space-x-2">
         <Button variant="secondary" onClick={handleResetCss}>

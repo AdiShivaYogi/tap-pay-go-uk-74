@@ -1,17 +1,16 @@
+
 import React, { useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { StyledCard } from "@/components/ui/cards";
 
-interface ProgressOptimizationPanelProps {
-  isOptimizationEnabled: boolean;
-  onOptimizationToggle: (enabled: boolean) => void;
-}
+export const ProgressOptimizationPanel = () => {
+  const [isOptimizationEnabled, setIsOptimizationEnabled] = useState(false);
+  
+  const handleOptimizationToggle = (enabled: boolean) => {
+    setIsOptimizationEnabled(enabled);
+  };
 
-export const ProgressOptimizationPanel: React.FC<ProgressOptimizationPanelProps> = ({
-  isOptimizationEnabled,
-  onOptimizationToggle,
-}) => {
   return (
     <StyledCard className="border-primary/10">
       <div className="p-6 space-y-4">
@@ -25,7 +24,7 @@ export const ProgressOptimizationPanel: React.FC<ProgressOptimizationPanelProps>
           <Switch
             id="optimization-toggle"
             checked={isOptimizationEnabled}
-            onCheckedChange={onOptimizationToggle}
+            onCheckedChange={handleOptimizationToggle}
           />
         </div>
         {isOptimizationEnabled ? (

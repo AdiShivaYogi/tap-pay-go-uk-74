@@ -1,9 +1,11 @@
+
 import React from "react";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { TimeEstimationBadge } from "./TimeEstimationBadge";
 import { calculateTaskDifficulty } from "../hooks/useRoadmapProgress";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { 
   StyledCard, 
   StyledCardHeader, 
@@ -38,7 +40,7 @@ export const RoadmapCard: React.FC<RoadmapCardProps> = ({ item, isExpanded, togg
     <StyledCard className="border-primary/10">
       <StyledCardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <StyledCardTitle className="text-sm font-medium flex items-center gap-2">
-          <RoadmapIcon category={item.category} />
+          <RoadmapIcon categoryType={item.category} />
           {item.title}
         </StyledCardTitle>
         <RoadmapCardActions item={item} isExpanded={isExpanded} toggleExpand={toggleExpand} />
@@ -52,7 +54,7 @@ export const RoadmapCard: React.FC<RoadmapCardProps> = ({ item, isExpanded, togg
               <Badge variant="outline" className={cn("capitalize", difficultyColor)}>
                 {item.difficulty}
               </Badge>
-              <TimeEstimationBadge timeEstimation={item.time_estimation} />
+              <TimeEstimationBadge timeEstimate={item.time_estimation} />
             </div>
           </div>
         )}

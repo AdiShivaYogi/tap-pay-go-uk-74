@@ -1,21 +1,17 @@
+
 import { useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useRoadmapProgress } from "../hooks/useRoadmapProgress";
-import { StyledCard } from "@/components/ui/cards";
 
-interface RoadmapProgressProps {
-  categoryId: string;
-}
-
-export const RoadmapProgress: React.FC<RoadmapProgressProps> = ({ categoryId }) => {
+export const RoadmapProgress = () => {
   const {
     totalTasks,
     completedTasks,
     completionPercentage,
     difficultySum,
     estimatedTimeSum,
-  } = useRoadmapProgress(categoryId);
+  } = useRoadmapProgress();
 
   const difficultyLabel = useMemo(() => {
     if (difficultySum <= 5) return "Ușor";
@@ -30,27 +26,25 @@ export const RoadmapProgress: React.FC<RoadmapProgressProps> = ({ categoryId }) 
   }, [estimatedTimeSum]);
 
   return (
-    <StyledCard className="border-primary/10">
-      <div className="p-4 space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">Progres Categorie</h3>
-          <Badge variant="secondary">{completionPercentage}% finalizat</Badge>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg font-semibold">Progres Roadmap</h3>
+        <Badge variant="secondary">{completionPercentage}% finalizat</Badge>
+      </div>
+      <Progress value={completionPercentage} className="h-2" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <p className="text-sm text-muted-foreground">Dificultate</p>
+          <Badge>{difficultyLabel}</Badge>
         </div>
-        <Progress value={completionPercentage} className="h-2" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <p className="text-sm text-muted-foreground">Dificultate</p>
-            <Badge>{difficultyLabel}</Badge>
-          </div>
-          <div>
-            <p className="text-sm text-muted-foreground">Estimare timp</p>
-            <Badge>{timeEstimationLabel}</Badge>
-          </div>
-        </div>
-        <div className="text-sm text-muted-foreground">
-          {completedTasks} / {totalTasks} sarcini finalizate
+        <div>
+          <p className="text-sm text-muted-foreground">Estimare timp</p>
+          <Badge>{timeEstimationLabel}</Badge>
         </div>
       </div>
-    </StyledCard>
+      <div className="text-sm text-muted-foreground">
+        {completedTasks} / {totalTasks} sarcini finalizate
+      </div>
+    </div>
   );
 };

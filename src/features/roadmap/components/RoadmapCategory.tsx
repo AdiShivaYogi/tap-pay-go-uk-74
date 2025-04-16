@@ -1,10 +1,10 @@
+
 import { useState } from "react";
-import { useRoadmapContext } from "../context/RoadmapContext";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { StyledCard } from "@/components/ui/cards";
-import { RoadmapItem } from "../types";
+import { RoadmapItem } from "./RoadmapCard";
 
 interface RoadmapCategoryProps {
   title: string;
@@ -13,10 +13,10 @@ interface RoadmapCategoryProps {
 
 export const RoadmapCategory: React.FC<RoadmapCategoryProps> = ({ title, items }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { completedTasks } = useRoadmapContext();
-
+  
+  // Calculate progress without relying on context
   const totalTasks = items.length;
-  const completedTasksInCategory = items.filter(item => completedTasks.includes(item.id)).length;
+  const completedTasksInCategory = items.filter(item => item.status === "completed").length;
   const progress = totalTasks > 0 ? (completedTasksInCategory / totalTasks) * 100 : 0;
 
   return (

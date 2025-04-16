@@ -1,44 +1,38 @@
 
-export interface RoadmapSection {
-  title: string;
-  items: string[];
-  completed?: boolean;
-}
-
-export const mvpRoadmapData: RoadmapSection[] = [
+export const mvpRoadmapText = [
   {
-    title: "Obiective Principale",
-    items: [
-      "Integrare sistem de plăți securizat",
-      "Autentificare și autorizare utilizatori",
-      "Dashboard principal cu statistici de bază",
-      "Sistem de notificări pentru evenimente importante"
-    ]
+    id: 1,
+    title: "Integrare cu Stripe",
+    description: "Implementarea procesării plăților prin Stripe API",
+    status: "completed",
+    progress: 100
   },
   {
-    title: "Funcționalități Critice (P0)",
-    items: [
-      "Securitate și Conformitate",
-      "Experiență Utilizator",
-      "Procesare Plăți"
-    ]
+    id: 2,
+    title: "Autentificare multifactor",
+    description: "Implementarea autentificării în doi pași pentru securitate sporită",
+    status: "completed",
+    progress: 100
   },
   {
-    title: "Timeline Estimat",
-    items: [
-      "Săptămâna 1-2: Arhitectură și setup inițial",
-      "Săptămâna 3-4: Dezvoltare funcționalități core",
-      "Săptămâna 5: Testare și optimizare",
-      "Săptămâna 6: Lansare beta și feedback inițial"
-    ]
+    id: 3,
+    title: "Dashboard de analiză",
+    description: "Dezvoltarea dashboard-ului cu statistici și rapoarte",
+    status: "inProgress",
+    progress: 75
   },
   {
-    title: "Metrici de Succes",
-    items: [
-      "Rata de conversie > 2%",
-      "Timp mediu de încărcare < 3s", 
-      "Satisfacție utilizator > 4.5/5",
-      "Uptime 99.9%"
-    ]
+    id: 4,
+    title: "Suport pentru plăți recurente",
+    description: "Adăugarea funcționalității de abonamente și plăți recurente",
+    status: "inProgress",
+    progress: 50
+  },
+  {
+    id: 5,
+    title: "Aplicație mobilă iOS",
+    description: "Dezvoltarea aplicației native pentru iOS",
+    status: "planned",
+    progress: 20
   }
 ];

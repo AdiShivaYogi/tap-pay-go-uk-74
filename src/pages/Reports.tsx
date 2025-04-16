@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Layout } from "@/components/layout/layout";
 import { PageHeader } from "@/components/ui/layout/page-header";
@@ -11,8 +12,13 @@ import { StyledCard, StyledCardHeader, StyledCardTitle, StyledCardContent } from
 import { FileBarChart } from "lucide-react";
 
 const Reports = () => {
-  const { startDate, endDate, setStartDate, setEndDate } = useDateRange();
+  const [date, setDate] = useState<Date | undefined>(new Date());
   const [selectedRange, setSelectedRange] = useState<{ label: string; value: string } | null>(null);
+
+  const dateRange = {
+    startDate: date,
+    endDate: date
+  };
 
   return (
     <Layout>
@@ -26,25 +32,22 @@ const Reports = () => {
         <Grid2Cols>
           <StyledCard>
             <StyledCardHeader>
-              <StyledCardTitle>Selectează perioada</StyledCardTitle>
+              <StyledCardTitle>Selectează data</StyledCardTitle>
             </StyledCardHeader>
             <StyledCardContent>
               <DateRangeSelector
-                startDate={startDate}
-                endDate={endDate}
-                setStartDate={setStartDate}
-                setEndDate={setEndDate}
-                selectedRange={selectedRange}
-                setSelectedRange={setSelectedRange}
+                date={date}
+                setDate={setDate}
+                defaultDate={new Date()}
               />
             </StyledCardContent>
           </StyledCard>
 
-          <ReportStats startDate={startDate} endDate={endDate} />
+          <ReportStats startDate={date} endDate={date} />
         </Grid2Cols>
 
         <Section variant="alt">
-          <ReportCharts startDate={startDate} endDate={endDate} />
+          <ReportCharts dateRange={{ startDate: date, endDate: date }} />
         </Section>
       </Section>
     </Layout>
