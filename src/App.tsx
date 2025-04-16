@@ -23,6 +23,9 @@ import Api from "./pages/Api";
 import Status from "./pages/Status";
 import ConnectStripe from "./pages/ConnectStripe";
 import DesignSystem from "./pages/DesignSystem";
+import UserProfile from "./pages/UserProfile";
+import BillingSettings from "./pages/BillingSettings";
+import NotificationSettings from "./pages/NotificationSettings";
 
 function App() {
   return (
@@ -41,6 +44,9 @@ function App() {
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/help" element={<Help />} />
       <Route path="/account" element={<Account />} />
+      <Route path="/account/profile" element={<UserProfile />} />
+      <Route path="/account/billing" element={<BillingSettings />} />
+      <Route path="/account/notifications" element={<NotificationSettings />} />
       <Route path="/backups" element={<Backups />} />
       <Route path="/translations" element={<Translations />} />
       <Route path="/style-guide" element={<StyleGuide />} />

@@ -4,84 +4,76 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/use-auth";
 import { SecuritySettings } from "@/components/security/SecuritySettings";
 import { Separator } from "@/components/ui/separator";
-import { UserCircle, Shield, Settings, CreditCard } from "lucide-react";
-import { SectionContainer } from "@/components/ui/section-container";
-import { PageHeader } from "@/components/ui/page-header";
+import { Button } from "@/components/ui/button";
+import { UserCircle, Shield, Settings, CreditCard, BellRing } from "lucide-react";
+import { Section } from "@/components/ui/layout/section";
+import { PageHeader } from "@/components/ui/layout/page-header";
+import { Link, useNavigate } from "react-router-dom";
+import { StyledCard, StyledCardHeader, StyledCardTitle, StyledCardContent } from "@/components/ui/cards";
 
 const Account = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   if (!user) {
     return (
       <Layout>
-        <SectionContainer>
+        <Section>
           <div className="text-center py-8">
             <h1 className="text-2xl font-semibold">Trebuie să fiți autentificat</h1>
             <p className="mt-2 text-muted-foreground">
               Vă rugăm să vă autentificați pentru a accesa setările contului.
             </p>
           </div>
-        </SectionContainer>
+        </Section>
       </Layout>
     );
   }
 
   return (
     <Layout>
-      <SectionContainer>
+      <Section>
         <PageHeader
           icon={UserCircle}
           title="Setări Cont"
           description="Gestionați setările și preferințele contului dvs."
+          gradient={true}
         />
 
-        <div className="space-y-6">
-          <Tabs defaultValue="security" className="w-full">
-            <TabsList className="grid w-full md:w-auto grid-cols-3">
-              <TabsTrigger value="profile" className="flex items-center gap-2">
-                <UserCircle className="h-4 w-4" />
-                <span className="hidden sm:inline">Profil</span>
-              </TabsTrigger>
-              <TabsTrigger value="security" className="flex items-center gap-2">
-                <Shield className="h-4 w-4" />
-                <span className="hidden sm:inline">Securitate</span>
-              </TabsTrigger>
-              <TabsTrigger value="billing" className="flex items-center gap-2">
-                <CreditCard className="h-4 w-4" />
-                <span className="hidden sm:inline">Plăți</span>
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="profile">
-              <div className="space-y-4 py-4">
-                <h2 className="text-xl font-semibold">Profil</h2>
-                <Separator />
-                <div className="p-4">
-                  <p>Setările de profil vor fi implementate în curând.</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="md:col-span-1">
+            <StyledCard>
+              <StyledCardHeader>
+                <StyledCardTitle>Meniu Setări</StyledCardTitle>
+              </StyledCardHeader>
+              <StyledCardContent className="p-0">
+                <div className="flex flex-col">
+                  <Link to="/account/profile" className="flex items-center gap-3 p-4 hover:bg-accent transition-colors border-b">
+                    <UserCircle className="h-5 w-5 text-primary" />
+                    <span>Profil</span>
+                  </Link>
+                  <Link to="/account" className="flex items-center gap-3 p-4 hover:bg-accent transition-colors border-b bg-accent/50">
+                    <Shield className="h-5 w-5 text-primary" />
+                    <span>Securitate</span>
+                  </Link>
+                  <Link to="/account/billing" className="flex items-center gap-3 p-4 hover:bg-accent transition-colors border-b">
+                    <CreditCard className="h-5 w-5 text-primary" />
+                    <span>Plăți și facturare</span>
+                  </Link>
+                  <Link to="/account/notifications" className="flex items-center gap-3 p-4 hover:bg-accent transition-colors">
+                    <BellRing className="h-5 w-5 text-primary" />
+                    <span>Notificări</span>
+                  </Link>
                 </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="security">
-              <div className="space-y-4 py-4">
-                <h2 className="text-xl font-semibold">Securitate</h2>
-                <Separator />
-                <SecuritySettings />
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="billing">
-              <div className="space-y-4 py-4">
-                <h2 className="text-xl font-semibold">Plăți</h2>
-                <Separator />
-                <div className="p-4">
-                  <p>Setările de plăți vor fi implementate în curând.</p>
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
+              </StyledCardContent>
+            </StyledCard>
+          </div>
+          
+          <div className="md:col-span-2">
+            <SecuritySettings />
+          </div>
         </div>
-      </SectionContainer>
+      </Section>
     </Layout>
   );
 };
