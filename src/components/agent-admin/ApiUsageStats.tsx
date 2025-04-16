@@ -65,6 +65,34 @@ export const ApiUsageStats = () => {
 
   // Colors for pie chart
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+  
+  // Chart configs for both charts
+  const chartConfig = {
+    costs: {
+      label: 'Costuri API',
+      color: '#8884d8'
+    },
+    counts: {
+      label: 'Nr. prompt-uri',
+      color: '#82ca9d'
+    },
+    standard: {
+      label: 'Standard',
+      color: '#0088FE'
+    },
+    conversation_starter: {
+      label: 'Inițiere conversație',
+      color: '#00C49F'
+    },
+    task_proposal: {
+      label: 'Propunere task',
+      color: '#FFBB28'
+    },
+    code_proposal: {
+      label: 'Propunere cod',
+      color: '#FF8042'
+    }
+  };
 
   return (
     <div className="space-y-4 mb-6">
@@ -121,7 +149,7 @@ export const ApiUsageStats = () => {
               <CardTitle className="text-base font-medium">Cost după perioada de utilizare</CardTitle>
             </CardHeader>
             <CardContent>
-              <ChartContainer className="h-80">
+              <ChartContainer className="h-80" config={chartConfig}>
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
                     data={periodData}
@@ -145,7 +173,7 @@ export const ApiUsageStats = () => {
               <CardTitle className="text-base font-medium">Distribuție după tipul de prompt</CardTitle>
             </CardHeader>
             <CardContent>
-              <ChartContainer className="h-80">
+              <ChartContainer className="h-80" config={chartConfig}>
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie

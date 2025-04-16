@@ -24,25 +24,8 @@ serve(async (req) => {
     
     const { timeframe } = await req.json().catch(() => ({ timeframe: '30d' }));
     
-    let timeFilter;
-    switch(timeframe) {
-      case '7d':
-        timeFilter = 'created_at > now() - interval \'7 days\'';
-        break;
-      case '1d':
-        timeFilter = 'created_at > now() - interval \'1 day\'';
-        break;
-      case 'all':
-        timeFilter = '';
-        break;
-      case '30d':
-      default:
-        timeFilter = 'created_at > now() - interval \'30 days\'';
-        break;
-    }
-
-    // Fetch aggregated stats with detailed cost tracking
-    const { data: statsData, error: statsError } = await supabase
+    // Prepare the query
+    let query = supabase
       .from('deepseek_api_usage')
       .select(`
         input_tokens, 
@@ -55,8 +38,29 @@ serve(async (req) => {
         time_period,
         is_cache_hit,
         prompt_type
-      `)
-      .when(timeFilter !== '', true, query => query.filter('created_at', 'gte', timeFilter));
+      `);
+    
+    // Apply time filter based on the timeframe
+    if (timeframe !== 'all') {
+      let interval;
+      switch(timeframe) {
+        case '7d':
+          interval = '7 days';
+          break;
+        case '1d':
+          interval = '1 day';
+          break;
+        case '30d':
+        default:
+          interval = '30 days';
+          break;
+      }
+      
+      query = query.filter('created_at', 'gte', `now() - interval '${interval}'`);
+    }
+
+    // Execute the query
+    const { data: statsData, error: statsError } = await query;
 
     if (statsError) {
       throw statsError;
