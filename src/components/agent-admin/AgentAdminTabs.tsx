@@ -1,9 +1,9 @@
-
-import React, { useState } from "react";
+import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SubmissionsTab } from "./SubmissionsTab";
 import { CodeProposalsTab } from "./CodeProposalsTab";
 import { HistoryTab } from "./HistoryTab";
+import { ApiUsageStats } from "./ApiUsageStats";
 import { handleApproveSubmission, handleRejectSubmission } from "./handlers/submission-handlers";
 import { handleApproveCodeProposal, handleRejectCodeProposal } from "./handlers/code-proposal-handlers";
 
@@ -46,38 +46,41 @@ export const AgentAdminTabs = ({
   };
 
   return (
-    <Tabs defaultValue="submissions" className="mt-6">
-      <TabsList className="grid grid-cols-3 mb-6">
-        <TabsTrigger value="submissions">
-          Propuneri task-uri {pendingSubmissionsCount > 0 && `(${pendingSubmissionsCount})`}
-        </TabsTrigger>
-        <TabsTrigger value="code">
-          Propuneri cod {pendingCodeProposalsCount > 0 && `(${pendingCodeProposalsCount})`}
-        </TabsTrigger>
-        <TabsTrigger value="history">Istoric activitate</TabsTrigger>
-      </TabsList>
-      
-      <TabsContent value="submissions">
-        <SubmissionsTab 
-          submissions={submissions}
-          onApproveSubmission={onApproveSubmission}
-          onRejectSubmission={onRejectSubmission}
-          loading={loading}
-        />
-      </TabsContent>
+    <>
+      <ApiUsageStats />
+      <Tabs defaultValue="submissions" className="mt-6">
+        <TabsList className="grid grid-cols-3 mb-6">
+          <TabsTrigger value="submissions">
+            Propuneri task-uri {pendingSubmissionsCount > 0 && `(${pendingSubmissionsCount})`}
+          </TabsTrigger>
+          <TabsTrigger value="code">
+            Propuneri cod {pendingCodeProposalsCount > 0 && `(${pendingCodeProposalsCount})`}
+          </TabsTrigger>
+          <TabsTrigger value="history">Istoric activitate</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="submissions">
+          <SubmissionsTab 
+            submissions={submissions}
+            onApproveSubmission={onApproveSubmission}
+            onRejectSubmission={onRejectSubmission}
+            loading={loading}
+          />
+        </TabsContent>
 
-      <TabsContent value="code">
-        <CodeProposalsTab 
-          proposals={codeProposals}
-          onApproveProposal={onApproveCodeProposal}
-          onRejectProposal={onRejectCodeProposal}
-          loading={loading}
-        />
-      </TabsContent>
-      
-      <TabsContent value="history">
-        <HistoryTab progressHistory={progressHistory} loading={loading} />
-      </TabsContent>
-    </Tabs>
+        <TabsContent value="code">
+          <CodeProposalsTab 
+            proposals={codeProposals}
+            onApproveProposal={onApproveCodeProposal}
+            onRejectProposal={onRejectCodeProposal}
+            loading={loading}
+          />
+        </TabsContent>
+        
+        <TabsContent value="history">
+          <HistoryTab progressHistory={progressHistory} loading={loading} />
+        </TabsContent>
+      </Tabs>
+    </>
   );
 };
