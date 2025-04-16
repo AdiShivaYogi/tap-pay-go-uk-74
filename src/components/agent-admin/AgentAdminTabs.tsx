@@ -5,6 +5,7 @@ import { SubmissionsTab } from "./SubmissionsTab";
 import { CodeProposalsTab } from "./CodeProposalsTab";
 import { HistoryTab } from "./HistoryTab";
 import { ApiUsageStats } from "./ApiUsageStats";
+import { useAgentGodMode } from "@/hooks/agent-god-mode";
 import { useSubmissionHandlers } from "./handlers/submission-handlers";
 import { useCodeProposalHandlers } from "./handlers/code-proposal-handlers";
 import { AgentGodMode } from "./AgentGodMode";

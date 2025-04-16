@@ -2,7 +2,7 @@
 import React from "react";
 import { Crown } from "lucide-react";
 import { StyledCard, StyledCardHeader, StyledCardTitle, StyledCardContent } from "@/components/ui/cards";
-import { useAgentGodMode } from "@/hooks/use-agent-god-mode";
+import { useAgentGodMode } from "@/hooks/agent-god-mode";
 import { GodModeToggle } from "./godmode/GodModeToggle";
 import { GodModeAlerts } from "./godmode/GodModeAlerts";
 import { FeedbackForm } from "./godmode/FeedbackForm";
