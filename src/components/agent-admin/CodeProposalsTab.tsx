@@ -1,11 +1,13 @@
 
-import React, { useState } from "react";
+import React from "react";
 import { StyledCard, StyledCardHeader, StyledCardTitle, StyledCardContent } from "@/components/ui/cards";
-import { Code, AlertTriangle } from "lucide-react";
+import { Code } from "lucide-react";
 import { ProposalsList } from "./code-proposals/ProposalsList";
 import { ProposalDetails } from "./code-proposals/ProposalDetails";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Skeleton } from "@/components/ui/skeleton";
+import { LoadingProposalsList } from "./code-proposals/components/LoadingProposalsList";
+import { ErrorAlert } from "./code-proposals/components/ErrorAlert";
+import { ProposalsLayout } from "./code-proposals/components/ProposalsLayout";
+import { useProposalHandlers } from "./code-proposals/hooks/useProposalHandlers";
 
 interface CodeProposalsTabProps {
   proposals: any[];
@@ -22,48 +24,48 @@ export const CodeProposalsTab = ({
   onGenerateFeedback,
   loading = false
 }: CodeProposalsTabProps) => {
-  const [selectedProposal, setSelectedProposal] = useState<any>(null);
-  const [rejectionReason, setRejectionReason] = useState<string>('');
-  const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-
-  const handleApprove = async (id: string) => {
-    try {
-      setIsSubmitting(true);
-      setError(null);
-      await onApproveProposal(id);
-      // Deselectează propunerea după aprobare
-      setSelectedProposal(null);
-    } catch (err) {
-      setError("A apărut o eroare la aprobarea propunerii de cod.");
-      console.error("Eroare la aprobarea propunerii:", err);
-    } finally {
-      setIsSubmitting(false);
+  const {
+    selectedProposal,
+    setSelectedProposal,
+    rejectionReason,
+    setRejectionReason,
+    error,
+    isSubmitting,
+    handleApprove,
+    handleReject,
+    handleGenerateFeedback
+  } = useProposalHandlers({
+    onApproveProposal,
+    onRejectProposal,
+    onGenerateFeedback
+  });
+  
+  const renderProposalsList = () => {
+    if (loading) {
+      return <LoadingProposalsList />;
     }
+    
+    return (
+      <ProposalsList 
+        proposals={proposals}
+        selectedProposalId={selectedProposal?.id}
+        onSelectProposal={setSelectedProposal}
+      />
+    );
   };
-
-  const handleReject = async (id: string, reason?: string) => {
-    try {
-      setIsSubmitting(true);
-      setError(null);
-      await onRejectProposal(id, reason);
-      setRejectionReason('');
-      // Deselectează propunerea după respingere
-      setSelectedProposal(null);
-    } catch (err) {
-      setError("A apărut o eroare la respingerea propunerii de cod.");
-      console.error("Eroare la respingerea propunerii:", err);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleGenerateFeedback = () => {
-    if (selectedProposal && onGenerateFeedback) {
-      onGenerateFeedback("proposal", selectedProposal);
-      // Nu deselectăm propunerea, deoarece folosim feedback-ul pentru ea
-    }
-  };
+  
+  const renderProposalDetails = () => (
+    <ProposalDetails
+      proposal={selectedProposal}
+      rejectionReason={rejectionReason}
+      setRejectionReason={setRejectionReason}
+      onApprove={handleApprove}
+      onReject={handleReject}
+      onGenerateFeedback={onGenerateFeedback ? handleGenerateFeedback : undefined}
+      isSubmitting={isSubmitting}
+      loading={loading}
+    />
+  );
   
   return (
     <StyledCard>
@@ -75,61 +77,13 @@ export const CodeProposalsTab = ({
       </StyledCardHeader>
       
       <StyledCardContent>
-        {error && (
-          <Alert variant="destructive" className="mb-4">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
+        <ErrorAlert message={error} />
         
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-1 border-r pr-4">
-            <h3 className="text-sm font-medium mb-2">Propuneri în așteptare</h3>
-            
-            {loading ? (
-              <LoadingProposalsList />
-            ) : (
-              <ProposalsList 
-                proposals={proposals}
-                selectedProposalId={selectedProposal?.id}
-                onSelectProposal={setSelectedProposal}
-              />
-            )}
-          </div>
-          
-          <div className="lg:col-span-2">
-            <ProposalDetails
-              proposal={selectedProposal}
-              rejectionReason={rejectionReason}
-              setRejectionReason={setRejectionReason}
-              onApprove={handleApprove}
-              onReject={handleReject}
-              onGenerateFeedback={onGenerateFeedback ? handleGenerateFeedback : undefined}
-              isSubmitting={isSubmitting}
-              loading={loading}
-            />
-          </div>
-        </div>
+        <ProposalsLayout 
+          sidebar={renderProposalsList()}
+          content={renderProposalDetails()}
+        />
       </StyledCardContent>
     </StyledCard>
   );
 };
-
-const LoadingProposalsList = () => (
-  <div className="space-y-2 pr-2">
-    {[1, 2, 3].map((index) => (
-      <div key={index} className="p-3 border rounded-md">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Skeleton className="h-4 w-4" />
-            <Skeleton className="h-4 w-32" />
-          </div>
-          <Skeleton className="h-5 w-16" />
-        </div>
-        <div className="mt-1">
-          <Skeleton className="h-3 w-24" />
-        </div>
-      </div>
-    ))}
-  </div>
-);
