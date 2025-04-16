@@ -1,9 +1,11 @@
+
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SubmissionsTab } from "./SubmissionsTab";
 import { CodeProposalsTab } from "./CodeProposalsTab";
 import { HistoryTab } from "./HistoryTab";
 import { ApiUsageStats } from "./ApiUsageStats";
+import { AgentGodMode } from "./AgentGodMode";
 import { handleApproveSubmission, handleRejectSubmission } from "./handlers/submission-handlers";
 import { handleApproveCodeProposal, handleRejectCodeProposal } from "./handlers/code-proposal-handlers";
 
@@ -47,6 +49,8 @@ export const AgentAdminTabs = ({
 
   return (
     <>
+      <AgentGodMode userId={userId} />
+      
       <ApiUsageStats />
       <Tabs defaultValue="submissions" className="mt-6">
         <TabsList className="grid grid-cols-3 mb-6">

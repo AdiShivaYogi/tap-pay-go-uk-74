@@ -86,6 +86,42 @@ export interface AgentTaskSubmissionTables {
       }
     ];
   };
+  
+  agent_feedback: {
+    Row: {
+      id: string;
+      submission_id: string;
+      feedback: string;
+      is_approved: boolean;
+      is_god_mode: boolean;
+      created_at: string;
+    };
+    Insert: {
+      id?: string;
+      submission_id: string;
+      feedback: string;
+      is_approved: boolean;
+      is_god_mode: boolean;
+      created_at?: string;
+    };
+    Update: {
+      id?: string;
+      submission_id?: string;
+      feedback?: string;
+      is_approved?: boolean;
+      is_god_mode?: boolean;
+      created_at?: string;
+    };
+    Relationships: [
+      {
+        foreignKeyName: 'agent_feedback_submission_id_fkey';
+        columns: ['submission_id'];
+        referencedRelation: 'agent_task_submissions';
+        referencedColumns: ['id'];
+        isOneToOne: false;
+      }
+    ];
+  };
 }
 
 export interface CodeProposalTables {
@@ -133,5 +169,41 @@ export interface CodeProposalTables {
       rejection_reason?: string | null;
     };
     Relationships: [];
+  };
+  
+  code_proposal_feedback: {
+    Row: {
+      id: string;
+      proposal_id: string;
+      feedback: string;
+      is_approved: boolean;
+      is_god_mode: boolean;
+      created_at: string;
+    };
+    Insert: {
+      id?: string;
+      proposal_id: string;
+      feedback: string;
+      is_approved: boolean;
+      is_god_mode: boolean;
+      created_at?: string;
+    };
+    Update: {
+      id?: string;
+      proposal_id?: string;
+      feedback?: string;
+      is_approved?: boolean;
+      is_god_mode?: boolean;
+      created_at?: string;
+    };
+    Relationships: [
+      {
+        foreignKeyName: 'code_proposal_feedback_proposal_id_fkey';
+        columns: ['proposal_id'];
+        referencedRelation: 'code_proposals';
+        referencedColumns: ['id'];
+        isOneToOne: false;
+      }
+    ];
   };
 }
