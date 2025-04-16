@@ -21,16 +21,18 @@ export const AuthRedirectHandler = ({ locationHash, setIsLoading }: AuthRedirect
         setIsLoading(true);
         
         try {
-          // Check for error parameters in the hash
+          // Verifică dacă hash-ul conține un token de acces (folosit pentru resetarea parolei)
           const hashParams = new URLSearchParams(locationHash.substring(1));
+          const accessToken = hashParams.get("access_token");
           const error = hashParams.get("error");
           const errorCode = hashParams.get("error_code");
           const errorDescription = hashParams.get("error_description");
-
+          const type = hashParams.get("type");
+          
           if (error) {
             console.error("Auth error:", { error, errorCode, errorDescription });
             
-            // Handle known error types
+            // Tratează tipurile de erori cunoscute
             if (errorCode === "otp_expired") {
               toast({
                 title: "Link expirat",
@@ -44,7 +46,18 @@ export const AuthRedirectHandler = ({ locationHash, setIsLoading }: AuthRedirect
             }
           }
           
-          // No error, proceed with session check
+          // Verifică dacă utilizatorul accesează prin link de resetare parolă
+          if (accessToken && type === "recovery") {
+            console.log("Password reset flow detected");
+            // Redirecționează utilizatorul la pagina de resetare parolă cu token-ul de acces
+            navigate("/auth?mode=update_password", { 
+              replace: true,
+              state: { accessToken }
+            });
+            return;
+          }
+          
+          // Nicio eroare, verifică sesiunea 
           const { data, error: sessionError } = await supabase.auth.getSession();
           
           if (sessionError) {
@@ -53,7 +66,7 @@ export const AuthRedirectHandler = ({ locationHash, setIsLoading }: AuthRedirect
           
           if (data?.session) {
             console.log("Session detected after redirect:", data.session.user.email);
-            // Check if user is an admin
+            // Verifică dacă utilizatorul este admin
             const adminEmails = ['114.adrian.gheorghe@gmail.com', '727.adrian.gheorghe@gmail.com'];
             const isAdmin = 
               adminEmails.includes(data.session.user.email || '') || 
