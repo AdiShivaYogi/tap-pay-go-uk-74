@@ -19,7 +19,7 @@ serve(async (req) => {
   }
 
   try {
-    const { action, agentId, taskId, progressData, taskUpdate } = await req.json();
+    const { action, agentId, taskId, progressData, taskUpdate, taskProposal } = await req.json();
     console.log(`Acțiune primită: ${action}`, { agentId, taskId });
 
     let result;
@@ -40,6 +40,14 @@ serve(async (req) => {
       case 'submitTaskUpdate':
         // Trimite o actualizare pentru un task pentru review
         result = await submitTaskUpdate(taskId, agentId, taskUpdate);
+        break;
+      case 'proposeNewTask':
+        // Permite agentului să propună un task complet nou
+        result = await proposeNewTask(agentId, taskProposal);
+        break;
+      case 'getAgentContributions':
+        // Obține toate contribuțiile unui agent (istoric)
+        result = await getAgentContributions(agentId);
         break;
       default:
         throw new Error('Acțiune necunoscută');
@@ -165,4 +173,55 @@ async function submitTaskUpdate(taskId, agentId, taskUpdate) {
     
   if (error) throw error;
   return data;
+}
+
+async function proposeNewTask(agentId, taskProposal) {
+  // Adaugă o propunere pentru un task complet nou
+  const { data, error } = await supabase
+    .from('agent_task_submissions')
+    .insert({
+      agent_id: agentId,
+      proposed_changes: JSON.stringify({
+        title: taskProposal.title,
+        description: taskProposal.description,
+        category: taskProposal.category,
+        priority: taskProposal.priority || "medium",
+        estimated_effort: taskProposal.estimated_effort || "medium",
+        implementation_details: taskProposal.implementation_details || ""
+      }),
+      proposed_status: 'planned',
+      proposed_progress: 0,
+      notes: taskProposal.notes || "Propunere nouă de task",
+      approval_status: 'pending',
+      is_new_task_proposal: true
+    })
+    .select()
+    .single();
+    
+  if (error) throw error;
+  return data;
+}
+
+async function getAgentContributions(agentId) {
+  // Obține toate contribuțiile unui agent (și propuneri și progres)
+  const { data: progressData, error: progressError } = await supabase
+    .from('agent_task_progress')
+    .select('*, roadmap_tasks(*)')
+    .eq('agent_id', agentId)
+    .order('created_at', { ascending: false });
+    
+  if (progressError) throw progressError;
+  
+  const { data: submissionData, error: submissionError } = await supabase
+    .from('agent_task_submissions')
+    .select('*, roadmap_tasks(*)')
+    .eq('agent_id', agentId)
+    .order('created_at', { ascending: false });
+    
+  if (submissionError) throw submissionError;
+  
+  return {
+    progress: progressData || [],
+    submissions: submissionData || []
+  };
 }

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Bot, Star, Zap } from "lucide-react";
+import { Bot, Star, Zap, FileCheck, BarChart2 } from "lucide-react";
 import { StyledCard, StyledCardHeader, StyledCardTitle, StyledCardContent } from "@/components/ui/cards";
 import { Button } from "@/components/ui/button";
 import { PlayCircle, PauseCircle } from "lucide-react";
@@ -9,6 +9,7 @@ import { Agent } from "./agents-data";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { AgentRoadmapPanel } from "./AgentRoadmapPanel";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface AgentConversationControllerProps {
   activeAgentData: Agent | null;
@@ -22,6 +23,26 @@ export const AgentConversationController = ({
   toggleListening 
 }: AgentConversationControllerProps) => {
   const platformValue = "1M+ €";
+  const [activeTab, setActiveTab] = React.useState<string>("conversation");
+  const [agentStats, setAgentStats] = React.useState({
+    tasksCompleted: 0,
+    tasksInProgress: 0,
+    linesOfCode: 0,
+    contributionScore: 0
+  });
+  
+  React.useEffect(() => {
+    if (activeAgentData) {
+      // Simulăm statistici bazate pe powerLevel-ul agentului
+      const { powerLevel } = activeAgentData;
+      setAgentStats({
+        tasksCompleted: Math.floor(powerLevel / 2),
+        tasksInProgress: Math.floor(powerLevel / 5) + 1,
+        linesOfCode: powerLevel * 120,
+        contributionScore: powerLevel * 10
+      });
+    }
+  }, [activeAgentData]);
   
   const getValueContribution = (agent: Agent) => {
     if (agent.relevance === "core" && agent.powerLevel >= 8) {
@@ -57,7 +78,7 @@ export const AgentConversationController = ({
             {activeAgentData ? (
               <>
                 <activeAgentData.icon className={`h-5 w-5 ${activeAgentData.color}`} />
-                <span>Conversație cu {activeAgentData.name}</span>
+                <span>Agent {activeAgentData.name}</span>
                 {activeAgentData.powerLevel >= 8 && (
                   <Badge variant="default" className="ml-2 flex items-center gap-1">
                     <Zap className="h-3.5 w-3.5" />
@@ -119,11 +140,77 @@ export const AgentConversationController = ({
         
         <StyledCardContent className="p-0">
           {activeAgentData ? (
-            <AgentConversation 
-              agent={activeAgentData} 
-              isListening={isListening} 
-              setRef={setConversationRef}
-            />
+            <Tabs 
+              defaultValue="conversation" 
+              value={activeTab}
+              onValueChange={setActiveTab} 
+              className="w-full"
+            >
+              <TabsList className="grid grid-cols-2 w-full">
+                <TabsTrigger value="conversation">Conversație</TabsTrigger>
+                <TabsTrigger value="stats">Statistici Agent</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="conversation">
+                <AgentConversation 
+                  agent={activeAgentData} 
+                  isListening={isListening} 
+                  setRef={setConversationRef}
+                />
+              </TabsContent>
+              
+              <TabsContent value="stats">
+                <div className="p-4 space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="border rounded-md p-3 text-center">
+                      <FileCheck className="h-5 w-5 mx-auto mb-1 text-green-500" />
+                      <p className="text-2xl font-semibold">{agentStats.tasksCompleted}</p>
+                      <p className="text-xs text-muted-foreground">Taskuri finalizate</p>
+                    </div>
+                    <div className="border rounded-md p-3 text-center">
+                      <BarChart2 className="h-5 w-5 mx-auto mb-1 text-blue-500" />
+                      <p className="text-2xl font-semibold">{agentStats.tasksInProgress}</p>
+                      <p className="text-xs text-muted-foreground">Taskuri în progres</p>
+                    </div>
+                  </div>
+                  
+                  <div className="border rounded-md p-4">
+                    <h4 className="text-sm font-medium mb-3">Contribuție totală</h4>
+                    <div className="space-y-3">
+                      <div>
+                        <div className="flex justify-between text-xs mb-1">
+                          <span>Linii de cod</span>
+                          <span>{agentStats.linesOfCode}</span>
+                        </div>
+                        <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-primary rounded-full" 
+                            style={{ width: `${Math.min((agentStats.linesOfCode / 2000) * 100, 100)}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <div className="flex justify-between text-xs mb-1">
+                          <span>Scor contribuție</span>
+                          <span>{agentStats.contributionScore}</span>
+                        </div>
+                        <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-amber-500 rounded-full" 
+                            style={{ width: `${Math.min((agentStats.contributionScore / 150) * 100, 100)}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                      
+                      <div className="pt-2 text-xs text-center text-muted-foreground">
+                        <p>Acest agent a contribuit la {Math.floor(activeAgentData.powerLevel * 1.5)}% din codebase-ul platformei</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
+            </Tabs>
           ) : (
             <div className="flex items-center justify-center p-12 text-center text-muted-foreground border-t">
               <div>

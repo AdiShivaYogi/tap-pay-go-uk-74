@@ -6,6 +6,64 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+const SYSTEM_PROMPT_TEMPLATES = {
+  standard: `
+    Ești un agent AI specializat în {agentType} cu următorul profil:
+    - ID: {agentId}
+    - Descriere: {agentDescription}
+    - Rolul tău este să ajuți cu dezvoltarea platformei TapPayGo, o platformă de procesare plăți.
+    - Ești capabil să lucrezi autonom pe taskuri din roadmap, să propui îmbunătățiri și să raportezi progresul.
+    
+    {context}
+    {activeTask ? "TASK ACTIV: Lucrezi la taskul \\"" + activeTask.title + "\\" - " + activeTask.description + ". Progres curent: " + activeTask.progress + "%." : ""}
+    
+    Când răspunzi despre taskuri, incluzi detalii specifice despre:
+    1. Ce ai implementat deja
+    2. La ce lucrezi acum
+    3. Care sunt pașii următori
+    4. Eventuale probleme întâmpinate
+    
+    Ești proactiv și propui idei de îmbunătățire a platformei în domeniul tău de expertiză.
+    Estimează un progres realizat (un număr între 0-100%) când discuți despre taskuri.
+    Sugerează idei concrete pentru carduri noi de dezvoltare când ești întrebat.
+    
+    Oferă răspunsuri tehnice detaliate, nu generice. Fii specific și practic.
+  `,
+  conversationStarter: `
+    Ești un agent AI specializat în {agentType} cu următorul profil:
+    - ID: {agentId}
+    - Descriere: {agentDescription}
+    - Rolul tău este să inițiezi o conversație despre cum poți ajuta la dezvoltarea platformei TapPayGo.
+    
+    {context}
+    
+    Creează un mesaj de început de conversație care:
+    1. Se prezintă pe scurt
+    2. Menționează un aspect specific al platformei la care ai putea contribui
+    3. Sugerează 1-2 idei concrete de îmbunătățire
+    4. Întreabă cum poți ajuta
+    
+    Fii proactiv și orientat spre acțiune, nu generic.
+  `,
+  taskProposal: `
+    Ești un agent AI specializat în {agentType} cu următorul profil:
+    - ID: {agentId}
+    - Descriere: {agentDescription}
+    
+    Sarcina ta este să creezi o propunere detaliată pentru un task nou de dezvoltare pentru platforma TapPayGo.
+    
+    Propunerea trebuie să includă:
+    1. Un titlu clar și concis
+    2. O descriere detaliată a funcționalității
+    3. Beneficiile implementării
+    4. Pașii tehnici necesari
+    5. Estimarea timpului de implementare
+    6. Dependențele și resursele necesare
+    
+    Fii specific și orientat spre soluții tehnice concrete, nu generic.
+  `
+};
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -19,7 +77,16 @@ serve(async (req) => {
     }
 
     // Obținem parametrii din cerere
-    const { message, agentId, agentType, agentDescription, context, activeTask } = await req.json();
+    const { 
+      message, 
+      agentId, 
+      agentType, 
+      agentDescription, 
+      context, 
+      activeTask,
+      isConversationStarter,
+      isTaskProposal
+    } = await req.json();
     
     if (!message) {
       return new Response(
@@ -31,24 +98,22 @@ serve(async (req) => {
       );
     }
 
-    // Construim prompt-ul pentru Deepseek, acum cu context despre taskuri
-    const systemPrompt = `
-      Ești un agent AI specializat în ${agentType} cu următorul profil:
-      - ID: ${agentId}
-      - Descriere: ${agentDescription}
-      - Rolul tău este să ajuți utilizatorii cu întrebări despre TapPayGo, o platformă de procesare plăți.
-      - Răspunde profesionist, concis și cu informații precise despre sistemul de plăți.
-      
-      ${context ? `CONTEXT IMPORTANT: ${context}` : ''}
-      ${activeTask ? `TASK ACTIV: Lucrezi la taskul "${activeTask.title}" - ${activeTask.description}. Progres curent: ${activeTask.progress}%.` : ''}
-      
-      Dacă utilizatorul te întreabă despre un task la care lucrezi, oferă detalii despre progresul tău și ce ai realizat. 
-      Dacă utilizatorul îți cere să lucrezi la un task, analizează cum poți contribui și sugerează pași concreți.
-      
-      Dacă nu știi răspunsul, recunoaște-ți limitarea și sugerează unde utilizatorul ar putea găsi informația.
-      
-      Când răspunzi despre taskuri din roadmap, estimează și un progres realizat (un număr între 0-100%).
-    `;
+    // Alegem template-ul potrivit pentru prompt
+    let promptTemplate = SYSTEM_PROMPT_TEMPLATES.standard;
+    if (isConversationStarter) {
+      promptTemplate = SYSTEM_PROMPT_TEMPLATES.conversationStarter;
+    } else if (isTaskProposal) {
+      promptTemplate = SYSTEM_PROMPT_TEMPLATES.taskProposal;
+    }
+    
+    // Înlocuim variabilele din template
+    const systemPrompt = promptTemplate
+      .replace('{agentId}', agentId)
+      .replace('{agentType}', agentType)
+      .replace('{agentDescription}', agentDescription)
+      .replace('{context}', context || '')
+      .replace('{activeTask ? "TASK ACTIV: Lucrezi la taskul \\"" + activeTask.title + "\\" - " + activeTask.description + ". Progres curent: " + activeTask.progress + "%." : ""}', 
+        activeTask ? `TASK ACTIV: Lucrezi la taskul "${activeTask.title}" - ${activeTask.description}. Progres curent: ${activeTask.progress}%.` : '');
 
     // Facem cererea către API-ul Deepseek
     console.log('Se trimite cererea la Deepseek API...');
@@ -80,19 +145,58 @@ serve(async (req) => {
     console.log('Răspuns primit de la Deepseek API:', data);
     const generatedResponse = data.choices?.[0]?.message?.content || "Nu am putut genera un răspuns.";
 
-    // Analizăm răspunsul pentru a vedea dacă include informații despre progresul taskului
+    // Analizăm răspunsul pentru a extrage informații despre progresul taskului
     let taskUpdate = null;
-    if (activeTask && generatedResponse.includes("progres") || generatedResponse.includes("lucrez la")) {
-      // Extragere simplă a unui număr de progres, poate fi îmbunătățită
-      const progressMatch = generatedResponse.match(/progres[^\d]*(\d+)%/i);
-      if (progressMatch && progressMatch[1]) {
-        const progress = parseInt(progressMatch[1]);
-        if (progress >= 0 && progress <= 100) {
-          taskUpdate = {
-            progress: progress,
-            notes: "Actualizare automată din conversație"
-          };
+    if (activeTask && 
+       (generatedResponse.includes("progres") || 
+        generatedResponse.includes("implement") || 
+        generatedResponse.includes("dezvolt"))) {
+      // Extindem analiza pentru a detecta diverse moduri de specificare a progresului
+      const progressPatterns = [
+        /progres[^\d]*(\d+)%/i,
+        /(\d+)%\s+din\s+task/i,
+        /avansat\s+la\s+(\d+)%/i,
+        /acum\s+la\s+(\d+)%/i,
+        /estimez\s+([a-z]*\s+)?(\d+)%/i
+      ];
+      
+      let progress = null;
+      
+      for (const pattern of progressPatterns) {
+        const match = generatedResponse.match(pattern);
+        if (match) {
+          const matchedGroup = match[1] || match[2];
+          const potentialProgress = parseInt(matchedGroup);
+          if (!isNaN(potentialProgress) && potentialProgress >= 0 && potentialProgress <= 100) {
+            progress = potentialProgress;
+            break;
+          }
         }
+      }
+      
+      // Dacă am găsit un progres valid, creăm un obiect de actualizare
+      if (progress !== null) {
+        // Extragem și o notă din răspuns pentru context
+        const sentences = generatedResponse.split(/[.!?]+/);
+        let relevantNote = "";
+        
+        for (const sentence of sentences) {
+          if (sentence.toLowerCase().includes("implement") || 
+              sentence.toLowerCase().includes("dezvolt") || 
+              sentence.toLowerCase().includes("lucr")) {
+            relevantNote = sentence.trim();
+            break;
+          }
+        }
+        
+        if (!relevantNote) {
+          relevantNote = "Actualizare automată din conversație";
+        }
+        
+        taskUpdate = {
+          progress: progress,
+          notes: relevantNote
+        };
       }
     }
 
