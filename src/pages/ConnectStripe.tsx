@@ -7,13 +7,14 @@ import { StyledCard } from "@/components/ui/styled-card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { toast } from "@/hooks/use-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
 import { useState } from "react";
 
 const ConnectStripe = () => {
   const { connectStripe, user } = useAuth();
   const [isConnecting, setIsConnecting] = useState(false);
+  const navigate = useNavigate();
   
   const handleConnect = async () => {
     try {
@@ -25,6 +26,7 @@ const ConnectStripe = () => {
         title: "Cont Stripe conectat",
         description: "Acum poți începe să accepți plăți prin Stripe",
       });
+      navigate('/dashboard');
     } catch (error) {
       toast({
         title: "Eroare la conectare",

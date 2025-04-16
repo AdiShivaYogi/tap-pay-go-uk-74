@@ -36,7 +36,7 @@ export function Header() {
   const isVisible = (item: typeof NAVIGATION[0]) => {
     // If user is not authenticated
     if (!user) {
-      return !item.showWhenAuth;
+      return item.showWhenAuth === false || !item.showWhenAuth;
     }
     
     // If user is authenticated
@@ -76,8 +76,13 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-2">
-            {NAVIGATION.map((item) => (
-              isVisible(item) && (
+            {NAVIGATION.filter(item => !item.showWhenAuth || (item.showWhenAuth && user))
+              .filter(item => !item.hideWhenAuth || (item.hideWhenAuth && !user))
+              .filter(item => {
+                if (!user) return !item.adminOnly && !item.moderatorOnly && !item.superAdminOnly && !item.userOnly;
+                return isVisible(item);
+              })
+              .map((item) => (
                 <NavLink 
                   key={item.href} 
                   href={item.href}
@@ -91,8 +96,7 @@ export function Header() {
                     </Badge>
                   )}
                 </NavLink>
-              )
-            ))}
+              ))}
 
             {/* Afișăm butonul de autentificare sau conectare Stripe pentru utilizatorii neautentificați */}
             {!user && (
@@ -199,8 +203,13 @@ export function Header() {
                   </SheetDescription>
                 </SheetHeader>
                 <nav className="flex flex-col space-y-1 mt-4">
-                  {NAVIGATION.map((item) => (
-                    isVisible(item) && (
+                  {NAVIGATION.filter(item => !item.showWhenAuth || (item.showWhenAuth && user))
+                    .filter(item => !item.hideWhenAuth || (item.hideWhenAuth && !user))
+                    .filter(item => {
+                      if (!user) return !item.adminOnly && !item.moderatorOnly && !item.superAdminOnly && !item.userOnly;
+                      return isVisible(item);
+                    })
+                    .map((item) => (
                       <Link
                         key={item.href}
                         to={item.href}
@@ -219,8 +228,7 @@ export function Header() {
                           </Badge>
                         )}
                       </Link>
-                    )
-                  ))}
+                    ))}
                   
                   {/* Afișăm butoanele de autentificare sau conectare Stripe pentru utilizatorii neautentificați */}
                   {!user && (
