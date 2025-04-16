@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { ResetPasswordForm } from "@/components/admin-auth/ResetPasswordForm";
+import { ResetPasswordForm, ResetFormValues } from "@/components/admin-auth/reset-password/ResetPasswordForm";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 
@@ -94,11 +94,19 @@ export const ResetPasswordContainer = ({
     }
   };
 
+  const handleSubmit = async (values: ResetFormValues) => {
+    if ('email' in values) {
+      await handleResetPassword(values);
+    } else {
+      await handleUpdatePassword(values);
+    }
+  };
+
   return (
     <ResetPasswordForm
       mode={mode}
       accessToken={accessToken}
-      onSubmit={mode === "request" ? handleResetPassword : handleUpdatePassword}
+      onSubmit={handleSubmit}
       onCancel={onCancel}
       isLoading={isLoading}
       errorMessage={errorMessage}
