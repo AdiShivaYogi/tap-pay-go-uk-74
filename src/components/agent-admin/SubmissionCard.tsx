@@ -1,4 +1,3 @@
-
 import React from "react";
 import { StyledCard } from "@/components/ui/cards";
 import { Button } from "@/components/ui/button";
@@ -16,6 +15,7 @@ interface SubmissionCardProps {
 }
 
 export const SubmissionCard = ({ submission, onApprove, onReject, onGenerateFeedback }: SubmissionCardProps) => {
+  
   const createdDate = new Date(submission.created_at).toLocaleDateString('ro-RO', {
     day: 'numeric',
     month: 'long',
@@ -149,9 +149,9 @@ export const SubmissionCard = ({ submission, onApprove, onReject, onGenerateFeed
             </svg>
             <h4 className="font-medium text-sm">Ordine logică de implementare:</h4>
           </div>
-          <p className="text-sm">
-            {getImplementationOrder(submission.roadmap_tasks?.category, submission.proposed_status)}
-          </p>
+          <div className="text-sm">
+            {renderImplementationOrder(submission.roadmap_tasks?.category, submission.proposed_status)}
+          </div>
         </div>
         
         {/* Secțiunea de acțiuni */}
@@ -216,8 +216,12 @@ const getEstimatedCost = (level: string): string => {
   }
 };
 
-const getImplementationOrder = (category: string, status: string): string => {
-  if (!category) return "Acest task nu are o categorie specificată pentru a determina ordinea logică.";
+// Am eliminat vechea funcție getImplementationOrder care returna JSX și am adăugat două funcții noi:
+// 1. getImplementationOrderSteps - returnează un array de string-uri (pașii de implementare)
+// 2. renderImplementationOrder - renderează componentele JSX folosind array-ul de pași
+
+const getImplementationOrderSteps = (category: string): string[] => {
+  if (!category) return ["Acest task nu are o categorie specificată pentru a determina ordinea logică."];
   
   const categoryOrder: Record<string, string[]> = {
     "security": ["Analiză de securitate", "Implementare măsuri de bază", "Testare", "Monitorizare continuă"],
@@ -227,13 +231,18 @@ const getImplementationOrder = (category: string, status: string): string => {
     "devops": ["Setup infrastructură", "Automatizare CI/CD", "Monitorizare", "Optimizare performanță"],
   };
   
-  const baseOrder = categoryOrder[category.toLowerCase()] || [
+  return categoryOrder[category.toLowerCase()] || [
     "Analiză cerințe", 
     "Design", 
     "Implementare", 
     "Testare", 
     "Lansare"
   ];
+};
+
+// Funcția de renderizare care generează elementele JSX
+const renderImplementationOrder = (category: string, status: string): React.ReactNode => {
+  const baseOrder = getImplementationOrderSteps(category);
   
   // Determinăm la ce pas suntem bazat pe status și progress
   let currentStep = 1;
@@ -254,4 +263,3 @@ const getImplementationOrder = (category: string, status: string): string => {
     </>
   );
 };
-
