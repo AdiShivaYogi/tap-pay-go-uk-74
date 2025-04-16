@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { Bot, Star, Zap } from "lucide-react";
 import { StyledCard, StyledCardHeader, StyledCardTitle, StyledCardContent } from "@/components/ui/cards";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import { AgentConversation } from "./AgentConversation";
 import { Agent } from "./agents-data";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { AgentRoadmapPanel } from "./AgentRoadmapPanel";
 
 interface AgentConversationControllerProps {
   activeAgentData: Agent | null;

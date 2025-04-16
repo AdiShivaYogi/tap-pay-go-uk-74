@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Check, Loader2, Play, BarChart4 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/supabase/types-extension"; // Folosim supabase din noul fișier de tipuri
 
 interface AgentRoadmapPanelProps {
   agentId: string | null;
