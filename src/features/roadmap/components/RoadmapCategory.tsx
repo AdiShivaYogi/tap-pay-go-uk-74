@@ -11,7 +11,7 @@ interface RoadmapCategoryProps {
   items: RoadmapItem[];
 }
 
-export const RoadmapCategory: React.FC<RoadmapCategoryProps> = ({ title, items }) => {
+export const RoadmapCategory = ({ title, items }: RoadmapCategoryProps) => {
   const [isOpen, setIsOpen] = useState(false);
   
   // Calculate progress without relying on context
@@ -40,8 +40,16 @@ export const RoadmapCategory: React.FC<RoadmapCategoryProps> = ({ title, items }
         <div className="px-4 pb-4">
           <ul className="space-y-2">
             {items.map((item) => (
-              <li key={item.id}>
-                {item.title}
+              <li key={item.id} className="flex items-center justify-between">
+                <span className="text-sm">{item.title}</span>
+                <Badge variant={
+                  item.status === "completed" ? "success" : 
+                  item.status === "inProgress" ? "default" :
+                  "secondary"
+                }>
+                  {item.status === "completed" ? "Finalizat" : 
+                   item.status === "inProgress" ? "În progres" : "Planificat"}
+                </Badge>
               </li>
             ))}
           </ul>

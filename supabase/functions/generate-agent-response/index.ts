@@ -1,3 +1,4 @@
+
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 
 const corsHeaders = {
@@ -76,12 +77,19 @@ const CODE_GENERATION_TEMPLATES = {
     
     Context proiect: Platformă de procesare plăți cu agenți AI autonomi
     
-    Specifică în răspunsul tău:
-    - Fișierele care trebuie modificate/create
-    - Codul propriu-zis
-    - Motivația tehnică pentru schimbări
+    Specificații din mesajul utilizatorului: {message}
+    
+    Răspunde cu următoarea structură:
+    1. Explicarea motivației schimbărilor propuse
+    2. Lista de fișiere care trebuie modificate
+    3. Codul efectiv pentru fiecare fișier (pune codul între ```typescript și ```)
+    4. Explicarea beneficiilor și impactului schimbărilor
+    
+    Fii concis dar complet în explicațiile tale.
   `
 };
+
+const deepseekApiKey = Deno.env.get("DEEPSEEK_API_KEY") || "";
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -117,7 +125,7 @@ serve(async (req) => {
     } else if (isTaskProposal) {
       promptTemplate = SYSTEM_PROMPT_TEMPLATES.taskProposal;
     } else if (isCodeProposal) {
-      promptTemplate = CODE_GENERATION_TEMPLATES.codeProposal;
+      promptTemplate = CODE_GENERATION_TEMPLATES.codeProposal.replace('{message}', message);
     }
     
     const systemPrompt = promptTemplate
@@ -151,7 +159,7 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ 
       response: generatedResponse,
-      isCodeProposal: true
+      isCodeProposal: isCodeProposal
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200

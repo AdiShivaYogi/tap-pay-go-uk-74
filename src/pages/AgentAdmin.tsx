@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/layout";
 import { Section } from "@/components/ui/layout/section";
 import { PageHeader } from "@/components/ui/layout/page-header";
-import { Bot } from "lucide-react";
+import { Bot, Code } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useUserRole } from "@/hooks/use-user-role";
 import { AccessRestrictionAlert } from "@/features/roadmap/components/AccessRestrictionAlert";
@@ -12,12 +12,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/hooks/use-toast";
 import { SubmissionsTab } from "@/components/agent-admin/SubmissionsTab";
 import { HistoryTab } from "@/components/agent-admin/HistoryTab";
+import { CodeProposalsTab } from "@/components/agent-admin/CodeProposalsTab";
 
 const AgentAdmin = () => {
   const { user } = useAuth();
   const { isAdmin } = useUserRole();
   const [submissions, setSubmissions] = useState<any[]>([]);
   const [progressHistory, setProgressHistory] = useState<any[]>([]);
+  const [codeProposals, setCodeProposals] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
@@ -43,8 +45,17 @@ const AgentAdmin = () => {
           
         if (progressError) throw progressError;
         
+        const { data: codeProposalsData, error: codeProposalsError } = await supabase
+          .from('code_proposals')
+          .select('*')
+          .eq('status', 'pending')
+          .order('created_at', { ascending: false });
+          
+        if (codeProposalsError) throw codeProposalsError;
+        
         setSubmissions(submissionsData || []);
         setProgressHistory(progressData || []);
+        setCodeProposals(codeProposalsData || []);
       } catch (err) {
         console.error('Eroare la încărcarea datelor:', err);
       } finally {
@@ -126,6 +137,69 @@ const AgentAdmin = () => {
     }
   };
   
+  const handleApproveCodeProposal = async (proposalId: string) => {
+    try {
+      // Actualizează statusul propunerii de cod
+      const { error } = await supabase
+        .from('code_proposals')
+        .update({ 
+          status: 'approved',
+          approved_at: new Date().toISOString(),
+          approved_by: user?.id
+        })
+        .eq('id', proposalId);
+        
+      if (error) throw error;
+      
+      // Actualizează lista locală
+      setCodeProposals(codeProposals.filter(p => p.id !== proposalId));
+      
+      toast({ 
+        title: "Propunere de cod aprobată", 
+        description: "Codul propus a fost aprobat pentru implementare."
+      });
+    } catch (err) {
+      console.error('Eroare la aprobarea propunerii de cod:', err);
+      toast({ 
+        title: "Eroare", 
+        description: "Nu s-a putut aproba propunerea de cod.",
+        variant: "destructive"
+      });
+    }
+  };
+  
+  const handleRejectCodeProposal = async (proposalId: string, reason?: string) => {
+    try {
+      // Actualizează statusul propunerii de cod
+      const { error } = await supabase
+        .from('code_proposals')
+        .update({ 
+          status: 'rejected',
+          rejected_at: new Date().toISOString(),
+          rejected_by: user?.id,
+          rejection_reason: reason || null
+        })
+        .eq('id', proposalId);
+        
+      if (error) throw error;
+      
+      // Actualizează lista locală
+      setCodeProposals(codeProposals.filter(p => p.id !== proposalId));
+      
+      toast({ 
+        title: "Propunere de cod respinsă", 
+        description: "Propunerea de cod a fost respinsă și nu va fi implementată."
+      });
+    } catch (err) {
+      console.error('Eroare la respingerea propunerii de cod:', err);
+      toast({ 
+        title: "Eroare", 
+        description: "Nu s-a putut respinge propunerea de cod.",
+        variant: "destructive"
+      });
+    }
+  };
+  
   if (!user) {
     return (
       <Layout>
@@ -146,6 +220,9 @@ const AgentAdmin = () => {
     );
   }
   
+  const pendingSubmissionsCount = submissions.length;
+  const pendingCodeProposalsCount = codeProposals.length;
+  
   return (
     <Layout>
       <Section>
@@ -156,8 +233,9 @@ const AgentAdmin = () => {
         />
         
         <Tabs defaultValue="submissions" className="mt-6">
-          <TabsList className="grid grid-cols-2 mb-6">
-            <TabsTrigger value="submissions">Propuneri în așteptare {submissions.length > 0 && `(${submissions.length})`}</TabsTrigger>
+          <TabsList className="grid grid-cols-3 mb-6">
+            <TabsTrigger value="submissions">Propuneri task-uri {pendingSubmissionsCount > 0 && `(${pendingSubmissionsCount})`}</TabsTrigger>
+            <TabsTrigger value="code">Propuneri cod {pendingCodeProposalsCount > 0 && `(${pendingCodeProposalsCount})`}</TabsTrigger>
             <TabsTrigger value="history">Istoric activitate</TabsTrigger>
           </TabsList>
           
@@ -166,6 +244,14 @@ const AgentAdmin = () => {
               submissions={submissions}
               onApproveSubmission={handleApproveSubmission}
               onRejectSubmission={handleRejectSubmission}
+            />
+          </TabsContent>
+
+          <TabsContent value="code">
+            <CodeProposalsTab 
+              proposals={codeProposals}
+              onApproveProposal={handleApproveCodeProposal}
+              onRejectProposal={handleRejectCodeProposal}
             />
           </TabsContent>
           

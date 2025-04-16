@@ -9,6 +9,51 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      code_proposals: {
+        Row: {
+          agent_id: string
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          id: string
+          motivation: string
+          proposed_code: string
+          proposed_files: string
+          rejected_at: string | null
+          rejected_by: string | null
+          rejection_reason: string | null
+          status: string
+        }
+        Insert: {
+          agent_id: string
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          id?: string
+          motivation: string
+          proposed_code: string
+          proposed_files: string
+          rejected_at?: string | null
+          rejected_by?: string | null
+          rejection_reason?: string | null
+          status?: string
+        }
+        Update: {
+          agent_id?: string
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          id?: string
+          motivation?: string
+          proposed_code?: string
+          proposed_files?: string
+          rejected_at?: string | null
+          rejected_by?: string | null
+          rejection_reason?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       login_attempts: {
         Row: {
           attempt_count: number | null

@@ -1,3 +1,4 @@
+
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
@@ -51,6 +52,10 @@ serve(async (req) => {
       case 'getAgentContributions':
         // Obține toate contribuțiile unui agent (istoric)
         result = await getAgentContributions(agentId);
+        break;
+      case 'getCodeProposals':
+        // Obține propunerile de cod pentru un agent specific
+        result = await getCodeProposals(agentId);
         break;
       default:
         throw new Error('Acțiune necunoscută');
@@ -206,21 +211,45 @@ async function proposeNewTask(agentId, taskProposal) {
 }
 
 async function proposeCodeChange(agentId, codeProposal) {
-  const { data, error } = await supabase
-    .from('code_proposals')
-    .insert({
-      agent_id: agentId,
-      proposed_files: JSON.stringify(codeProposal.files),
-      proposed_code: JSON.stringify(codeProposal.code),
-      motivation: codeProposal.motivation,
-      status: 'pending',
-      created_at: new Date().toISOString()
-    })
-    .select()
-    .single();
+  console.log('Procesare propunere de cod:', codeProposal);
+  
+  // Validare date de intrare
+  if (!codeProposal.files || !Array.isArray(codeProposal.files) || codeProposal.files.length === 0) {
+    throw new Error('Trebuie furnizată cel puțin o cale de fișier');
+  }
+  
+  if (!codeProposal.code || typeof codeProposal.code !== 'object') {
+    throw new Error('Trebuie furnizat codul pentru fiecare fișier');
+  }
+  
+  if (!codeProposal.motivation) {
+    throw new Error('Trebuie furnizată o motivație pentru schimbările de cod');
+  }
+  
+  try {
+    const { data, error } = await supabase
+      .from('code_proposals')
+      .insert({
+        agent_id: agentId,
+        proposed_files: JSON.stringify(codeProposal.files),
+        proposed_code: JSON.stringify(codeProposal.code),
+        motivation: codeProposal.motivation,
+        status: 'pending'
+      })
+      .select()
+      .single();
+      
+    if (error) {
+      console.error('Eroare la inserarea în baza de date:', error);
+      throw error;
+    }
     
-  if (error) throw error;
-  return data;
+    console.log('Propunere de cod adăugată cu succes:', data);
+    return data;
+  } catch (err) {
+    console.error('Eroare la procesarea propunerii de cod:', err);
+    throw err;
+  }
 }
 
 async function getAgentContributions(agentId) {
@@ -241,8 +270,29 @@ async function getAgentContributions(agentId) {
     
   if (submissionError) throw submissionError;
   
+  const { data: codeProposalsData, error: codeProposalsError } = await supabase
+    .from('code_proposals')
+    .select('*')
+    .eq('agent_id', agentId)
+    .order('created_at', { ascending: false });
+    
+  if (codeProposalsError) throw codeProposalsError;
+  
   return {
     progress: progressData || [],
-    submissions: submissionData || []
+    submissions: submissionData || [],
+    codeProposals: codeProposalsData || []
   };
+}
+
+async function getCodeProposals(agentId) {
+  // Obține toate propunerile de cod pentru un agent specific
+  const { data, error } = await supabase
+    .from('code_proposals')
+    .select('*')
+    .eq('agent_id', agentId)
+    .order('created_at', { ascending: false });
+    
+  if (error) throw error;
+  return data || [];
 }
