@@ -33,7 +33,7 @@ export function DeepseekKeyAlert({ status, hasKey, errorMessage }: DeepseekKeyAl
     );
   }
 
-  if (hasKey && status !== "loading" && status !== "error") {
+  if (hasKey && status !== "loading") {
     return (
       <Alert className="bg-green-50 border-green-200">
         <CheckCircle2 className="h-4 w-4 text-green-600" />

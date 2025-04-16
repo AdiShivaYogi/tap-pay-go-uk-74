@@ -1,6 +1,7 @@
 
 import { FeedbackItem } from "../types";
-import { generateAgentFeedback, submitSubmissionFeedback, submitProposalFeedback } from "../api/generate-feedback";
+import { generateAgentFeedback } from "../api/generate-feedback";
+import { submitSubmissionFeedback, submitProposalFeedback } from "../feedback-service";
 
 export function useFeedbackActions(state: any) {
   const {
