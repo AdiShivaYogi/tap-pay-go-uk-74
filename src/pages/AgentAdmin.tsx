@@ -61,6 +61,7 @@ const AgentAdmin = () => {
           userId={user?.id}
           setSubmissions={setSubmissionsState}
           setCodeProposals={setCodeProposalsState}
+          loading={loading}
         />
       </Section>
     </Layout>

@@ -8,6 +8,15 @@ export const handleApproveCodeProposal = async (
   codeProposals: any[],
   setCodeProposals: React.Dispatch<React.SetStateAction<any[]>>
 ) => {
+  if (!proposalId) {
+    toast({ 
+      title: "Eroare", 
+      description: "ID-ul propunerii lipsește.",
+      variant: "destructive"
+    });
+    throw new Error("ID-ul propunerii lipsește");
+  }
+  
   try {
     // Actualizează statusul propunerii de cod
     const { error } = await supabase
@@ -15,7 +24,7 @@ export const handleApproveCodeProposal = async (
       .update({ 
         status: 'approved',
         approved_at: new Date().toISOString(),
-        approved_by: userId
+        approved_by: userId || null
       })
       .eq('id', proposalId);
       
@@ -35,6 +44,7 @@ export const handleApproveCodeProposal = async (
       description: "Nu s-a putut aproba propunerea de cod.",
       variant: "destructive"
     });
+    throw err; // Re-aruncă eroarea pentru a fi prinsă de componenta care apelează
   }
 };
 
@@ -45,6 +55,15 @@ export const handleRejectCodeProposal = async (
   codeProposals: any[],
   setCodeProposals: React.Dispatch<React.SetStateAction<any[]>>
 ) => {
+  if (!proposalId) {
+    toast({ 
+      title: "Eroare", 
+      description: "ID-ul propunerii lipsește.",
+      variant: "destructive"
+    });
+    throw new Error("ID-ul propunerii lipsește");
+  }
+  
   try {
     // Actualizează statusul propunerii de cod
     const { error } = await supabase
@@ -52,7 +71,7 @@ export const handleRejectCodeProposal = async (
       .update({ 
         status: 'rejected',
         rejected_at: new Date().toISOString(),
-        rejected_by: userId,
+        rejected_by: userId || null,
         rejection_reason: reason || null
       })
       .eq('id', proposalId);
@@ -73,5 +92,6 @@ export const handleRejectCodeProposal = async (
       description: "Nu s-a putut respinge propunerea de cod.",
       variant: "destructive"
     });
+    throw err; // Re-aruncă eroarea pentru a fi prinsă de componenta care apelează
   }
 };

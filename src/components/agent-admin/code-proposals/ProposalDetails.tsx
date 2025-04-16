@@ -2,6 +2,10 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { CodeViewer } from "./CodeViewer";
+import { Button } from "@/components/ui/button";
+import { Check, X, Code, Loader2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { LoadingIndicator } from "@/components/admin-auth/LoadingIndicator";
 
 interface ProposalDetailsProps {
   proposal: any;
@@ -9,6 +13,8 @@ interface ProposalDetailsProps {
   setRejectionReason: (reason: string) => void;
   onApprove: (id: string) => Promise<void>;
   onReject: (id: string, reason?: string) => Promise<void>;
+  isSubmitting?: boolean;
+  loading?: boolean;
 }
 
 export const ProposalDetails = ({ 
@@ -16,8 +22,14 @@ export const ProposalDetails = ({
   rejectionReason,
   setRejectionReason,
   onApprove,
-  onReject 
+  onReject,
+  isSubmitting = false,
+  loading = false
 }: ProposalDetailsProps) => {
+  if (loading) {
+    return <LoadingProposalDetails />;
+  }
+  
   if (!proposal) {
     return <EmptyState />;
   }
@@ -59,6 +71,7 @@ export const ProposalDetails = ({
         setRejectionReason={setRejectionReason}
         onApprove={onApprove}
         onReject={onReject}
+        isSubmitting={isSubmitting}
       />
     </div>
   );
@@ -73,8 +86,33 @@ const EmptyState = () => (
   </div>
 );
 
-import { Button } from "@/components/ui/button";
-import { Check, X, Code } from "lucide-react";
+const LoadingProposalDetails = () => (
+  <div className="space-y-4">
+    <div>
+      <Skeleton className="h-6 w-64 mb-2" />
+      <Skeleton className="h-4 w-40" />
+    </div>
+    
+    <div>
+      <Skeleton className="h-4 w-24 mb-1" />
+      <Skeleton className="h-20 w-full rounded-md" />
+    </div>
+    
+    <div>
+      <Skeleton className="h-4 w-32 mb-1" />
+      <div className="flex flex-wrap gap-2">
+        {[1, 2, 3].map((i) => (
+          <Skeleton key={i} className="h-6 w-20 rounded-full" />
+        ))}
+      </div>
+    </div>
+    
+    <div>
+      <Skeleton className="h-4 w-20 mb-1" />
+      <Skeleton className="h-[300px] w-full rounded-md" />
+    </div>
+  </div>
+);
 
 interface ActionButtonsProps {
   proposalId: string;
@@ -82,6 +120,7 @@ interface ActionButtonsProps {
   setRejectionReason: (reason: string) => void;
   onApprove: (id: string) => Promise<void>;
   onReject: (id: string, reason?: string) => Promise<void>;
+  isSubmitting: boolean;
 }
 
 const ActionButtons = ({ 
@@ -89,7 +128,8 @@ const ActionButtons = ({
   rejectionReason,
   setRejectionReason,
   onApprove,
-  onReject 
+  onReject,
+  isSubmitting
 }: ActionButtonsProps) => (
   <div className="flex justify-between items-center pt-2">
     <div className="flex-1 mr-2">
@@ -99,6 +139,7 @@ const ActionButtons = ({
         className="w-full p-2 text-sm border rounded-md"
         value={rejectionReason}
         onChange={(e) => setRejectionReason(e.target.value)}
+        disabled={isSubmitting}
       />
     </div>
     
@@ -107,11 +148,10 @@ const ActionButtons = ({
         variant="outline" 
         size="sm"
         className="flex items-center gap-1"
-        onClick={() => {
-          onReject(proposalId, rejectionReason);
-        }}
+        onClick={() => onReject(proposalId, rejectionReason)}
+        disabled={isSubmitting}
       >
-        <X size={16} />
+        {isSubmitting ? <Loader2 size={16} className="animate-spin" /> : <X size={16} />}
         Respinge
       </Button>
       
@@ -119,10 +159,13 @@ const ActionButtons = ({
         size="sm"
         className="flex items-center gap-1"
         onClick={() => onApprove(proposalId)}
+        disabled={isSubmitting}
       >
-        <Check size={16} />
+        {isSubmitting ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} />}
         Aprobă
       </Button>
     </div>
   </div>
 );
+
+export { ActionButtons };

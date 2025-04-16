@@ -14,6 +14,7 @@ interface AgentAdminTabsProps {
   userId: string | undefined;
   setSubmissions: React.Dispatch<React.SetStateAction<any[]>>;
   setCodeProposals: React.Dispatch<React.SetStateAction<any[]>>;
+  loading?: boolean;
 }
 
 export const AgentAdminTabs = ({ 
@@ -22,7 +23,8 @@ export const AgentAdminTabs = ({
   progressHistory,
   userId,
   setSubmissions,
-  setCodeProposals
+  setCodeProposals,
+  loading = false
 }: AgentAdminTabsProps) => {
   const pendingSubmissionsCount = submissions.length;
   const pendingCodeProposalsCount = codeProposals.length;
@@ -60,6 +62,7 @@ export const AgentAdminTabs = ({
           submissions={submissions}
           onApproveSubmission={onApproveSubmission}
           onRejectSubmission={onRejectSubmission}
+          loading={loading}
         />
       </TabsContent>
 
@@ -68,11 +71,12 @@ export const AgentAdminTabs = ({
           proposals={codeProposals}
           onApproveProposal={onApproveCodeProposal}
           onRejectProposal={onRejectCodeProposal}
+          loading={loading}
         />
       </TabsContent>
       
       <TabsContent value="history">
-        <HistoryTab progressHistory={progressHistory} />
+        <HistoryTab progressHistory={progressHistory} loading={loading} />
       </TabsContent>
     </Tabs>
   );
