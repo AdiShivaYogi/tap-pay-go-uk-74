@@ -27,6 +27,7 @@ import UserProfile from "./pages/UserProfile";
 import BillingSettings from "./pages/BillingSettings";
 import NotificationSettings from "./pages/NotificationSettings";
 import Agents from "./pages/Agents";
+import AgentAdmin from "./pages/AgentAdmin"; // Added import for AgentAdmin
 
 function App() {
   return (
@@ -57,6 +58,7 @@ function App() {
       <Route path="/status" element={<Status />} />
       <Route path="/connect-stripe" element={<ConnectStripe />} />
       <Route path="/agents" element={<Agents />} />
+      <Route path="/agent-admin" element={<AgentAdmin />} /> {/* Added route for AgentAdmin */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

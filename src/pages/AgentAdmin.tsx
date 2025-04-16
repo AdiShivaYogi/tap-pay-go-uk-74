@@ -35,7 +35,7 @@ const AgentAdmin = () => {
       try {
         setLoading(true);
         
-        // Obține propunerile de taskuri în așteptare
+        // Using the extended Supabase client with properly typed tables
         const { data: submissionsData, error: submissionsError } = await supabase
           .from('agent_task_submissions')
           .select('*, roadmap_tasks(*)')
@@ -44,7 +44,7 @@ const AgentAdmin = () => {
           
         if (submissionsError) throw submissionsError;
         
-        // Obține istoricul progresului pentru taskuri
+        // Using the extended Supabase client with properly typed tables
         const { data: progressData, error: progressError } = await supabase
           .from('agent_task_progress')
           .select('*, roadmap_tasks(*)')

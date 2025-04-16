@@ -1,5 +1,5 @@
 
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Database } from './types';
 
 // Extinde tipurile Database pentru a include tabelele noi folosite de agenți
@@ -140,15 +140,16 @@ export interface ExtendedDatabase extends Database {
   }
 }
 
-// Client Supabase extins pentru a folosi noile tipuri
-export type ExtendedSupabaseClient = ReturnType<typeof createExtendedSupabaseClient>;
+// Define the extended client type properly to avoid circular reference
+export type ExtendedSupabaseClient = SupabaseClient<ExtendedDatabase>;
 
-// Funcție pentru crearea unui client Supabase extins
+// Import the existing Supabase client and re-export it with the extended types
+import { supabase } from './client';
+
+// Function to create a typed client
 export const createExtendedSupabaseClient = () => {
-  // Returnăm clientul supabase original, dar cu tipurile extinse
-  return supabase as unknown as ExtendedSupabaseClient;
+  return supabase as ExtendedSupabaseClient;
 };
 
-// Re-exportăm clientul Supabase existent pentru a-l folosi cu noile tipuri
-import { supabase } from './client';
+// Re-export the client with the extended types
 export { supabase };
