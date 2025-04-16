@@ -53,6 +53,7 @@ export interface ExtendedDatabase extends Database {
             columns: ['task_id'];
             referencedRelation: 'roadmap_tasks';
             referencedColumns: ['id'];
+            isOneToOne: false;
           }
         ];
       };
@@ -91,6 +92,7 @@ export interface ExtendedDatabase extends Database {
             columns: ['task_id'];
             referencedRelation: 'roadmap_tasks';
             referencedColumns: ['id'];
+            isOneToOne: false;
           }
         ];
       };
