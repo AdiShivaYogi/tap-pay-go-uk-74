@@ -4,7 +4,7 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+};
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -36,7 +36,7 @@ serve(async (req) => {
   } catch (err) {
     console.error('Eroare în check-deepseek-key:', err);
     return new Response(
-      JSON.stringify({ error: 'Eroare la verificarea cheii API', details: err.message }), 
+      JSON.stringify({ error: 'Eroare la verificarea cheii API', details: err instanceof Error ? err.message : 'Eroare necunoscută' }), 
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 500

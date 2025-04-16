@@ -16,27 +16,30 @@ export const useConversation = (agent: Agent, isListening: boolean) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [typingIndicator, setTypingIndicator] = useState(false);
   const [hasDeepseekKey, setHasDeepseekKey] = useState<boolean | null>(null);
+  const [isApiLoading, setIsApiLoading] = useState(false);
   
   // Verificăm dacă există o cheie API Deepseek configurată
   useEffect(() => {
     const checkDeepseekKey = async () => {
       try {
         // Încercăm să obținem o confirmare că există o cheie API configurată
-        // Fără a expune cheia propriu-zisă în frontend
+        setIsApiLoading(true);
         const { data, error } = await supabase.functions.invoke('check-deepseek-key', {
           body: {}
         });
         
         if (!error && data?.hasKey) {
           setHasDeepseekKey(true);
-          console.log('Cheie Deepseek API configurată corect.');
+          console.log('Cheie Deepseek API configurată corect:', data.keyInfo);
         } else {
           setHasDeepseekKey(false);
-          console.log('Nu există o cheie Deepseek API configurată.');
+          console.log('Nu există o cheie Deepseek API configurată sau a apărut o eroare:', error);
         }
       } catch (err) {
         console.error('Eroare la verificarea cheii Deepseek:', err);
         setHasDeepseekKey(false);
+      } finally {
+        setIsApiLoading(false);
       }
     };
     
@@ -114,6 +117,7 @@ export const useConversation = (agent: Agent, isListening: boolean) => {
     // Verificăm dacă avem o cheie API Deepseek configurată
     if (hasDeepseekKey === true) {
       try {
+        console.log('Generăm răspuns folosind Deepseek API');
         // Apelăm edge function pentru a genera un răspuns folosind Deepseek API
         const { data, error } = await supabase.functions.invoke('generate-agent-response', {
           body: { 
@@ -125,8 +129,11 @@ export const useConversation = (agent: Agent, isListening: boolean) => {
         });
         
         if (error) {
+          console.error('Eroare la apelul către generate-agent-response:', error);
           throw new Error(error.message);
         }
+        
+        console.log('Răspuns primit de la Deepseek API:', data);
         
         // Afișăm răspunsul generat
         setTimeout(() => {
@@ -139,7 +146,12 @@ export const useConversation = (agent: Agent, isListening: boolean) => {
           
           setTypingIndicator(false);
           setMessages(prev => [...prev, agentMessage]);
-        }, 1500);
+          
+          toast({
+            title: "Răspuns AI generat",
+            description: "Răspunsul a fost generat folosind Deepseek AI."
+          });
+        }, 1000);
       } catch (err) {
         console.error('Eroare la generarea răspunsului:', err);
         
@@ -167,6 +179,7 @@ export const useConversation = (agent: Agent, isListening: boolean) => {
       }
     } else {
       // Folosim răspunsuri demo dacă nu avem cheie Deepseek
+      console.log('Folosim răspunsuri predefinite (cheia API nu este configurată)');
       setTimeout(() => {
         const responses = DEMO_RESPONSES[agent.id] || ["Îmi pare rău, dar nu am un răspuns pentru această întrebare."];
         const randomResponse = responses[Math.floor(Math.random() * responses.length)];
@@ -180,6 +193,14 @@ export const useConversation = (agent: Agent, isListening: boolean) => {
         
         setTypingIndicator(false);
         setMessages(prev => [...prev, agentMessage]);
+        
+        if (hasDeepseekKey === false) {
+          toast({
+            variant: "warning",
+            title: "Mod demonstrativ",
+            description: "Folosim răspunsuri predefinite. Configurați cheia API pentru răspunsuri avansate."
+          });
+        }
       }, 2000);
     }
   };
@@ -188,6 +209,7 @@ export const useConversation = (agent: Agent, isListening: boolean) => {
     messages,
     typingIndicator,
     handleSendMessage,
-    hasDeepseekKey
+    hasDeepseekKey,
+    isApiLoading
   };
 };

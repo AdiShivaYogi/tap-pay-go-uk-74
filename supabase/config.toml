@@ -101,6 +101,9 @@ verify_jwt = true
 [functions.generate-agent-response]
 verify_jwt = true
 
+[functions.set-deepseek-key]
+verify_jwt = true
+
 [analytics]
 enabled = false
 # Configure one of the supported backends: `postgres`, `bigquery`.

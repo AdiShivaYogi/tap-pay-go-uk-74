@@ -42,6 +42,7 @@ serve(async (req) => {
     `;
 
     // Facem cererea către API-ul Deepseek
+    console.log('Se trimite cererea la Deepseek API...');
     const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -67,6 +68,7 @@ serve(async (req) => {
     }
 
     const data = await response.json();
+    console.log('Răspuns primit de la Deepseek API:', data);
     const generatedResponse = data.choices?.[0]?.message?.content || "Nu am putut genera un răspuns.";
 
     return new Response(
@@ -79,7 +81,10 @@ serve(async (req) => {
   } catch (err) {
     console.error('Eroare în generate-agent-response:', err);
     return new Response(
-      JSON.stringify({ error: 'Eroare la generarea răspunsului', details: err.message }), 
+      JSON.stringify({ 
+        error: 'Eroare la generarea răspunsului', 
+        details: err instanceof Error ? err.message : 'Eroare necunoscută' 
+      }), 
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 500

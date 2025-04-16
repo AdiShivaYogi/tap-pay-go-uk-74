@@ -14,64 +14,98 @@ serve(async (req) => {
   }
 
   try {
-    // Create Supabase client
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
+    // Obținem URL-ul Supabase și cheia de service role din variabilele de mediu
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
-    // Parse the request body
-    const { key } = await req.json();
-
-    // Validate the key is not empty
-    if (!key || key.trim() === '') {
-      return new Response(JSON.stringify({ error: 'API key cannot be empty' }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400
-      });
+    // Verificăm dacă avem informațiile necesare pentru a crea clientul Supabase
+    if (!supabaseUrl || !supabaseServiceRoleKey) {
+      console.error('Lipsesc variabilele de mediu SUPABASE_URL sau SUPABASE_SERVICE_ROLE_KEY');
+      return new Response(
+        JSON.stringify({ 
+          error: 'Configurație lipsă', 
+          details: 'Variabilele de mediu necesare nu sunt disponibile' 
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 500
+        }
+      );
     }
 
-    console.log('Attempting to save Deepseek API key...');
+    // Creăm clientul Supabase
+    const supabaseClient = createClient(supabaseUrl, supabaseServiceRoleKey);
+
+    // Parsăm corpul cererii pentru a obține cheia API
+    const requestData = await req.json();
+    const { key } = requestData;
+
+    // Validăm cheia API
+    if (!key || key.trim() === '') {
+      return new Response(
+        JSON.stringify({ error: 'Cheia API nu poate fi goală' }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 400
+        }
+      );
+    }
+
+    console.log('Se încearcă salvarea cheii API Deepseek...');
 
     try {
-      // Store the Deepseek API key as a secret
+      // Salvăm cheia API Deepseek ca secret
       const { error } = await supabaseClient.functions.setSecret('DEEPSEEK_API_KEY', key);
 
       if (error) {
-        console.error('Error setting Deepseek API key:', error);
-        return new Response(JSON.stringify({ 
-          error: 'Failed to save API key', 
-          details: error.message || 'Unknown error' 
-        }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 500
-        });
+        console.error('Eroare la setarea cheii API Deepseek:', error);
+        return new Response(
+          JSON.stringify({ 
+            error: 'Nu s-a putut salva cheia API', 
+            details: error.message || 'Eroare necunoscută' 
+          }),
+          {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            status: 500
+          }
+        );
       }
 
-      console.log('Deepseek API key saved successfully');
-      return new Response(JSON.stringify({ message: 'API key saved successfully' }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200
-      });
+      console.log('Cheia API Deepseek a fost salvată cu succes');
+      
+      // Răspundem cu succes
+      return new Response(
+        JSON.stringify({ success: true, message: 'Cheia API a fost salvată cu succes' }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200
+        }
+      );
     } catch (setSecretErr) {
-      console.error('Error in setSecret operation:', setSecretErr);
-      return new Response(JSON.stringify({ 
-        error: 'Exception occurred while saving API key', 
-        details: setSecretErr.message || 'Unknown error during setSecret' 
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500
-      });
+      console.error('Eroare în operațiunea setSecret:', setSecretErr);
+      return new Response(
+        JSON.stringify({ 
+          error: 'A apărut o excepție la salvarea cheii API', 
+          details: setSecretErr instanceof Error ? setSecretErr.message : 'Eroare necunoscută în timpul setSecret' 
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 500
+        }
+      );
     }
 
   } catch (err) {
-    console.error('Unexpected error:', err);
-    return new Response(JSON.stringify({ 
-      error: 'Internal server error', 
-      details: err.message || 'Unknown error' 
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 500
-    });
+    console.error('Eroare neașteptată:', err);
+    return new Response(
+      JSON.stringify({ 
+        error: 'Eroare internă de server', 
+        details: err instanceof Error ? err.message : 'Eroare necunoscută' 
+      }),
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 500
+      }
+    );
   }
 });
