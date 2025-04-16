@@ -3,6 +3,8 @@ import { useState } from "react";
 import { ResetPasswordForm, ResetFormValues } from "@/components/admin-auth/reset-password/ResetPasswordForm";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { RequestResetValues } from "@/components/admin-auth/reset-password/RequestResetForm";
+import { UpdatePasswordValues } from "@/components/admin-auth/reset-password/UpdatePasswordForm";
 
 interface ResetPasswordContainerProps {
   mode: "request" | "update";
@@ -18,7 +20,7 @@ export const ResetPasswordContainer = ({
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
   
-  const handleResetPassword = async ({ email }: { email: string }) => {
+  const handleResetPassword = async (values: RequestResetValues) => {
     try {
       setIsLoading(true);
       setErrorMessage(undefined);
@@ -28,7 +30,7 @@ export const ResetPasswordContainer = ({
       
       console.log(`Sending password reset email with redirect URL: ${currentUrl}/auth?reset=true`);
       
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      const { error } = await supabase.auth.resetPasswordForEmail(values.email, {
         redirectTo: `${currentUrl}/auth?reset=true`,
       });
 
@@ -54,7 +56,7 @@ export const ResetPasswordContainer = ({
     }
   };
 
-  const handleUpdatePassword = async ({ password }: { password: string, confirmPassword: string }) => {
+  const handleUpdatePassword = async (values: UpdatePasswordValues) => {
     try {
       setIsLoading(true);
       setErrorMessage(undefined);
@@ -66,7 +68,7 @@ export const ResetPasswordContainer = ({
       console.log("Updating password with access token");
       
       const { error } = await supabase.auth.updateUser({ 
-        password: password
+        password: values.password
       });
 
       if (error) {
@@ -96,9 +98,9 @@ export const ResetPasswordContainer = ({
 
   const handleSubmit = async (values: ResetFormValues) => {
     if ('email' in values) {
-      await handleResetPassword(values);
+      await handleResetPassword(values as RequestResetValues);
     } else {
-      await handleUpdatePassword(values);
+      await handleUpdatePassword(values as UpdatePasswordValues);
     }
   };
 
