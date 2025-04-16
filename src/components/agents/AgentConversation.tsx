@@ -14,7 +14,7 @@ interface Agent {
   description: string;
   icon: LucideIcon;
   color: string;
-  status: string;
+  status: "online" | "offline" | "busy";
 }
 
 interface Message {

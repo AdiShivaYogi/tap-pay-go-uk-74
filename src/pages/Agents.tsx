@@ -25,7 +25,7 @@ const Agents = () => {
       description: "Specialist în procesarea plăților și integrare Stripe",
       icon: CreditCard,
       color: "text-green-500",
-      status: "online"
+      status: "online" as const
     },
     {
       id: "support-agent",
@@ -33,7 +33,7 @@ const Agents = () => {
       description: "Agenți pentru suport tehnic și întrebări frecvente",
       icon: Headphones,
       color: "text-blue-500",
-      status: "online"
+      status: "online" as const
     },
     {
       id: "analytics-agent",
@@ -41,7 +41,7 @@ const Agents = () => {
       description: "Analist pentru interpretarea datelor și rapoartelor",
       icon: BarChart3,
       color: "text-purple-500",
-      status: "online"
+      status: "online" as const
     },
     {
       id: "security-agent",
@@ -49,7 +49,7 @@ const Agents = () => {
       description: "Specialist în securitate cibernetică și protecția datelor",
       icon: Shield,
       color: "text-red-500",
-      status: "online"
+      status: "online" as const
     },
     {
       id: "ai-assistant",
@@ -57,7 +57,7 @@ const Agents = () => {
       description: "Asistent general pentru diverse întrebări despre platformă",
       icon: Brain,
       color: "text-amber-500",
-      status: "online"
+      status: "online" as const
     }
   ];
 
