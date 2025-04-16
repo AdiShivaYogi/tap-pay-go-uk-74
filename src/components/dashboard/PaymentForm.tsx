@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
@@ -9,7 +8,7 @@ import { PaymentHeader } from "./payment/PaymentHeader";
 import { PaymentInputs } from "./payment/PaymentInputs";
 import { PaymentButton } from "./payment/PaymentButton";
 import { TapToPayDialog } from "./payment/TapToPayDialog";
-import { StyledCard } from "@/components/ui/card-variants";
+import { StyledCard } from "@/components/ui/cards";
 import { Nfc as NfcIcon } from "lucide-react";
 
 interface PaymentFormProps {

@@ -1,82 +1,52 @@
-
 import { useState } from "react";
 import { Layout } from "@/components/layout/layout";
+import { PageHeader } from "@/components/ui/layout/page-header";
+import { Section } from "@/components/ui/layout/section";
+import { Grid2Cols } from "@/components/ui/layout/grid";
 import { DateRangeSelector } from "@/components/reports/DateRangeSelector";
 import { ReportStats } from "@/components/reports/ReportStats";
 import { ReportCharts } from "@/components/reports/ReportCharts";
-import { TransactionsTable } from "@/components/transactions/TransactionsTable";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { useDateRange } from "@/hooks/use-date-range";
-import { Badge } from "@/components/ui/badge";
-import { FileSpreadsheet, RefreshCcw, LineChart } from "lucide-react";
-import { PageHeader } from "@/components/ui/page-header";
-import { SectionContainer } from "@/components/ui/section-container";
-import { StyledCard, StyledCardContent, StyledCardHeader, StyledCardTitle } from "@/components/ui/card-variants";
+import { StyledCard, StyledCardHeader, StyledCardTitle, StyledCardContent } from "@/components/ui/cards";
+import { FileBarChart } from "lucide-react";
 
 const Reports = () => {
-  const [period, setPeriod] = useState<"week" | "month" | "all">("week");
-  const dateRange = useDateRange(period);
-
-  const { data: transactions = [], isLoading } = useQuery({
-    queryKey: ['transactions', period],
-    queryFn: async () => {
-      let query = supabase
-        .from('transactions')
-        .select('*')
-        .order('created_at', { ascending: false });
-      
-      if (dateRange) {
-        query = query.gte('created_at', dateRange.from.toISOString())
-                    .lte('created_at', dateRange.to.toISOString());
-      }
-      
-      const { data, error } = await query;
-      if (error) throw error;
-      return data;
-    }
-  });
+  const { startDate, endDate, setStartDate, setEndDate } = useDateRange();
+  const [selectedRange, setSelectedRange] = useState<{ label: string; value: string } | null>(null);
 
   return (
     <Layout>
-      <SectionContainer>
+      <Section>
         <PageHeader
-          icon={LineChart}
-          title="Rapoarte Tranzacții"
-          description="Analiza detaliată și raportare avansată a tranzacțiilor"
-        >
-          <div className="flex items-center gap-2 text-muted-foreground">
-            {isLoading ? (
-              <RefreshCcw className="h-4 w-4 animate-spin" />
-            ) : (
-              <FileSpreadsheet className="h-4 w-4" />
-            )}
-            <span className="text-sm">
-              {transactions.length} tranzacții
-            </span>
-          </div>
-        </PageHeader>
+          icon={FileBarChart}
+          title="Rapoarte și Analitice"
+          description="Analizează datele și generează rapoarte personalizate"
+        />
 
-        <div className="space-y-8">
-          <DateRangeSelector period={period} onPeriodChange={setPeriod} />
-          
-          <ReportStats transactions={transactions} isLoading={isLoading} />
-          
-          <ReportCharts transactions={transactions} isLoading={isLoading} period={period} />
-
+        <Grid2Cols>
           <StyledCard>
             <StyledCardHeader>
-              <StyledCardTitle>Detalii Tranzacții</StyledCardTitle>
-              <p className="text-sm text-muted-foreground">
-                Lista completă a tranzacțiilor pentru perioada selectată
-              </p>
+              <StyledCardTitle>Selectează perioada</StyledCardTitle>
             </StyledCardHeader>
             <StyledCardContent>
-              <TransactionsTable transactions={transactions} />
+              <DateRangeSelector
+                startDate={startDate}
+                endDate={endDate}
+                setStartDate={setStartDate}
+                setEndDate={setEndDate}
+                selectedRange={selectedRange}
+                setSelectedRange={setSelectedRange}
+              />
             </StyledCardContent>
           </StyledCard>
-        </div>
-      </SectionContainer>
+
+          <ReportStats startDate={startDate} endDate={endDate} />
+        </Grid2Cols>
+
+        <Section variant="alt">
+          <ReportCharts startDate={startDate} endDate={endDate} />
+        </Section>
+      </Section>
     </Layout>
   );
 };

@@ -1,166 +1,109 @@
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
-import { Shield, CheckCircle2, AlertTriangle, RefreshCw, Lock, ServerCog } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
-import { MFASetupDialog } from "./MFASetupDialog";
-import { StyledCard } from "@/components/ui/card-variants";
+import { StyledCard } from "@/components/ui/cards";
+import { AlertTriangle, CheckCircle2, Shield } from "lucide-react";
 
 export const SecuritySettings = () => {
-  const { user } = useAuth();
-  const [isMFADialogOpen, setIsMFADialogOpen] = useState(false);
-  const [isMFAEnabled, setIsMFAEnabled] = useState(false);
-  const [lastSecurityScan, setLastSecurityScan] = useState<string | null>(null);
-  const [isScanning, setIsScanning] = useState(false);
-  const [vulnerabilitiesFound, setVulnerabilitiesFound] = useState<string[]>([]);
-  const [lastDependencyCheck, setLastDependencyCheck] = useState<string | null>(null);
+  const [isTwoFactorAuthEnabled, setIsTwoFactorAuthEnabled] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState(75);
+  const [isBiometricsEnabled, setIsBiometricsEnabled] = useState(true);
+  const [recoveryEmail, setRecoveryEmail] = useState("user@example.com");
+  const [isSaving, setIsSaving] = useState(false);
 
-  const runSecurityScan = () => {
-    setIsScanning(true);
-    setTimeout(() => {
-      setLastSecurityScan(new Date().toLocaleString());
-      const mockVulnerabilities: string[] = [];
-      setVulnerabilitiesFound(mockVulnerabilities);
-      
-      toast({
-        title: mockVulnerabilities.length ? "Vulnerabilități găsite" : "Scanare completă",
-        description: mockVulnerabilities.length 
-          ? `S-au găsit ${mockVulnerabilities.length} vulnerabilități.`
-          : "Nu au fost găsite vulnerabilități.",
-      });
-      setIsScanning(false);
-    }, 2000);
-  };
-
-  const checkDependencies = () => {
-    setLastDependencyCheck(new Date().toLocaleString());
+  const handleSaveSettings = async () => {
+    setIsSaving(true);
+    // Simulate saving settings
+    await new Promise((resolve) => setTimeout(resolve, 1500));
     toast({
-      title: "Verificare dependențe",
-      description: "Toate dependențele sunt la zi.",
+      title: "Setări salvate",
+      description: "Setările de securitate au fost actualizate cu succes.",
     });
-  };
-
-  const toggleMFA = () => {
-    if (!isMFAEnabled) {
-      setIsMFADialogOpen(true);
-    } else {
-      toast({
-        title: "MFA dezactivat",
-        description: "Autentificarea multi-factor a fost dezactivată.",
-      });
-      setIsMFAEnabled(false);
-    }
+    setIsSaving(false);
   };
 
   return (
-    <>
+    <StyledCard variant="default" className="p-6">
+      <h2 className="text-2xl font-semibold mb-4">Setări de securitate</h2>
+      
       <div className="space-y-6">
-        <StyledCard variant="gradient">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Shield className="h-5 w-5" />
-              Setări de Securitate Backend
-            </CardTitle>
-            <CardDescription>
-              Gestionați setările de securitate pentru backend și infrastructură
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="border rounded-lg p-4 bg-card">
-              <div className="flex justify-between items-start">
-                <div className="space-y-1">
-                  <h3 className="text-base font-medium flex items-center gap-2">
-                    <Lock className="h-4 w-4" />
-                    Autentificare Multi-Factor (MFA)
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {isMFAEnabled 
-                      ? "MFA este activat. Contul dvs. este protejat cu un nivel suplimentar de securitate."
-                      : "Adăugați un nivel suplimentar de securitate prin verificarea identității la fiecare autentificare."}
-                  </p>
-                </div>
-                <Button
-                  variant={isMFAEnabled ? "destructive" : "default"}
-                  onClick={toggleMFA}
-                >
-                  {isMFAEnabled ? "Dezactivează" : "Activează"}
-                </Button>
-              </div>
-              {isMFAEnabled && (
-                <div className="mt-4 flex items-center gap-2 text-sm text-green-600">
-                  <CheckCircle2 className="h-4 w-4" />
-                  MFA activat pe {user?.email}
-                </div>
-              )}
-            </div>
-            
-            <div className="border rounded-lg p-4 bg-card">
-              <div className="flex justify-between items-start">
-                <div className="space-y-1">
-                  <h3 className="text-base font-medium flex items-center gap-2">
-                    <ServerCog className="h-4 w-4" />
-                    Scanare de Securitate Backend
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    Verificați serverul și infrastructura pentru vulnerabilități.
-                  </p>
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={checkDependencies}
-                  >
-                    Verifică Dependențe
-                  </Button>
-                  <Button
-                    variant="default"
-                    onClick={runSecurityScan}
-                    disabled={isScanning}
-                  >
-                    {isScanning ? (
-                      <>
-                        <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                        Scanare...
-                      </>
-                    ) : (
-                      "Scanează Infrastructura"
-                    )}
-                  </Button>
-                </div>
-              </div>
-              {lastSecurityScan && (
-                <div className="mt-4 text-xs text-muted-foreground">
-                  Ultima scanare de securitate: {lastSecurityScan}
-                </div>
-              )}
-              {lastDependencyCheck && (
-                <div className="mt-2 text-xs text-muted-foreground">
-                  Ultima verificare a dependențelor: {lastDependencyCheck}
-                </div>
-              )}
-              {vulnerabilitiesFound.length > 0 && (
-                <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md">
-                  <h4 className="text-sm font-medium text-red-800">Vulnerabilități Detectate:</h4>
-                  <ul className="mt-2 space-y-1">
-                    {vulnerabilitiesFound.map((vuln, idx) => (
-                      <li key={idx} className="text-sm text-red-600">• {vuln}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </StyledCard>
+        {/* Two-Factor Authentication */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-medium">Autentificare cu doi factori</h3>
+            <p className="text-sm text-muted-foreground">
+              Adaugă un strat suplimentar de securitate contului tău.
+            </p>
+          </div>
+          <Switch 
+            checked={isTwoFactorAuthEnabled} 
+            onCheckedChange={setIsTwoFactorAuthEnabled} 
+          />
+        </div>
+        
+        {/* Password Strength */}
+        <div>
+          <h3 className="text-lg font-medium">Puterea parolei</h3>
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-muted-foreground">
+              Asigură-te că parola ta este suficient de puternică.
+            </p>
+            <Badge variant="secondary">{passwordStrength}%</Badge>
+          </div>
+          <Progress value={passwordStrength} className="mt-2" />
+        </div>
+        
+        {/* Biometrics Authentication */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-medium">Autentificare biometrică</h3>
+            <p className="text-sm text-muted-foreground">
+              Utilizează amprenta sau recunoașterea facială pentru autentificare.
+            </p>
+          </div>
+          <Switch 
+            checked={isBiometricsEnabled} 
+            onCheckedChange={setIsBiometricsEnabled} 
+          />
+        </div>
+        
+        {/* Recovery Email */}
+        <div>
+          <h3 className="text-lg font-medium">Email de recuperare</h3>
+          <p className="text-sm text-muted-foreground mb-2">
+            Adaugă un email de recuperare pentru a-ți putea recupera contul în caz de nevoie.
+          </p>
+          <Input 
+            type="email" 
+            placeholder="Email de recuperare" 
+            value={recoveryEmail} 
+            onChange={(e) => setRecoveryEmail(e.target.value)}
+          />
+        </div>
+        
+        {/* Security Tips */}
+        <div className="bg-muted/30 p-4 rounded-md border border-muted">
+          <h3 className="text-md font-medium mb-2 flex items-center gap-2">
+            <Shield className="h-4 w-4 text-primary" />
+            Sfaturi de securitate
+          </h3>
+          <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
+            <li>Nu partaja parola cu nimeni.</li>
+            <li>Activează autentificarea cu doi factori.</li>
+            <li>Verifică periodic activitatea contului tău.</li>
+            <li>Folosește o parolă unică pentru fiecare cont.</li>
+          </ul>
+        </div>
+        
+        {/* Save Button */}
+        <Button onClick={handleSaveSettings} disabled={isSaving} className="w-full">
+          {isSaving ? "Se salvează..." : "Salvează setările"}
+        </Button>
       </div>
-
-      {user && (
-        <MFASetupDialog
-          open={isMFADialogOpen}
-          onOpenChange={setIsMFADialogOpen}
-          userId={user.id}
-        />
-      )}
-    </>
+    </StyledCard>
   );
 };

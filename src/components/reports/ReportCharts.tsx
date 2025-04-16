@@ -1,70 +1,42 @@
-
-import { StyledCard, StyledCardHeader, StyledCardTitle, StyledCardContent } from "@/components/ui/styled-card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { TransactionsBarChart } from "@/components/transactions/TransactionsBarChart";
-import { TransactionsPieChart } from "@/components/transactions/TransactionsPieChart";
-import { prepareChartData, preparePieData } from "@/utils/chart-utils";
-import { Transaction } from "@/types/transactions";
-import { ChartBar, PieChart } from "lucide-react";
+import { useState } from "react";
+import { TransactionsBarChart, TransactionsPieChart } from "@/components/transactions";
+import { StyledCard } from "@/components/ui/cards";
 
 interface ReportChartsProps {
-  transactions: Transaction[];
-  isLoading: boolean;
-  period: "week" | "month" | "all";
+  dateRange: {
+    startDate: Date | null;
+    endDate: Date | null;
+  };
 }
 
-export const ReportCharts = ({ transactions, isLoading, period }: ReportChartsProps) => {
-  const chartData = prepareChartData(transactions);
-  const pieData = preparePieData(transactions);
+export const ReportCharts: React.FC<ReportChartsProps> = ({ dateRange }) => {
+  const [chartType, setChartType] = useState<'bar' | 'pie'>('bar');
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-      <StyledCard className="bg-gradient-to-br from-card to-blue-500/5 backdrop-blur-sm">
-        <StyledCardHeader className="flex flex-row items-center justify-between pb-2">
-          <div className="space-y-1">
-            <StyledCardTitle>Evoluția tranzacțiilor</StyledCardTitle>
-            <p className="text-sm text-muted-foreground">
-              {period === "week" ? "Ultimele 7 zile" : 
-               period === "month" ? "Luna curentă" : 
-               "Toate tranzacțiile"}
-            </p>
+    <div className="space-y-6">
+      <StyledCard className="p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold">Volumul tranzacțiilor</h3>
+          <div className="space-x-2">
+            <button
+              className={`px-3 py-1 rounded-md text-sm ${chartType === 'bar' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground'}`}
+              onClick={() => setChartType('bar')}
+            >
+              Bar chart
+            </button>
+            <button
+              className={`px-3 py-1 rounded-md text-sm ${chartType === 'pie' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground'}`}
+              onClick={() => setChartType('pie')}
+            >
+              Pie chart
+            </button>
           </div>
-          <ChartBar className="h-5 w-5 text-muted-foreground" />
-        </StyledCardHeader>
-        <StyledCardContent>
-          {isLoading ? (
-            <div className="h-[300px] flex items-center justify-center">
-              <Skeleton className="h-full w-full" />
-            </div>
-          ) : (
-            <div className="h-[300px]">
-              <TransactionsBarChart data={chartData} />
-            </div>
-          )}
-        </StyledCardContent>
-      </StyledCard>
-
-      <StyledCard className="bg-gradient-to-br from-card to-purple-500/5 backdrop-blur-sm">
-        <StyledCardHeader className="flex flex-row items-center justify-between pb-2">
-          <div className="space-y-1">
-            <StyledCardTitle>Distribuția statusurilor</StyledCardTitle>
-            <p className="text-sm text-muted-foreground">
-              Vizualizarea tranzacțiilor după status
-            </p>
-          </div>
-          <PieChart className="h-5 w-5 text-muted-foreground" />
-        </StyledCardHeader>
-        <StyledCardContent>
-          {isLoading ? (
-            <div className="h-[300px] flex items-center justify-center">
-              <Skeleton className="h-full w-full" />
-            </div>
-          ) : (
-            <div className="h-[300px]">
-              <TransactionsPieChart data={pieData} />
-            </div>
-          )}
-        </StyledCardContent>
+        </div>
+        {chartType === 'bar' ? (
+          <TransactionsBarChart dateRange={dateRange} />
+        ) : (
+          <TransactionsPieChart dateRange={dateRange} />
+        )}
       </StyledCard>
     </div>
   );

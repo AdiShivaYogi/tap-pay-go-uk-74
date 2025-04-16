@@ -1,73 +1,84 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Progress } from "@/components/ui/progress";
+import { StyledCard } from "@/components/ui/cards";
+import { ChevronRight, Download, FileText } from "lucide-react";
+import { mvpRoadmapText } from "../data/mvp-roadmap";
+import { StatusBadges } from "./StatusBadges";
 
-import { useState } from 'react';
-import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { FileText, ChevronDown, ChevronUp, CheckIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { mvpRoadmapData, RoadmapSection } from '../data/mvp-roadmap';
-import { StyledCard } from "@/components/ui/styled-card";
+interface Task {
+  id: number;
+  title: string;
+  description: string;
+  status: 'planned' | 'inProgress' | 'completed';
+  progress: number;
+}
 
 export const MVPRoadmap = () => {
-  const [expandedSections, setExpandedSections] = useState<{ [key: number]: boolean }>(
-    mvpRoadmapData.reduce((acc, _, index) => ({ ...acc, [index]: false }), {})
-  );
+  const [expanded, setExpanded] = useState(false);
 
-  const toggleSection = (index: number) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [index]: !prev[index]
-    }));
-  };
-
-  const renderSectionItems = (section: RoadmapSection) => {
-    return section.items.map((item, itemIndex) => (
-      <div 
-        key={itemIndex} 
-        className="flex items-start gap-2 my-1"
-      >
-        <span className={cn(
-          "mt-1.5 w-1.5 h-1.5 rounded-full",
-          section.completed ? "bg-green-500" : "bg-primary/50"
-        )} />
-        <span>{item}</span>
-        {section.completed && <CheckIcon className="ml-2 h-4 w-4 text-green-500" />}
-      </div>
-    ));
+  const toggleExpanded = () => {
+    setExpanded(!expanded);
   };
 
   return (
-    <StyledCard>
-      {mvpRoadmapData.map((section, index) => (
-        <div key={index}>
-          <CardHeader 
-            className="flex flex-row items-center justify-between cursor-pointer"
-            onClick={() => toggleSection(index)}
-          >
-            <CardTitle className="text-lg font-medium flex items-center gap-2">
-              <FileText className="h-5 w-5 text-primary" />
-              <span>{section.title}</span>
-            </CardTitle>
-            {expandedSections[index] ? (
-              <ChevronUp className="h-5 w-5 text-muted-foreground" />
-            ) : (
-              <ChevronDown className="h-5 w-5 text-muted-foreground" />
-            )}
-          </CardHeader>
-          
-          <CardContent 
-            className={cn(
-              "transition-all duration-300 overflow-hidden",
-              expandedSections[index] ? "max-h-[600px]" : "max-h-0"
-            )}
-          >
-            <ScrollArea className="h-[300px] w-full pr-4">
-              <div className="prose prose-sm dark:prose-invert">
-                {renderSectionItems(section)}
-              </div>
-            </ScrollArea>
-          </CardContent>
+    <StyledCard className="border-primary/10">
+      <div className="p-6 space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <FileText className="h-5 w-5 text-primary" />
+            <h2 className="text-lg font-semibold">Roadmap MVP</h2>
+          </div>
+          <Button variant="secondary" size="sm">
+            <Download className="h-4 w-4 mr-2" />
+            Descarcă PDF
+          </Button>
         </div>
-      ))}
+
+        <Separator />
+
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-muted-foreground">Progres general</p>
+            <p className="text-sm font-medium">75%</p>
+          </div>
+          <Progress value={75} className="h-2" />
+        </div>
+
+        <Separator />
+
+        <div className="space-y-4">
+          {mvpRoadmapText.slice(0, expanded ? mvpRoadmapText.length : 3).map((item, index) => (
+            <div key={index} className="border rounded-md p-4">
+              <div className="flex items-start justify-between">
+                <div className="space-y-1">
+                  <h3 className="text-md font-semibold">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                </div>
+                <StatusBadges status={item.status} />
+              </div>
+              <div className="mt-3">
+                <Progress value={item.progress} className="h-2" />
+              </div>
+            </div>
+          ))}
+
+          {mvpRoadmapText.length > 3 && (
+            <Button variant="link" className="w-full justify-start" onClick={toggleExpanded}>
+              {expanded ? (
+                <>
+                  Arată mai puțin <ChevronRight className="h-4 w-4 ml-1 rotate-180" />
+                </>
+              ) : (
+                <>
+                  Arată tot <ChevronRight className="h-4 w-4 ml-1" />
+                </>
+              )}
+            </Button>
+          )}
+        </div>
+      </div>
     </StyledCard>
   );
 };

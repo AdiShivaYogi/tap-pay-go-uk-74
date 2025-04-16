@@ -1,6 +1,5 @@
-
 import { LucideIcon } from "lucide-react";
-import { StyledCard } from "./card-variants";
+import { StyledCard } from "@/components/ui/cards";
 
 interface StatsCardProps {
   title: string;

@@ -1,79 +1,56 @@
-
-import { roadmapItems } from "../data/roadmap-data";
+import { useMemo } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Shield, BarChart2, Server } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { StyledCard, StyledCardContent } from "@/components/ui/styled-card";
+import { useRoadmapProgress } from "../hooks/useRoadmapProgress";
+import { StyledCard } from "@/components/ui/cards";
 
-export const RoadmapProgress = () => {
-  const totalItems = roadmapItems.length;
-  const completedItems = roadmapItems.filter(item => item.status === "completed").length;
-  const completionPercentage = Math.round((completedItems / totalItems) * 100);
+interface RoadmapProgressProps {
+  categoryId: string;
+}
 
-  const stats = [
-    {
-      label: "Securitate",
-      icon: Shield,
-      value: roadmapItems.filter(item => 
-        item.category === "security" && item.status === "completed"
-      ).length,
-      total: roadmapItems.filter(item => item.category === "security").length,
-      gradient: "from-green-500/5 to-green-500/10",
-      progressColor: "bg-green-600"
-    },
-    {
-      label: "DevOps",
-      icon: Server,
-      value: roadmapItems.filter(item => 
-        item.category === "devops" && item.status === "completed"
-      ).length,
-      total: roadmapItems.filter(item => item.category === "devops").length,
-      gradient: "from-amber-500/5 to-amber-500/10",
-      progressColor: "bg-amber-600"
-    },
-    {
-      label: "Total Progress",
-      icon: BarChart2,
-      value: completedItems,
-      total: totalItems,
-      gradient: "from-blue-500/5 to-blue-500/10",
-      progressColor: "bg-blue-600"
-    }
-  ];
+export const RoadmapProgress: React.FC<RoadmapProgressProps> = ({ categoryId }) => {
+  const {
+    totalTasks,
+    completedTasks,
+    completionPercentage,
+    difficultySum,
+    estimatedTimeSum,
+  } = useRoadmapProgress(categoryId);
+
+  const difficultyLabel = useMemo(() => {
+    if (difficultySum <= 5) return "Ușor";
+    if (difficultySum <= 10) return "Mediu";
+    return "Avansat";
+  }, [difficultySum]);
+
+  const timeEstimationLabel = useMemo(() => {
+    if (estimatedTimeSum <= 4) return "Scurt (1-4 ore)";
+    if (estimatedTimeSum <= 12) return "Mediu (4-12 ore)";
+    return "Lung (peste 12 ore)";
+  }, [estimatedTimeSum]);
 
   return (
-    <div className="grid gap-4 md:grid-cols-3">
-      {stats.map((stat, idx) => (
-        <StyledCard 
-          key={idx}
-          className={cn(
-            "bg-gradient-to-br backdrop-blur-sm",
-            stat.gradient
-          )}
-        >
-          <StyledCardContent className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <stat.icon className="h-5 w-5 text-muted-foreground" />
-                <h3 className="font-medium">{stat.label}</h3>
-              </div>
-              <span className="text-2xl font-bold">
-                {Math.round((stat.value / stat.total) * 100)}%
-              </span>
-            </div>
-            
-            <Progress 
-              value={(stat.value / stat.total) * 100} 
-              className={cn("h-2", stat.progressColor)}
-            />
-            
-            <div className="flex justify-between items-center text-sm text-muted-foreground">
-              <span>Completat</span>
-              <span>{stat.value} din {stat.total}</span>
-            </div>
-          </StyledCardContent>
-        </StyledCard>
-      ))}
-    </div>
+    <StyledCard className="border-primary/10">
+      <div className="p-4 space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold">Progres Categorie</h3>
+          <Badge variant="secondary">{completionPercentage}% finalizat</Badge>
+        </div>
+        <Progress value={completionPercentage} className="h-2" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <p className="text-sm text-muted-foreground">Dificultate</p>
+            <Badge>{difficultyLabel}</Badge>
+          </div>
+          <div>
+            <p className="text-sm text-muted-foreground">Estimare timp</p>
+            <Badge>{timeEstimationLabel}</Badge>
+          </div>
+        </div>
+        <div className="text-sm text-muted-foreground">
+          {completedTasks} / {totalTasks} sarcini finalizate
+        </div>
+      </div>
+    </StyledCard>
   );
 };

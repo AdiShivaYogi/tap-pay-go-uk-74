@@ -1,11 +1,10 @@
-
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { StyledCard } from "@/components/ui/card-variants";
+import { StyledCard } from "@/components/ui/cards";
 
 export const StripeFAQ = () => {
   return (

@@ -3,7 +3,7 @@ import { Layout } from "@/components/layout/layout";
 import { CreditCard } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { SectionContainer } from "@/components/ui/section-container";
-import { StyledCard } from "@/components/ui/styled-card";
+import { StyledCard } from "@/components/ui/cards";
 import { OnboardingSteps } from "./OnboardingSteps";
 import { OnboardingSecurityInfo } from "./OnboardingSecurityInfo";
 import { UKComplianceAlert } from "./UKComplianceAlert";

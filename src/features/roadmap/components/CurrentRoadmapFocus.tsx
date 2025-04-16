@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Flame } from "lucide-react";
 import { 
@@ -6,7 +5,7 @@ import {
   StyledCardHeader, 
   StyledCardTitle, 
   StyledCardContent 
-} from "@/components/ui/styled-card";
+} from "@/components/ui/cards";
 import { RecentAchievements } from "./focus/RecentAchievements";
 import { CurrentTasks } from "./focus/CurrentTasks";
 import { UpcomingPriorities } from "./focus/UpcomingPriorities";

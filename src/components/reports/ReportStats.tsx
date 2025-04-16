@@ -1,80 +1,102 @@
-
-import { Skeleton } from "@/components/ui/skeleton";
-import { Transaction } from "@/types/transactions";
-import { ArrowDownCircle, ArrowUpCircle, CircleDollarSign, PercentCircle } from "lucide-react";
-import { StyledCard, StyledCardContent } from "@/components/ui/styled-card";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { StyledCard } from "@/components/ui/cards";
+import { ArrowUpRight, ArrowDownRight, Activity } from "lucide-react";
 
 interface ReportStatsProps {
-  transactions: Transaction[];
-  isLoading: boolean;
+  totalRevenue: number;
+  newCustomers: number;
+  averageOrderValue: number;
+  transactionSuccessRate: number;
+  dateRange: {
+    startDate: Date | null;
+    endDate: Date | null;
+  };
 }
 
-export const ReportStats = ({ transactions, isLoading }: ReportStatsProps) => {
-  const totalAmount = transactions.reduce((sum, t) => sum + t.amount, 0);
-  const successfulTransactions = transactions.filter(t => t.status === 'completed');
-  const totalSuccessful = successfulTransactions.reduce((sum, t) => sum + t.amount, 0);
-  const successRate = transactions.length ? (successfulTransactions.length / transactions.length) * 100 : 0;
+export const ReportStats = ({
+  totalRevenue,
+  newCustomers,
+  averageOrderValue,
+  transactionSuccessRate,
+  dateRange,
+}: ReportStatsProps) => {
+  const [revenueChange, setRevenueChange] = useState<number>(0);
+  const [customerChange, setCustomerChange] = useState<number>(0);
 
-  const stats = [
-    {
-      label: "Total tranzacții",
-      value: transactions.length,
-      icon: CircleDollarSign,
-      gradient: "from-blue-500/5 to-blue-500/10",
-      color: "text-blue-500"
-    },
-    {
-      label: "Valoare totală",
-      value: `£${totalAmount.toFixed(2)}`,
-      icon: ArrowUpCircle,
-      gradient: "from-green-500/5 to-green-500/10",
-      color: "text-green-500"
-    },
-    {
-      label: "Tranzacții reușite",
-      value: `£${totalSuccessful.toFixed(2)}`,
-      icon: ArrowDownCircle,
-      gradient: "from-purple-500/5 to-purple-500/10",
-      color: "text-purple-500"
-    },
-    {
-      label: "Rata de succes",
-      value: `${successRate.toFixed(1)}%`,
-      icon: PercentCircle,
-      gradient: "from-amber-500/5 to-amber-500/10",
-      color: "text-amber-500"
-    }
-  ];
+  useEffect(() => {
+    // Simulate calculating the change from the previous period
+    // In a real application, you would fetch this data from your backend
+    setRevenueChange(Math.random() * 20 - 10); // Random change between -10% and +10%
+    setCustomerChange(Math.random() * 15 - 7.5); // Random change between -7.5% and +7.5%
+  }, [dateRange]);
+
+  const getChangeBadge = (change: number) => {
+    const isPositive = change > 0;
+    const changeText = `${isPositive ? "+" : ""}${change.toFixed(1)}%`;
+    const badgeVariant = isPositive ? "default" : "destructive";
+    const Icon = isPositive ? ArrowUpRight : ArrowDownRight;
+
+    return (
+      <Badge variant={badgeVariant}>
+        <Icon className="mr-1 h-3 w-3" />
+        <span>{changeText}</span>
+      </Badge>
+    );
+  };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {stats.map((stat, idx) => {
-        const Icon = stat.icon;
-        return (
-          <StyledCard 
-            key={idx}
-            className={`bg-gradient-to-br backdrop-blur-sm ${stat.gradient}`}
-          >
-            <StyledCardContent className="pt-6">
-              <div className="absolute right-4 top-4 opacity-20">
-                <Icon className={`h-8 w-8 ${stat.color}`} />
-              </div>
-              <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">
-                  {stat.label}
-                </p>
-                {isLoading ? (
-                  <Skeleton className="h-8 w-20" />
-                ) : (
-                  <p className={`text-2xl font-bold ${stat.color}`}>
-                    {stat.value}
-                  </p>
-                )}
-              </div>
-            </StyledCardContent>
-          </StyledCard>
-        );
-      })}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <StyledCard>
+        <div className="flex items-center justify-between space-x-2">
+          <div className="space-y-1">
+            <h3 className="text-sm font-medium">Total Revenue</h3>
+            <p className="text-2xl font-semibold">£{totalRevenue.toFixed(2)}</p>
+          </div>
+          {getChangeBadge(revenueChange)}
+          <Activity className="h-4 w-4 text-muted-foreground" />
+        </div>
+      </StyledCard>
+
+      <StyledCard>
+        <div className="flex items-center justify-between space-x-2">
+          <div className="space-y-1">
+            <h3 className="text-sm font-medium">New Customers</h3>
+            <p className="text-2xl font-semibold">{newCustomers}</p>
+          </div>
+          {getChangeBadge(customerChange)}
+          <Activity className="h-4 w-4 text-muted-foreground" />
+        </div>
+      </StyledCard>
+
+      <StyledCard>
+        <div className="flex items-center justify-between space-x-2">
+          <div className="space-y-1">
+            <h3 className="text-sm font-medium">Avg. Order Value</h3>
+            <p className="text-2xl font-semibold">£{averageOrderValue.toFixed(2)}</p>
+          </div>
+          <Badge variant="outline">
+            <ArrowUpRight className="mr-1 h-3 w-3" />
+            <span>+12%</span>
+          </Badge>
+          <Activity className="h-4 w-4 text-muted-foreground" />
+        </div>
+      </StyledCard>
+
+      <StyledCard>
+        <div className="flex items-center justify-between space-x-2">
+          <div className="space-y-1">
+            <h3 className="text-sm font-medium">Transaction Success Rate</h3>
+            <p className="text-2xl font-semibold">{transactionSuccessRate.toFixed(1)}%</p>
+          </div>
+          <Badge variant="outline">
+            <ArrowDownRight className="mr-1 h-3 w-3" />
+            <span>-4%</span>
+          </Badge>
+          <Activity className="h-4 w-4 text-muted-foreground" />
+        </div>
+      </StyledCard>
     </div>
   );
 };

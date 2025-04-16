@@ -1,140 +1,106 @@
-
 import { Layout } from "@/components/layout/layout";
-import { BarChart2, PieChart, RefreshCcw } from "lucide-react";
-import { useDeviceCompatibility } from "@/hooks/use-device-compatibility";
-import { PageHeader } from "@/components/ui/page-header";
-import { SectionContainer } from "@/components/ui/section-container";
-import { StyledCard } from "@/components/ui/card-variants";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { ReportStats } from "@/components/reports/ReportStats";
-import { ReportCharts } from "@/components/reports/ReportCharts";
-import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useState } from "react";
+import { PageHeader } from "@/components/ui/layout/page-header";
+import { Section } from "@/components/ui/layout/section";
+import { Grid2Cols, Grid3Cols } from "@/components/ui/layout/grid";
+import { StyledCard } from "@/components/ui/cards";
+import { BarChart2, TrendingUp, PieChart, Calendar, Filter } from "lucide-react";
 
 const Statistics = () => {
-  const [period, setPeriod] = useState<"week" | "month" | "all">("month");
-  const deviceCompatibility = useDeviceCompatibility();
-  
-  const { data: transactions = [], isLoading, refetch } = useQuery({
-    queryKey: ['transactions', period],
-    queryFn: async () => {
-      let query = supabase
-        .from('transactions')
-        .select('*')
-        .order('created_at', { ascending: false });
-      
-      // Filtrare după perioadă
-      const now = new Date();
-      if (period === "week") {
-        const weekAgo = new Date(now);
-        weekAgo.setDate(now.getDate() - 7);
-        query = query.gte('created_at', weekAgo.toISOString());
-      } else if (period === "month") {
-        const monthAgo = new Date(now);
-        monthAgo.setMonth(now.getMonth() - 1);
-        query = query.gte('created_at', monthAgo.toISOString());
-      }
-      
-      const { data, error } = await query;
-      if (error) throw error;
-      return data;
-    }
-  });
-
   return (
     <Layout>
-      <SectionContainer>
+      <Section variant="default">
         <PageHeader
           icon={BarChart2}
-          title="Statistici"
-          description="Analizează tendințele plăților și performanța tranzacțiilor"
+          title="Statistici și Analize"
+          description="Monitorizează performanța afacerii tale cu ajutorul statisticilor detaliate"
         />
         
-        <div className="space-y-6">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div className="flex items-center gap-2">
-              <h2 className="text-xl font-semibold">Privire de Ansamblu</h2>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => refetch()}
-                className="h-8 w-8"
-              >
-                <RefreshCcw className="h-4 w-4" />
-              </Button>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">Perioadă:</span>
-              <Select value={period} onValueChange={(value: "week" | "month" | "all") => setPeriod(value)}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Selectează perioada" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="week">Ultima săptămână</SelectItem>
-                  <SelectItem value="month">Ultima lună</SelectItem>
-                  <SelectItem value="all">Tot istoricul</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          
-          <ReportStats transactions={transactions} isLoading={isLoading} />
-          
-          <ReportCharts transactions={transactions} isLoading={isLoading} period={period} />
-          
-          <StyledCard className="border-primary/10">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold flex items-center gap-2">
-                  <PieChart className="h-5 w-5 text-primary" />
-                  <span>Analiza Plăților</span>
-                </h2>
+        <Grid2Cols>
+          <StyledCard variant="default">
+            <div className="p-6 space-y-2">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-medium text-muted-foreground">Venituri Totale</h3>
+                <TrendingUp className="h-5 w-5 text-green-500" />
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <h3 className="font-medium">Metode de Plată Populare</h3>
-                  <ul className="space-y-2">
-                    <li className="flex justify-between">
-                      <span className="text-muted-foreground">Visa</span>
-                      <span className="font-medium">73%</span>
-                    </li>
-                    <li className="flex justify-between">
-                      <span className="text-muted-foreground">MasterCard</span>
-                      <span className="font-medium">24%</span>
-                    </li>
-                    <li className="flex justify-between">
-                      <span className="text-muted-foreground">Alte carduri</span>
-                      <span className="font-medium">3%</span>
-                    </li>
-                  </ul>
-                </div>
-                
-                <div className="space-y-2">
-                  <h3 className="font-medium">Ore de Vârf pentru Plăți</h3>
-                  <ul className="space-y-2">
-                    <li className="flex justify-between">
-                      <span className="text-muted-foreground">Dimineață (8-12)</span>
-                      <span className="font-medium">32%</span>
-                    </li>
-                    <li className="flex justify-between">
-                      <span className="text-muted-foreground">După-amiază (12-17)</span>
-                      <span className="font-medium">45%</span>
-                    </li>
-                    <li className="flex justify-between">
-                      <span className="text-muted-foreground">Seara (17-22)</span>
-                      <span className="font-medium">23%</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
+              <div className="text-2xl font-bold">£12,500</div>
+              <p className="text-xs text-muted-foreground">
+                +15% față de luna trecută
+              </p>
             </div>
           </StyledCard>
-        </div>
-      </SectionContainer>
+          
+          <StyledCard variant="default">
+            <div className="p-6 space-y-2">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-medium text-muted-foreground">Număr de Tranzacții</h3>
+                <Calendar className="h-5 w-5 text-blue-500" />
+              </div>
+              <div className="text-2xl font-bold">320</div>
+              <p className="text-xs text-muted-foreground">
+                +8% față de luna trecută
+              </p>
+            </div>
+          </StyledCard>
+        </Grid2Cols>
+        
+        <Section variant="alt">
+          <Grid3Cols>
+            <StyledCard variant="default">
+              <div className="p-6 space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground">Top Categorie Produse</h3>
+                <div className="text-xl font-bold">Îmbrăcăminte</div>
+                <p className="text-xs text-muted-foreground">
+                  Vânzări: £4,500
+                </p>
+              </div>
+            </StyledCard>
+            
+            <StyledCard variant="default">
+              <div className="p-6 space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground">Metodă de Plată Preferată</h3>
+                <div className="text-xl font-bold">Card Bancar</div>
+                <p className="text-xs text-muted-foreground">
+                  75% din tranzacții
+                </p>
+              </div>
+            </StyledCard>
+            
+            <StyledCard variant="default">
+              <div className="p-6 space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground">Locație Principală Clienți</h3>
+                <div className="text-xl font-bold">Londra</div>
+                <p className="text-xs text-muted-foreground">
+                  40% din clienți
+                </p>
+              </div>
+            </StyledCard>
+          </Grid3Cols>
+        </Section>
+        
+        <Section>
+          <Grid2Cols>
+            <StyledCard variant="default">
+              <div className="p-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold">Distribuția Vânzărilor</h3>
+                  <Filter className="h-4 w-4 text-muted-foreground" />
+                </div>
+                <PieChart className="h-48 w-full" />
+              </div>
+            </StyledCard>
+            
+            <StyledCard variant="default">
+              <div className="p-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold">Evoluția Vânzărilor Lunare</h3>
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                </div>
+                <BarChart2 className="h-48 w-full" />
+              </div>
+            </StyledCard>
+          </Grid2Cols>
+        </Section>
+      </Section>
     </Layout>
   );
 };

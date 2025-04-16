@@ -1,6 +1,5 @@
-
 import React from "react";
-import { StyledCard } from "@/components/ui/styled-card";
+import { StyledCard } from "@/components/ui/cards";
 import { Shield, Check } from "lucide-react";
 
 export const OnboardingSecurityInfo: React.FC = () => {

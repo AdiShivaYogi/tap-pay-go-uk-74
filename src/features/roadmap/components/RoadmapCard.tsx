@@ -1,85 +1,80 @@
-
-import { RoadmapItem } from "../types";
-import { getStatusIcon, getStatusBadge, getPriorityBadge } from "./StatusBadges";
-import { RoadmapIcon } from "./RoadmapIcon";
-import { TimeEstimationBadge } from "./TimeEstimationBadge";
-import { AlertTriangle } from "lucide-react";
+import React from "react";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { StyledCard, StyledCardContent, StyledCardHeader, StyledCardTitle } from "@/components/ui/styled-card";
+import { TimeEstimationBadge } from "./TimeEstimationBadge";
+import { calculateTaskDifficulty } from "../hooks/useRoadmapProgress";
+import { 
+  StyledCard, 
+  StyledCardHeader, 
+  StyledCardContent, 
+  StyledCardFooter,
+  StyledCardTitle,
+  StyledCardDescription
+} from "@/components/ui/cards";
+import { RoadmapIcon } from "./RoadmapIcon";
 
 interface RoadmapCardProps {
   item: RoadmapItem;
+  isExpanded: boolean;
+  toggleExpand: () => void;
 }
 
-export const RoadmapCard = ({ item }: RoadmapCardProps) => {
-  const isHighPriority = item.priority === "high";
-  const isCompleted = item.status === "completed";
+export interface RoadmapItem {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  status: "planned" | "in_progress" | "completed";
+  difficulty: "easy" | "medium" | "hard";
+  time_estimation: "days" | "weeks" | "months";
+  progress: number;
+}
 
-  const getCategoryColor = (category?: string) => {
-    switch (category) {
-      case "security": return "from-green-500/5 to-green-500/10";
-      case "infrastructure": return "from-purple-500/5 to-purple-500/10";
-      case "devops": return "from-amber-500/5 to-amber-500/10";
-      case "product": return "from-blue-500/5 to-blue-500/10";
-      default: return "from-gray-500/5 to-gray-500/10";
-    }
-  };
+export const RoadmapCard: React.FC<RoadmapCardProps> = ({ item, isExpanded, toggleExpand }) => {
+  const difficultyColor = calculateTaskDifficulty(item.difficulty);
 
   return (
-    <StyledCard
-      className={cn(
-        "bg-gradient-to-br backdrop-blur-sm",
-        getCategoryColor(item.category),
-        isHighPriority && !isCompleted && "ring-1 ring-primary/20",
-        isCompleted && "opacity-95"
-      )}
-    >
-      <StyledCardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-        <div className="space-y-2">
-          {item.iconType && (
-            <span className="inline-flex p-2 rounded-lg bg-background/80 backdrop-blur-sm">
-              <RoadmapIcon type={item.iconType} className="h-5 w-5" color={item.iconColor || "text-primary"} />
-            </span>
-          )}
-          <StyledCardTitle className="text-lg font-bold flex items-center gap-2 mt-2">
-            {item.title}
-            {isHighPriority && !isCompleted && (
-              <AlertTriangle className="h-4 w-4 text-amber-500" />
-            )}
-          </StyledCardTitle>
-        </div>
-        {getStatusIcon(item.status)}
+    <StyledCard className="border-primary/10">
+      <StyledCardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <StyledCardTitle className="text-sm font-medium flex items-center gap-2">
+          <RoadmapIcon category={item.category} />
+          {item.title}
+        </StyledCardTitle>
+        <RoadmapCardActions item={item} isExpanded={isExpanded} toggleExpand={toggleExpand} />
       </StyledCardHeader>
-      
-      <StyledCardContent className="space-y-3">
-        <p className="text-sm text-muted-foreground">
-          {item.description}
-        </p>
-
-        <div className="flex flex-wrap items-center gap-2">
-          {getStatusBadge(item.status)}
-          {getPriorityBadge(item.priority)}
-        </div>
-
-        {item.details && (
-          <ul className="space-y-1">
-            {item.details.map((detail, idx) => (
-              <li key={idx} className="flex items-start gap-2 text-sm">
-                <span className={cn(
-                  "mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0",
-                  isHighPriority ? "bg-primary" : "bg-primary/20"
-                )} />
-                <span className="text-muted-foreground">{detail}</span>
-              </li>
-            ))}
-          </ul>
+      <StyledCardContent>
+        {isExpanded && (
+          <div className="space-y-4">
+            <StyledCardDescription>{item.description}</StyledCardDescription>
+            <Progress value={item.progress} className="h-2" />
+            <div className="flex items-center justify-between">
+              <Badge variant="outline" className={cn("capitalize", difficultyColor)}>
+                {item.difficulty}
+              </Badge>
+              <TimeEstimationBadge timeEstimation={item.time_estimation} />
+            </div>
+          </div>
         )}
-
-        <TimeEstimationBadge 
-          timeEstimate={item.timeEstimate} 
-          status={item.status}
-        />
       </StyledCardContent>
+      <StyledCardFooter className="text-xs text-muted-foreground">{item.category}</StyledCardFooter>
     </StyledCard>
+  );
+};
+
+interface RoadmapCardActionsProps {
+  item: RoadmapItem;
+  isExpanded: boolean;
+  toggleExpand: () => void;
+}
+
+const RoadmapCardActions: React.FC<RoadmapCardActionsProps> = ({ item, isExpanded, toggleExpand }) => {
+  return (
+    <button onClick={toggleExpand}>
+      <Badge variant="secondary" className="gap-2">
+        {item.status}
+        {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+      </Badge>
+    </button>
   );
 };

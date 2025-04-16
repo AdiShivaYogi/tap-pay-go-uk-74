@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { StyledCard } from "@/components/ui/card-variants";
+import { StyledCard } from "@/components/ui/cards";
 import { CheckCircle, AlertTriangle } from 'lucide-react';
 
 export const ApiFeaturesList = () => {

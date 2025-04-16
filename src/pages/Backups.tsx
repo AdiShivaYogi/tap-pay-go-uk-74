@@ -1,138 +1,112 @@
 import { Layout } from "@/components/layout/layout";
-import { useUserRole } from "@/hooks/use-user-role";
-import { AccessRestrictionAlert } from "@/features/roadmap/components/AccessRestrictionAlert";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Database, HardDrive, CloudUpload, Check, Download, FileArchive } from "lucide-react";
-import { BackupProgress } from "@/features/roadmap/components/BackupProgress";
-import { PageHeader } from "@/components/ui/page-header";
-import { SectionContainer } from "@/components/ui/section-container";
-import { StyledCard } from "@/components/ui/card-variants";
+import { PageHeader } from "@/components/ui/layout/page-header";
+import { Section } from "@/components/ui/layout/section";
 import { Button } from "@/components/ui/button";
-import { downloadBackupZip } from "@/utils/download-utils";
-import { useToast } from "@/hooks/use-toast";
-
-const backupTypes = [
-  {
-    title: "Backup Incremental Automat",
-    description: "Backup incremental realizat la fiecare 12 ore",
-    icon: Database,
-    lastBackup: "2025-04-15 14:00",
-    status: "success",
-    size: "2.3 GB",
-    archiveUrl: "/backups/incremental-2025-04-15.zip"
-  },
-  {
-    title: "Backup Complet",
-    description: "Backup complet săptămânal",
-    icon: HardDrive,
-    lastBackup: "2025-04-14 00:00",
-    status: "success",
-    size: "15.7 GB",
-    archiveUrl: "/backups/complete-2025-04-14.zip"
-  },
-  {
-    title: "Backup Cloud",
-    description: "Sincronizare cu storage-ul cloud",
-    icon: CloudUpload,
-    lastBackup: "2025-04-15 15:30",
-    status: "success",
-    size: "18.1 GB",
-    archiveUrl: "/backups/cloud-2025-04-15.zip"
-  }
-];
+import { Progress } from "@/components/ui/progress";
+import { StyledCard } from "@/components/ui/cards";
+import { Database, Download, HardDrive, RotateCcw, Calendar } from "lucide-react";
 
 const Backups = () => {
-  const { isAdmin, role } = useUserRole();
-  const { toast } = useToast();
+  const [backupProgress, setBackupProgress] = React.useState(0);
+  const [restoreProgress, setRestoreProgress] = React.useState(0);
+  const [isBackingUp, setIsBackingUp] = React.useState(false);
+  const [isRestoring, setIsRestoring] = React.useState(false);
 
-  if (!isAdmin) {
-    return (
-      <Layout>
-        <AccessRestrictionAlert role={role} />
-      </Layout>
-    );
-  }
+  const handleBackup = async () => {
+    setIsBackingUp(true);
+    setBackupProgress(0);
 
-  const handleDownload = async (url: string, type: string) => {
-    try {
-      const date = new Date().toISOString().split('T')[0];
-      const filename = `backup-${type}-${date}.zip`;
-      await downloadBackupZip(url, filename);
-      toast({
-        title: "Descărcare inițiată",
-        description: "Arhiva va fi descărcată în câteva momente.",
-      });
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Eroare",
-        description: "Nu s-a putut descărca arhiva. Vă rugăm încercați din nou.",
-      });
+    // Simulate backup process
+    for (let i = 0; i <= 100; i += 10) {
+      await new Promise((resolve) => setTimeout(resolve, 200));
+      setBackupProgress(i);
     }
+
+    setIsBackingUp(false);
+  };
+
+  const handleRestore = async () => {
+    setIsRestoring(true);
+    setRestoreProgress(0);
+
+    // Simulate restore process
+    for (let i = 0; i <= 100; i += 10) {
+      await new Promise((resolve) => setTimeout(resolve, 200));
+      setRestoreProgress(i);
+    }
+
+    setIsRestoring(false);
   };
 
   return (
     <Layout>
-      <ScrollArea className="h-[calc(100vh-4rem)]">
-        <SectionContainer>
-          <PageHeader
-            icon={Database}
-            title="Management Backups"
-            description="Status și informații despre backupurile automate"
-          />
+      <Section>
+        <PageHeader
+          icon={Database}
+          title="Backup & Restore"
+          description="Manage your application data backups and restore points"
+        />
 
-          <div className="space-y-6 max-w-[1400px] mx-auto">
-            <BackupProgress />
-
-            <div className="grid gap-4 md:grid-cols-3">
-              {backupTypes.map((backup) => (
-                <StyledCard key={backup.title}>
-                  <div className="p-6">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-2">
-                        <backup.icon className="h-5 w-5 text-primary/80" />
-                        <h3 className="font-semibold">{backup.title}</h3>
-                      </div>
-                      <Check className="h-5 w-5 text-green-500" />
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-2">{backup.description}</p>
-                    <div className="mt-4 space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Ultimul backup</span>
-                        <span>{backup.lastBackup}</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Mărime</span>
-                        <span>{backup.size}</span>
-                      </div>
-                      <div className="flex gap-2 mt-4">
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="w-full"
-                          onClick={() => handleDownload(backup.archiveUrl, backup.title.toLowerCase())}
-                        >
-                          <FileArchive className="h-4 w-4 mr-1" />
-                          Arhivă ZIP
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          className="w-full"
-                          onClick={() => handleDownload(backup.archiveUrl, backup.title.toLowerCase())}
-                        >
-                          <Download className="h-4 w-4 mr-1" />
-                          Download
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </StyledCard>
-              ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Backup Card */}
+          <StyledCard>
+            <div className="p-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold">Create Backup</h3>
+                <HardDrive className="h-5 w-5 text-primary" />
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Create a new backup of your application data.
+              </p>
+              <Button onClick={handleBackup} disabled={isBackingUp}>
+                {isBackingUp ? (
+                  <>
+                    Backing Up...
+                    <RotateCcw className="ml-2 h-4 w-4 animate-spin" />
+                  </>
+                ) : (
+                  <>
+                    Create Backup
+                    <Download className="ml-2 h-4 w-4" />
+                  </>
+                )}
+              </Button>
+              {isBackingUp && (
+                <Progress value={backupProgress} className="mt-2" />
+              )}
             </div>
-          </div>
-        </SectionContainer>
-      </ScrollArea>
+          </StyledCard>
+
+          {/* Restore Card */}
+          <StyledCard>
+            <div className="p-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold">Restore Backup</h3>
+                <Calendar className="h-5 w-5 text-primary" />
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Restore your application data from a previous backup.
+              </p>
+              <Button onClick={handleRestore} disabled={isRestoring}>
+                {isRestoring ? (
+                  <>
+                    Restoring...
+                    <RotateCcw className="ml-2 h-4 w-4 animate-spin" />
+                  </>
+                ) : (
+                  <>
+                    Restore Backup
+                    <RotateCcw className="ml-2 h-4 w-4" />
+                  </>
+                )}
+              </Button>
+              {isRestoring && (
+                <Progress value={restoreProgress} className="mt-2" />
+              )}
+            </div>
+          </StyledCard>
+        </div>
+      </Section>
     </Layout>
   );
 };

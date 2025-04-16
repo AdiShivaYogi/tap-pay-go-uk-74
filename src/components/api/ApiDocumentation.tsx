@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { StyledCard } from "@/components/ui/card-variants";
+import { StyledCard } from "@/components/ui/cards";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { ApiFeaturesList } from './ApiFeaturesList';
@@ -32,7 +31,6 @@ export const ApiDocumentation = () => {
         </AlertDescription>
       </Alert>
 
-      {/* Restul componentei rămâne neschimbat */}
       <StyledCard variant="default" className="p-6">
         <h1 className="text-3xl font-bold mb-2">API Enterprise</h1>
         <p className="text-muted-foreground mb-6">

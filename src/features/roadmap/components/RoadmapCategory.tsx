@@ -1,76 +1,51 @@
-
-import React from 'react';
-import { RoadmapCard } from "./RoadmapCard";
-import { roadmapItems } from "../data/roadmap-data";
-import { Category } from "../types";
-import { ChevronDown, ChevronRight } from "lucide-react";
-import { useRoadmapContext } from '../context/RoadmapContext';
-import { cn } from '@/lib/utils';
-import { StyledCard, StyledCardContent } from "@/components/ui/styled-card";
+import { useState } from "react";
+import { useRoadmapContext } from "../context/RoadmapContext";
+import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { ChevronDown, ChevronRight } from "lucide-react";
+import { StyledCard } from "@/components/ui/cards";
+import { RoadmapItem } from "../types";
 
 interface RoadmapCategoryProps {
   title: string;
-  categories: string[];
+  items: RoadmapItem[];
 }
 
-export const RoadmapCategory: React.FC<RoadmapCategoryProps> = ({ 
-  title, 
-  categories 
-}) => {
-  const { expandedCategories, toggleCategory } = useRoadmapContext();
-  const isExpanded = expandedCategories.includes(title);
+export const RoadmapCategory: React.FC<RoadmapCategoryProps> = ({ title, items }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const { completedTasks } = useRoadmapContext();
 
-  // Make sure partnership is recognized as a valid category
-  const categoryItems = roadmapItems.filter(item => 
-    item.category && categories.includes(item.category as Category)
-  );
-
-  const completedItems = categoryItems.filter(item => item.status === "completed").length;
-  const totalItems = categoryItems.length;
-  const progress = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
-
-  console.log(`Category: ${title}, Items: ${categoryItems.length}`, categoryItems); // Add logging to debug
+  const totalTasks = items.length;
+  const completedTasksInCategory = items.filter(item => completedTasks.includes(item.id)).length;
+  const progress = totalTasks > 0 ? (completedTasksInCategory / totalTasks) * 100 : 0;
 
   return (
-    <StyledCard className="bg-gradient-to-br from-card to-secondary/5 backdrop-blur-sm">
-      <button
-        onClick={() => toggleCategory(title)}
-        className="w-full px-6 py-4 flex items-center justify-between hover:bg-accent/5 transition-colors rounded-t-lg"
-      >
-        <div className="flex items-center gap-4">
-          <h2 className="text-xl font-semibold">{title}</h2>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Progress 
-              value={progress} 
-              className="w-20 h-2"
-            />
-            <span>
-              {completedItems}/{totalItems}
-            </span>
+    <StyledCard className="border-primary/10">
+      <div className="flex items-center justify-between p-4">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="flex items-center justify-between w-full text-left"
+        >
+          <div className="flex items-center">
+            {isOpen ? <ChevronDown className="h-4 w-4 mr-2" /> : <ChevronRight className="h-4 w-4 mr-2" />}
+            <h3 className="text-lg font-semibold">{title}</h3>
           </div>
+          <Badge variant="secondary">{completedTasksInCategory}/{totalTasks} Tasks</Badge>
+        </button>
+      </div>
+      <div className="px-4 pb-4">
+        <Progress value={progress} className="h-2" />
+      </div>
+      {isOpen && (
+        <div className="px-4 pb-4">
+          <ul className="space-y-2">
+            {items.map((item) => (
+              <li key={item.id}>
+                {item.title}
+              </li>
+            ))}
+          </ul>
         </div>
-        {isExpanded ? (
-          <ChevronDown className="h-5 w-5 text-muted-foreground" />
-        ) : (
-          <ChevronRight className="h-5 w-5 text-muted-foreground" />
-        )}
-      </button>
-      
-      {isExpanded && (
-        <StyledCardContent>
-          {categoryItems.length > 0 ? (
-            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {categoryItems.map((item, index) => (
-                <RoadmapCard key={`${item.title}-${index}`} item={item} />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-6 text-muted-foreground">
-              Nu există elemente în această categorie.
-            </div>
-          )}
-        </StyledCardContent>
       )}
     </StyledCard>
   );

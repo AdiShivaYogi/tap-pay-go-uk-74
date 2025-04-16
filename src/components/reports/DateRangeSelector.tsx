@@ -1,46 +1,35 @@
-
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { StyledCard, StyledCardContent } from "@/components/ui/styled-card";
-import { Calendar, Clock, CalendarDays } from "lucide-react";
+import { useState } from "react";
+import { DatePicker } from "@/components/ui/date-picker";
+import { StyledCard } from "@/components/ui/cards";
+import { Calendar, ArrowRightLeft, CalendarDays } from "lucide-react";
 
 interface DateRangeSelectorProps {
-  period: "week" | "month" | "all";
-  onPeriodChange: (value: "week" | "month" | "all") => void;
+  date: Date | undefined;
+  setDate: (date: Date | undefined) => void;
+  defaultDate?: Date;
 }
 
-export const DateRangeSelector = ({
-  period,
-  onPeriodChange
-}: DateRangeSelectorProps) => {
-  const options = [
-    { value: "week", label: "Ultima săptămână", icon: Clock },
-    { value: "month", label: "Luna curentă", icon: Calendar },
-    { value: "all", label: "Toate tranzacțiile", icon: CalendarDays }
-  ];
+export function DateRangeSelector({ date, setDate, defaultDate }: DateRangeSelectorProps) {
+  const [open, setOpen] = useState(false);
 
   return (
-    <StyledCard className="bg-gradient-to-br from-card to-secondary/5 backdrop-blur-sm">
-      <StyledCardContent className="py-3">
-        <Tabs 
-          defaultValue="week" 
-          value={period} 
-          onValueChange={(v) => onPeriodChange(v as "week" | "month" | "all")}
-          className="w-full"
-        >
-          <TabsList className="w-full justify-start gap-2">
-            {options.map(({ value, label, icon: Icon }) => (
-              <TabsTrigger 
-                key={value} 
-                value={value}
-                className="flex items-center gap-2"
-              >
-                <Icon className="h-4 w-4" />
-                <span className="hidden sm:inline">{label}</span>
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
-      </StyledCardContent>
+    <StyledCard className="w-[300px]">
+      <div className="space-y-2 p-4">
+        <h4 className="font-medium tracking-tight">Selectează o dată</h4>
+        <p className="text-sm text-muted-foreground">
+          Alege data pentru care vrei să generezi raportul.
+        </p>
+      </div>
+      <DatePicker
+        mode="single"
+        open={open}
+        onOpenChange={setOpen}
+        selected={date}
+        defaultDate={defaultDate}
+        onSelect={setDate}
+        showTodayButton
+        className="border-t"
+      />
     </StyledCard>
   );
-};
+}
