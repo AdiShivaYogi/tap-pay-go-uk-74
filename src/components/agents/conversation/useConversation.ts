@@ -1,8 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { Agent } from "../agents-data";
-import { DEMO_RESPONSES } from "../agents-data";
+import { Agent, DEMO_RESPONSES } from "../agents-data";
 import { useAgentApi } from "./hooks/useAgentApi";
 import { useAgentMessages } from "./hooks/useAgentMessages";
 import { useAgentTasks } from "./hooks/useAgentTasks";

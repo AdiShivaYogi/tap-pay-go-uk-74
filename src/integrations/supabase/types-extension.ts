@@ -140,16 +140,16 @@ export interface ExtendedDatabase extends Database {
   }
 }
 
-// Define the extended client type properly to avoid circular reference
+// Import the existing Supabase client
+import { supabase as originalSupabase } from './client';
+
+// Define the extended client type
 export type ExtendedSupabaseClient = SupabaseClient<ExtendedDatabase>;
 
-// Import the existing Supabase client and re-export it with the extended types
-import { supabase } from './client';
+// Create and export a properly typed extended client
+export const supabase = originalSupabase as ExtendedSupabaseClient;
 
-// Function to create a typed client
+// For backward compatibility
 export const createExtendedSupabaseClient = () => {
-  return supabase as ExtendedSupabaseClient;
+  return supabase;
 };
-
-// Re-export the client with the extended types
-export { supabase };
