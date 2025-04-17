@@ -2,7 +2,7 @@
 import React from 'react';
 import { AgentNetworkGraph } from '@/components/3d-visualizations/AgentNetworkGraph';
 import { StyledCard, StyledCardContent, StyledCardHeader, StyledCardTitle } from "@/components/ui/cards";
-import { Network, Zap } from 'lucide-react';
+import { Network } from 'lucide-react';
 
 export const AutonomyVisualization: React.FC = () => {
   return (

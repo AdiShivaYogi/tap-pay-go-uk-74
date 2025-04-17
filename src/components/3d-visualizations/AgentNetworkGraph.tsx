@@ -9,10 +9,9 @@ interface AgentNodeProps {
   position: [number, number, number];
   autonomyLevel: number;
   name: string;
-  color: string;
 }
 
-const AgentNode: React.FC<AgentNodeProps> = ({ position, autonomyLevel, name, color }) => {
+const AgentNode: React.FC<AgentNodeProps> = ({ position, autonomyLevel, name }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   
   useFrame(() => {
@@ -21,6 +20,7 @@ const AgentNode: React.FC<AgentNodeProps> = ({ position, autonomyLevel, name, co
     }
   });
 
+  // Determinăm culoarea în funcție de nivelul de autonomie
   const sphereColor = autonomyLevel > 70 ? 'green' : 
                        autonomyLevel > 40 ? 'yellow' : 'red';
 
@@ -99,7 +99,6 @@ export const AgentNetworkGraph: React.FC = () => {
           position={agentPositions[index]}
           autonomyLevel={agent.autonomyLevel || 50}
           name={agent.name}
-          color={agent.color}
         />
       ))}
     </Canvas>
