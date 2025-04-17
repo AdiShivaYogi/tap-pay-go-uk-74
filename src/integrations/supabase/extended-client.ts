@@ -1,11 +1,3 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { ExtendedDatabase } from './types/extended-database';
-
-// Cream un client Supabase extins care include tabelele definite de noi
-export const extendedSupabase = new SupabaseClient<ExtendedDatabase>(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 import { createClient } from '@supabase/supabase-js';
 import { ExtendedSupabaseClient } from './types/supabase-client';
@@ -20,3 +12,8 @@ export const extendedSupabase = createClient<ExtendedDatabase>(
   SUPABASE_URL,
   SUPABASE_PUBLISHABLE_KEY
 ) as ExtendedSupabaseClient;
+
+// For backward compatibility
+export const createExtendedSupabaseClient = () => {
+  return extendedSupabase;
+};

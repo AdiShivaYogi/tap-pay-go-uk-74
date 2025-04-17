@@ -13,9 +13,10 @@ import { RoadmapTables } from './roadmap-types';
 import { TransactionTables } from './transaction-types';
 
 // Extinde tipurile Database pentru a include tabelele noi folosite de agenți
-export interface ExtendedDatabase extends Database {
+export interface ExtendedDatabase {
   public: {
-    Tables: AuthTables & 
+    Tables: Database['public']['Tables'] & 
+            AuthTables & 
             TransactionTables & 
             AgentTaskSubmissionTables &
             AgentTaskProgressTables &
