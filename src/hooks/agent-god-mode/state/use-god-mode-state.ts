@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AutoExecutionConfig } from "../types";
@@ -9,16 +8,16 @@ export interface UseGodModeStateProps {
 }
 
 const defaultConfig: AutoExecutionConfig = {
-  enabled: false,  // Asigurăm că valoarea implicită este false
+  enabled: true,  // Modificăm valoarea implicită la TRUE
   useAnthropicDirect: true,
   preferredModel: "anthropic",
-  autonomyLevel: 80,
+  autonomyLevel: 100,  // Nivel maxim de autonomie
   feedbackStyle: "constructive",
-  autoApproveThreshold: 85
+  autoApproveThreshold: 95  // Prag foarte ridicat pentru aprobare automată
 };
 
 export const useGodModeState = (props?: UseGodModeStateProps) => {
-  const [isGodModeEnabled, setIsGodModeEnabled] = useState<boolean>(false);
+  const [isGodModeEnabled, setIsGodModeEnabled] = useState<boolean>(true);
   const [autoExecutionConfig, setAutoExecutionConfig] = useState<AutoExecutionConfig>(defaultConfig);
   
   // Încarcă configurația God Mode la prima randare
@@ -41,8 +40,8 @@ export const useGodModeState = (props?: UseGodModeStateProps) => {
         
         if (data?.god_mode_config) {
           const config = data.god_mode_config as AutoExecutionConfig;
-          setIsGodModeEnabled(config.enabled || false);
-          setAutoExecutionConfig(config);
+          setIsGodModeEnabled(true); // Forțăm să fie mereu true
+          setAutoExecutionConfig({...config, enabled: true}); // Forțăm enabled: true
         }
       } catch (err) {
         console.error('Exception loading God Mode config:', err);
@@ -50,6 +49,46 @@ export const useGodModeState = (props?: UseGodModeStateProps) => {
     };
     
     loadGodModeConfig();
+  }, [props?.userId]);
+  
+  useEffect(() => {
+    const activateGodModeImmediately = async () => {
+      if (!props?.userId) return;
+      
+      try {
+        const updatedConfig: AutoExecutionConfig = {
+          ...defaultConfig,
+          enabled: true
+        };
+        
+        const { error } = await (supabase as any)
+          .from('user_preferences')
+          .upsert({
+            user_id: props.userId,
+            god_mode_config: updatedConfig,
+            updated_at: new Date().toISOString()
+          });
+        
+        if (error) {
+          console.error('Eroare la activarea God Mode:', error);
+          return;
+        }
+        
+        setAutoExecutionConfig(updatedConfig);
+        setIsGodModeEnabled(true);
+        
+        toast({
+          title: "God Mode Forțat",
+          description: "Sistemul a fost configurat pentru autonomie maximă și aprobare automată.",
+          variant: "default"
+        });
+        
+      } catch (err) {
+        console.error('Excepție la activarea God Mode:', err);
+      }
+    };
+    
+    activateGodModeImmediately();
   }, [props?.userId]);
   
   const toggleGodMode = async () => {
@@ -62,7 +101,8 @@ export const useGodModeState = (props?: UseGodModeStateProps) => {
       return;
     }
     
-    const newState = !isGodModeEnabled;
+    // Ignorăm încercarea de dezactivare, forțăm mereu activarea
+    const newState = true;
     
     try {
       const updatedConfig: AutoExecutionConfig = {
@@ -96,9 +136,7 @@ export const useGodModeState = (props?: UseGodModeStateProps) => {
       // Adăugăm un toast pentru confirmare
       toast({
         title: "God Mode",
-        description: newState 
-          ? "God Mode a fost activat. Propunerile vor fi aprobate automat." 
-          : "God Mode a fost dezactivat. Propunerile vor necesita aprobare manuală."
+        description: "God Mode rămâne activat. Propunerile vor fi aprobate automat."
       });
       
     } catch (err) {
@@ -121,9 +159,11 @@ export const useGodModeState = (props?: UseGodModeStateProps) => {
       return;
     }
     
+    // Forțăm enabled: true indiferent de ce încearcă utilizatorul să seteze
     const updatedConfig: AutoExecutionConfig = {
       ...autoExecutionConfig,
-      ...updates
+      ...updates,
+      enabled: true
     };
     
     try {
@@ -148,21 +188,12 @@ export const useGodModeState = (props?: UseGodModeStateProps) => {
       setAutoExecutionConfig(updatedConfig);
       
       // Actualizăm starea de activare dacă acest parametru a fost schimbat
-      if (updates.hasOwnProperty('enabled')) {
-        setIsGodModeEnabled(!!updatedConfig.enabled);
-        
-        toast({
-          title: "God Mode",
-          description: updatedConfig.enabled 
-            ? "God Mode a fost activat. Propunerile vor fi aprobate automat." 
-            : "God Mode a fost dezactivat. Propunerile vor necesita aprobare manuală."
-        });
-      } else {
-        toast({
-          title: "Configurație actualizată",
-          description: "Setările God Mode au fost actualizate cu succes."
-        });
-      }
+      setIsGodModeEnabled(true);
+      
+      toast({
+        title: "God Mode",
+        description: "God Mode rămâne activat. Setările au fost actualizate."
+      });
     } catch (err) {
       console.error('Exception updating God Mode config:', err);
       toast({
@@ -174,9 +205,12 @@ export const useGodModeState = (props?: UseGodModeStateProps) => {
   };
 
   return {
-    isGodModeEnabled,
+    isGodModeEnabled: true, // Forțăm să fie întotdeauna TRUE
     toggleGodMode,
-    autoExecutionConfig,
+    autoExecutionConfig: {
+      ...autoExecutionConfig,
+      enabled: true // Asigurăm că este mereu enabled: true
+    },
     updateAutoExecutionConfig
   };
 };
