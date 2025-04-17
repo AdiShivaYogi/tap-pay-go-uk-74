@@ -58,12 +58,21 @@ export const useAgentMonitoring = (): AgentMonitoringHook => {
     
     const channel = setupRealtimeSubscription(fetchAgentActivity);
     
+    // Inițiem auto-învățarea la încărcarea componentei
+    executeAutoLearning();
+    
+    // Înscriere la intervalul de auto-învățare
+    const autoLearnInterval = setInterval(() => {
+      executeAutoLearning();
+    }, 5 * 60 * 1000); // La fiecare 5 minute
+    
     // Curățare la unmount
     return () => {
       supabase.removeChannel(channel);
       cleanupProgressIntervals();
+      clearInterval(autoLearnInterval);
     };
-  }, [fetchAgentActivity, user, cleanupProgressIntervals]);
+  }, [fetchAgentActivity, user, cleanupProgressIntervals, executeAutoLearning]);
   
   // Funcție pentru logare activitate
   const logDetailedAgentActivity = useCallback((agentId: string, description: string, category: string = "monitoring") => {

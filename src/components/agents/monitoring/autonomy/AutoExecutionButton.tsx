@@ -5,6 +5,7 @@ import { Zap, Loader2 } from "lucide-react";
 import { useSafetyPanel } from "@/components/agents/monitoring/safety/hooks/useSafetyPanel";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useAgentMonitoring } from "../hooks";
 
 interface AutoExecutionButtonProps {
   variant?: 'default' | 'headerButton';
@@ -26,6 +27,9 @@ export const AutoExecutionButton: React.FC<AutoExecutionButtonProps> = ({
     agentsRunning
   } = useSafetyPanel();
 
+  // Folosim hook-ul real pentru auto-învățare
+  const { executeAutoLearning } = useAgentMonitoring();
+
   // Progress tracking for automated tasks
   const [autoProgress, setAutoProgress] = React.useState(0);
 
@@ -42,6 +46,11 @@ export const AutoExecutionButton: React.FC<AutoExecutionButtonProps> = ({
       // Lansăm execuția autonomă a agenților
       startAutonomousExecution();
       
+      // Inițiem auto-învățarea și autodezvoltarea
+      if (typeof executeAutoLearning === 'function') {
+        executeAutoLearning();
+      }
+
       toast({
         title: "Autoexecuție activată",
         description: "Toți agenții operează acum în mod complet autonom.",

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyledCard } from '@/components/ui/cards';
 import { Sparkles, Zap, Brain, Network } from 'lucide-react';
 import { AutonomyFeatureCard } from './AutonomyFeatureCard';
@@ -7,18 +7,54 @@ import { AgentNetworkGraph } from '@/components/3d-visualizations/AgentNetworkGr
 import { AutoExecutionButton } from './AutoExecutionButton';
 import { AutonomyCard, AutonomyTasksContext } from './AutonomyCard';
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { useAgentMonitoring } from "../hooks";
+import { useToast } from "@/hooks/use-toast";
 
 export const AutonomyVisualization: React.FC = () => {
   const [showAlert, setShowAlert] = React.useState(false);
   const autonomyTasksContext = React.useContext(AutonomyTasksContext);
+  const { learningReports, learningProgress } = useAgentMonitoring();
+  const { toast } = useToast();
   
   // Show alert when all tasks are completed
-  React.useEffect(() => {
+  useEffect(() => {
     if (autonomyTasksContext && 
         autonomyTasksContext.tasks.every(task => task.completed)) {
       setShowAlert(true);
     }
   }, [autonomyTasksContext]);
+  
+  // Afișăm notificări pentru noile procese de învățare
+  useEffect(() => {
+    if (learningProgress.length > 0) {
+      const activeTasks = learningProgress.filter(p => p.status === 'in-progress');
+      if (activeTasks.length > 0) {
+        toast({
+          title: "Auto-îmbunătățire în curs",
+          description: `${activeTasks.length} procese de auto-îmbunătățire sunt active. Sistemul evoluează autonom.`,
+          duration: 5000
+        });
+      }
+    }
+  }, [learningProgress, toast]);
+  
+  // Verificăm dacă există rapoarte noi de învățare
+  useEffect(() => {
+    if (learningReports.length > 0) {
+      // Verificăm doar ultimul raport adăugat
+      const latestReport = learningReports[0];
+      const timeSinceReport = Date.now() - latestReport.learningDate.getTime();
+      
+      // Afișăm notificări doar pentru rapoarte create în ultimele 10 secunde
+      if (timeSinceReport < 10000) {
+        toast({
+          title: "Raport nou de auto-îmbunătățire",
+          description: `${latestReport.sourceAgentName} a învățat "${latestReport.learningType}" de la ${latestReport.targetAgentName}`,
+          duration: 5000
+        });
+      }
+    }
+  }, [learningReports.length, learningReports, toast]);
   
   return (
     <div className="space-y-6">
