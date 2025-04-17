@@ -17,6 +17,7 @@ export const AutonomyEngine: React.FC = () => {
   const [showAnthropicStatus, setShowAnthropicStatus] = useState<boolean>(false);
   const [anthropicConnected, setAnthropicConnected] = useState<boolean>(false);
   const [testingConnection, setTestingConnection] = useState<boolean>(false);
+  const [isGeneratingProposals, setIsGeneratingProposals] = useState<boolean>(false);
 
   // Verifică explicit starea conexiunii Anthropic la încărcare
   useEffect(() => {
@@ -56,6 +57,9 @@ export const AutonomyEngine: React.FC = () => {
           
           // Generăm o activitate de test pentru a demonstra că sistemul funcționează
           await generateTestActivity();
+          
+          // Generăm imediat propuneri ca să apară în interfață
+          await generateAutomaticProposals(true);
         } else {
           toast({
             title: "Problemă API Anthropic",
@@ -105,6 +109,9 @@ export const AutonomyEngine: React.FC = () => {
         });
         
         setInitialized(true);
+        
+        // Generăm imediat propuneri la activarea God Mode
+        generateAutomaticProposals(true);
       } catch (err) {
         console.error('Eroare la activarea sistemului autonom:', err);
       }
@@ -138,6 +145,9 @@ export const AutonomyEngine: React.FC = () => {
           title: "Monitorizare propuneri activă",
           description: "Sistemul monitorizează și procesează automat propunerile vitale pentru ecosistem."
         });
+        
+        // Generăm propuneri imediat după pornirea monitorizării
+        generateAutomaticProposals(true);
       } catch (err) {
         console.error('Eroare la monitorizarea propunerilor:', err);
       }
@@ -146,10 +156,10 @@ export const AutonomyEngine: React.FC = () => {
     // Pornim monitorizarea propunerilor
     startProposalsMonitoring();
     
-    // Setăm un interval pentru a genera propuneri automat la fiecare 3 minute
+    // Setăm un interval mai frecvent pentru a genera propuneri automat (la fiecare minut)
     const interval = setInterval(() => {
       generateAutomaticProposals();
-    }, 3 * 60 * 1000);
+    }, 60 * 1000);
     
     return () => clearInterval(interval);
   }, [initialized, proposalsMonitoringActive, userId, toast]);
@@ -194,24 +204,59 @@ export const AutonomyEngine: React.FC = () => {
       });
       
       // Generăm și propunere de task
-      generateAutomaticProposals();
+      generateAutomaticProposals(true);
     } catch (err) {
       console.error('Eroare la testarea API-ului Anthropic:', err);
     }
   };
   
   // Funcție pentru generarea automată de propuneri
-  const generateAutomaticProposals = async () => {
-    if (!userId) return;
+  const generateAutomaticProposals = async (showNotifications = false) => {
+    if (!userId || isGeneratingProposals) return;
     
     try {
+      setIsGeneratingProposals(true);
+      console.log('Generare propuneri noi...');
+      
+      // Adăugăm direct o propunere în tabelul agent_task_submissions pentru a fi vizibilă imediat
+      const taskProposal = {
+        agent_id: "ai-assistant",
+        task_id: "00000000-0000-0000-0000-000000000000", // ID fictiv pentru task nou
+        proposed_changes: "VITAL: Propunere generată automat pentru a îmbunătăți performanța sistemului de agenți autonomi. Este necesară integrarea completă a unui sistem de verificare a rezultatelor generate de agenți pentru a asigura calitatea și siguranța acestora.",
+        proposed_status: "pending",
+        proposed_progress: 0,
+        notes: "Propunere generată automat de sistemul de agenți autonomi",
+        approval_status: "pending"
+      };
+      
+      // Inserăm direct propunerea în baza de date
+      const { data: directSubmission, error: directError } = await supabase
+        .from('agent_task_submissions')
+        .insert(taskProposal);
+      
+      if (directError) {
+        console.error('Eroare la inserarea propunerii directe:', directError);
+      } else {
+        console.log('Propunere inserată direct în baza de date');
+        
+        if (showNotifications) {
+          toast({
+            title: "Propunere nouă creată",
+            description: "O propunere vitală a fost generată și este disponibilă pentru aprobare.",
+            duration: 8000,
+          });
+        }
+      }
+      
+      // Generăm și prin funcția specializată pentru diversitate
       const { data, error } = await supabase.functions.invoke('generate-agent-proposals', {
         body: { 
           action: 'generate',
           count: 3,  // Generăm 3 propuneri importante
           priority: 'high',
           userId: userId,
-          vitalCount: 2 // Dintre care 2 vitale
+          vitalCount: 2, // Dintre care 2 vitale
+          forceGenerate: true // Forțăm generarea chiar dacă există alte propuneri recente
         }
       });
       
@@ -222,12 +267,17 @@ export const AutonomyEngine: React.FC = () => {
       
       console.log('Propuneri generate cu succes:', data);
       
-      toast({
-        title: "Propuneri noi generate",
-        description: "Au fost generate 3 propuneri noi, dintre care 2 vitale pentru ecosistem.",
-      });
+      if (showNotifications) {
+        toast({
+          title: "Propuneri noi generate",
+          description: "Au fost generate mai multe propuneri noi, dintre care unele vitale pentru ecosistem.",
+          duration: 8000,
+        });
+      }
     } catch (err) {
       console.error('Eroare la generarea propunerilor:', err);
+    } finally {
+      setIsGeneratingProposals(false);
     }
   };
 
@@ -249,6 +299,34 @@ export const AutonomyEngine: React.FC = () => {
           </div>
         </div>
       )}
+      
+      {/* Buton pentru generare manuală de propuneri */}
+      <div className="fixed bottom-4 left-4 z-50">
+        <button 
+          onClick={() => generateAutomaticProposals(true)}
+          disabled={isGeneratingProposals}
+          className={`bg-gradient-to-r from-amber-500 to-orange-600 text-white px-4 py-2 rounded-lg
+                      shadow-lg hover:from-amber-600 hover:to-orange-700 transition-all
+                      flex items-center gap-2 ${isGeneratingProposals ? 'opacity-70 cursor-not-allowed' : ''}`}
+        >
+          {isGeneratingProposals ? (
+            <>
+              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Generare...
+            </>
+          ) : (
+            <>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+              </svg>
+              Generează propuneri
+            </>
+          )}
+        </button>
+      </div>
     </>
   );
 };
