@@ -124,7 +124,7 @@ export const AutonomyEngine: React.FC = () => {
     // Generăm activitate pentru fiecare agent la intervale regulate
     const activityInterval = setInterval(() => {
       if (!isRunning) {
-        clearInterval(activityInterval);
+        clearInterval(interval);
         return;
       }
       
@@ -132,14 +132,14 @@ export const AutonomyEngine: React.FC = () => {
       const randomAgent = agents[Math.floor(Math.random() * agents.length)];
       const randomCategory = activityCategories[Math.floor(Math.random() * activityCategories.length)];
       
-      // Alegem un mesaj potrivit pentru tipul de agent
+      // Alegem un mesaj potrivit pentru categoria de agent bazat pe id-ul agentului
       let messages = activityMessages.monitoring; // default
       
-      if (randomAgent.type === 'learning' && activityMessages.learning) {
+      if (randomAgent.id.includes('learning') && activityMessages.learning) {
         messages = activityMessages.learning;
-      } else if (randomAgent.type === 'decision' && activityMessages.decision) {
+      } else if (randomAgent.id.includes('decision') && activityMessages.decision) {
         messages = activityMessages.decision;
-      } else if (randomAgent.type === 'analysis' && activityMessages.analysis) {
+      } else if (randomAgent.id.includes('analysis') && activityMessages.analysis) {
         messages = activityMessages.analysis;
       }
       
@@ -199,3 +199,4 @@ export const AutonomyEngine: React.FC = () => {
   // Componenta nu renderizează nimic vizibil - rulează doar în fundal
   return null;
 };
+
