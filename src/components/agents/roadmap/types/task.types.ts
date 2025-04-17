@@ -8,6 +8,7 @@ export interface AgentTask {
   category?: string;
   assigned?: boolean;
   recommendationScore?: number;
+  notes?: string;
 }
 
 export interface AgentTaskExtended extends AgentTask {
