@@ -8,7 +8,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useUserRole } from "@/hooks/use-user-role";
 import { AccessRestrictionAlert } from "@/features/roadmap/components/AccessRestrictionAlert";
 import { AgentActivityMonitor } from "@/components/agents/monitoring/AgentActivityMonitor";
-import { AgentProjectCards } from "@/components/agents/monitoring/AgentProjectCards";
+import { AgentProjectCards } from "@/components/agents/monitoring/project-cards";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const AgentMonitoring = () => {
