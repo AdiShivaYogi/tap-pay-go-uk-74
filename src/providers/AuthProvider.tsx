@@ -118,10 +118,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     checkSession();
   }, []);
 
-  const signIn = async (email: string, password: string): Promise<void> => {
+  const signIn = async (email: string, password: string): Promise<{error?: any}> => {
     try {
       setLoading(true);
       console.log('Attempting to sign in with email:', email);
+      
+      // Verificăm dacă contul este blocat
+      const { data: lockStatus, error: lockCheckError } = await supabase.rpc('check_login_attempts', {
+        p_email: email
+      });
+      
+      if (lockCheckError) {
+        console.error('Eroare la verificarea blocării contului:', lockCheckError);
+      }
+      
+      if (lockStatus && lockStatus.is_locked) {
+        return {
+          error: {
+            message: `Cont blocat temporar. Încercați din nou în ${lockStatus.minutes_left} minute.`
+          }
+        };
+      }
       
       const { error } = await supabase.auth.signInWithPassword({ 
         email, 
@@ -130,11 +147,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       if (error) {
         console.error('Eroare la autentificare:', error.message);
-        throw error;
+        return { error };
       }
+      
+      return {};
     } catch (error) {
       console.error('Eroare la autentificare:', error);
-      throw error;
+      return { error };
     } finally {
       setLoading(false);
     }

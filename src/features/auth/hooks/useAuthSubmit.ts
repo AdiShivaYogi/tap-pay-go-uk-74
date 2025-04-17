@@ -26,39 +26,81 @@ export const useAuthSubmit = () => {
 
       if (isLoginMode) {
         try {
-          // Try to authenticate with the special admin email directly
+          // Verificăm dacă e-mailul există înainte de a încerca autentificarea
+          const { data: emailExists, error: emailCheckError } = await supabase
+            .from('login_attempts')
+            .select('email')
+            .eq('email', email)
+            .limit(1);
+
+          // Încercăm autentificarea chiar dacă e-mailul nu există în tabelul de încercări
+          // Pentru ca prima autentificare să funcționeze
+          console.log(`Attempting to sign in with email: ${email}`);
+          
           if (adminEmails.includes(email)) {
             console.log("Attempting admin login with email:", email);
           }
           
-          await signIn(email, password);
+          const { error: signInError } = await signIn(email, password);
+          
+          if (signInError) {
+            throw signInError;
+          }
           
           console.log("Authentication successful");
+          
+          // Resetăm încercările eșuate dacă autentificarea a reușit
+          if (emailExists && emailExists.length > 0) {
+            await supabase
+              .from('login_attempts')
+              .update({ attempt_count: 0, locked_until: null })
+              .eq('email', email);
+          }
+          
+          toast({
+            title: "Autentificare reușită",
+            description: "Bine ați revenit!",
+          });
+          
           navigate("/roadmap");
         } catch (error: any) {
           console.error("Eroare la autentificare:", error);
           
-          if (typeof error === 'object' && error !== null && 'message' in error) {
-            const errorMsg = error.message as string;
-            
-            if (errorMsg.includes("Invalid login credentials")) {
-              setErrorMessage("Email sau parolă incorectă. Vă rugăm să încercați din nou.");
-            } else if (errorMsg.includes("rate limited")) {
-              setErrorMessage("Prea multe încercări de autentificare. Vă rugăm să încercați mai târziu.");
-            } else if (errorMsg.includes("Email not confirmed")) {
-              setErrorMessage("Email-ul nu a fost confirmat. Verificați email-ul pentru link-ul de confirmare.");
-            } else {
-              setErrorMessage(errorMsg || "A apărut o eroare la autentificare");
-            }
-          } else {
-            setErrorMessage("A apărut o eroare la autentificare");
-          }
-          
-          toast({
-            title: "Eroare de autentificare",
-            description: error.message || "A apărut o eroare la autentificare",
-            variant: "destructive",
+          // Incrementăm contorul de încercări eșuate
+          const { data: lockStatus } = await supabase.rpc('record_failed_attempt', {
+            p_email: email
           });
+          
+          if (lockStatus && lockStatus.is_locked) {
+            setErrorMessage(`Cont blocat temporar. Încercați din nou în ${lockStatus.minutes_left} minute.`);
+            toast({
+              title: "Cont blocat temporar",
+              description: `Prea multe încercări eșuate. Încercați din nou în ${lockStatus.minutes_left} minute.`,
+              variant: "destructive",
+            });
+          } else {
+            if (typeof error === 'object' && error !== null && 'message' in error) {
+              const errorMsg = error.message as string;
+              
+              if (errorMsg.includes("Invalid login credentials")) {
+                setErrorMessage("Email sau parolă incorectă. Vă rugăm să verificați datele și încercați din nou.");
+              } else if (errorMsg.includes("rate limited")) {
+                setErrorMessage("Prea multe încercări de autentificare. Vă rugăm să încercați mai târziu.");
+              } else if (errorMsg.includes("Email not confirmed")) {
+                setErrorMessage("Email-ul nu a fost confirmat. Verificați email-ul pentru link-ul de confirmare.");
+              } else {
+                setErrorMessage(errorMsg || "A apărut o eroare la autentificare");
+              }
+            } else {
+              setErrorMessage("A apărut o eroare la autentificare");
+            }
+            
+            toast({
+              title: "Eroare de autentificare",
+              description: "Vă rugăm să verificați adresa de email și parola",
+              variant: "destructive",
+            });
+          }
         }
       } else {
         // Handle registration logic - first check if admin already exists

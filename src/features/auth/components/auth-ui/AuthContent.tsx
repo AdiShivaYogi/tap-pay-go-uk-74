@@ -2,6 +2,7 @@
 import { SecurityAlert } from "@/components/security/SecurityAlert";
 import { AuthFormContainer } from "@/features/auth/components/AuthFormContainer";
 import { ResetPasswordContainer } from "@/features/auth/components/ResetPasswordContainer";
+import { SecurityInfoSection } from "./SecurityInfoSection";
 
 interface AuthContentProps {
   isLoginMode: boolean;
@@ -52,9 +53,7 @@ export const AuthContent = ({
       />
       
       {isLoginMode && !isResetMode && !isUpdatePasswordMode && (
-        <div className="mt-6">
-          <SecurityAlert />
-        </div>
+        <SecurityInfoSection />
       )}
     </>
   );
