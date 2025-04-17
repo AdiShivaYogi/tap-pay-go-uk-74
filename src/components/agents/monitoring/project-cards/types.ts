@@ -1,5 +1,5 @@
 
-import { ReactNode } from "react";
+import { LucideIcon } from "lucide-react";
 
 export interface AgentProjectTask {
   name: string;
@@ -14,6 +14,6 @@ export interface AgentProject {
   timeframe: "zile" | "săptămâni" | "luni";
   timeUsed: number;
   timeTotal: number;
-  icon: ReactNode;
+  icon: LucideIcon;
   tasks: AgentProjectTask[];
 }
