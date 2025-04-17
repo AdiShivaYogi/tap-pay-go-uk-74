@@ -1,3 +1,4 @@
+
 import { useToast } from "@/hooks/use-toast";
 import { useAutonomyControls } from "./useAutonomyControls";
 import { useSystemsControls } from "./useSystemsControls";
@@ -44,12 +45,13 @@ export const useSafetyPanel = () => {
     toggleMonitoringParameter
   } = useDataConnections(updateImplementationProgress);
 
+  // Renamed to baseStartAutonomousExecution to avoid conflict
   const {
     safetyOverride,
     setSafetyOverride,
     showAutonomyAlert,
     setShowAutonomyAlert,
-    startAutonomousExecution
+    startAutonomousExecution: baseStartAutonomousExecution
   } = useExecutionControls({
     setSystemsActive,
     setDataConnections,
@@ -74,17 +76,7 @@ export const useSafetyPanel = () => {
     });
   };
 
-  const { 
-    autoLaunchPending, 
-    timeToAutoLaunch,
-    acceptAllRisks,
-    cancelAutoLaunch 
-  } = useAutoLaunch(
-    setAcceptedRisks, 
-    setSafetyOverride, 
-    startAutonomousExecution
-  );
-
+  // Enhanced implementation for launching all agents
   const startAutonomousExecution = () => {
     setAgentsRunning(true);
     setAutonomyLevel(100);
@@ -101,25 +93,23 @@ export const useSafetyPanel = () => {
       emergencyStop: true
     });
 
-    setDataConnections({
+    // Use the existing properties on dataConnections
+    setDataConnections(prevConnections => ({
+      ...prevConnections,
       agentSystem: true,
       monitoringPlatform: true,
       analyticsEngine: true,
-      safetyFramework: true,
-      dataLake: true,
-      externalAPIs: true,
-      modelTraining: true
-    });
+      safetyFramework: true
+    }));
 
-    setMonitoringParameters({
+    // Use the existing properties on monitoringParameters
+    setMonitoringParameters(prevParams => ({
+      ...prevParams,
       autonomyLevels: true,
       resourceUsage: true,
       decisionQuality: true,
-      learningProgress: true,
-      adaptationRate: true,
-      errorCorrection: true,
-      selfImprovement: true
-    });
+      learningProgress: true
+    }));
 
     setAcceptedRisks(["scazut", "mediu", "ridicat"]);
     setSafetyOverride(true);
@@ -132,6 +122,18 @@ export const useSafetyPanel = () => {
       duration: 6000,
     });
   };
+
+  // Create hook after defining startAutonomousExecution
+  const { 
+    autoLaunchPending, 
+    timeToAutoLaunch,
+    acceptAllRisks,
+    cancelAutoLaunch 
+  } = useAutoLaunch(
+    setAcceptedRisks, 
+    setSafetyOverride, 
+    startAutonomousExecution  // Pass our enhanced implementation
+  );
 
   return {
     autonomyLevel,
