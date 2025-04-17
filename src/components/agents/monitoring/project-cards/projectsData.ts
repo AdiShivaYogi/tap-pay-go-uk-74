@@ -1,4 +1,7 @@
 
+import { ChartBar, BarChart3, Unlock, Bot, Users, Brain, LineChart, Lightbulb, Search, GraduationCap, RefreshCw } from "lucide-react";
+import { ReactNode } from "react";
+
 export const agentProjects = [
   {
     title: "Monitorizare Agenți",
@@ -8,7 +11,7 @@ export const agentProjects = [
     timeframe: "săptămâni" as const,
     timeUsed: 15,
     timeTotal: 25,
-    icon: <span className="text-xl">📊</span>,
+    icon: "📊" as unknown as ReactNode,
     tasks: [
       { name: "Dashboard activitate în timp real", completed: true },
       { name: "Grafice de performanță și activitate", completed: true },
@@ -25,7 +28,7 @@ export const agentProjects = [
     timeframe: "zile" as const,
     timeUsed: 12,
     timeTotal: 20,
-    icon: <span className="text-xl">🔄</span>,
+    icon: "🔄" as unknown as ReactNode,
     tasks: [
       { name: "Evaluare automată a răspunsurilor", completed: true },
       { name: "Colectare feedback utilizator", completed: true },
@@ -41,7 +44,7 @@ export const agentProjects = [
     timeframe: "săptămâni" as const,
     timeUsed: 8,
     timeTotal: 24,
-    icon: <span className="text-xl">🔓</span>,
+    icon: "🔓" as unknown as ReactNode,
     tasks: [
       { name: "Mecanism de propuneri autonome", completed: true },
       { name: "Sistem de auto-verificare și validare", completed: true },
@@ -58,7 +61,7 @@ export const agentProjects = [
     timeframe: "săptămâni" as const,
     timeUsed: 0,
     timeTotal: 18,
-    icon: <span className="text-xl">🤖</span>,
+    icon: "🤖" as unknown as ReactNode,
     tasks: [
       { name: "Configurare API OpenAI și Anthropic", completed: false },
       { name: "Sistem de rutare inteligentă între modele", completed: false },
@@ -74,7 +77,7 @@ export const agentProjects = [
     timeframe: "luni" as const,
     timeUsed: 0,
     timeTotal: 45,
-    icon: <span className="text-xl">👨‍💼</span>,
+    icon: "👨‍💼" as unknown as ReactNode,
     tasks: [
       { name: "Agent expert în securitate cibernetică", completed: false },
       { name: "Agent pentru optimizare SEO", completed: false },
@@ -90,7 +93,7 @@ export const agentProjects = [
     timeframe: "luni" as const,
     timeUsed: 0,
     timeTotal: 30,
-    icon: <span className="text-xl">🎓</span>,
+    icon: "🎓" as unknown as ReactNode,
     tasks: [
       { name: "Infrastructură de fine-tuning", completed: false },
       { name: "Set de date de antrenament specializat", completed: false },
@@ -106,7 +109,7 @@ export const agentProjects = [
     timeframe: "săptămâni" as const,
     timeUsed: 0,
     timeTotal: 22,
-    icon: <span className="text-xl">🧠</span>,
+    icon: "🧠" as unknown as ReactNode,
     tasks: [
       { name: "Framework de luare a deciziilor", completed: false },
       { name: "Sistem de evaluare a riscurilor", completed: false },
@@ -123,7 +126,7 @@ export const agentProjects = [
     timeframe: "luni" as const,
     timeUsed: 0,
     timeTotal: 35,
-    icon: <span className="text-xl">👥</span>,
+    icon: "👥" as unknown as ReactNode,
     tasks: [
       { name: "Protocol de comunicare între agenți", completed: false },
       { name: "Delegare de sarcini și responsabilități", completed: false },
@@ -140,7 +143,7 @@ export const agentProjects = [
     timeframe: "luni" as const,
     timeUsed: 0,
     timeTotal: 28,
-    icon: <span className="text-xl">📈</span>,
+    icon: "📈" as unknown as ReactNode,
     tasks: [
       { name: "Mecanism de auto-evaluare a performanței", completed: false },
       { name: "Sistem de identificare a zonelor de îmbunătățire", completed: false },
@@ -157,7 +160,7 @@ export const agentProjects = [
     timeframe: "luni" as const,
     timeUsed: 0,
     timeTotal: 40,
-    icon: <span className="text-xl">💡</span>,
+    icon: "💡" as unknown as ReactNode,
     tasks: [
       { name: "Generator de idei și soluții", completed: false },
       { name: "Sistem de evaluare a originalității", completed: false },
@@ -174,7 +177,7 @@ export const agentProjects = [
     timeframe: "săptămâni" as const,
     timeUsed: 0,
     timeTotal: 20,
-    icon: <span className="text-xl">🔍</span>,
+    icon: "🔍" as unknown as ReactNode,
     tasks: [
       { name: "Generare de explicații pentru decizii", completed: false },
       { name: "Vizualizarea procesului de gândire", completed: false },

@@ -22,7 +22,7 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
               <h3 className="text-lg font-medium mb-2">{project.title}</h3>
               <p className="text-muted-foreground text-sm mb-3">{project.description}</p>
             </div>
-            <div className="text-primary">{project.icon}</div>
+            <div className="text-primary text-xl">{project.icon}</div>
           </div>
           
           <div className="flex flex-wrap gap-2 mb-4">
