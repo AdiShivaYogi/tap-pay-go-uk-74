@@ -11,6 +11,7 @@ import { AutonomousEngineProvider } from "@/components/agents/autonomous-engine/
 import { AutonomyEngine } from "@/components/agents/monitoring/autonomy/AutonomyEngine";
 import { AgentAdminTabs } from "@/components/agent-admin/AgentAdminTabs";
 import { useAgentAdminData } from "@/hooks/use-agent-admin-data";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 const AgentCentralCommand = () => {
   const { user } = useAuth();
@@ -66,6 +67,13 @@ const AgentCentralCommand = () => {
             <AutonomyEngine />
           </AutonomousEngineProvider>
         );
+      case "api-config":
+        return (
+          <div className="p-4">
+            <h2 className="text-2xl font-bold mb-4">Configurare API</h2>
+            <p className="text-muted-foreground">Aici puteți configura setările API pentru agenți.</p>
+          </div>
+        );
       default:
         return null;
     }
@@ -73,15 +81,17 @@ const AgentCentralCommand = () => {
 
   return (
     <Layout>
-      <div className="flex">
-        <AgentCentralCommandSidebar 
-          activeTab={activeTab} 
-          onTabChange={setActiveTab} 
-        />
-        <Section className="flex-1">
-          {renderActiveTab()}
-        </Section>
-      </div>
+      <SidebarProvider>
+        <div className="flex min-h-screen w-full">
+          <AgentCentralCommandSidebar 
+            activeTab={activeTab} 
+            onTabChange={setActiveTab} 
+          />
+          <Section className="flex-1">
+            {renderActiveTab()}
+          </Section>
+        </div>
+      </SidebarProvider>
     </Layout>
   );
 };
