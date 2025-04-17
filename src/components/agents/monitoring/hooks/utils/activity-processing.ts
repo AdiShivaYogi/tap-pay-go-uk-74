@@ -1,82 +1,81 @@
 
-import { extendedSupabase as supabase } from "@/integrations/supabase/extended-client";
+import { supabase } from "@/integrations/supabase/client";
 
 /**
- * Înregistrează activitatea unui agent în baza de date
+ * Înregistrează o activitate a agentului
+ * @param agentId ID-ul agentului care a generat activitatea
+ * @param description Descrierea activității
+ * @param category Categoria activității (monitoring, learning, decision, autonomy, etc.)
+ * @returns Promise<void>
  */
-export async function logAgentActivity(agentId: string, description: string, category: string = "monitoring") {
+export const logAgentActivity = async (
+  agentId: string, 
+  description: string, 
+  category: string = "monitoring"
+): Promise<void> => {
   try {
-    // Log în tabela de log-uri
-    const { data: logData, error: logError } = await supabase
-      .from('agent_activity_logs')
-      .insert([
-        {
-          agent_id: agentId,
-          agent_name: getAgentName(agentId),
-          category,
-          description,
-          timestamp: new Date().toISOString()
-        }
-      ]);
-
-    if (logError) {
-      console.error('Eroare la înregistrarea activității în logs:', logError);
-      return false;
-    }
-
-    // Actualizăm și tabela de activitate
+    // Înregistrare activitate în tabelul agent_activity_logs
     const { error: activityError } = await supabase
-      .from('agent_activity')
-      .insert([
-        { 
-          agent_id: agentId,
-          agent_name: getAgentName(agentId),
-          category,
-          action: 'activity'
-        }
-      ]);
-
+      .from('agent_activity_logs')
+      .insert({
+        agent_id: agentId,
+        agent_name: getAgentName(agentId),
+        description: description,
+        category: category
+      });
+    
     if (activityError) {
-      console.error('Eroare la înregistrarea activității:', activityError);
-      return false;
+      console.error("Eroare la înregistrarea activității:", activityError);
     }
-
-    return true;
+    
+    // Înregistrare acțiune sumarizată în tabelul agent_activity
+    const { error: actionError } = await supabase
+      .from('agent_activity')
+      .insert({
+        agent_id: agentId,
+        agent_name: getAgentName(agentId),
+        action: description.substring(0, 100), // Luăm primele 100 caractere ca acțiune
+        category: category
+      });
+    
+    if (actionError) {
+      console.error("Eroare la înregistrarea acțiunii:", actionError);
+    }
+    
   } catch (error) {
-    console.error('Eroare generală la înregistrarea activității:', error);
-    return false;
+    console.error("Excepție la înregistrarea activității:", error);
   }
-}
+};
 
-// Helper pentru a obține numele agentului după ID
-function getAgentName(agentId: string): string {
-  // Lista simplificată de agenți și ID-uri
-  const agentNames: Record<string, string> = {
-    "agent-1": "Asistent Plăți",
-    "agent-2": "Agent Marketing",
-    "agent-3": "Agent Securitate",
-    "agent-4": "Agent Autonomie",
-    "agent-5": "Agent Integrare",
-    "autonomous-agent": "Sistem Autonom",
-    "system": "System",
-    "learning-engine": "Motor Învățare"
+/**
+ * Obține un nume descriptiv pentru agentul bazat pe ID
+ * @param agentId ID-ul agentului
+ * @returns Nume descriptiv
+ */
+const getAgentName = (agentId: string): string => {
+  // Map ID-uri comune la nume descriptive
+  const nameMap: Record<string, string> = {
+    'system': 'Sistem Control',
+    'monitoring': 'Agent Monitorizare',
+    'learning': 'Agent Învățare',
+    'decision': 'Agent Decizie',
+    'analysis': 'Agent Analiză',
+    'anthropic-api': 'API Anthropic',
+    'openrouter-api': 'API OpenRouter',
+    'claude-api-query': 'API Query Claude',
+    'anthropic-api-query': 'API Query Anthropic'
   };
   
-  return agentNames[agentId] || `Agent ${agentId}`;
-}
-
-export const extractActivityMetrics = (activities: any[]) => {
-  // Implementare pentru extragerea metricilor din activități
-  const categories = Array.from(new Set(activities.map(a => a.category)));
-  const totalActivities = activities.length;
-  const categoryBreakdown = categories.map(category => ({
-    category,
-    count: activities.filter(a => a.category === category).length
-  }));
+  // Dacă avem un nume predefinit, îl returnăm
+  if (agentId in nameMap) {
+    return nameMap[agentId];
+  }
   
-  return {
-    categories,
-    totalActivities,
-    categoryBreakdown
-  };
+  // Altfel, generăm un nume bazat pe ID
+  if (agentId.includes('api')) {
+    return `Serviciu API ${agentId.split('-')[0]}`;
+  }
+  
+  // Nume generic pentru alte ID-uri
+  return `Agent ${agentId.charAt(0).toUpperCase() + agentId.slice(1)}`;
 };

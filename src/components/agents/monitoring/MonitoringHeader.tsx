@@ -1,104 +1,58 @@
 
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { 
-  Bot, 
-  ChevronRight, 
-  PlusCircle, 
-  Settings, 
-  LineChart, 
-  AlertTriangle, 
-  Sparkles 
-} from "lucide-react";
+import React from 'react';
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { PageHeader } from "@/components/ui/layout/page-header";
-import { useAgentMonitoring } from "./hooks";
-import { AutoExecutionButton } from "./autonomy/AutoExecutionButton";
+import { Play, Pause, Settings } from "lucide-react";
 import { useAutonomousEngine } from "@/components/agents/autonomous-engine/AutonomousEngineProvider";
+import { Badge } from "@/components/ui/badge";
 
 interface MonitoringHeaderProps {
-  agentsRunning?: boolean;
+  agentsRunning?: number;
 }
 
-export const MonitoringHeader: React.FC<MonitoringHeaderProps> = ({ agentsRunning: externalAgentsRunning }) => {
-  const navigate = useNavigate();
-  const { autoExecutionStatus } = useAgentMonitoring();
-  const { isRunning: autonomousAgentsRunning } = useAutonomousEngine();
+export const MonitoringHeader = ({ agentsRunning }: MonitoringHeaderProps) => {
+  const { isRunning, agentsCount, startAgents, stopAgents } = useAutonomousEngine();
   
-  // Folosim starea internă dacă cea externă nu e definită
-  const agentsRunning = externalAgentsRunning !== undefined ? externalAgentsRunning : autonomousAgentsRunning;
+  const displayedAgentsCount = agentsRunning ?? agentsCount;
   
-  // Verificăm dacă toate privilegiile sunt activate
-  const allPrivilegesGranted = autoExecutionStatus && Object.values(autoExecutionStatus).every((status) => status === true);
-
   return (
-    <div className="flex flex-col gap-2 mb-6">
-      <div className="flex justify-between items-center">
-        <PageHeader
-          icon={Bot}
-          title="Control & Monitorizare Agenți"
-          description="Supraveghere și control al agenților autonomi din platformă"
-        />
-        
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigate('/admin/agents/settings')}
-            className="flex items-center gap-1.5"
-          >
-            <Settings size={14} />
-            Setări
-          </Button>
-          
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigate('/admin/agents/analytics')}
-            className="hidden md:flex items-center gap-1.5"
-          >
-            <LineChart size={14} />
-            Analitice
-          </Button>
-          
-          <AutoExecutionButton 
-            variant="header"
-            completed={allPrivilegesGranted}
-          />
-        </div>
-      </div>
-      
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-2">
-          <Badge
-            variant={agentsRunning ? "success" : "default"}
-            className="flex items-center gap-1"
-          >
-            <Sparkles size={14} />
-            {agentsRunning ? 'Agenți activi' : 'Agenți inactivi'}
-          </Badge>
-          
-          {allPrivilegesGranted && (
-            <Badge
-              variant="warning"
-              className="flex items-center gap-1"
-            >
-              <AlertTriangle size={14} />
-              Privilegii complete
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+      <div>
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          Monitorizare Agenți
+          {isRunning && (
+            <Badge variant="default" className="bg-green-500 hover:bg-green-600">
+              Activ
             </Badge>
           )}
-        </div>
+          {!isRunning && (
+            <Badge variant="outline" className="bg-slate-100">
+              Inactiv
+            </Badge>
+          )}
+        </h1>
+        <p className="text-muted-foreground mt-1">
+          {isRunning
+            ? `Sistem autonom activ cu ${displayedAgentsCount} agenți monitorizați în timp real`
+            : "Sistemul autonom este oprit. Apăsați start pentru a activa agenții"}
+        </p>
+      </div>
+      
+      <div className="flex items-center gap-2 self-end sm:self-auto">
+        {!isRunning ? (
+          <Button onClick={startAgents} size="sm" className="gap-2">
+            <Play className="h-4 w-4" />
+            <span>Start Agenți</span>
+          </Button>
+        ) : (
+          <Button onClick={stopAgents} variant="outline" size="sm" className="gap-2">
+            <Pause className="h-4 w-4" />
+            <span>Oprire Agenți</span>
+          </Button>
+        )}
         
-        <Button
-          size="sm"
-          variant="ghost"
-          className="flex items-center gap-1 text-xs font-normal"
-          onClick={() => navigate('/admin/agents/add')}
-        >
-          <PlusCircle size={14} />
-          Adaugă agent
-          <ChevronRight size={14} />
+        <Button variant="outline" size="sm" className="gap-2">
+          <Settings className="h-4 w-4" />
+          <span>Configurare</span>
         </Button>
       </div>
     </div>

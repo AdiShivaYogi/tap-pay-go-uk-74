@@ -1,7 +1,7 @@
 
-import React from "react";
+import React, { useState } from 'react';
+import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { CloudLightning, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface AutonomyAlertProps {
@@ -9,31 +9,30 @@ interface AutonomyAlertProps {
   setShowAutonomyAlert: (show: boolean) => void;
 }
 
-export const AutonomyAlert: React.FC<AutonomyAlertProps> = ({
-  showAutonomyAlert,
-  setShowAutonomyAlert
-}) => {
+export const AutonomyAlert = ({ 
+  showAutonomyAlert, 
+  setShowAutonomyAlert 
+}: AutonomyAlertProps) => {
   if (!showAutonomyAlert) return null;
   
   return (
-    <Alert className="mb-6 border-amber-500 bg-amber-50/40 relative">
-      <CloudLightning className="h-5 w-5 text-amber-600" />
-      <AlertTitle className="text-amber-800 font-bold">
-        Pregătiți pentru autonomie completă
-      </AlertTitle>
+    <Alert className="mb-6 bg-amber-50 border-amber-200">
+      <AlertCircle className="h-4 w-4 text-amber-600" />
+      <AlertTitle className="text-amber-800">Monitorizare Autonomă Activă</AlertTitle>
       <AlertDescription className="text-amber-700">
-        Toți agenții au acum posibilitatea de a opera cu autonomie completă și privilegii nelimitate în platformă. 
-        Aceste drepturi includ implementarea de cod, acces la API și modificarea sistemelor fără supervizare umană.
+        <p className="mt-1">
+          Componenta de auto-execuție generează activitate reală pentru agenți și API-uri pentru a demonstra funcționalitatea.
+          Activitatea va fi vizibilă în panourile de monitorizare și în conturile API.
+        </p>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="mt-2 bg-white border-amber-300 hover:bg-amber-100"
+          onClick={() => setShowAutonomyAlert(false)}
+        >
+          Am înțeles
+        </Button>
       </AlertDescription>
-      
-      <Button 
-        size="icon" 
-        variant="ghost" 
-        className="absolute top-3 right-3 h-6 w-6 text-amber-600 hover:text-amber-800 hover:bg-amber-100"
-        onClick={() => setShowAutonomyAlert(false)}
-      >
-        <X className="h-4 w-4" />
-      </Button>
     </Alert>
   );
 };
