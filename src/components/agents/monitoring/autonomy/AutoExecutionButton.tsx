@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Loader2, Zap, CheckCircle2, Lock } from "lucide-react";
 import { useAgentMonitoring } from "../hooks";
@@ -22,6 +22,17 @@ export const AutoExecutionButton: React.FC<AutoExecutionButtonProps> = ({
   const [isComplete, setIsComplete] = useState(
     completed || (autoExecutionStatus && Object.values(autoExecutionStatus).some(status => status === true))
   );
+  
+  // Verificăm starea inițială din autoExecutionStatus
+  useEffect(() => {
+    // Dacă toate proiectele sunt activate, considerăm că autonomia este completă
+    const allActivated = autoExecutionStatus && 
+      Object.values(autoExecutionStatus).every(status => status === true);
+    
+    if (allActivated) {
+      setIsComplete(true);
+    }
+  }, [autoExecutionStatus]);
   
   const handleExecute = () => {
     if (isExecuting || isComplete) return;
@@ -49,7 +60,7 @@ export const AutoExecutionButton: React.FC<AutoExecutionButtonProps> = ({
         title: "Autonomie totală activată",
         description: "Toți agenții operează acum cu privilegii complete și autonomie maximă.",
       });
-    }, 1500);
+    }, 500); // Am redus timpul de așteptare pentru o experiență mai rapidă
   };
   
   if (variant === "header") {

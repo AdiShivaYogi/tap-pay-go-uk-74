@@ -52,6 +52,7 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
           setTasks(prevTasks => 
             prevTasks.map(task => ({ ...task, completed: true, inProgress: false }))
           );
+          setProgress(100); // Setăm progresul la 100%
         }
       }
     }

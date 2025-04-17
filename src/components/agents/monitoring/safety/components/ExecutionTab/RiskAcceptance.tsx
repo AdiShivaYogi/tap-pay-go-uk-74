@@ -22,6 +22,17 @@ export const RiskAcceptance: React.FC<RiskAcceptanceProps> = ({
                           acceptedRisks.includes("mediu") && 
                           acceptedRisks.includes("ridicat");
   
+  // Handler pentru butonul de activare, care acceptă toate riscurile și pornește execuția
+  const handleActivateAll = () => {
+    // Acceptăm automat toate riscurile dacă nu sunt deja acceptate
+    if (!acceptedRisks.includes("scazut")) toggleRiskAcceptance("scazut");
+    if (!acceptedRisks.includes("mediu")) toggleRiskAcceptance("mediu");
+    if (!acceptedRisks.includes("ridicat")) toggleRiskAcceptance("ridicat");
+    
+    // Pornim execuția autonomă
+    startAutonomousExecution();
+  };
+  
   return (
     <StyledCard className="border-amber-200">
       <StyledCardHeader>
