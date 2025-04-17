@@ -1,62 +1,50 @@
 
-import { CheckCircle2, AlertCircle, InfoIcon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle, CheckCircle2, KeyRound } from "lucide-react";
 
 interface AnthropicKeyAlertProps {
-  status: 'idle' | 'loading' | 'success' | 'error';
-  hasKey?: boolean;
-  isKeyValid?: boolean;
-  errorMessage?: string;
+  hasKey: boolean;
+  isKeyValid: boolean;
   model?: string;
 }
 
 export function AnthropicKeyAlert({ 
-  status, 
-  hasKey = false,
-  isKeyValid = false,
-  errorMessage = '',
-  model = ''
+  hasKey, 
+  isKeyValid,
+  model
 }: AnthropicKeyAlertProps) {
-  if (status === 'idle' && !hasKey) {
+  if (!hasKey) {
     return (
-      <Alert className="bg-blue-50 border-blue-200">
-        <InfoIcon className="h-4 w-4 text-blue-600" />
-        <AlertTitle className="text-blue-800">Configurare necesară</AlertTitle>
-        <AlertDescription className="text-blue-700">
-          Este necesară adăugarea unei chei API Anthropic pentru a utiliza modelele Claude
-        </AlertDescription>
-      </Alert>
-    );
-  }
-  
-  if (status === 'idle' && hasKey && isKeyValid) {
-    return (
-      <Alert className="bg-green-50 border-green-200">
-        <CheckCircle2 className="h-4 w-4 text-green-600" />
-        <AlertTitle className="text-green-800">Cheie API validă</AlertTitle>
-        <AlertDescription className="text-green-700">
-          Cheia API Anthropic este configurată și funcționează corect.
-          {model && (
-            <div className="mt-1 text-sm">
-              Model disponibil: <span className="font-mono">{model}</span>
-            </div>
-          )}
+      <Alert variant="default" className="bg-slate-50 border-slate-200">
+        <KeyRound className="h-4 w-4 text-slate-500" />
+        <AlertTitle>Configurare inițială</AlertTitle>
+        <AlertDescription className="text-slate-600">
+          Introduceți o cheie API Anthropic pentru a accesa modelele Claude direct
         </AlertDescription>
       </Alert>
     );
   }
 
-  if ((status === 'idle' && hasKey && !isKeyValid) || status === 'error') {
+  if (hasKey && !isKeyValid) {
     return (
       <Alert variant="destructive">
         <AlertCircle className="h-4 w-4" />
-        <AlertTitle>Cheie API invalidă</AlertTitle>
+        <AlertTitle>Eroare de validare</AlertTitle>
         <AlertDescription>
-          {errorMessage || "Cheia API Anthropic nu este validă sau a expirat. Vă rugăm să verificați cheia și să încercați din nou."}
+          Cheia API Anthropic configurată nu este validă sau a expirat. Vă rugăm să introduceți o cheie nouă.
         </AlertDescription>
       </Alert>
     );
   }
 
-  return null;
+  return (
+    <Alert className="bg-green-50 border-green-200">
+      <CheckCircle2 className="h-4 w-4 text-green-600" />
+      <AlertTitle className="text-green-800">API Configurat</AlertTitle>
+      <AlertDescription className="text-green-700">
+        <p>Cheia API Anthropic este configurată și funcțională.</p>
+        {model && <p className="text-xs mt-1">Model utilizat: {model}</p>}
+      </AlertDescription>
+    </Alert>
+  );
 }

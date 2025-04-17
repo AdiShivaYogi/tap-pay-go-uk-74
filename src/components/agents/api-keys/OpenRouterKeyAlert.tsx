@@ -1,69 +1,72 @@
 
-import { CheckCircle2, AlertCircle, InfoIcon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle, CheckCircle2, KeyRound } from "lucide-react";
 
 interface OpenRouterKeyAlertProps {
-  status: 'idle' | 'loading' | 'success' | 'error';
-  hasKey?: boolean;
-  isKeyValid?: boolean;
-  errorMessage?: string;
-  claudeAvailable?: boolean;
-  availableModels?: string[];
+  hasKey: boolean;
+  isKeyValid: boolean;
+  claudeAvailable: boolean;
+  availableModels: string[];
 }
 
 export function OpenRouterKeyAlert({ 
-  status, 
-  hasKey = false,
-  isKeyValid = false,
-  errorMessage = '',
-  claudeAvailable = false,
+  hasKey, 
+  isKeyValid,
+  claudeAvailable,
   availableModels = []
 }: OpenRouterKeyAlertProps) {
-  if (status === 'idle' && !hasKey) {
+  if (!hasKey) {
     return (
-      <Alert className="bg-blue-50 border-blue-200">
-        <InfoIcon className="h-4 w-4 text-blue-600" />
-        <AlertTitle className="text-blue-800">Configurare necesară</AlertTitle>
-        <AlertDescription className="text-blue-700">
-          Este necesară adăugarea unei chei API OpenRouter pentru a utiliza modelele Claude prin OpenRouter
-        </AlertDescription>
-      </Alert>
-    );
-  }
-  
-  if (status === 'idle' && hasKey && isKeyValid) {
-    return (
-      <Alert className="bg-green-50 border-green-200">
-        <CheckCircle2 className="h-4 w-4 text-green-600" />
-        <AlertTitle className="text-green-800">Cheie API validă</AlertTitle>
-        <AlertDescription className="text-green-700">
-          Cheia API OpenRouter este configurată și funcționează corect.
-          {claudeAvailable && (
-            <div className="mt-1 text-sm">
-              Modelele Claude sunt disponibile prin OpenRouter!
-            </div>
-          )}
-          {availableModels && availableModels.length > 0 && (
-            <div className="mt-1 text-xs font-mono">
-              Modele disponibile: {availableModels.slice(0, 3).join(', ')}{availableModels.length > 3 ? '...' : ''}
-            </div>
-          )}
+      <Alert variant="default" className="bg-slate-50 border-slate-200">
+        <KeyRound className="h-4 w-4 text-slate-500" />
+        <AlertTitle>Configurare inițială</AlertTitle>
+        <AlertDescription className="text-slate-600">
+          Introduceți o cheie API OpenRouter pentru a accesa modelele Claude și alte modele AI
         </AlertDescription>
       </Alert>
     );
   }
 
-  if ((status === 'idle' && hasKey && !isKeyValid) || status === 'error') {
+  if (hasKey && !isKeyValid) {
     return (
       <Alert variant="destructive">
         <AlertCircle className="h-4 w-4" />
-        <AlertTitle>Cheie API invalidă</AlertTitle>
+        <AlertTitle>Eroare de validare</AlertTitle>
         <AlertDescription>
-          {errorMessage || "Cheia API OpenRouter nu este validă sau a expirat. Vă rugăm să verificați cheia și să încercați din nou."}
+          Cheia API OpenRouter configurată nu este validă sau a expirat. Vă rugăm să introduceți o cheie nouă.
         </AlertDescription>
       </Alert>
     );
   }
 
-  return null;
+  if (hasKey && isKeyValid && !claudeAvailable) {
+    return (
+      <Alert className="bg-amber-50 border-amber-200">
+        <AlertCircle className="h-4 w-4 text-amber-500" />
+        <AlertTitle className="text-amber-800">Lipsesc modelele Claude</AlertTitle>
+        <AlertDescription className="text-amber-700">
+          Cheia API OpenRouter este validă, dar nu aveți acces la modelele Claude. 
+          Verificați setările contului OpenRouter pentru a activa aceste modele.
+        </AlertDescription>
+      </Alert>
+    );
+  }
+
+  return (
+    <Alert className="bg-green-50 border-green-200">
+      <CheckCircle2 className="h-4 w-4 text-green-600" />
+      <AlertTitle className="text-green-800">API Configurat</AlertTitle>
+      <AlertDescription className="text-green-700">
+        <p className="mb-1">Cheia API OpenRouter este configurată și funcțională.</p>
+        {claudeAvailable && (
+          <p className="text-xs">
+            Modele Claude disponibile: {availableModels.filter(m => 
+              m.toLowerCase().includes('claude') || 
+              m.toLowerCase().includes('anthropic')
+            ).join(', ')}
+          </p>
+        )}
+      </AlertDescription>
+    </Alert>
+  );
 }

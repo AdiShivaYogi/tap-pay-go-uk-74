@@ -14,22 +14,33 @@ serve(async (req) => {
   }
 
   try {
-    // Verificăm dacă cheia este configurată
+    // Creăm clientul Supabase
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    // Obținem cheia API OpenRouter din secretele funcției
     const openrouterApiKey = Deno.env.get('OPENROUTER_API_KEY');
-    
+
+    // Verificăm dacă cheia există
     if (!openrouterApiKey) {
-      return new Response(JSON.stringify({ 
-        hasKey: false,
-        message: 'Nu există o cheie OpenRouter configurată'
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200
-      });
+      return new Response(
+        JSON.stringify({ 
+          hasKey: false,
+          isValid: false,
+          message: 'Cheia API OpenRouter nu este configurată'
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200
+        }
+      );
     }
 
-    // Testăm cheia cu o cerere simplă către API-ul OpenRouter
+    // Verificăm dacă cheia este validă făcând o cerere simplă către API-ul OpenRouter pentru a lista modelele
     try {
-      const testResponse = await fetch('https://openrouter.ai/api/v1/models', {
+      const response = await fetch('https://openrouter.ai/api/v1/models', {
         headers: {
           'Authorization': `Bearer ${openrouterApiKey}`,
           'HTTP-Referer': Deno.env.get('SUPABASE_URL') || 'https://tappaygo.com',
@@ -37,63 +48,76 @@ serve(async (req) => {
         }
       });
 
-      if (!testResponse.ok) {
-        const errorData = await testResponse.json();
-        return new Response(JSON.stringify({ 
-          hasKey: true,
-          isValid: false,
-          message: `Cheie configurată, dar invalidă: ${errorData.error?.message || 'Eroare necunoscută'}`,
-          keyInfo: {
-            length: openrouterApiKey.length,
-            prefix: `${openrouterApiKey.substring(0, 6)}...`
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Răspuns negativ de la API-ul OpenRouter:', errorData);
+        
+        return new Response(
+          JSON.stringify({ 
+            hasKey: true,
+            isValid: false,
+            error: errorData.error?.message || 'Răspuns invalid de la API',
+            message: 'Cheia API OpenRouter este configurată, dar nu este validă'
+          }),
+          {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            status: 200
           }
-        }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 200
-        });
+        );
       }
 
-      // Cheia este validă
-      const modelsData = await testResponse.json();
+      const data = await response.json();
+      const models = data.data?.map((model: any) => model.id) || [];
       
-      return new Response(JSON.stringify({
-        hasKey: true,
-        isValid: true,
-        message: 'Cheia OpenRouter este configurată și validă',
-        keyInfo: {
-          length: openrouterApiKey.length,
-          prefix: `${openrouterApiKey.substring(0, 6)}...`
-        },
-        models: modelsData.data?.map((model: any) => model.id) || [] // Modelele disponibile
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200
-      });
-
-    } catch (validationErr) {
-      console.error('Eroare la validarea cheii OpenRouter:', validationErr);
-      return new Response(JSON.stringify({ 
-        hasKey: true,
-        isValid: false,
-        message: `Eroare la validarea cheii: ${validationErr.message || 'Eroare necunoscută'}`,
-        keyInfo: {
-          length: openrouterApiKey.length,
-          prefix: `${openrouterApiKey.substring(0, 6)}...`
+      // Verificăm dacă avem modele Claude disponibile
+      const claudeModels = models.filter((model: string) => 
+        model.toLowerCase().includes('claude') || 
+        model.toLowerCase().includes('anthropic')
+      );
+      
+      return new Response(
+        JSON.stringify({ 
+          hasKey: true,
+          isValid: true,
+          claudeAvailable: claudeModels.length > 0,
+          models: models,
+          message: 'Cheia API OpenRouter este configurată și validă'
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200
         }
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200
-      });
+      );
+    } catch (error) {
+      console.error('Eroare la validarea cheii OpenRouter:', error);
+      
+      return new Response(
+        JSON.stringify({ 
+          hasKey: true,
+          isValid: false,
+          error: error instanceof Error ? error.message : 'Eroare necunoscută',
+          message: 'Cheia API OpenRouter este configurată, dar nu a putut fi validată'
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200
+        }
+      );
     }
   } catch (err) {
-    console.error('Eroare la verificarea cheii OpenRouter:', err);
-
-    return new Response(JSON.stringify({ 
-      error: 'Eroare internă la verificarea cheii API', 
-      details: err.message || 'Eroare necunoscută'
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 500
-    });
+    console.error('Eroare neașteptată:', err);
+    
+    return new Response(
+      JSON.stringify({ 
+        error: 'Eroare internă',
+        message: err instanceof Error ? err.message : 'Eroare necunoscută',
+        hasKey: false,
+        isValid: false
+      }),
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 500
+      }
+    );
   }
 });

@@ -1,105 +1,91 @@
 
-import { Brain, Loader2 } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ImportantNotice } from "./api-keys/ImportantNotice";
+import { useAnthropicKey } from "./api-keys/useAnthropicKey";
 import { AnthropicKeyForm } from "./api-keys/AnthropicKeyForm";
 import { AnthropicKeyAlert } from "./api-keys/AnthropicKeyAlert";
-import { useAnthropicKey } from "./api-keys/useAnthropicKey";
+import { Loader2, KeyRound } from "lucide-react";
 
-export function AnthropicApiKeyDialog() {
+interface AnthropicApiKeyDialogProps {
+  isOpen?: boolean;
+  setIsOpen?: (isOpen: boolean) => void;
+}
+
+export const AnthropicApiKeyDialog = ({ isOpen, setIsOpen }: AnthropicApiKeyDialogProps) => {
   const { 
-    isOpen, 
-    setIsOpen, 
+    isOpen: internalIsOpen, 
+    setIsOpen: setInternalIsOpen, 
     apiKey, 
     setApiKey, 
     isSubmitting, 
-    status, 
-    errorMessage, 
+    status,
+    errorMessage,
     hasKey,
     isKeyValid,
     model,
-    isChecking, 
-    handleSaveApiKey 
+    isChecking,
+    handleSaveApiKey
   } = useAnthropicKey();
+  
+  // Folosim starea internă sau prop-ul, în funcție de ce e disponibil
+  const dialogIsOpen = isOpen !== undefined ? isOpen : internalIsOpen;
+  const setDialogIsOpen = setIsOpen || setInternalIsOpen;
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={dialogIsOpen} onOpenChange={setDialogIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="gap-2">
-          <Brain className="h-4 w-4" />
-          Configurare Anthropic (Claude)
+        <Button variant="outline" size="sm" className="gap-2">
+          <KeyRound className="h-4 w-4" />
+          <span>API Claude (Anthropic)</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Brain className="h-5 w-5 text-primary" /> Configurare API Anthropic
-          </DialogTitle>
+          <DialogTitle>Configurare API Claude (Anthropic)</DialogTitle>
           <DialogDescription>
-            Adaugă cheia API Anthropic pentru a activa modelele Claude direct pentru agenții AI
+            Conectați contul Anthropic pentru a utiliza modelele Claude în aplicație
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 py-4">
-          {isChecking ? (
-            <div className="flex justify-center items-center py-6">
-              <Loader2 className="h-6 w-6 animate-spin text-primary" />
-              <span className="ml-2">Se verifică configurația existentă...</span>
-            </div>
-          ) : (
-            <>
-              <AnthropicKeyAlert 
-                status={status} 
-                hasKey={hasKey}
-                isKeyValid={isKeyValid}
-                model={model}
-                errorMessage={errorMessage} 
+        {isChecking ? (
+          <div className="flex flex-col items-center justify-center py-8">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            <p className="mt-2 text-sm text-muted-foreground">Se verifică configurația API...</p>
+          </div>
+        ) : (
+          <>
+            <AnthropicKeyAlert 
+              hasKey={hasKey}
+              isKeyValid={isKeyValid}
+              model={model}
+            />
+
+            <div className="space-y-4 py-4 px-1">
+              <AnthropicKeyForm 
+                apiKey={apiKey}
+                onChange={setApiKey}
+                disabled={isSubmitting}
               />
               
-              <ImportantNotice />
-
-              <AnthropicKeyForm 
-                apiKey={apiKey} 
-                onChange={setApiKey} 
-                disabled={status === "loading" || status === "success"} 
-              />
-            </>
-          )}
-        </div>
-
-        <div className="flex justify-end gap-3">
-          <Button
-            variant="outline"
-            onClick={() => setIsOpen(false)}
-            disabled={isSubmitting || isChecking}
-          >
-            Anulează
-          </Button>
-          <Button
-            onClick={handleSaveApiKey}
-            disabled={isSubmitting || status === "success" || !apiKey.trim() || isChecking}
-            className="gap-2"
-          >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" /> Salvare...
-              </>
-            ) : (
-              <>
-                <Brain className="h-4 w-4" /> Salvează cheia API
-              </>
-            )}
-          </Button>
-        </div>
+              <div className="flex justify-end">
+                <Button 
+                  type="button"
+                  onClick={handleSaveApiKey}
+                  disabled={isSubmitting || !apiKey.trim()}
+                  className="gap-2"
+                >
+                  {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
+                  {status === 'loading' ? 'Se salvează...' : 'Salvează cheia API'}
+                </Button>
+              </div>
+              
+              {status === 'error' && (
+                <p className="text-sm text-destructive mt-2">{errorMessage || 'A apărut o eroare la salvarea cheii API'}</p>
+              )}
+            </div>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   );
-}
+};

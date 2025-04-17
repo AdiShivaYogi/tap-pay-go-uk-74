@@ -1,107 +1,93 @@
 
-import { Network, Loader2 } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ImportantNotice } from "./api-keys/ImportantNotice";
+import { useOpenRouterKey } from "./api-keys/useOpenRouterKey";
 import { OpenRouterKeyForm } from "./api-keys/OpenRouterKeyForm";
 import { OpenRouterKeyAlert } from "./api-keys/OpenRouterKeyAlert";
-import { useOpenRouterKey } from "./api-keys/useOpenRouterKey";
+import { Loader2, KeyRound } from "lucide-react";
 
-export function OpenRouterApiKeyDialog() {
+interface OpenRouterApiKeyDialogProps {
+  isOpen?: boolean;
+  setIsOpen?: (isOpen: boolean) => void;
+}
+
+export const OpenRouterApiKeyDialog = ({ isOpen, setIsOpen }: OpenRouterApiKeyDialogProps) => {
   const { 
-    isOpen, 
-    setIsOpen, 
+    isOpen: internalIsOpen, 
+    setIsOpen: setInternalIsOpen, 
     apiKey, 
     setApiKey, 
     isSubmitting, 
-    status, 
-    errorMessage, 
+    status,
+    errorMessage,
     hasKey,
     isKeyValid,
     claudeAvailable,
     availableModels,
-    isChecking, 
-    handleSaveApiKey 
+    isChecking,
+    handleSaveApiKey
   } = useOpenRouterKey();
 
+  // Folosim starea internă sau prop-ul, în funcție de ce e disponibil
+  const dialogIsOpen = isOpen !== undefined ? isOpen : internalIsOpen;
+  const setDialogIsOpen = setIsOpen || setInternalIsOpen;
+
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={dialogIsOpen} onOpenChange={setDialogIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="gap-2">
-          <Network className="h-4 w-4" />
-          Configurare OpenRouter (Claude)
+        <Button variant="outline" size="sm" className="gap-2">
+          <KeyRound className="h-4 w-4" />
+          <span>API Claude (OpenRouter)</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Network className="h-5 w-5 text-primary" /> Configurare API OpenRouter
-          </DialogTitle>
+          <DialogTitle>Configurare API Claude prin OpenRouter</DialogTitle>
           <DialogDescription>
-            Adaugă cheia API OpenRouter pentru a activa modelele Claude și alte modele avansate pentru agenții AI
+            Conectați contul OpenRouter pentru a utiliza modelele Claude și alte modele AI în aplicație
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 py-4">
-          {isChecking ? (
-            <div className="flex justify-center items-center py-6">
-              <Loader2 className="h-6 w-6 animate-spin text-primary" />
-              <span className="ml-2">Se verifică configurația existentă...</span>
-            </div>
-          ) : (
-            <>
-              <OpenRouterKeyAlert 
-                status={status} 
-                hasKey={hasKey}
-                isKeyValid={isKeyValid}
-                claudeAvailable={claudeAvailable}
-                availableModels={availableModels}
-                errorMessage={errorMessage} 
+        {isChecking ? (
+          <div className="flex flex-col items-center justify-center py-8">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            <p className="mt-2 text-sm text-muted-foreground">Se verifică configurația API...</p>
+          </div>
+        ) : (
+          <>
+            <OpenRouterKeyAlert 
+              hasKey={hasKey}
+              isKeyValid={isKeyValid}
+              claudeAvailable={claudeAvailable}
+              availableModels={availableModels}
+            />
+
+            <div className="space-y-4 py-4 px-1">
+              <OpenRouterKeyForm 
+                apiKey={apiKey}
+                onChange={setApiKey}
+                disabled={isSubmitting}
               />
               
-              <ImportantNotice />
-
-              <OpenRouterKeyForm 
-                apiKey={apiKey} 
-                onChange={setApiKey} 
-                disabled={status === "loading" || status === "success"} 
-              />
-            </>
-          )}
-        </div>
-
-        <div className="flex justify-end gap-3">
-          <Button
-            variant="outline"
-            onClick={() => setIsOpen(false)}
-            disabled={isSubmitting || isChecking}
-          >
-            Anulează
-          </Button>
-          <Button
-            onClick={handleSaveApiKey}
-            disabled={isSubmitting || status === "success" || !apiKey.trim() || isChecking}
-            className="gap-2"
-          >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" /> Salvare...
-              </>
-            ) : (
-              <>
-                <Network className="h-4 w-4" /> Salvează cheia API
-              </>
-            )}
-          </Button>
-        </div>
+              <div className="flex justify-end">
+                <Button 
+                  type="button"
+                  onClick={handleSaveApiKey}
+                  disabled={isSubmitting || !apiKey.trim()}
+                  className="gap-2"
+                >
+                  {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
+                  {status === 'loading' ? 'Se salvează...' : 'Salvează cheia API'}
+                </Button>
+              </div>
+              
+              {status === 'error' && (
+                <p className="text-sm text-destructive mt-2">{errorMessage || 'A apărut o eroare la salvarea cheii API'}</p>
+              )}
+            </div>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   );
-}
+};
