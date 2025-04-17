@@ -5,6 +5,8 @@ import { logAgentActivity } from "../hooks/utils/activity-processing";
 import { AgentLearningProgress } from "../AgentLearningProgress";
 import { EthicsProtocol } from "./EthicsProtocol";
 import { EvaluationMechanism } from "./EvaluationMechanism";
+import { StyledCard } from "@/components/ui/cards";
+import { Sparkles } from "lucide-react";
 
 export const AutonomyEngine = () => {
   const { toast } = useToast();
@@ -36,7 +38,15 @@ export const AutonomyEngine = () => {
   
   return (
     <div className="space-y-6 mt-6">
-      <AgentLearningProgress />
+      <StyledCard>
+        <div className="p-4 flex items-center gap-2 text-primary border-b">
+          <Sparkles className="h-5 w-5" />
+          <h3 className="text-lg font-medium">Auto-Învățare și Evoluție</h3>
+        </div>
+        <div className="p-4">
+          <AgentLearningProgress />
+        </div>
+      </StyledCard>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <EthicsProtocol />

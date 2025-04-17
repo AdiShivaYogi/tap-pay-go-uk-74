@@ -5,7 +5,13 @@ import {
   User, 
   Book, 
   Bot, 
-  Command
+  Command,
+  Info,
+  CreditCard,
+  FileText,
+  Shield,
+  HelpCircle,
+  Home
 } from "lucide-react";
 import { ComponentType, SVGProps } from "react";
 
@@ -14,6 +20,8 @@ export interface NavigationItem {
   href: string;
   icon?: ComponentType<SVGProps<SVGSVGElement>>;
   admin?: boolean;
+  highlight?: boolean;
+  newUser?: boolean; // Flag pentru a marca elementele destinate noilor utilizatori
 }
 
 // Pentru compatibilitate cu codul existent până când toate fișierele sunt actualizate
@@ -21,6 +29,24 @@ export const NAVIGATION: NavigationItem[] = [];
 
 export const config = {
   mainNav: [
+    {
+      title: "Acasă",
+      href: "/",
+      icon: Home,
+      newUser: true
+    },
+    {
+      title: "Despre Noi",
+      href: "/about",
+      icon: Info,
+      newUser: true
+    },
+    {
+      title: "Prețuri",
+      href: "/pricing",
+      icon: CreditCard,
+      newUser: true
+    },
     {
       title: "Dashboard",
       href: "/admin",
@@ -47,7 +73,29 @@ export const config = {
       href: "/agent-central-command",
       icon: Command,
       admin: true,
-      highlight: true, // Adăugăm această proprietate pentru a evidenția în UI
+      highlight: true,
     },
   ],
+  
+  // Adăugăm o secțiune dedicată pentru linkuri footer importante
+  footerNav: [
+    {
+      title: "Termeni și Condiții",
+      href: "/terms",
+      icon: FileText,
+      newUser: true
+    },
+    {
+      title: "Confidențialitate",
+      href: "/privacy",
+      icon: Shield,
+      newUser: true
+    },
+    {
+      title: "Ajutor",
+      href: "/help",
+      icon: HelpCircle,
+      newUser: true
+    }
+  ]
 };
