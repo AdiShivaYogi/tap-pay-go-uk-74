@@ -9,14 +9,45 @@ interface AutoExecutionButtonProps {
   className?: string;
   disabled?: boolean;
   completed?: boolean;
+  variant?: string;
 }
 
 export const AutoExecutionButton: React.FC<AutoExecutionButtonProps> = ({ 
   onExecuteTasks, 
   className,
   disabled = false,
-  completed = false
+  completed = false,
+  variant
 }) => {
+  // Pentru varianta headerButton, folosim un stil diferit
+  if (variant === "headerButton") {
+    return (
+      <Button
+        onClick={onExecuteTasks}
+        disabled={disabled}
+        className={cn(
+          "bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white gap-2",
+          completed && "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700",
+          className
+        )}
+        size="sm"
+      >
+        {completed ? (
+          <>
+            <CheckCircle2 className="h-4 w-4 text-white" />
+            Toate taskurile implementate
+          </>
+        ) : (
+          <>
+            <Zap className="h-4 w-4 text-white" />
+            Activează Autoexecuție
+          </>
+        )}
+      </Button>
+    );
+  }
+
+  // Stilul implicit pentru buton
   return (
     <Button
       onClick={onExecuteTasks}
