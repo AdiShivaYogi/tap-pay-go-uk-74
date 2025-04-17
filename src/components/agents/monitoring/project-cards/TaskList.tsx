@@ -1,7 +1,7 @@
 
 import React from "react";
 import { TaskItem } from "./TaskItem";
-import { AgentTask } from "./types";
+import { TaskItem as AgentTask } from "./types";
 
 interface TaskListProps {
   tasks: (AgentTask & { inProgress?: boolean })[];

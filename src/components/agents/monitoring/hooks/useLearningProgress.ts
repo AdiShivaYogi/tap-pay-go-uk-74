@@ -75,7 +75,7 @@ export const useLearningProgress = (activityData: ActivityData[]) => {
   const completeLearningProcess = useCallback((id: string) => {
     // Găsim procesul de învățare și îl marcăm ca finalizat
     const progressItem = learningProgress.find(p => p.id === id);
-    if (!progressItem) return;
+    if (!progressItem) return undefined;
 
     // Actualizăm progress ca fiind finalizat
     setLearningProgress(prev => 
@@ -105,14 +105,15 @@ export const useLearningProgress = (activityData: ActivityData[]) => {
       targetAgentId: progressItem.targetAgentId,
       targetAgentName: targetAgent?.agentName || progressItem.targetAgentId,
       learningType: progressItem.learningType,
-      insights: insights,
       learningDate: new Date(),
       conceptsLearned: insights,
+      insights: insights,
+      duration: 120, // 2 minute
       summary: "Proces de învățare autonomă finalizat cu succes. Îmbunătățiri substanțiale în capacitatea de analiză și procesare a sarcinilor complexe."
     };
 
     // Adăugăm raportul la stare
-    setLearningReports(prev => [...prev, newReport]);
+    setLearningReports(prev => [newReport, ...prev]);
 
     return newReport;
   }, [learningProgress, activityData]);

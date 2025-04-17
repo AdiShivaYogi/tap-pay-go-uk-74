@@ -20,9 +20,10 @@ export const AgentLearningProgress: React.FC = () => {
     return () => clearInterval(intervalId);
   }, []);
   
+  // Filtrăm progresul activ - modificat pentru array în loc de Map
   const activeProgress = learningProgress.filter(p => p.status === 'in-progress');
   
-  if (!activeProgress.length) {
+  if (activeProgress.length === 0) {
     return null;
   }
   

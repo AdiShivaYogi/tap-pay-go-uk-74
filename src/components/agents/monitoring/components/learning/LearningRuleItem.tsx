@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Clock, Pause, Play, Trash2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ro } from "date-fns/locale";
-import { AgentLearningRule } from "../../hooks/types/agent-monitoring.types";
+import { LearningRule as AgentLearningRule } from "../../hooks/types/agent-monitoring.types";
 
 interface LearningRuleItemProps {
   rule: AgentLearningRule;

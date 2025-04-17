@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { 
-  AgentLearningRule,
+  LearningRule as AgentLearningRule,
   AgentInteraction
 } from "./types/agent-monitoring.types";
 import { useToast } from "@/hooks/use-toast";

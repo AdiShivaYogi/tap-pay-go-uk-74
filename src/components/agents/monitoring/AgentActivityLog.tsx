@@ -118,7 +118,7 @@ export const AgentActivityLog: React.FC<AgentActivityLogProps> = ({
                     </Badge>
                   )}
                 </div>
-                <p className="text-sm">{log.description}</p>
+                <p className="text-sm">{log.action}</p>
                 <div className="mt-1 flex items-center gap-2">
                   {getIconForCategory(log.category)}
                   <span className="text-xs capitalize">{log.category}</span>

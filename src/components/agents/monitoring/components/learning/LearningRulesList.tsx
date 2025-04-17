@@ -2,7 +2,7 @@
 import React from "react";
 import { Separator } from "@/components/ui/separator";
 import { LearningRuleItem } from "./LearningRuleItem";
-import { AgentLearningRule } from "../../hooks/types/agent-monitoring.types";
+import { LearningRule as AgentLearningRule } from "../../hooks/types/agent-monitoring.types";
 
 interface LearningRulesListProps {
   learningRules: AgentLearningRule[];

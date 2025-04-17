@@ -2,7 +2,7 @@
 import React from 'react';
 import { Check, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { AgentTask } from './types';
+import { TaskItem as AgentTask } from './types';
 
 interface TaskItemProps {
   task: AgentTask & { inProgress?: boolean };

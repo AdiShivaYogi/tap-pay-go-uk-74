@@ -16,7 +16,7 @@ export const AutonomyVisualization: React.FC = () => {
   const { learningReports, learningProgress } = useAgentMonitoring();
   const { toast } = useToast();
   
-  // Show alert when all tasks are completed
+  // Arătăm alerta atunci când toate task-urile sunt completate
   useEffect(() => {
     if (autonomyTasksContext && 
         autonomyTasksContext.tasks.every(task => task.completed)) {
