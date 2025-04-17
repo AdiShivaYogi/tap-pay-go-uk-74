@@ -11,7 +11,7 @@ export interface AgentProject {
   description: string;
   status: "în progres" | "planificat" | "finalizat";
   priority: "înaltă" | "medie" | "scăzută";
-  timeframe: "zile" | "săptămâni" | "luni";
+  timeframe: "zile" | "săptămâni" | "luni" | "ani";
   timeUsed: number;
   timeTotal: number;
   icon: LucideIcon;
