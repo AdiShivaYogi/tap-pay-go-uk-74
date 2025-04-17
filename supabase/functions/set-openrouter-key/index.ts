@@ -25,16 +25,21 @@ serve(async (req) => {
 
     // Validare de bază
     if (!key || key.trim() === '') {
-      return new Response(JSON.stringify({ error: 'API key cannot be empty' }), {
+      return new Response(JSON.stringify({ 
+        error: 'Cheia API nu poate fi goală',
+        userMessage: 'Vă rugăm să introduceți o cheie API validă.'
+      }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 400
       });
     }
 
-    // Validare format cheie OpenRouter
-    if (!key.startsWith('sk-or-')) {
+    // Validare format cheie OpenRouter - strict pentru cheile care încep cu sk_or
+    const openrouterKeyRegex = /^sk_or_[a-zA-Z0-9]+$/;
+    if (!openrouterKeyRegex.test(key)) {
       return new Response(JSON.stringify({ 
-        error: 'Format invalid pentru cheia OpenRouter. Cheile OpenRouter încep cu sk-or-' 
+        error: 'Format invalid pentru cheia OpenRouter',
+        userMessage: 'Cheia OpenRouter trebuie să înceapă cu sk_or_ și să conțină doar caractere alfanumerice.'
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 400
@@ -43,7 +48,7 @@ serve(async (req) => {
 
     console.log('Validare inițială reușită, se testează cheia OpenRouter...');
 
-    // Testăm cheia cu o cerere simplă către API-ul OpenRouter
+    // Testăm cheia cu o cerere simplă către API-ul OpenRouter pentru a lista modelele disponibile
     try {
       const testResponse = await fetch('https://openrouter.ai/api/v1/models', {
         headers: {
@@ -55,49 +60,44 @@ serve(async (req) => {
 
       if (!testResponse.ok) {
         const errorData = await testResponse.json();
+        console.error('Răspuns negativ de la API-ul OpenRouter:', errorData);
         throw new Error(`Cheie API invalidă: ${errorData.error?.message || 'Eroare necunoscută'}`);
       }
 
-      const modelsData = await testResponse.json();
-      const availableModels = modelsData.data?.map((m: any) => m.id) || [];
+      const responseData = await testResponse.json();
+      const availableModels = responseData.data?.map((model: any) => model.id) || [];
       
-      // Verifică dacă modelele Claude sunt disponibile
-      const claudeModels = availableModels.filter((model: string) => 
-        model.includes('claude') || model.includes('anthropic')
-      );
-      
-      if (claudeModels.length === 0) {
-        console.log('Avertisment: Nu s-au găsit modele Claude disponibile cu această cheie.');
-      }
-
-      // Store the OpenRouter API key as a secret
+      // Stocăm cheia în secretele Supabase
       const { error } = await supabaseClient.functions.setSecret('OPENROUTER_API_KEY', key);
 
       if (error) {
-        console.error('Error setting OpenRouter API key:', error);
+        console.error('Eroare la salvarea cheii OpenRouter:', error);
         return new Response(JSON.stringify({ 
-          error: 'Failed to save API key', 
-          details: error.message || 'Unknown error' 
+          error: 'Nu s-a putut salva cheia API', 
+          userMessage: 'A apărut o problemă la salvarea cheii. Vă rugăm să încercați din nou.',
+          details: error.message || 'Eroare la salvarea secretului'
         }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           status: 500
         });
       }
 
-      console.log('OpenRouter API key saved successfully');
+      console.log('Cheia OpenRouter a fost salvată cu succes');
       return new Response(JSON.stringify({ 
-        message: 'API key saved successfully',
+        message: 'Cheie API salvată cu succes',
         validated: true,
-        availableModels: claudeModels.length > 0 ? claudeModels : [],
-        claudeAvailable: claudeModels.length > 0
+        models: availableModels,
+        userMessage: 'Cheia API OpenRouter a fost configurată și validată cu succes.'
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200
       });
+
     } catch (validationErr) {
-      console.error('Error validating OpenRouter key:', validationErr);
+      console.error('Eroare la validarea cheii OpenRouter:', validationErr);
       return new Response(JSON.stringify({ 
         error: 'Validarea cheii a eșuat', 
+        userMessage: 'Cheia API nu este validă. Vă rugăm să verificați și să încercați din nou.',
         details: validationErr.message || 'Cheie API invalidă' 
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -106,10 +106,11 @@ serve(async (req) => {
     }
 
   } catch (err) {
-    console.error('Unexpected error:', err);
+    console.error('Eroare neașteptată:', err);
     return new Response(JSON.stringify({ 
-      error: 'Internal server error', 
-      details: err.message || 'Unknown error' 
+      error: 'Eroare internă', 
+      userMessage: 'A apărut o eroare internă. Vă rugăm să încercați din nou mai târziu.',
+      details: err.message || 'Eroare necunoscută' 
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 500

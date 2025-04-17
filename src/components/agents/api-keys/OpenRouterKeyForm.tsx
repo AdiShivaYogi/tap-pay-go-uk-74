@@ -4,34 +4,38 @@ import { Input } from "@/components/ui/input";
 interface OpenRouterKeyFormProps {
   apiKey: string;
   onChange: (value: string) => void;
-  disabled: boolean;
+  disabled?: boolean;
 }
 
-export function OpenRouterKeyForm({ apiKey, onChange, disabled }: OpenRouterKeyFormProps) {
+export function OpenRouterKeyForm({ 
+  apiKey, 
+  onChange, 
+  disabled = false
+}: OpenRouterKeyFormProps) {
   return (
     <div className="space-y-2">
-      <label htmlFor="apiKey" className="text-sm font-medium">
-        Cheia API OpenRouter
-      </label>
+      <div className="text-sm text-muted-foreground mb-2">
+        Introduceți cheia API OpenRouter pentru a folosi modelele Claude și alte modele AI
+      </div>
       <Input
-        id="apiKey"
         type="password"
         value={apiKey}
         onChange={(e) => onChange(e.target.value)}
-        placeholder="sk-or-..."
+        placeholder="sk_or_..."
+        className="font-mono text-sm"
         disabled={disabled}
       />
-      <p className="text-xs text-muted-foreground">
-        Poți obține o cheie API de la{" "}
-        <a
-          href="https://openrouter.ai/keys"
-          className="text-primary underline"
-          target="_blank"
-          rel="noreferrer"
+      <div className="text-xs text-muted-foreground">
+        Puteți găsi cheia API în{" "}
+        <a 
+          href="https://openrouter.ai/keys" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="text-primary hover:underline"
         >
-          OpenRouter
+          Panoul de control OpenRouter
         </a>
-      </p>
+      </div>
     </div>
   );
 }

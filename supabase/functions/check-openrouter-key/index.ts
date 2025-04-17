@@ -64,7 +64,7 @@ serve(async (req) => {
           length: openrouterApiKey.length,
           prefix: `${openrouterApiKey.substring(0, 6)}...`
         },
-        models: modelsData.data?.slice(0, 5).map((m: any) => m.id) || [] // Primele 5 modele disponibile
+        models: modelsData.data?.map((model: any) => model.id) || [] // Modelele disponibile
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200
