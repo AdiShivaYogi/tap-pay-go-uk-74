@@ -9,3 +9,4 @@ export * from "./TaskList";
 export * from "./AgentProjectCard";
 export * from "./projectsData";
 export * from "./AgentProjectCards";
+export * from "./IntegrationStatusBadge";

@@ -1,4 +1,3 @@
-
 import { ReactNode } from "react";
 import { 
   Lock, Unlock, Users, Brain, Lightbulb, Shield, HandCoins, Zap, 
@@ -74,7 +73,6 @@ export const quickWinProjects = [
       { name: "Mecanism de raportare a progresului", completed: false }
     ]
   },
-  // Noul proiect prioritar - Noua Era a Autonomiei
   {
     title: "Noua Eră a Autonomiei",
     description: "Task complex care marchează trecerea la o nouă paradigmă de autonomie maximă cu riscuri acceptate",
@@ -84,6 +82,7 @@ export const quickWinProjects = [
     timeUsed: 3,
     timeTotal: 20,
     icon: Sparkles,
+    integrationProgress: 30,
     tasks: [
       { name: "Conectare surse date reale", completed: false },
       { name: "Extinderea mecanismelor de monitorizare", completed: true },
@@ -321,6 +320,7 @@ export const safetyInfrastructureProjects = [
     timeUsed: 4,
     timeTotal: 20,
     icon: Server,
+    integrationProgress: 25,
     tasks: [
       { name: "Identificare surse de date", completed: true },
       { name: "Definire interfețe de integrare", completed: true },
@@ -337,6 +337,7 @@ export const safetyInfrastructureProjects = [
     timeUsed: 3,
     timeTotal: 25,
     icon: Shield,
+    integrationProgress: 20,
     tasks: [
       { name: "Definire parametri de risc", completed: true },
       { name: "Implementare model matematic", completed: false },
@@ -353,6 +354,7 @@ export const safetyInfrastructureProjects = [
     timeUsed: 2,
     timeTotal: 15,
     icon: FileCode,
+    integrationProgress: 15,
     tasks: [
       { name: "Definire format jurnal standard", completed: true },
       { name: "Implementare mecanisme de stocare", completed: false },
@@ -369,6 +371,7 @@ export const safetyInfrastructureProjects = [
     timeUsed: 0,
     timeTotal: 40,
     icon: Settings,
+    integrationProgress: 5,
     tasks: [
       { name: "Model de învățare automată", completed: false },
       { name: "Analiză istorică a incidentelor", completed: false },
@@ -385,6 +388,7 @@ export const safetyInfrastructureProjects = [
     timeUsed: 3,
     timeTotal: 12,
     icon: ActivitySquare,
+    integrationProgress: 40,
     tasks: [
       { name: "Definire niveluri de autonomie", completed: true },
       { name: "Identificare parametri critici", completed: true },
@@ -401,6 +405,7 @@ export const safetyInfrastructureProjects = [
     timeUsed: 0,
     timeTotal: 15,
     icon: BarChart4,
+    integrationProgress: 10,
     tasks: [
       { name: "Definire formate de raportare", completed: false },
       { name: "Implementare algoritmi de detecție", completed: false },
@@ -416,7 +421,6 @@ export const agentProjects = [
   ...autonomyProjects,
   ...newProjects,
   ...safetyInfrastructureProjects,
-  // Păstrăm câteva din proiectele existente care nu au fost reorganizate
   {
     title: "Securitate și Etică",
     description: "Asigurarea că toți agenții respectă standarde ridicate de securitate și etică în toate activitățile lor",
