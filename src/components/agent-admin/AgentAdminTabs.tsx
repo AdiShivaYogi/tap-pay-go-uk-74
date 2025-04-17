@@ -1,5 +1,5 @@
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SubmissionsTab } from "./SubmissionsTab";
 import { CodeProposalsTab } from "./CodeProposalsTab";
@@ -79,6 +79,7 @@ export const AgentAdminTabs = ({
             for (const proposal of vitalProposals) {
               try {
                 await handleApproveSubmission(proposal.id);
+                console.log(`Propunere vitală aprobată automat: ${proposal.id}`);
               } catch (err) {
                 console.error(`Eroare la aprobarea propunerii vitale ${proposal.id}:`, err);
               }
@@ -94,6 +95,55 @@ export const AgentAdminTabs = ({
     
     return () => clearInterval(interval);
   }, [submissions, loading, userId, handleApproveSubmission, toast]);
+
+  // Actualizare date când se primește evenimentul de refresh
+  useEffect(() => {
+    const handleRefresh = async () => {
+      console.log('Primire eveniment refresh-proposals, reîncărcarea datelor...');
+      
+      try {
+        // Reîncarcă propunerile de task-uri
+        const { data: submissionsData, error: submissionsError } = await supabase
+          .from('agent_task_submissions')
+          .select(`
+            *,
+            roadmap_tasks:task_id (*)
+          `)
+          .eq('approval_status', 'pending')
+          .order('created_at', { ascending: false });
+          
+        if (submissionsError) {
+          console.error('Eroare la reîncărcarea propunerilor:', submissionsError);
+        } else {
+          console.log(`Propuneri reîncărcate: ${submissionsData?.length || 0}`);
+          setSubmissions(submissionsData || []);
+        }
+        
+        // Reîncarcă propunerile de cod
+        const { data: proposalsData, error: proposalsError } = await supabase
+          .from('code_proposals')
+          .select('*')
+          .eq('status', 'pending')
+          .order('created_at', { ascending: false });
+          
+        if (proposalsError) {
+          console.error('Eroare la reîncărcarea propunerilor de cod:', proposalsError);
+        } else {
+          console.log(`Propuneri de cod reîncărcate: ${proposalsData?.length || 0}`);
+          setCodeProposals(proposalsData || []);
+        }
+      } catch (err) {
+        console.error('Eroare la reîncărcarea datelor:', err);
+      }
+    };
+    
+    // Adăugare listener pentru evenimentul custom de refresh
+    window.addEventListener('refresh-proposals', handleRefresh);
+    
+    return () => {
+      window.removeEventListener('refresh-proposals', handleRefresh);
+    };
+  }, [setSubmissions, setCodeProposals]);
 
   // Generare periodică de propuneri noi
   useEffect(() => {
@@ -152,6 +202,24 @@ export const AgentAdminTabs = ({
       changeText.includes("prioritate")
     );
   });
+
+  // Încearcă să reîmprospăteze datele la montare
+  useEffect(() => {
+    const refreshInitialData = async () => {
+      try {
+        // Dispare evenimentul de refresh pentru a forța reîncărcarea datelor
+        const refreshEvent = new CustomEvent('refresh-proposals', { 
+          detail: { timestamp: new Date().getTime() } 
+        });
+        window.dispatchEvent(refreshEvent);
+        console.log('Eveniment inițial refresh-proposals trimis');
+      } catch (e) {
+        console.error('Eroare la trimiterea evenimentului inițial de refresh:', e);
+      }
+    };
+
+    setTimeout(refreshInitialData, 1000); // Întârziere pentru a permite încărcarea componentei
+  }, []);
 
   return (
     <>
