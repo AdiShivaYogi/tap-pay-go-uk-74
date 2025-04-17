@@ -26,7 +26,7 @@ export const AutonomyCard: React.FC = () => {
             <Badge className="bg-amber-500">Nelimitat</Badge>
           </div>
           
-          <Progress value={100} className="h-2 bg-amber-100" indicatorClassName="bg-amber-500" />
+          <Progress value={100} className="h-2 bg-amber-100" />
           
           <div className="space-y-2">
             <div className="flex items-center gap-2">

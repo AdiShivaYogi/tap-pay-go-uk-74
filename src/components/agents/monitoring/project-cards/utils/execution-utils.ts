@@ -1,10 +1,10 @@
 
-import { Task } from "../types";
+import { TaskItem } from "../types";
 import { Dispatch, SetStateAction } from "react";
 
 export const handleTaskExecution = async (
-  task: Task,
-  setTasks: Dispatch<SetStateAction<Task[]>>,
+  task: TaskItem,
+  setTasks: Dispatch<SetStateAction<TaskItem[]>>,
   toast: any,
   setProgress: (progress: number) => void,
   progressValue: number

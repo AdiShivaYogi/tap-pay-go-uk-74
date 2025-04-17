@@ -1,11 +1,11 @@
 
 import { useState, useCallback } from "react";
 import { extendedSupabase as supabase } from "@/integrations/supabase/extended-client";
-import { AgentMonitoringHookData } from "./types/agent-monitoring.types";
+import { AgentMonitoringHook } from "./types/agent-monitoring.types";
 import { formatDistanceToNow } from "date-fns";
 import { ro } from "date-fns/locale";
 
-export const useActivityData = (): AgentMonitoringHookData => {
+export const useActivityData = (): AgentMonitoringHook => {
   const [activityData, setActivityData] = useState<any[]>([]);
   const [activityLogs, setActivityLogs] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);

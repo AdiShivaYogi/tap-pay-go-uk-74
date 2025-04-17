@@ -6,16 +6,20 @@ export type ProjectPriority = "high" | "medium" | "low";
 export type ProjectTimeframe = "days" | "weeks" | "months";
 
 export interface TaskItem {
+  id?: string;
   name: string;
+  description?: string;
   completed: boolean;
   inProgress?: boolean;
 }
 
-export type AgentTask = TaskItem;
+export type Task = TaskItem;
 
 export interface AgentProject {
   id?: string;
+  agentId?: string;
   title: string;
+  name: string;
   description: string;
   icon: LucideIcon;
   tasks: TaskItem[];

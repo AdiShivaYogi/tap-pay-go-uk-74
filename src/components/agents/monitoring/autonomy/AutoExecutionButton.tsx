@@ -7,16 +7,20 @@ import { useToast } from "@/hooks/use-toast";
 
 export interface AutoExecutionButtonProps {
   variant?: "default" | "header";
+  completed?: boolean;
+  disabled?: boolean;
 }
 
 export const AutoExecutionButton: React.FC<AutoExecutionButtonProps> = ({
-  variant = "default"
+  variant = "default",
+  completed = false,
+  disabled = false
 }) => {
   const { toast } = useToast();
   const { autoExecutionStatus, saveAutoExecutionStatus } = useAgentMonitoring();
   const [isExecuting, setIsExecuting] = useState(false);
   const [isComplete, setIsComplete] = useState(
-    autoExecutionStatus && Object.values(autoExecutionStatus).some(status => status === true)
+    completed || (autoExecutionStatus && Object.values(autoExecutionStatus).some(status => status === true))
   );
   
   const handleExecute = () => {
@@ -52,7 +56,7 @@ export const AutoExecutionButton: React.FC<AutoExecutionButtonProps> = ({
     return (
       <Button
         onClick={handleExecute}
-        disabled={isExecuting || isComplete}
+        disabled={isExecuting || isComplete || disabled}
         size="sm"
         className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white gap-2"
       >
@@ -71,7 +75,7 @@ export const AutoExecutionButton: React.FC<AutoExecutionButtonProps> = ({
   return (
     <Button
       onClick={handleExecute}
-      disabled={isExecuting || isComplete}
+      disabled={isExecuting || isComplete || disabled}
       className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white gap-2"
     >
       {isExecuting ? (

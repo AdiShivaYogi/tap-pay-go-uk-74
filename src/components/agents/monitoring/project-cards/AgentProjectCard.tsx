@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { StyledCard, StyledCardContent } from "@/components/ui/cards";
 import { TaskList } from "./TaskList";
-import { AgentProject } from "./types";
+import { AgentProject, TaskItem } from "./types";
 import { useToast } from "@/hooks/use-toast";
 import { logAgentActivity } from "../hooks/utils/activity-processing";
 import { useAgentMonitoring } from "../hooks";
@@ -79,15 +79,17 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
     // Înregistrăm activitatea
     logAgentActivity(
       project.agentId || "autonomous-agent",
-      `Proiectul "${project.name}" a fost finalizat cu succes prin execuție automată`,
+      `Proiectul "${project.title}" a fost finalizat cu succes prin execuție automată`,
       "auto_execution"
     );
     
     // Salvăm starea în baza de date
-    saveAutoExecutionStatus({
-      ...autoExecutionStatus,
-      [project.id]: true
-    });
+    if (project.id) {
+      saveAutoExecutionStatus({
+        ...autoExecutionStatus,
+        [project.id]: true
+      });
+    }
     
     setIsExecuting(false);
     setExecutionComplete(true);
@@ -95,7 +97,7 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
     // Notificare
     toast({
       title: "Execuție autonomă finalizată",
-      description: `Toate taskurile pentru "${project.name}" au fost implementate cu succes.`,
+      description: `Toate taskurile pentru "${project.title}" au fost implementate cu succes.`,
       duration: 5000,
     });
   };
@@ -106,9 +108,11 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
       (isAutonomyProject ? "border-amber-300 shadow-amber-100/50" : "")
     }>
       <ProjectHeader 
-        name={project.name} 
+        title={project.title} 
         description={project.description}
         icon={project.icon}
+        isAutonomyProject={isAutonomyProject}
+        executionComplete={executionComplete}
       />
       
       <StyledCardContent>
@@ -124,6 +128,7 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
           progress={progress}
           completedTasksCount={completedTasksCount}
           totalTasks={totalTasks}
+          isExecuting={isExecuting}
         />
         
         <TaskList 

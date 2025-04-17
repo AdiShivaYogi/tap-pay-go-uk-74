@@ -4,21 +4,25 @@ import { cn } from "@/lib/utils";
 import { ProgressBar } from "../ProgressBar";
 
 interface ProjectProgressProps {
-  isExecuting: boolean;
   progress: number;
-  timeUsed: number;
-  timeTotal: number;
-  isAutonomyProject: boolean;
-  executionComplete: boolean;
+  completedTasksCount?: number;
+  totalTasks?: number;
+  isExecuting?: boolean;
+  timeUsed?: number;
+  timeTotal?: number;
+  isAutonomyProject?: boolean;
+  executionComplete?: boolean;
 }
 
 export const ProjectProgress: React.FC<ProjectProgressProps> = ({
   isExecuting,
   progress,
-  timeUsed,
-  timeTotal,
-  isAutonomyProject,
-  executionComplete,
+  completedTasksCount,
+  totalTasks,
+  timeUsed = 0,
+  timeTotal = 0,
+  isAutonomyProject = false,
+  executionComplete = false,
 }) => {
   if (isExecuting) {
     return (
@@ -35,6 +39,26 @@ export const ProjectProgress: React.FC<ProjectProgressProps> = ({
               progress < 70 ? "bg-amber-400" : "bg-green-500"
             )}
             style={{ width: `${progress}%` }}
+          />
+        </div>
+      </div>
+    );
+  }
+  
+  if (completedTasksCount !== undefined && totalTasks !== undefined) {
+    return (
+      <div className="mb-4">
+        <div className="flex justify-between text-xs text-muted-foreground mb-1">
+          <span>Progres implementare</span>
+          <span>{completedTasksCount} din {totalTasks} taskuri</span>
+        </div>
+        <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+          <div 
+            className={cn(
+              "h-full rounded-full transition-all duration-300",
+              completedTasksCount === totalTasks ? "bg-green-500" : "bg-amber-500"
+            )}
+            style={{ width: `${(completedTasksCount / totalTasks) * 100}%` }}
           />
         </div>
       </div>

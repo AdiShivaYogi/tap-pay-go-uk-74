@@ -9,16 +9,16 @@ interface ProjectHeaderProps {
   title: string;
   description: string;
   icon: LucideIcon;
-  isAutonomyProject: boolean;
-  executionComplete: boolean;
+  isAutonomyProject?: boolean;
+  executionComplete?: boolean;
 }
 
 export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
   title,
   description,
   icon: IconComponent,
-  isAutonomyProject,
-  executionComplete,
+  isAutonomyProject = false,
+  executionComplete = false,
 }) => {
   return (
     <div className="flex justify-between items-start mb-3">

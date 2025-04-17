@@ -5,14 +5,13 @@ import { Sparkles, Zap, Brain, Network, CheckCircle2 } from 'lucide-react';
 import { AutonomyFeatureCard } from './AutonomyFeatureCard';
 import { AgentNetworkGraph } from '@/components/3d-visualizations/AgentNetworkGraph';
 import { AutoExecutionButton } from './AutoExecutionButton';
-import { AutonomyCard, AutonomyTasksContext } from './AutonomyCard';
+import { AutonomyCard } from './AutonomyCard';
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { useAgentMonitoring } from "../hooks";
 import { useToast } from "@/hooks/use-toast";
 
 export const AutonomyVisualization: React.FC = () => {
   const [showAlert, setShowAlert] = React.useState(true); // Setăm alerta să fie vizibilă implicit
-  const autonomyTasksContext = React.useContext(AutonomyTasksContext);
   const { learningReports, learningProgress } = useAgentMonitoring();
   const { toast } = useToast();
   
@@ -94,7 +93,7 @@ export const AutonomyVisualization: React.FC = () => {
       </div>
       
       <div className="mb-6">
-        <AutoExecutionButton completed={true} disabled={true} />
+        <AutoExecutionButton disabled={true} completed={true} />
       </div>
       
       <StyledCard>
