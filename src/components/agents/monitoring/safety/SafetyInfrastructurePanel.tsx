@@ -5,7 +5,8 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { 
   CircleSlash, Shield, Lock, Eye, Brain, 
   Activity, PlayCircle, PauseCircle, StopCircle,
-  AlertTriangle, Check, Rocket, Zap
+  AlertTriangle, Check, Rocket, Zap, Sparkles,
+  Server, Database, BarChart4
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -27,6 +28,33 @@ export const SafetyInfrastructurePanel: React.FC = () => {
     humanSupervision: false, // Dezactivat implicit
     autonomyLimits: false,   // Dezactivat implicit
     emergencyStop: true,
+    dataSources: false,      // Nou - Surse de date reale
+    realTimeMonitoring: false, // Nou - Monitorizare în timp real
+    riskAlgorithm: false,    // Nou - Algoritm de evaluare risc
+    adaptiveSafety: false,   // Nou - Siguranță adaptivă
+  });
+
+  // Stare pentru noile sisteme de monitorizare și evaluare
+  const [dataConnections, setDataConnections] = useState({
+    agentSystem: false,
+    monitoringPlatform: false,
+    analyticsEngine: false,
+    safetyFramework: false,
+  });
+
+  const [monitoringParameters, setMonitoringParameters] = useState({
+    autonomyLevels: false,
+    resourceUsage: false,
+    decisionQuality: false,
+    learningProgress: false,
+  });
+
+  const [implementationProgress, setImplementationProgress] = useState({
+    dataSources: 15,
+    riskEvaluation: 25,
+    monitoring: 30,
+    logging: 20,
+    adaptiveSafety: 10,
   });
 
   const handleToggleSystem = (system: keyof typeof systemsActive) => {
@@ -36,6 +64,21 @@ export const SafetyInfrastructurePanel: React.FC = () => {
       title: systemsActive[system] ? "Sistem dezactivat" : "Sistem activat",
       description: `Sistemul de ${getSystemName(system)} a fost ${systemsActive[system] ? "dezactivat" : "activat"}.`,
     });
+
+    // Dacă activăm unul dintre noile sisteme, actualizăm progresul
+    if (!systemsActive[system] && 
+        (system === 'dataSources' || system === 'realTimeMonitoring' || 
+         system === 'riskAlgorithm' || system === 'adaptiveSafety')) {
+      // Incrementăm progresul de implementare pentru acest sistem
+      const progressKey = system === 'dataSources' ? 'dataSources' :
+                         system === 'realTimeMonitoring' ? 'monitoring' :
+                         system === 'riskAlgorithm' ? 'riskEvaluation' : 'adaptiveSafety';
+      
+      setImplementationProgress(prev => ({
+        ...prev,
+        [progressKey]: Math.min(prev[progressKey as keyof typeof prev] + 10, 100)
+      }));
+    }
   };
 
   const getSystemName = (system: string): string => {
@@ -45,7 +88,11 @@ export const SafetyInfrastructurePanel: React.FC = () => {
       auditLogs: "jurnalizare audit",
       humanSupervision: "supervizare umană",
       autonomyLimits: "limitare autonomie",
-      emergencyStop: "oprire de urgență"
+      emergencyStop: "oprire de urgență",
+      dataSources: "conectare surse de date",
+      realTimeMonitoring: "monitorizare în timp real",
+      riskAlgorithm: "algoritm evaluare risc",
+      adaptiveSafety: "siguranță adaptivă"
     };
     return names[system] || system;
   };
@@ -67,6 +114,10 @@ export const SafetyInfrastructurePanel: React.FC = () => {
       humanSupervision: true,
       autonomyLimits: true,
       emergencyStop: true,
+      dataSources: false,
+      realTimeMonitoring: false,
+      riskAlgorithm: false,
+      adaptiveSafety: false,
     });
     toast({
       title: "OPRIRE DE URGENȚĂ ACTIVATĂ",
@@ -104,6 +155,21 @@ export const SafetyInfrastructurePanel: React.FC = () => {
     }
   };
 
+  const toggleDataConnection = (connection: keyof typeof dataConnections) => {
+    setDataConnections(prev => ({ ...prev, [connection]: !prev[connection] }));
+    
+    // Incrementăm progresul de implementare pentru surse de date
+    setImplementationProgress(prev => ({
+      ...prev,
+      dataSources: Math.min(prev.dataSources + 5, 100)
+    }));
+    
+    toast({
+      title: dataConnections[connection] ? "Conexiune dezactivată" : "Conexiune activată",
+      description: `Conexiunea cu ${connection} a fost ${dataConnections[connection] ? "dezactivată" : "activată"}.`,
+    });
+  };
+
   const startAutonomousExecution = () => {
     if (!acceptedRisks.includes("ridicat")) {
       toast({
@@ -131,15 +197,21 @@ export const SafetyInfrastructurePanel: React.FC = () => {
   return (
     <StyledCard>
       <StyledCardHeader>
-        <StyledCardTitle className="flex items-center gap-2">
-          <Shield className="h-5 w-5 text-primary" />
-          Infrastructură de Siguranță și Control Execuție
+        <StyledCardTitle className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Shield className="h-5 w-5 text-primary" />
+            Infrastructură de Siguranță și Control Execuție
+          </div>
+          <Badge className="bg-gradient-to-r from-amber-500 to-orange-600 text-white gap-1 flex items-center">
+            <Sparkles className="h-3.5 w-3.5" />
+            <span>Noua Eră a Autonomiei</span>
+          </Badge>
         </StyledCardTitle>
       </StyledCardHeader>
       
       <StyledCardContent>
         {/* Banner de prioritate */}
-        <Alert variant="warning" className="border-amber-500 bg-amber-100 mb-4">
+        <Alert variant="default" className="border-amber-500 bg-amber-100 mb-4">
           <AlertTitle className="flex items-center gap-2 text-amber-800">
             <Rocket className="h-5 w-5" />
             Prioritate #1: Pornire Agenți Autonomi
@@ -163,6 +235,10 @@ export const SafetyInfrastructurePanel: React.FC = () => {
             <TabsTrigger value="monitoring" className="flex items-center gap-1">
               <Eye className="h-4 w-4" />
               Monitorizare Autonomie
+            </TabsTrigger>
+            <TabsTrigger value="integration" className="flex items-center gap-1">
+              <Server className="h-4 w-4" />
+              Integrare Date Reale
             </TabsTrigger>
           </TabsList>
           
@@ -475,6 +551,197 @@ export const SafetyInfrastructurePanel: React.FC = () => {
                       <p className="mt-1">{log.action}</p>
                     </div>
                   ))}
+                </div>
+              </StyledCardContent>
+            </StyledCard>
+          </TabsContent>
+          
+          <TabsContent value="integration" className="space-y-4">
+            <Alert className="border-amber-300 bg-amber-50">
+              <AlertTitle className="flex items-center gap-1 text-amber-800">
+                <Server className="h-4 w-4 text-amber-600" />
+                Integrare cu Surse de Date Reale
+              </AlertTitle>
+              <AlertDescription className="text-amber-700">
+                Această secțiune vă permite conectarea infrastructurii de siguranță la surse reale de date 
+                și sisteme de monitorizare pentru agenții autonomi. Stadiul curent: În implementare.
+              </AlertDescription>
+            </Alert>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <StyledCard>
+                <StyledCardHeader>
+                  <StyledCardTitle className="text-base flex items-center gap-2">
+                    <Database className="h-4 w-4" />
+                    Conectare Surse de Date
+                  </StyledCardTitle>
+                </StyledCardHeader>
+                <StyledCardContent>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-2 border-b">
+                      <div>
+                        <div className="font-medium">Sistem Agent</div>
+                        <div className="text-sm text-muted-foreground">Date de bază despre agenți</div>
+                      </div>
+                      <Switch 
+                        checked={dataConnections.agentSystem}
+                        onCheckedChange={() => toggleDataConnection('agentSystem')}
+                      />
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-2 border-b">
+                      <div>
+                        <div className="font-medium">Platforma de Monitorizare</div>
+                        <div className="text-sm text-muted-foreground">Metrici de performanță</div>
+                      </div>
+                      <Switch 
+                        checked={dataConnections.monitoringPlatform}
+                        onCheckedChange={() => toggleDataConnection('monitoringPlatform')}
+                      />
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-2 border-b">
+                      <div>
+                        <div className="font-medium">Motor de Analiză</div>
+                        <div className="text-sm text-muted-foreground">Indicatori și tendințe</div>
+                      </div>
+                      <Switch 
+                        checked={dataConnections.analyticsEngine}
+                        onCheckedChange={() => toggleDataConnection('analyticsEngine')}
+                      />
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-2">
+                      <div>
+                        <div className="font-medium">Framework de Siguranță</div>
+                        <div className="text-sm text-muted-foreground">Limitări și restricții</div>
+                      </div>
+                      <Switch 
+                        checked={dataConnections.safetyFramework}
+                        onCheckedChange={() => toggleDataConnection('safetyFramework')}
+                      />
+                    </div>
+                  </div>
+                </StyledCardContent>
+              </StyledCard>
+              
+              <StyledCard>
+                <StyledCardHeader>
+                  <StyledCardTitle className="text-base flex items-center gap-2">
+                    <BarChart4 className="h-4 w-4" />
+                    Parametri de Monitorizare
+                  </StyledCardTitle>
+                </StyledCardHeader>
+                <StyledCardContent>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-2 border-b">
+                      <div>
+                        <div className="font-medium">Niveluri de Autonomie</div>
+                        <div className="text-sm text-muted-foreground">Definire parametri specifici</div>
+                      </div>
+                      <Switch 
+                        checked={monitoringParameters.autonomyLevels}
+                        onCheckedChange={() => setMonitoringParameters(prev => ({
+                          ...prev,
+                          autonomyLevels: !prev.autonomyLevels
+                        }))}
+                      />
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-2 border-b">
+                      <div>
+                        <div className="font-medium">Utilizare Resurse</div>
+                        <div className="text-sm text-muted-foreground">Consum CPU/memorie/stocare</div>
+                      </div>
+                      <Switch 
+                        checked={monitoringParameters.resourceUsage}
+                        onCheckedChange={() => setMonitoringParameters(prev => ({
+                          ...prev,
+                          resourceUsage: !prev.resourceUsage
+                        }))}
+                      />
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-2 border-b">
+                      <div>
+                        <div className="font-medium">Calitatea Deciziilor</div>
+                        <div className="text-sm text-muted-foreground">Metrici pentru evaluare</div>
+                      </div>
+                      <Switch 
+                        checked={monitoringParameters.decisionQuality}
+                        onCheckedChange={() => setMonitoringParameters(prev => ({
+                          ...prev,
+                          decisionQuality: !prev.decisionQuality
+                        }))}
+                      />
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-2">
+                      <div>
+                        <div className="font-medium">Progres Învățare</div>
+                        <div className="text-sm text-muted-foreground">Rate de îmbunătățire</div>
+                      </div>
+                      <Switch 
+                        checked={monitoringParameters.learningProgress}
+                        onCheckedChange={() => setMonitoringParameters(prev => ({
+                          ...prev,
+                          learningProgress: !prev.learningProgress
+                        }))}
+                      />
+                    </div>
+                  </div>
+                </StyledCardContent>
+              </StyledCard>
+            </div>
+            
+            <StyledCard>
+              <StyledCardHeader>
+                <StyledCardTitle className="text-base flex items-center gap-2">
+                  <Activity className="h-4 w-4" />
+                  Progres Implementare
+                </StyledCardTitle>
+              </StyledCardHeader>
+              <StyledCardContent>
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Conectare Surse de Date Reale</span>
+                      <span>{implementationProgress.dataSources}%</span>
+                    </div>
+                    <Progress value={implementationProgress.dataSources} className="h-2" />
+                  </div>
+                  
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Algoritm Evaluare Riscuri</span>
+                      <span>{implementationProgress.riskEvaluation}%</span>
+                    </div>
+                    <Progress value={implementationProgress.riskEvaluation} className="h-2" />
+                  </div>
+                  
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Monitorizare în Timp Real</span>
+                      <span>{implementationProgress.monitoring}%</span>
+                    </div>
+                    <Progress value={implementationProgress.monitoring} className="h-2" />
+                  </div>
+                  
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Jurnalizare Completă</span>
+                      <span>{implementationProgress.logging}%</span>
+                    </div>
+                    <Progress value={implementationProgress.logging} className="h-2" />
+                  </div>
+                  
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Mecanism Adaptiv de Siguranță</span>
+                      <span>{implementationProgress.adaptiveSafety}%</span>
+                    </div>
+                    <Progress value={implementationProgress.adaptiveSafety} className="h-2" />
+                  </div>
                 </div>
               </StyledCardContent>
             </StyledCard>

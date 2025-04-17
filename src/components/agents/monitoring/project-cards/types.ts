@@ -1,7 +1,8 @@
 
+import { ReactNode } from "react";
 import { LucideIcon } from "lucide-react";
 
-export interface AgentProjectTask {
+export interface AgentTask {
   name: string;
   completed: boolean;
 }
@@ -11,9 +12,9 @@ export interface AgentProject {
   description: string;
   status: "în progres" | "planificat" | "finalizat";
   priority: "înaltă" | "medie" | "scăzută";
-  timeframe: "zile" | "săptămâni" | "luni" | "ani";
-  timeUsed: number;
-  timeTotal: number;
+  timeframe: "zile" | "săptămâni" | "luni" | "ani"; // Am adăugat "ani" ca opțiune validă
+  timeUsed: number; // ore petrecute
+  timeTotal: number; // ore estimate total
   icon: LucideIcon;
-  tasks: AgentProjectTask[];
+  tasks: AgentTask[];
 }

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/layout";
 import { Section } from "@/components/ui/layout/section";
 import { PageHeader } from "@/components/ui/layout/page-header";
-import { Activity, BarChart3, Bot, ChartPie, Shield, Rocket } from "lucide-react";
+import { Activity, BarChart3, Bot, ChartPie, Shield, Rocket, Sparkles } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useUserRole } from "@/hooks/use-user-role";
 import { AccessRestrictionAlert } from "@/features/roadmap/components/AccessRestrictionAlert";
@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SafetyInfrastructurePanel } from "@/components/agents/monitoring/safety/SafetyInfrastructurePanel";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
 
 const AgentMonitoring = () => {
   const { user } = useAuth();
@@ -56,14 +57,20 @@ const AgentMonitoring = () => {
   return (
     <Layout>
       <Section>
-        <PageHeader
-          icon={Activity}
-          title="Monitorizare Agenți"
-          description="Urmărește activitatea agenților AI și progresul proiectelor de dezvoltare"
-        />
+        <div className="flex items-center justify-between">
+          <PageHeader
+            icon={Activity}
+            title="Monitorizare Agenți"
+            description="Urmărește activitatea agenților AI și progresul proiectelor de dezvoltare"
+          />
+          <Badge className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white text-sm py-1.5 px-3 flex items-center gap-1.5">
+            <Sparkles className="h-4 w-4" />
+            Noua Eră a Autonomiei
+          </Badge>
+        </div>
 
         {showAutonomyAlert && (
-          <Alert variant="warning" className="mb-6 border-amber-500 bg-amber-50">
+          <Alert variant="default" className="mb-6 border-amber-500 bg-amber-50">
             <AlertTitle className="flex items-center gap-2 text-amber-800">
               <Rocket className="h-5 w-5 text-amber-600" /> 
               Prioritate #1: Pornire Agenți Autonomi

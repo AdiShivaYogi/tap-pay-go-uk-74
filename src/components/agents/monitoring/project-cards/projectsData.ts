@@ -1,9 +1,11 @@
+
 import { ReactNode } from "react";
 import { 
   Lock, Unlock, Users, Brain, Lightbulb, Shield, HandCoins, Zap, 
   Infinity, Globe, Eye, Network, Calendar, PlaySquare, Gauge, 
   BarChart3, CircleSlash, FileCode, HeartHandshake, Rocket,
-  Target, Layers, Settings, Cpu, FlaskConical, Sparkles, Database
+  Target, Layers, Settings, Cpu, FlaskConical, Sparkles, Database,
+  Server, BarChart4, ActivitySquare
 } from "lucide-react";
 
 // Proiecte prioritare pentru succes rapid
@@ -70,6 +72,24 @@ export const quickWinProjects = [
       { name: "Sistem de verificare a rezultatelor", completed: true },
       { name: "Protocol de corectare automată", completed: false },
       { name: "Mecanism de raportare a progresului", completed: false }
+    ]
+  },
+  // Noul proiect prioritar - Noua Era a Autonomiei
+  {
+    title: "Noua Eră a Autonomiei",
+    description: "Task complex care marchează trecerea la o nouă paradigmă de autonomie maximă cu riscuri acceptate",
+    status: "în progres" as const,
+    priority: "înaltă" as const,
+    timeframe: "săptămâni" as const,
+    timeUsed: 3,
+    timeTotal: 20,
+    icon: Sparkles,
+    tasks: [
+      { name: "Conectare surse date reale", completed: false },
+      { name: "Extinderea mecanismelor de monitorizare", completed: true },
+      { name: "Sistem de evaluare a riscurilor", completed: false },
+      { name: "Jurnalizare completă a acțiunilor", completed: false },
+      { name: "Mecanism adaptiv de siguranță", completed: false }
     ]
   }
 ];
@@ -298,12 +318,12 @@ export const safetyInfrastructureProjects = [
     status: "în progres" as const,
     priority: "înaltă" as const,
     timeframe: "săptămâni" as const,
-    timeUsed: 0,
+    timeUsed: 4,
     timeTotal: 20,
-    icon: Network,
+    icon: Server,
     tasks: [
-      { name: "Identificare surse de date", completed: false },
-      { name: "Definire interfețe de integrare", completed: false },
+      { name: "Identificare surse de date", completed: true },
+      { name: "Definire interfețe de integrare", completed: true },
       { name: "Implementare conexiuni securizate", completed: false },
       { name: "Testare flux de date", completed: false }
     ]
@@ -314,11 +334,11 @@ export const safetyInfrastructureProjects = [
     status: "în progres" as const,
     priority: "înaltă" as const,
     timeframe: "săptămâni" as const,
-    timeUsed: 0,
+    timeUsed: 3,
     timeTotal: 25,
     icon: Shield,
     tasks: [
-      { name: "Definire parametri de risc", completed: false },
+      { name: "Definire parametri de risc", completed: true },
       { name: "Implementare model matematic", completed: false },
       { name: "Sistem de scorare dinamică", completed: false },
       { name: "Mecanism de alertare", completed: false }
@@ -330,11 +350,11 @@ export const safetyInfrastructureProjects = [
     status: "în progres" as const,
     priority: "medie" as const,
     timeframe: "săptămâni" as const,
-    timeUsed: 0,
+    timeUsed: 2,
     timeTotal: 15,
     icon: FileCode,
     tasks: [
-      { name: "Definire format jurnal standard", completed: false },
+      { name: "Definire format jurnal standard", completed: true },
       { name: "Implementare mecanisme de stocare", completed: false },
       { name: "Sistem de indexare și căutare", completed: false },
       { name: "Raportare automată", completed: false }
@@ -354,6 +374,38 @@ export const safetyInfrastructureProjects = [
       { name: "Analiză istorică a incidentelor", completed: false },
       { name: "Mecanism de recalibrare", completed: false },
       { name: "Validare umană", completed: false }
+    ]
+  },
+  {
+    title: "Parametri de Monitorizare Autonomi",
+    description: "Definirea precisă a datelor colectate pentru fiecare nivel de autonomie", 
+    status: "în progres" as const,
+    priority: "înaltă" as const,
+    timeframe: "săptămâni" as const,
+    timeUsed: 3,
+    timeTotal: 12,
+    icon: ActivitySquare,
+    tasks: [
+      { name: "Definire niveluri de autonomie", completed: true },
+      { name: "Identificare parametri critici", completed: true },
+      { name: "Implementare mecanism de colectare", completed: false },
+      { name: "Validare și testare parametri", completed: false }
+    ]
+  },
+  {
+    title: "Raportare Avansată",
+    description: "Generare de rapoarte detaliate pentru fiecare incident sau potențial risc",
+    status: "planificat" as const,
+    priority: "medie" as const,
+    timeframe: "săptămâni" as const,
+    timeUsed: 0,
+    timeTotal: 15,
+    icon: BarChart4,
+    tasks: [
+      { name: "Definire formate de raportare", completed: false },
+      { name: "Implementare algoritmi de detecție", completed: false },
+      { name: "Interfață de vizualizare", completed: false },
+      { name: "Sistem de alerte configurabile", completed: false }
     ]
   }
 ];
