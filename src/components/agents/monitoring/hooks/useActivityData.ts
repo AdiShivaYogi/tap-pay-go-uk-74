@@ -1,17 +1,8 @@
 
 import { useState, useCallback } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { 
-  ActivityData, 
-  ActivityLog, 
-} from "./types/agent-monitoring.types";
-import { 
-  fetchAgentActivities,
-} from "./api/agent-activity-api";
-import {
-  processActivityData,
-  processActivityLogs
-} from "./utils/activity-processing";
+import { extendedSupabase as supabase } from "@/integrations/supabase/extended-client";
+import { ActivityData, ActivityLog } from "./types/agent-monitoring.types";
+import { processActivityData, processActivityLogs } from "./utils/activity-processing";
 
 export const useActivityData = () => {
   const [activityData, setActivityData] = useState<ActivityData[]>([]);
@@ -20,44 +11,38 @@ export const useActivityData = () => {
   const [categories, setCategories] = useState<string[]>([]);
   const [totalActivities, setTotalActivities] = useState(0);
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
-  const { toast } = useToast();
 
+  // Funcție pentru încărcarea datelor de activitate ale agenților
   const fetchAgentActivity = useCallback(async () => {
-    setIsLoading(true);
-    
     try {
-      const { agentActivities, activityLogs, error } = await fetchAgentActivities();
+      setIsLoading(true);
       
-      if (error) {
-        throw error;
-      }
+      // În implementarea reală, aici am face un request la API
+      // Pentru acest exemplu, simulăm un delay și date mock
+      await new Promise(resolve => setTimeout(resolve, 500));
       
-      if (agentActivities && activityLogs) {
-        // Procesare date
-        const { processedActivityData, uniqueCategories } = processActivityData(agentActivities);
-        const processedLogs = processActivityLogs(activityLogs);
+      const { data, error } = await supabase
+        .from('agent_activity')
+        .select('*')
+        .order('created_at', { ascending: false });
         
-        setActivityData(processedActivityData);
-        setActivityLogs(processedLogs);
-        setCategories(Array.from(uniqueCategories));
-        setTotalActivities(agentActivities.length || 0);
-        setLastRefresh(new Date());
-        
-        // Log pentru categorii și activitate
-        console.log('Agent activity categories:', uniqueCategories);
-        console.log('Total monitored activities:', agentActivities.length || 0);
-      }
+      if (error) throw error;
+      
+      // Procesează datele și extrage categoriile
+      const { processedActivityData, uniqueCategories } = processActivityData(data || []);
+      
+      // Actualizează starea cu datele procesate și categoriile unice
+      setActivityData(processedActivityData);
+      setActivityLogs(processActivityLogs(data || []));
+      setCategories(Array.from(uniqueCategories));
+      setTotalActivities((data || []).length);
+      setLastRefresh(new Date());
     } catch (error) {
-      console.error('Detailed error fetching agent activities:', error);
-      toast({
-        title: "Eroare monitorizare",
-        description: "Nu s-au putut prelua datele de activitate ale agenților.",
-        variant: "destructive"
-      });
+      console.error('Eroare la încărcarea activității agenților:', error);
     } finally {
       setIsLoading(false);
     }
-  }, [toast]);
+  }, []);
 
   return {
     activityData,
@@ -65,7 +50,7 @@ export const useActivityData = () => {
     isLoading,
     categories,
     totalActivities,
-    lastRefresh,
-    fetchAgentActivity
+    fetchAgentActivity,
+    lastRefresh
   };
 };

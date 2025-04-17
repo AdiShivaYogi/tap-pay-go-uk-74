@@ -9,11 +9,12 @@ import { TaskList } from "./TaskList";
 import { AgentProject } from "./types";
 import { IntegrationStatusBadge } from "./IntegrationStatusBadge";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Zap, Loader2 } from "lucide-react";
+import { Sparkles, Zap, Loader2, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { extendedSupabase as supabase } from "@/integrations/supabase/extended-client";
+import { logAgentActivity } from "../hooks/utils/activity-processing";
 
 interface AgentProjectCardProps {
   project: AgentProject;
@@ -24,12 +25,23 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
   const isAutonomyProject = project.title === "Noua Eră a Autonomiei";
   const { toast } = useToast();
   const [isExecuting, setIsExecuting] = useState(false);
+  const [executionComplete, setExecutionComplete] = useState(false);
   const [tasks, setTasks] = useState(project.tasks);
+  const [progress, setProgress] = useState(0);
+  
+  // Calculați procentul de finalizare a taskurilor
+  const completedTasksCount = tasks.filter(task => task.completed).length;
+  const totalTasks = tasks.length;
+  const completionPercentage = totalTasks > 0 ? (completedTasksCount / totalTasks) * 100 : 0;
+  
+  // Verificați dacă toate taskurile sunt finalizate
+  const allTasksCompleted = completedTasksCount === totalTasks;
   
   const handleAutoExecution = async () => {
-    if (isExecuting) return;
+    if (isExecuting || allTasksCompleted) return;
     
     setIsExecuting(true);
+    setProgress(5); // Inițiem progresul
     
     // Salvăm starea inițială pentru a putea calcula progresul
     const initialCompletedCount = tasks.filter(task => task.completed).length;
@@ -39,6 +51,14 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
       
     if (incompleteTasks.length === 0) {
       setIsExecuting(false);
+      setExecutionComplete(true);
+      
+      toast({
+        title: "Toate taskurile sunt deja completate",
+        description: `Proiectul "${project.title}" are toate taskurile finalizate.`,
+        duration: 3000,
+      });
+      
       return;
     }
     
@@ -50,10 +70,16 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
     
     // Procesăm taskurile unul câte unul, cu delay
     let currentTaskIndex = 0;
+    const totalIncompleteTasks = incompleteTasks.length;
+    
+    // Logăm începerea execuției automate
+    await logAgentActivity('system', `Execuție automată inițiată pentru proiectul: ${project.title}`, 'auto_execution');
     
     const processNextTask = async () => {
       if (currentTaskIndex >= incompleteTasks.length) {
         setIsExecuting(false);
+        setExecutionComplete(true);
+        setProgress(100);
         
         toast({
           title: "Execuție finalizată",
@@ -61,14 +87,9 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
           duration: 5000,
         });
         
-        // Salvăm starea finală în baza de date
+        // Salvăm starea finală în baza de date și logăm finalizarea
         try {
-          await supabase.from('agent_activity').insert({
-            agent_id: 'system',
-            agent_name: 'Auto Execution System',
-            category: 'project_tasks',
-            action: `completed:${project.title}`
-          });
+          await logAgentActivity('system', `Execuție automată finalizată pentru proiectul: ${project.title}`, 'auto_execution');
         } catch (error) {
           console.error("Eroare la salvarea progresului:", error);
         }
@@ -86,6 +107,10 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
         return newTasks;
       });
       
+      // Calculăm și actualizăm progresul general
+      const progressPercent = Math.round((currentTaskIndex + 0.5) / totalIncompleteTasks * 100);
+      setProgress(progressPercent);
+      
       // Completăm taskul după un delay
       await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 2000));
       
@@ -96,6 +121,10 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
         return newTasks;
       });
       
+      // Actualizăm progresul din nou după finalizarea taskului
+      const newProgressPercent = Math.round((currentTaskIndex + 1) / totalIncompleteTasks * 100);
+      setProgress(newProgressPercent);
+      
       // Trimitem notificare
       toast({
         title: "Task finalizat",
@@ -105,12 +134,7 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
       
       // Salvăm progresul în baza de date
       try {
-        await supabase.from('agent_activity').insert({
-          agent_id: 'system',
-          agent_name: 'Auto Execution System',
-          category: 'project_task',
-          action: `completed:${taskName}`
-        });
+        await logAgentActivity('system', `Task completat: ${taskName} (Proiect: ${project.title})`, 'project_task');
       } catch (error) {
         console.error("Eroare la salvarea progresului taskului:", error);
       }
@@ -129,7 +153,8 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
     <StyledCard 
       className={cn(
         "w-full h-full", 
-        isAutonomyProject ? "border-amber-300 shadow-amber-100/50 shadow-md" : ""
+        isAutonomyProject ? "border-amber-300 shadow-amber-100/50 shadow-md" : "",
+        executionComplete && "border-green-300 shadow-green-100/50 shadow-md"
       )}
     >
       <StyledCardContent className="p-0">
@@ -142,6 +167,12 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
                   <Badge className="bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs py-0.5 px-1.5 flex items-center gap-1">
                     <Sparkles className="h-3 w-3" />
                     Nouă Eră
+                  </Badge>
+                )}
+                {executionComplete && (
+                  <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs py-0.5 px-1.5 flex items-center gap-1">
+                    <CheckCircle2 className="h-3 w-3" />
+                    Implementat
                   </Badge>
                 )}
               </div>
@@ -167,25 +198,51 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
         </div>
         
         <div className="p-5">
-          <ProgressBar timeUsed={project.timeUsed} timeTotal={project.timeTotal} />
+          <div className="mb-4">
+            {isExecuting ? (
+              <div className="w-full">
+                <div className="flex justify-between text-xs text-muted-foreground mb-1">
+                  <span>Implementare automată în curs...</span>
+                  <span>{progress}%</span>
+                </div>
+                <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div 
+                    className={cn(
+                      "h-full rounded-full transition-all duration-500 ease-out",
+                      progress < 30 ? "bg-amber-500" : 
+                      progress < 70 ? "bg-amber-400" : "bg-green-500"
+                    )}
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+              </div>
+            ) : (
+              <ProgressBar timeUsed={project.timeUsed} timeTotal={project.timeTotal} />
+            )}
+          </div>
           <TaskList tasks={tasks} />
           
           {/* Buton de Autoexecuție */}
           <Button
             onClick={handleAutoExecution}
-            disabled={isExecuting || tasks.every(task => task.completed)}
+            disabled={isExecuting || allTasksCompleted}
             className={cn(
               "w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white gap-2",
-              isExecuting && "animate-pulse"
+              isExecuting && "animate-pulse",
+              executionComplete && "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
             )}
             size="sm"
           >
             {isExecuting ? (
               <Loader2 className="h-4 w-4 animate-spin text-white" />
+            ) : executionComplete ? (
+              <CheckCircle2 className="h-4 w-4 text-white" />
             ) : (
               <Zap className="h-4 w-4 text-white" />
             )}
-            {isExecuting ? "Execuție automată..." : "Activează Autoexecuție"}
+            {isExecuting ? "Execuție automată..." : 
+             executionComplete ? "Toate taskurile implementate" : 
+             "Activează Autoexecuție"}
           </Button>
         </div>
       </StyledCardContent>
