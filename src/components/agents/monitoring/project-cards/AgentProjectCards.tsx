@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { AgentProjectCard } from "./AgentProjectCard";
-import { agentProjects } from "./projectsData";
+import { agentProjects } from "./data";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 export const AgentProjectCards: React.FC = () => {
@@ -18,6 +18,8 @@ export const AgentProjectCards: React.FC = () => {
           project.title.includes("Siguranță") ||
           project.title.includes("Parametri de Monitorizare") ||
           project.title.includes("Raportare") ||
+          project.title.includes("Securitate") ||
+          project.title.includes("Limitare") ||
           project.title === "Noua Eră a Autonomiei"
         )
       : category === "autonomy"
@@ -25,6 +27,8 @@ export const AgentProjectCards: React.FC = () => {
             project.title.includes("Autonomie") || 
             project.title.includes("Auto-") ||
             project.title.includes("Creativitate") ||
+            project.title.includes("Planificare") ||
+            project.title.includes("Execuție Autonomă") ||
             project.title === "Noua Eră a Autonomiei"
           )
         : agentProjects.filter(project => 
@@ -34,9 +38,13 @@ export const AgentProjectCards: React.FC = () => {
             !project.title.includes("Siguranță") &&
             !project.title.includes("Parametri") &&
             !project.title.includes("Raportare") &&
+            !project.title.includes("Securitate") &&
+            !project.title.includes("Limitare") &&
             !project.title.includes("Autonomie") &&
             !project.title.includes("Auto-") &&
             !project.title.includes("Creativitate") &&
+            !project.title.includes("Planificare") &&
+            !project.title.includes("Execuție Autonomă") &&
             project.title !== "Noua Eră a Autonomiei"
           );
 
