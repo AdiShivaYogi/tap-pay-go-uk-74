@@ -33,8 +33,15 @@ export function useFeedbackActions(state: any) {
     }
     
     try {
-      const generatedFeedback = await generateAgentFeedback(type, item, toast, preferredModel);
-      setFeedback(generatedFeedback);
+      // Adjusted call to match the expected parameters
+      const generatedFeedback = await generateAgentFeedback({
+        itemType: type,
+        item,
+        userId,
+        model: preferredModel
+      });
+      
+      setFeedback(generatedFeedback.feedback);
       
       // Notificare de succes pentru utilizator
       toast({

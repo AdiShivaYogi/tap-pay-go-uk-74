@@ -4,7 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Loader2, CheckSquare, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { ModelSelector } from "@/components/agent-admin/god-mode/ModelSelector";
+import { ModelSelector } from "../god-mode/ModelSelector";
 import { FeedbackItem } from "@/hooks/agent-god-mode/types";
 
 interface FeedbackFormProps {
@@ -12,10 +12,10 @@ interface FeedbackFormProps {
   currentSubmission: FeedbackItem | null;
   currentProposal: FeedbackItem | null;
   feedback: string;
-  selectedModel: "deepseek" | "claude";
   isGeneratingFeedback: boolean;
   isProcessing: boolean;
   isGodModeEnabled: boolean;
+  preferredModel: "deepseek" | "claude";
   onFeedbackChange: (feedback: string) => void;
   onModelChange: (model: "deepseek" | "claude") => void;
   onSubmit: () => Promise<void>;
@@ -27,10 +27,10 @@ export const FeedbackForm = ({
   currentSubmission,
   currentProposal,
   feedback,
-  selectedModel,
   isGeneratingFeedback,
   isProcessing,
   isGodModeEnabled,
+  preferredModel,
   onFeedbackChange,
   onModelChange,
   onSubmit,
@@ -77,7 +77,7 @@ export const FeedbackForm = ({
             {isGeneratingFeedback ? "Se generează feedback..." : "Feedback pentru agent:"}
           </label>
           <ModelSelector
-            value={selectedModel}
+            value={preferredModel}
             onChange={onModelChange}
             disabled={isGeneratingFeedback || isProcessing}
           />

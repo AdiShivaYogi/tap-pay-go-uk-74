@@ -19,9 +19,9 @@ export const AgentGodMode = ({ userId }: AgentGodModeProps) => {
     feedback,
     isGeneratingFeedback,
     isProcessing,
-    selectedModel,
+    preferredModel,
     setFeedback,
-    setSelectedModel,
+    setPreferredModel,
     submitFeedback,
     cancelFeedback
   } = useAgentGodMode({ userId });
@@ -47,9 +47,9 @@ export const AgentGodMode = ({ userId }: AgentGodModeProps) => {
           isGeneratingFeedback={isGeneratingFeedback}
           isProcessing={isProcessing}
           isGodModeEnabled={isGodModeEnabled}
-          selectedModel={selectedModel}
+          preferredModel={preferredModel}
           onFeedbackChange={setFeedback}
-          onModelChange={setSelectedModel}
+          onModelChange={setPreferredModel}
           onSubmit={submitFeedback}
           onCancel={cancelFeedback}
         />
