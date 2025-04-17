@@ -76,7 +76,7 @@ export interface AgentMonitoringHook {
   categories: string[];
   totalActivities: number;
   refreshData: () => Promise<void>;
-  fetchAgentActivity: () => Promise<void>; // Adăugat pentru compatibilitate
+  fetchAgentActivity: () => Promise<void>; // Asigurăm că această proprietate este prezentă
   logDetailedAgentActivity: (agentId: string, description: string, category?: string) => void;
   autoRefresh: boolean;
   toggleAutoRefresh: () => void;

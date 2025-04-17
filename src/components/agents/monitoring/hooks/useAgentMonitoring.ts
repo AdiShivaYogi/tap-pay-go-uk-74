@@ -81,12 +81,16 @@ export const useAgentMonitoring = (): AgentMonitoringHook => {
     logAgentActivity(agentId, description, category);
   }, []);
 
+  // Asigurăm-ne că refreshData este o referință la fetchAgentActivity
+  const refreshData = fetchAgentActivity;
+
   return {
     activityData,
     activityLogs,
     isLoading,
     categories,
-    refreshData: fetchAgentActivity,
+    refreshData,
+    fetchAgentActivity, // Adăugăm această proprietate care lipsea
     totalActivities,
     logDetailedAgentActivity,
     autoRefresh,
@@ -104,7 +108,6 @@ export const useAgentMonitoring = (): AgentMonitoringHook => {
     completeLearningProcess,
     getLearningReports,
     executeAutoLearning,
-    // Adăugăm noile funcționalități
     autoExecutionStatus,
     saveAutoExecutionStatus
   };
