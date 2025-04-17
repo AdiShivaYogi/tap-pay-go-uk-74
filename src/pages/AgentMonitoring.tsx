@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/layout";
 import { Section } from "@/components/ui/layout/section";
@@ -18,6 +17,7 @@ import { agents } from "@/components/agents/agents-data";
 import { AgentAutonomyOverview } from "@/components/agents/monitoring/autonomy/AgentAutonomyOverview";
 import { useSafetyPanel } from "@/components/agents/monitoring/safety/hooks/useSafetyPanel";
 import { AutonomyVisualization } from "@/components/agents/monitoring/autonomy/AutonomyVisualization";
+import { AgentInnerWorldVisualization } from '@/components/3d-visualizations/AgentInnerWorldVisualization';
 
 const AgentMonitoring = () => {
   const { user } = useAuth();
@@ -26,7 +26,6 @@ const AgentMonitoring = () => {
   const [showAutonomyAlert, setShowAutonomyAlert] = useState(true);
   const { autonomyLevel, agentsRunning } = useSafetyPanel();
   
-  // Afișează toast la încărcarea paginii pentru a evidenția prioritatea lansării tuturor agenților
   useEffect(() => {
     const timer = setTimeout(() => {
       toast({
@@ -100,10 +99,8 @@ const AgentMonitoring = () => {
           </Alert>
         )}
 
-        {/* Adăugăm Secțiunea de Prezentare a Autonomiei */}
         <AgentAutonomyOverview autonomyLevel={autonomyLevel} agentsRunning={agentsRunning} />
 
-        {/* Adăugăm Vizualizarea 3D a Rețelei de Agenți */}
         <AutonomyVisualization />
 
         <Tabs defaultValue="autonomy" className="space-y-6 mt-6">
@@ -127,6 +124,10 @@ const AgentMonitoring = () => {
             <TabsTrigger value="projects" className="flex items-center gap-1">
               <BarChart3 className="h-4 w-4" />
               Proiecte agenți
+            </TabsTrigger>
+            <TabsTrigger value="inner-world" className="flex items-center gap-1">
+              <Rocket className="h-4 w-4" />
+              Lumea Interioară
             </TabsTrigger>
           </TabsList>
           
@@ -169,6 +170,23 @@ const AgentMonitoring = () => {
               </p>
             </div>
             <AgentProjectCards />
+          </TabsContent>
+          
+          <TabsContent value="inner-world">
+            <div className="mb-4">
+              <h2 className="text-xl font-medium mb-2">Lumea Interioară a Agenților</h2>
+              <p className="text-muted-foreground">
+                Explorați sistemele interne și procesele cognitive ale fiecărui agent.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {agents.map(agent => (
+                <div key={agent.id} className="h-[300px] border rounded-lg p-2">
+                  <h3 className="text-center mb-2">{agent.name}</h3>
+                  <AgentInnerWorldVisualization agentId={agent.id} />
+                </div>
+              ))}
+            </div>
           </TabsContent>
         </Tabs>
       </Section>
