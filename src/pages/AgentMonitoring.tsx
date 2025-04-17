@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/layout";
 import { Section } from "@/components/ui/layout/section";
 import { PageHeader } from "@/components/ui/layout/page-header";
-import { Activity, BarChart3, Bot, ChartPie, Shield, Rocket, Sparkles, Zap, Brain } from "lucide-react";
+import { Activity, BarChart3, Bot, ChartPie, Shield, Rocket, Sparkles, Zap, Brain, Network } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useUserRole } from "@/hooks/use-user-role";
 import { AccessRestrictionAlert } from "@/features/roadmap/components/AccessRestrictionAlert";
@@ -17,6 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { agents } from "@/components/agents/agents-data";
 import { AgentAutonomyOverview } from "@/components/agents/monitoring/autonomy/AgentAutonomyOverview";
 import { useSafetyPanel } from "@/components/agents/monitoring/safety/hooks/useSafetyPanel";
+import { AutonomyVisualization } from "@/components/agents/monitoring/autonomy/AutonomyVisualization";
 
 const AgentMonitoring = () => {
   const { user } = useAuth();
@@ -102,11 +103,18 @@ const AgentMonitoring = () => {
         {/* Adăugăm Secțiunea de Prezentare a Autonomiei */}
         <AgentAutonomyOverview autonomyLevel={autonomyLevel} agentsRunning={agentsRunning} />
 
+        {/* Adăugăm Vizualizarea 3D a Rețelei de Agenți */}
+        <AutonomyVisualization />
+
         <Tabs defaultValue="autonomy" className="space-y-6 mt-6">
           <TabsList className="mb-4">
             <TabsTrigger value="autonomy" className="flex items-center gap-1">
               <Brain className="h-4 w-4" />
               Autonomie & Execuție
+            </TabsTrigger>
+            <TabsTrigger value="network" className="flex items-center gap-1">
+              <Network className="h-4 w-4" />
+              Rețea Agenți
             </TabsTrigger>
             <TabsTrigger value="safety" className="flex items-center gap-1">
               <Shield className="h-4 w-4" />
@@ -124,6 +132,17 @@ const AgentMonitoring = () => {
           
           <TabsContent value="autonomy">
             <SafetyInfrastructurePanel />
+          </TabsContent>
+          
+          <TabsContent value="network">
+            <div className="mb-4">
+              <h2 className="text-xl font-medium mb-2">Vizualizare Rețea Agenți Autonomi</h2>
+              <p className="text-muted-foreground">
+                Explorați interconectarea și nivelurile de autonomie ale agenților din sistem prin vizualizarea 3D interactivă.
+                Utilizați mouse-ul pentru a roti și examina relațiile dintre agenți.
+              </p>
+            </div>
+            <AutonomyVisualization />
           </TabsContent>
           
           <TabsContent value="safety">

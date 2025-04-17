@@ -10,6 +10,7 @@ export interface Agent {
   status: "online" | "offline" | "busy";
   powerLevel: number;  // Nivel de putere pe o scară de la 1 la 10
   relevance: "core" | "support" | "auxiliary"; // Relevanța pentru autodezvoltarea platformei
+  autonomyLevel?: number; // Nivelul de autonomie al agentului (0-100)
 }
 
 export const DEMO_RESPONSES: Record<string, string[]> = {
@@ -54,7 +55,8 @@ export const agents: Agent[] = [
     color: "text-green-500",
     status: "online" as const,
     powerLevel: 8,
-    relevance: "core"
+    relevance: "core",
+    autonomyLevel: 85
   },
   {
     id: "support-agent",
@@ -64,7 +66,8 @@ export const agents: Agent[] = [
     color: "text-blue-500",
     status: "online" as const,
     powerLevel: 6,
-    relevance: "support"
+    relevance: "support",
+    autonomyLevel: 72
   },
   {
     id: "analytics-agent",
@@ -74,7 +77,8 @@ export const agents: Agent[] = [
     color: "text-purple-500",
     status: "online" as const,
     powerLevel: 9,
-    relevance: "core"
+    relevance: "core",
+    autonomyLevel: 91
   },
   {
     id: "security-agent",
@@ -84,7 +88,8 @@ export const agents: Agent[] = [
     color: "text-red-500",
     status: "online" as const,
     powerLevel: 10,
-    relevance: "core"
+    relevance: "core",
+    autonomyLevel: 95
   },
   {
     id: "ai-assistant",
@@ -94,6 +99,7 @@ export const agents: Agent[] = [
     color: "text-amber-500",
     status: "online" as const,
     powerLevel: 7,
-    relevance: "support"
+    relevance: "support",
+    autonomyLevel: 78
   }
 ];

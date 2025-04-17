@@ -3,9 +3,17 @@ import React, { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Sphere, Line } from '@react-three/drei';
 import { agents } from '@/components/agents/agents-data';
+import * as THREE from 'three';
 
-const AgentNode = ({ position, autonomyLevel }) => {
-  const meshRef = useRef();
+interface AgentNodeProps {
+  position: [number, number, number];
+  autonomyLevel: number;
+  name: string;
+  color: string;
+}
+
+const AgentNode: React.FC<AgentNodeProps> = ({ position, autonomyLevel, name, color }) => {
+  const meshRef = useRef<THREE.Mesh>(null);
   
   useFrame(() => {
     if (meshRef.current) {
@@ -13,35 +21,85 @@ const AgentNode = ({ position, autonomyLevel }) => {
     }
   });
 
-  const color = autonomyLevel > 70 ? 'green' : 
-                autonomyLevel > 40 ? 'yellow' : 'red';
+  const sphereColor = autonomyLevel > 70 ? 'green' : 
+                       autonomyLevel > 40 ? 'yellow' : 'red';
 
   return (
     <Sphere 
       ref={meshRef}
       position={position} 
-      args={[autonomyLevel / 100, 32, 32]}
+      args={[autonomyLevel / 100 + 0.2, 32, 32]}
     >
-      <meshStandardMaterial color={color} />
+      <meshStandardMaterial color={sphereColor} />
     </Sphere>
   );
 };
 
-export const AgentNetworkGraph = () => {
+const AgentConnection: React.FC<{
+  start: [number, number, number];
+  end: [number, number, number];
+}> = ({ start, end }) => {
+  return (
+    <Line
+      points={[new THREE.Vector3(...start), new THREE.Vector3(...end)]}
+      color="white"
+      lineWidth={1}
+      opacity={0.5}
+      transparent
+    />
+  );
+};
+
+export const AgentNetworkGraph: React.FC = () => {
+  // Calculează pozițiile agenților într-un cerc
+  const agentPositions = agents.map((_, index) => {
+    const angle = (index / agents.length) * Math.PI * 2;
+    const radius = 2;
+    return [
+      Math.sin(angle) * radius, 
+      Math.cos(angle) * radius, 
+      0
+    ] as [number, number, number];
+  });
+
+  // Generează conexiuni între agenți
+  const connections = [];
+  for (let i = 0; i < agents.length; i++) {
+    for (let j = i + 1; j < agents.length; j++) {
+      // Creăm conexiuni doar dacă agenții sunt relevanți unii pentru alții
+      if (agents[i].relevance === agents[j].relevance || 
+          agents[i].relevance === 'core' || 
+          agents[j].relevance === 'core') {
+        connections.push({
+          start: agentPositions[i],
+          end: agentPositions[j]
+        });
+      }
+    }
+  }
+
   return (
     <Canvas camera={{ position: [0, 0, 5] }}>
       <ambientLight intensity={0.5} />
       <pointLight position={[10, 10, 10]} />
       
+      {/* Conexiuni între agenți */}
+      {connections.map((connection, index) => (
+        <AgentConnection 
+          key={`connection-${index}`}
+          start={connection.start}
+          end={connection.end}
+        />
+      ))}
+      
+      {/* Noduri pentru agenți */}
       {agents.map((agent, index) => (
         <AgentNode 
           key={agent.id}
-          position={[
-            Math.sin(index * 0.5) * 2, 
-            Math.cos(index * 0.5) * 2, 
-            0
-          ]}
+          position={agentPositions[index]}
           autonomyLevel={agent.autonomyLevel || 50}
+          name={agent.name}
+          color={agent.color}
         />
       ))}
     </Canvas>
