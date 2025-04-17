@@ -1,10 +1,11 @@
 
 import { Card } from "@/components/ui/card";
-import { GodModeToggle } from "./godmode/GodModeToggle";
-import { GodModeAlerts } from "./godmode/GodModeAlerts";
-import { FeedbackForm } from "./godmode/FeedbackForm";
-import { EmptyState } from "./godmode/EmptyState";
+import { GodModeToggle } from "./god-mode/GodModeToggle";
+import { GodModeAlerts } from "./god-mode/GodModeAlerts";
+import { FeedbackForm } from "./god-mode/FeedbackForm";
+import { EmptyState } from "./god-mode/EmptyState";
 import { useAgentGodMode } from "@/hooks/agent-god-mode";
+import React from "react";
 
 interface AgentGodModeProps {
   userId?: string;
@@ -20,8 +21,10 @@ export const AgentGodMode = ({ userId }: AgentGodModeProps) => {
     isGeneratingFeedback,
     isProcessing,
     preferredModel,
+    autoExecutionConfig,
     setFeedback,
     setPreferredModel,
+    updateAutoExecutionConfig,
     submitFeedback,
     cancelFeedback
   } = useAgentGodMode({ userId });
@@ -34,6 +37,8 @@ export const AgentGodMode = ({ userId }: AgentGodModeProps) => {
       <GodModeToggle
         isGodModeEnabled={isGodModeEnabled}
         toggleGodMode={toggleGodMode}
+        autoExecutionConfig={autoExecutionConfig}
+        updateAutoExecutionConfig={updateAutoExecutionConfig}
       />
       
       <GodModeAlerts isGodModeEnabled={isGodModeEnabled} />

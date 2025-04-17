@@ -1,38 +1,40 @@
 
 export interface FeedbackItem {
   id: string;
-  agent_id: string;
-  roadmap_tasks?: {
-    title: string;
-    description: string;
-  };
-  proposed_changes?: string;
   proposed_progress?: number;
+  proposed_changes?: string;
   proposed_files?: string;
   motivation?: string;
-  proposed_code?: string; // Added this line to match the error
+  roadmap_tasks?: {
+    id: string;
+    title: string;
+    description: string;
+    progress: number;
+  };
+  [key: string]: any;
 }
 
-export interface AgentGodModeState {
-  isGodModeEnabled: boolean;
-  isProcessing: boolean;
-  isGeneratingFeedback: boolean;
-  currentSubmission: FeedbackItem | null;
-  currentProposal: FeedbackItem | null;
+export interface GenerateFeedbackParams {
+  itemType: "submission" | "proposal";
+  item: FeedbackItem;
+  userId: string;
+  model: "deepseek" | "claude" | "anthropic";
+}
+
+export interface SubmitFeedbackParams {
+  itemType: "submission" | "proposal";
+  itemId: string;
   feedback: string;
-  feedbackType?: "submission" | "proposal"; // Made this optional
-  preferredModel: "deepseek" | "claude";
+  userId: string;
+  approve: boolean;
+  model?: "deepseek" | "claude" | "anthropic";
 }
 
-export interface UseAgentGodModeProps {
-  userId: string | undefined;
-}
-
-export interface UseAgentGodModeReturn extends AgentGodModeState {
-  toggleGodMode: () => void;
-  generateFeedback: (type: "submission" | "proposal", item: FeedbackItem) => Promise<void>;
-  submitFeedback: () => Promise<void>;
-  cancelFeedback: () => void;
-  setFeedback: (feedback: string) => void;
-  setPreferredModel: (model: "deepseek" | "claude") => void;
+export interface AutoExecutionConfig {
+  enabled: boolean;
+  useAnthropicDirect: boolean;
+  preferredModel: "deepseek" | "claude" | "anthropic";
+  autonomyLevel: number;
+  feedbackStyle: "constructive" | "detailed" | "brief" | "mentor";
+  autoApproveThreshold: number;
 }

@@ -4,15 +4,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 interface ModelSelectorProps {
   value: string;
-  onChange: (value: "deepseek" | "claude") => void;
+  onChange: (value: "deepseek" | "claude" | "anthropic") => void;
   disabled?: boolean;
+  showAnthropicDirect?: boolean;
 }
 
-export const ModelSelector = ({ value, onChange, disabled = false }: ModelSelectorProps) => {
+export const ModelSelector = ({ 
+  value, 
+  onChange, 
+  disabled = false,
+  showAnthropicDirect = true
+}: ModelSelectorProps) => {
   return (
     <Select 
       value={value} 
-      onValueChange={(v) => onChange(v as "deepseek" | "claude")}
+      onValueChange={(v) => onChange(v as "deepseek" | "claude" | "anthropic")}
       disabled={disabled}
     >
       <SelectTrigger className="w-[180px] h-8">
@@ -21,8 +27,8 @@ export const ModelSelector = ({ value, onChange, disabled = false }: ModelSelect
       <SelectContent>
         <SelectItem value="deepseek">DeepSeek Chat</SelectItem>
         <SelectItem value="claude">Claude (OpenRouter)</SelectItem>
+        {showAnthropicDirect && <SelectItem value="anthropic">Claude (Anthropic Direct)</SelectItem>}
       </SelectContent>
     </Select>
   );
 };
-

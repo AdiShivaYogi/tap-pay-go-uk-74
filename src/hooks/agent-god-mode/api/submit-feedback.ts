@@ -1,95 +1,42 @@
 
-import { extendedSupabase as supabase } from "@/integrations/supabase/extended-client";
+import { supabase } from "@/integrations/supabase/client";
+import { SubmitFeedbackParams } from "../types";
 
-export const submitFeedbackAPI = async ({
-  itemType,
-  itemId,
-  feedback,
-  userId,
-  approve
-}: {
-  itemType: "submission" | "proposal";
-  itemId: string;
-  feedback: string;
-  userId: string | undefined;
-  approve: boolean;
-}): Promise<{ success: boolean }> => {
-  if (itemType === "submission") {
-    await submitSubmissionFeedback(itemId, feedback, approve, userId);
-  } else {
-    await submitProposalFeedback(itemId, feedback, approve, userId);
-  }
+export const submitFeedbackAPI = async (params: SubmitFeedbackParams): Promise<{ success: boolean }> => {
+  const { itemType, itemId, feedback, userId, approve, model } = params;
   
-  return { success: true };
-};
-
-export const submitSubmissionFeedback = async (
-  submissionId: string,
-  feedback: string,
-  isGodModeEnabled: boolean,
-  userId: string | undefined
-): Promise<void> => {
-  const { error: feedbackError } = await supabase
-    .from('agent_feedback')
-    .insert({
-      submission_id: submissionId,
-      feedback: feedback,
-      is_approved: isGodModeEnabled,
-      is_god_mode: isGodModeEnabled
-    });
+  try {
+    let endpoint = itemType === "submission" 
+      ? 'roadmap-submissions' 
+      : 'code-proposals';
     
-  if (feedbackError) throw feedbackError;
-  
-  if (isGodModeEnabled) {
-    await approveSubmission(submissionId, feedback);
+    // Actualizează statusul și feedback-ul pentru propunerea specificată
+    const { data, error } = await supabase
+      .from(endpoint)
+      .update({
+        status: approve ? 'approved' : 'feedback',
+        feedback: feedback,
+        feedback_by: userId,
+        updated_at: new Date().toISOString(),
+        feedback_model: model || 'deepseek'  // Adăugăm modelul folosit pentru feedback
+      })
+      .eq('id', itemId);
+    
+    if (error) {
+      console.error(`Error updating ${itemType}:`, error);
+      throw new Error(`Eroare la actualizarea ${itemType === "submission" ? "propunerii de task" : "propunerii de cod"}: ${error.message || 'Eroare necunoscută'}`);
+    }
+    
+    return { success: true };
+  } catch (err) {
+    console.error('Exception in submitFeedbackAPI:', err);
+    throw err;
   }
 };
 
-const approveSubmission = async (submissionId: string, feedback: string): Promise<void> => {
-  const { error: approveError } = await supabase
-    .from('agent_task_submissions')
-    .update({ 
-      approval_status: 'approved',
-      notes: `Aprobat automat în God Mode cu feedback: ${feedback.substring(0, 100)}...`
-    })
-    .eq('id', submissionId);
-      
-  if (approveError) throw approveError;
-};
+// Aliasuri pentru compatibilitate înapoi
+export const submitSubmissionFeedback = (params: Omit<SubmitFeedbackParams, 'itemType'>) => 
+  submitFeedbackAPI({ ...params, itemType: "submission" });
 
-export const submitProposalFeedback = async (
-  proposalId: string,
-  feedback: string,
-  isGodModeEnabled: boolean,
-  userId: string | undefined
-): Promise<void> => {
-  const { error: feedbackError } = await supabase
-    .from('code_proposal_feedback')
-    .insert({
-      proposal_id: proposalId,
-      feedback: feedback,
-      is_approved: isGodModeEnabled,
-      is_god_mode: isGodModeEnabled
-    });
-    
-  if (feedbackError) throw feedbackError;
-  
-  if (isGodModeEnabled) {
-    await approveProposal(proposalId, userId);
-  }
-};
-
-const approveProposal = async (proposalId: string, userId: string | undefined): Promise<void> => {
-  const currentDate = new Date().toISOString();
-    
-  const { error: approveError } = await supabase
-    .from('code_proposals')
-    .update({ 
-      status: 'approved',
-      approved_at: currentDate,
-      approved_by: userId
-    })
-    .eq('id', proposalId);
-      
-  if (approveError) throw approveError;
-};
+export const submitProposalFeedback = (params: Omit<SubmitFeedbackParams, 'itemType'>) => 
+  submitFeedbackAPI({ ...params, itemType: "proposal" });

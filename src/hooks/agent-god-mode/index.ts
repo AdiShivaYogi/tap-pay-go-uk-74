@@ -1,5 +1,5 @@
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { FeedbackItem } from "./types";
 import { generateFeedbackAPI } from "./api/generate-feedback";
@@ -13,14 +13,23 @@ interface UseAgentGodModeProps {
 export const useAgentGodMode = (props?: UseAgentGodModeProps) => {
   const { toast } = useToast();
   // Pass the props to useGodModeState
-  const { isGodModeEnabled, toggleGodMode } = useGodModeState(props);
+  const { isGodModeEnabled, toggleGodMode, autoExecutionConfig, updateAutoExecutionConfig } = useGodModeState(props);
   
   const [currentSubmission, setCurrentSubmission] = useState<FeedbackItem | null>(null);
   const [currentProposal, setCurrentProposal] = useState<FeedbackItem | null>(null);
   const [feedback, setFeedback] = useState<string>("");
   const [isGeneratingFeedback, setIsGeneratingFeedback] = useState<boolean>(false);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  const [preferredModel, setPreferredModel] = useState<"deepseek" | "claude">("deepseek");
+  const [preferredModel, setPreferredModel] = useState<"deepseek" | "claude" | "anthropic">(
+    autoExecutionConfig?.preferredModel || "deepseek"
+  );
+
+  // Sincronizează modelul preferat cu configurația
+  useEffect(() => {
+    if (autoExecutionConfig?.preferredModel) {
+      setPreferredModel(autoExecutionConfig.preferredModel);
+    }
+  }, [autoExecutionConfig]);
 
   const resetState = useCallback(() => {
     setCurrentSubmission(null);
@@ -59,7 +68,7 @@ export const useAgentGodMode = (props?: UseAgentGodModeProps) => {
         setFeedback(result.feedback);
         toast({
           title: "Feedback generat",
-          description: "S-a generat feedback pentru propunerea selectată."
+          description: `S-a generat feedback pentru propunerea selectată utilizând ${preferredModel === "anthropic" ? "Claude (Anthropic Direct)" : preferredModel === "claude" ? "Claude (OpenRouter)" : "DeepSeek"}.`
         });
       }
     } catch (error) {
@@ -99,17 +108,25 @@ export const useAgentGodMode = (props?: UseAgentGodModeProps) => {
         itemId: item.id,
         feedback,
         userId: props.userId,
-        approve: isGodModeEnabled
+        approve: isGodModeEnabled,
+        model: preferredModel
       });
       
       if (result?.success) {
         toast({
           title: isGodModeEnabled ? "Propunere aprobată" : "Feedback trimis",
           description: isGodModeEnabled 
-            ? "Propunerea a fost aprobată și feedback-ul a fost trimis către agent." 
+            ? `Propunerea a fost aprobată și feedback-ul a fost trimis către agent utilizând ${preferredModel === "anthropic" ? "Claude (Anthropic Direct)" : preferredModel === "claude" ? "Claude (OpenRouter)" : "DeepSeek"}.` 
             : "Feedback-ul a fost trimis către agent."
         });
         resetState();
+
+        // Actualizează modelul preferat în configurație dacă s-a schimbat
+        if (autoExecutionConfig && autoExecutionConfig.preferredModel !== preferredModel) {
+          updateAutoExecutionConfig({
+            preferredModel: preferredModel
+          });
+        }
       }
     } catch (error) {
       console.error("Error submitting feedback:", error);
@@ -121,7 +138,12 @@ export const useAgentGodMode = (props?: UseAgentGodModeProps) => {
     } finally {
       setIsProcessing(false);
     }
-  }, [props?.userId, currentSubmission, currentProposal, feedback, isGodModeEnabled, toast, resetState]);
+  }, [props?.userId, currentSubmission, currentProposal, feedback, isGodModeEnabled, toast, resetState, preferredModel, autoExecutionConfig, updateAutoExecutionConfig]);
+
+  const handleModelChange = (model: "deepseek" | "claude" | "anthropic") => {
+    setPreferredModel(model);
+    // Nu salvăm automat în configurație pentru a evita prea multe cereri
+  };
 
   return {
     isGodModeEnabled,
@@ -132,8 +154,10 @@ export const useAgentGodMode = (props?: UseAgentGodModeProps) => {
     isGeneratingFeedback,
     isProcessing,
     preferredModel,
+    autoExecutionConfig,
     setFeedback,
-    setPreferredModel,
+    setPreferredModel: handleModelChange,
+    updateAutoExecutionConfig,
     generateFeedback,
     submitFeedback,
     cancelFeedback: resetState
