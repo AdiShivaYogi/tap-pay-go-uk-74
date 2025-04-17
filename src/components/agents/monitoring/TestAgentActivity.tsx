@@ -19,7 +19,8 @@ const ACTIVITY_CATEGORIES = [
   "task", 
   "proposal", 
   "conversation", 
-  "monitoring"
+  "monitoring",
+  "learning"
 ];
 
 export const TestAgentActivity: React.FC = () => {

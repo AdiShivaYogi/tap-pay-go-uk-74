@@ -4,40 +4,67 @@ import { StyledCard, StyledCardHeader, StyledCardTitle, StyledCardContent } from
 import { AgentActivityChart } from "./AgentActivityChart";
 import { AgentActivityLog } from "./AgentActivityLog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useAgentMonitoring } from "./hooks/useAgentMonitoring";
-import { BarChart4, ListFilter, RefreshCw, Settings } from "lucide-react";
+import { useAgentMonitoring } from "./hooks";
+import { BarChart4, ListFilter, RefreshCw, Settings, Clock, BrainCircuit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { TestAgentActivity } from "./TestAgentActivity";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { AgentLearningPanel } from "./AgentLearningPanel";
+import { formatDistanceToNow } from "date-fns";
+import { ro } from "date-fns/locale";
 
 export const AgentActivityMonitor: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const [showTestTools, setShowTestTools] = useState(false);
+  const [showLearning, setShowLearning] = useState(false);
   const { 
     activityData, 
     activityLogs, 
     isLoading, 
     categories,
     refreshData,
-    totalActivities
+    totalActivities,
+    autoRefresh,
+    toggleAutoRefresh,
+    lastRefresh
   } = useAgentMonitoring();
 
   const handleFilterChange = (category: string | null) => {
     setActiveFilter(category === activeFilter ? null : category);
   };
 
+  const lastRefreshText = formatDistanceToNow(lastRefresh, { 
+    addSuffix: true,
+    locale: ro 
+  });
+
   return (
     <StyledCard className="w-full">
       <StyledCardHeader className="flex flex-row items-center justify-between">
         <div>
           <StyledCardTitle>Monitorizare Agenți în Timp Real</StyledCardTitle>
-          <p className="text-sm text-muted-foreground">
-            {totalActivities} activități monitorizate
+          <p className="text-sm text-muted-foreground flex items-center gap-1">
+            <span>{totalActivities} activități monitorizate</span>
+            <span className="mx-2">•</span>
+            <Clock className="h-3 w-3" /> 
+            <span>Actualizat {lastRefreshText}</span>
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mr-4">
+            <Switch 
+              id="auto-refresh"
+              checked={autoRefresh}
+              onCheckedChange={toggleAutoRefresh}
+            />
+            <Label htmlFor="auto-refresh" className="text-xs flex items-center gap-1">
+              <RefreshCw size={14} />
+              Auto-reîmprospătare
+            </Label>
+          </div>
+          
           <div className="flex items-center gap-2 mr-4">
             <Switch 
               id="test-mode"
@@ -49,6 +76,19 @@ export const AgentActivityMonitor: React.FC = () => {
               Mod Test
             </Label>
           </div>
+          
+          <div className="flex items-center gap-2 mr-4">
+            <Switch 
+              id="learning-mode"
+              checked={showLearning}
+              onCheckedChange={setShowLearning}
+            />
+            <Label htmlFor="learning-mode" className="text-xs flex items-center gap-1">
+              <BrainCircuit size={14} />
+              Învățare între agenți
+            </Label>
+          </div>
+          
           <Button 
             variant="outline" 
             size="sm" 
@@ -90,6 +130,12 @@ export const AgentActivityMonitor: React.FC = () => {
             </div>
           )}
         </div>
+
+        {showLearning && (
+          <div className="mb-6">
+            <AgentLearningPanel />
+          </div>
+        )}
 
         <Tabs defaultValue="chart">
           <TabsList className="mb-4">

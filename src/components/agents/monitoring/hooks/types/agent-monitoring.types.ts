@@ -6,6 +6,7 @@ export interface ActivityData {
   taskCount: number;
   proposalCount: number;
   conversationCount: number;
+  learningCount?: number;
 }
 
 export interface ActivityLog {
@@ -13,8 +14,15 @@ export interface ActivityLog {
   agentId: string;
   agentName: string;
   description: string;
-  category: string; // 'task', 'proposal', 'conversation', etc.
+  category: string; // 'task', 'proposal', 'conversation', 'learning', etc.
   timestamp: string;
+}
+
+export interface AgentInteraction {
+  sourceAgentId: string;
+  targetAgentId: string;
+  learningType: string;
+  timestamp: Date;
 }
 
 export interface AgentMonitoringState {
@@ -23,9 +31,13 @@ export interface AgentMonitoringState {
   isLoading: boolean;
   categories: string[];
   totalActivities: number;
+  autoRefresh: boolean;
+  lastRefresh: Date;
 }
 
 export interface AgentMonitoringHook extends AgentMonitoringState {
   refreshData: () => void;
-  logDetailedAgentActivity: (agentId: string, description: string) => void;
+  logDetailedAgentActivity: (agentId: string, description: string, category?: string) => void;
+  toggleAutoRefresh: () => void;
+  logAgentInteraction: (sourceAgentId: string, targetAgentId: string, learningType: string) => AgentInteraction;
 }

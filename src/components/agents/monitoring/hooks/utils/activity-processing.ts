@@ -32,6 +32,10 @@ export const processActivityData = (agentActivities: any[]): {
     const agentConversations = agentActivities.filter(
       a => a.agent_id === agent.id && a.category === 'conversation'
     ).length || 0;
+    
+    const agentLearning = agentActivities.filter(
+      a => a.agent_id === agent.id && a.category === 'learning'
+    ).length || 0;
 
     processedActivityData.push({
       agentId: agent.id,
@@ -39,7 +43,8 @@ export const processActivityData = (agentActivities: any[]): {
       category: agentActivities.find(a => a.agent_id === agent.id)?.category || 'other',
       taskCount: agentTasks,
       proposalCount: agentProposals,
-      conversationCount: agentConversations
+      conversationCount: agentConversations,
+      learningCount: agentLearning
     });
   });
 
@@ -62,17 +67,40 @@ export const processActivityLogs = (activityLogsData: any[]): ActivityLog[] => {
 
 export const logAgentActivity = async (
   agentId: string, 
-  description: string
+  description: string,
+  category: string = 'monitoring'
 ): Promise<void> => {
   try {
+    // Găsim numele agentului
+    const { data: agentData } = await supabase
+      .from('agent_activity')
+      .select('agent_name')
+      .eq('agent_id', agentId)
+      .limit(1);
+      
+    const agentName = agentData && agentData.length > 0 
+      ? agentData[0].agent_name 
+      : 'Agent Necunoscut';
+
+    // Înregistrăm activitatea
     await supabase
       .from('agent_activity_logs')
       .insert({
         agent_id: agentId,
-        agent_name: 'N/A', // You might want to fetch the agent name here if needed
+        agent_name: agentName,
         description: description,
-        category: 'monitoring',
+        category: category,
         timestamp: new Date().toISOString()
+      });
+      
+    // Înregistrăm și în tabela de activități pentru statistici
+    await supabase
+      .from('agent_activity')
+      .insert({
+        agent_id: agentId,
+        agent_name: agentName,
+        category: category,
+        action: 'log'
       });
   } catch (error) {
     console.error('Failed to log agent activity:', error);

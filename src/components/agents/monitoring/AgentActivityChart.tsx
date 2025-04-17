@@ -16,6 +16,7 @@ const chartConfig = {
   task: { color: "#8884d8" },
   proposal: { color: "#82ca9d" },
   conversation: { color: "#ffc658" },
+  learning: { color: "#ff6b6b" },
   monitoring: { color: "#4da3ff" },
   other: { color: "#ff8042" },
 };
@@ -80,6 +81,7 @@ export const AgentActivityChart: React.FC<AgentActivityChartProps> = ({
           <Bar dataKey="taskCount" name="Taskuri" fill="#8884d8" />
           <Bar dataKey="proposalCount" name="Propuneri" fill="#82ca9d" />
           <Bar dataKey="conversationCount" name="Conversații" fill="#ffc658" />
+          <Bar dataKey="learningCount" name="Învățare" fill="#ff6b6b" />
         </BarChart>
       </ResponsiveContainer>
     </ChartContainer>
