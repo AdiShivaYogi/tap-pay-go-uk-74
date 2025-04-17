@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { AutoExecution } from '@/features/agent-autonomy/AutoExecution';
 import { useAuth } from '@/hooks/use-auth';
@@ -20,7 +19,16 @@ export const AutonomyEngine: React.FC = () => {
   const [testingConnection, setTestingConnection] = useState<boolean>(false);
   const [isGeneratingProposals, setIsGeneratingProposals] = useState<boolean>(false);
 
-  // Verifică explicit starea conexiunii Anthropic la încărcare
+  useEffect(() => {
+    console.group('AutonomyEngine Render Debug');
+    console.log('User ID:', userId);
+    console.log('Is God Mode Enabled:', isGodModeEnabled);
+    console.log('Is Generating Proposals:', isGeneratingProposals);
+    console.log('Anthropic Connected:', anthropicConnected);
+    console.log('Proposals Monitoring Active:', proposalsMonitoringActive);
+    console.groupEnd();
+  }, [userId, isGodModeEnabled, isGeneratingProposals, anthropicConnected, proposalsMonitoringActive]);
+
   useEffect(() => {
     const checkAnthropicConnection = async () => {
       if (!userId) return;
@@ -56,10 +64,8 @@ export const AutonomyEngine: React.FC = () => {
             duration: 5000,
           });
           
-          // Generăm o activitate de test pentru a demonstra că sistemul funcționează
           await generateTestActivity();
           
-          // Generăm imediat propuneri ca să apară în interfață
           await generateAutomaticProposals(true);
         } else {
           toast({
@@ -76,17 +82,14 @@ export const AutonomyEngine: React.FC = () => {
       }
     };
     
-    // Verificăm conexiunea la încărcare
     checkAnthropicConnection();
   }, [userId, toast]);
 
-  // Activează automat God Mode la prima încărcare
   useEffect(() => {
     const activateGodMode = async () => {
       if (!userId || initialized) return;
 
       try {
-        // Verifică dacă utilizatorul are rol de admin sau activăm pentru toți
         const { data, error } = await supabase.rpc('user_has_role', { _role: 'admin' });
         
         if (error) {
@@ -94,7 +97,6 @@ export const AutonomyEngine: React.FC = () => {
           return;
         }
         
-        // Activăm God Mode și nivel maxim de autonomie
         await updateAutoExecutionConfig({
           enabled: true,
           autonomyLevel: 100,
@@ -111,8 +113,7 @@ export const AutonomyEngine: React.FC = () => {
         
         setInitialized(true);
         
-        // Generăm imediat propuneri la activarea God Mode
-        generateAutomaticProposals(true);
+        await generateAutomaticProposals(true);
       } catch (err) {
         console.error('Eroare la activarea sistemului autonom:', err);
       }
@@ -121,13 +122,11 @@ export const AutonomyEngine: React.FC = () => {
     activateGodMode();
   }, [userId, updateAutoExecutionConfig, initialized, toast]);
   
-  // Monitorizare continuă pentru propuneri noi și implementare automată
   useEffect(() => {
     if (!initialized || proposalsMonitoringActive || !userId) return;
     
     const startProposalsMonitoring = async () => {
       try {
-        // Activăm monitorizarea propunerilor
         const { data, error } = await supabase.functions.invoke('agent-task-monitor', {
           body: { 
             action: 'startMonitoring',
@@ -147,17 +146,14 @@ export const AutonomyEngine: React.FC = () => {
           description: "Sistemul monitorizează și procesează automat propunerile vitale pentru ecosistem."
         });
         
-        // Generăm propuneri imediat după pornirea monitorizării
-        generateAutomaticProposals(true);
+        await generateAutomaticProposals(true);
       } catch (err) {
         console.error('Eroare la monitorizarea propunerilor:', err);
       }
     };
     
-    // Pornim monitorizarea propunerilor
     startProposalsMonitoring();
     
-    // Setăm un interval mai frecvent pentru a genera propuneri automat (la fiecare minut)
     const interval = setInterval(() => {
       generateAutomaticProposals();
     }, 60 * 1000);
@@ -165,16 +161,14 @@ export const AutonomyEngine: React.FC = () => {
     return () => clearInterval(interval);
   }, [initialized, proposalsMonitoringActive, userId, toast]);
   
-  // Generează o activitate de test pentru a demonstra că sistemul funcționează
   const generateTestActivity = async () => {
     if (!userId) return;
     
     try {
-      // Testăm interogarea directă a modelului Claude
       const { data, error } = await supabase.functions.invoke('generate-agent-response', {
         body: {
           message: "Verificare conexiune API Anthropic Claude",
-          model: "anthropic", // Folosim direct modelul Anthropic
+          model: "anthropic",
           systemRole: "Agent de verificare conexiune",
           isCodeProposal: false
         }
@@ -190,10 +184,9 @@ export const AutonomyEngine: React.FC = () => {
         return;
       }
       
-      // Înregistrăm activitatea reușită
       await supabase.from('agent_activity_logs').insert({
         agent_id: "anthropic-api-test",
-        agent_name: "Test API Anthropic", // Added missing agent_name field
+        agent_name: "Test API Anthropic",
         description: "Test conexiune API Anthropic reușit: " + data.response.substring(0, 30) + "...",
         category: "api-test",
         timestamp: new Date().toISOString()
@@ -204,14 +197,12 @@ export const AutonomyEngine: React.FC = () => {
         description: "S-a generat cu succes un răspuns de la modelul Claude folosind API-ul Anthropic.",
       });
       
-      // Generăm și propunere de task
-      generateAutomaticProposals(true);
+      await generateAutomaticProposals(true);
     } catch (err) {
       console.error('Eroare la testarea API-ului Anthropic:', err);
     }
   };
   
-  // Funcție pentru generarea automată de propuneri
   const generateAutomaticProposals = async (showNotifications = false) => {
     if (!userId || isGeneratingProposals) return;
     
@@ -219,10 +210,9 @@ export const AutonomyEngine: React.FC = () => {
       setIsGeneratingProposals(true);
       console.log('Generare propuneri noi...');
       
-      // Adăugăm direct o propunere în tabelul agent_task_submissions pentru a fi vizibilă imediat
       const taskProposal = {
         agent_id: "ai-assistant",
-        task_id: "00000000-0000-0000-0000-000000000000", // ID fictiv pentru task nou
+        task_id: "00000000-0000-0000-0000-000000000000",
         proposed_changes: "VITAL: Propunere generată automat pentru a îmbunătăți performanța sistemului de agenți autonomi. Este necesară integrarea completă a unui sistem de verificare a rezultatelor generate de agenți pentru a asigura calitatea și siguranța acestora.",
         proposed_status: "pending",
         proposed_progress: 0,
@@ -230,7 +220,6 @@ export const AutonomyEngine: React.FC = () => {
         approval_status: "pending"
       };
       
-      // Inserăm direct propunerea în baza de date
       const { data: directSubmission, error: directError } = await supabase
         .from('agent_task_submissions')
         .insert(taskProposal);
@@ -249,15 +238,14 @@ export const AutonomyEngine: React.FC = () => {
         }
       }
       
-      // Generăm și prin funcția specializată pentru diversitate
       const { data, error } = await supabase.functions.invoke('generate-agent-proposals', {
         body: { 
           action: 'generate',
-          count: 3,  // Generăm 3 propuneri importante
+          count: 3,
           priority: 'high',
           userId: userId,
-          vitalCount: 2, // Dintre care 2 vitale
-          forceGenerate: true // Forțăm generarea chiar dacă există alte propuneri recente
+          vitalCount: 2,
+          forceGenerate: true
         }
       });
       
@@ -286,25 +274,19 @@ export const AutonomyEngine: React.FC = () => {
     <>
       <AutoExecution />
       
-      {/* Dialog pentru configurare API Anthropic când e nevoie */}
-      {showAnthropicStatus && !anthropicConnected && (
-        <div className="fixed bottom-4 right-4 z-50">
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 shadow-lg max-w-md">
-            <h4 className="font-medium text-amber-800 mb-2">Conexiune API Anthropic necesară</h4>
-            <p className="text-sm text-amber-700 mb-3">
-              Pentru funcționarea optimă a agenților autonomi, configurați API-ul Claude (Anthropic).
-            </p>
-            <div className="mt-2">
-              <AnthropicApiKeyDialog />
-            </div>
-          </div>
-        </div>
-      )}
+      <div className="fixed top-4 right-4 z-50 bg-yellow-100 p-2 rounded-lg text-xs">
+        <p>User ID: {userId || 'No User'}</p>
+        <p>God Mode: {isGodModeEnabled ? 'Enabled' : 'Disabled'}</p>
+        <p>Generating: {isGeneratingProposals ? 'Yes' : 'No'}</p>
+        <p>Anthropic: {anthropicConnected ? 'Connected' : 'Disconnected'}</p>
+      </div>
       
-      {/* Buton pentru generare automată de propuneri cu stil nou */}
       <div className="fixed bottom-4 left-4 z-50">
         <button 
-          onClick={() => generateAutomaticProposals(true)}
+          onClick={() => {
+            console.log('Generate Proposals Button Clicked');
+            generateAutomaticProposals(true);
+          }}
           disabled={isGeneratingProposals}
           className={`
             flex items-center justify-center gap-2 
@@ -328,6 +310,20 @@ export const AutonomyEngine: React.FC = () => {
           )}
         </button>
       </div>
+      
+      {showAnthropicStatus && !anthropicConnected && (
+        <div className="fixed bottom-4 right-4 z-50">
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 shadow-lg max-w-md">
+            <h4 className="font-medium text-amber-800 mb-2">Conexiune API Anthropic necesară</h4>
+            <p className="text-sm text-amber-700 mb-3">
+              Pentru funcționarea optimă a agenților autonomi, configurați API-ul Claude (Anthropic).
+            </p>
+            <div className="mt-2">
+              <AnthropicApiKeyDialog />
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
