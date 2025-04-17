@@ -30,6 +30,7 @@ import Agents from "./pages/Agents";
 import AgentAdmin from "./pages/AgentAdmin";
 import AgentMonitoring from "./pages/AgentMonitoring";
 import UnifiedAgentManagement from "./pages/UnifiedAgentManagement";
+import AgentCentralCommand from "./pages/AgentCentralCommand";
 
 function App() {
   return (
@@ -60,9 +61,15 @@ function App() {
       <Route path="/status" element={<Status />} />
       <Route path="/connect-stripe" element={<ConnectStripe />} />
       <Route path="/agents" element={<Agents />} />
-      <Route path="/agent-admin" element={<AgentAdmin />} />
-      <Route path="/agent-monitoring" element={<AgentMonitoring />} />
-      <Route path="/agent-management" element={<UnifiedAgentManagement />} />
+      
+      {/* Noua pagină unificată */}
+      <Route path="/agent-central-command" element={<AgentCentralCommand />} />
+      
+      {/* Păstrăm rutele vechi temporar pentru compatibilitate */}
+      <Route path="/agent-admin" element={<AgentCentralCommand />} />
+      <Route path="/agent-monitoring" element={<AgentCentralCommand />} />
+      <Route path="/agent-management" element={<AgentCentralCommand />} />
+      
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

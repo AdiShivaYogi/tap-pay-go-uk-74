@@ -5,7 +5,6 @@ import {
   User, 
   Book, 
   Bot, 
-  Activity,
   Command
 } from "lucide-react";
 import { ComponentType, SVGProps } from "react";
@@ -44,21 +43,9 @@ export const config = {
       icon: Bot,
     },
     {
-      title: "Management Agenți",
-      href: "/agent-management",
+      title: "Centru de Comandă Agenți",
+      href: "/agent-central-command",
       icon: Command,
-      admin: true,
-    },
-    {
-      title: "Administrare Agenți",
-      href: "/agent-admin",
-      icon: Settings,
-      admin: true,
-    },
-    {
-      title: "Monitorizare Agenți",
-      href: "/agent-monitoring",
-      icon: Activity,
       admin: true,
     },
   ],
