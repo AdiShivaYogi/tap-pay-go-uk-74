@@ -23,7 +23,10 @@ export function OpenRouterApiKeyDialog() {
     isSubmitting, 
     status, 
     errorMessage, 
-    hasKey, 
+    hasKey,
+    isKeyValid,
+    claudeAvailable,
+    availableModels,
     isChecking, 
     handleSaveApiKey 
   } = useOpenRouterKey();
@@ -56,7 +59,10 @@ export function OpenRouterApiKeyDialog() {
             <>
               <OpenRouterKeyAlert 
                 status={status} 
-                hasKey={hasKey} 
+                hasKey={hasKey}
+                isKeyValid={isKeyValid}
+                claudeAvailable={claudeAvailable}
+                availableModels={availableModels}
                 errorMessage={errorMessage} 
               />
               

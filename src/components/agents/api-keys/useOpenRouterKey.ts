@@ -10,6 +10,9 @@ export function useOpenRouterKey() {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [hasKey, setHasKey] = useState(false);
+  const [isKeyValid, setIsKeyValid] = useState(true);
+  const [claudeAvailable, setClaudeAvailable] = useState(false);
+  const [availableModels, setAvailableModels] = useState<string[]>([]);
   const [isChecking, setIsChecking] = useState(true);
   const { toast } = useToast();
 
@@ -22,16 +25,29 @@ export function useOpenRouterKey() {
           body: {}
         });
 
-        if (!error && data?.hasKey) {
-          setHasKey(true);
-          console.log("Există o cheie OpenRouter configurată:", data.keyInfo);
+        if (!error) {
+          setHasKey(data?.hasKey || false);
+          setIsKeyValid(data?.isValid !== false);
+          
+          // Actualizăm informațiile despre modelele disponibile
+          if (data?.models && Array.isArray(data.models)) {
+            const claudeModels = data.models.filter((model: string) => 
+              model.includes('claude') || model.includes('anthropic')
+            );
+            setClaudeAvailable(claudeModels.length > 0);
+            setAvailableModels(claudeModels);
+          }
+          
+          console.log("Status cheie OpenRouter:", data);
         } else {
           setHasKey(false);
-          console.log("Nu există o cheie OpenRouter configurată");
+          setIsKeyValid(true);
+          console.log("Eroare la verificarea cheii OpenRouter:", error);
         }
       } catch (err) {
         console.error("Eroare la verificarea cheii existente:", err);
         setHasKey(false);
+        setIsKeyValid(true);
       } finally {
         setIsChecking(false);
       }
@@ -75,9 +91,15 @@ export function useOpenRouterKey() {
       } else {
         setStatus("success");
         setHasKey(true);
+        setIsKeyValid(true);
+        setClaudeAvailable(data?.claudeAvailable || false);
+        setAvailableModels(data?.availableModels || []);
+        
         toast({
           title: "Cheie API salvată",
-          description: "Cheia API OpenRouter a fost salvată cu succes",
+          description: data?.claudeAvailable 
+            ? "Cheia API OpenRouter a fost salvată cu succes și are acces la modelele Claude" 
+            : "Cheia API OpenRouter a fost salvată, dar nu are acces la modelele Claude",
         });
         
         // Închide dialogul după o scurtă întârziere
@@ -85,7 +107,7 @@ export function useOpenRouterKey() {
           setIsOpen(false);
           setStatus("idle");
           setApiKey("");
-        }, 2000);
+        }, 3000);
       }
     } catch (err) {
       console.error("Excepție la setarea cheii API:", err);
@@ -110,6 +132,9 @@ export function useOpenRouterKey() {
     status, 
     errorMessage, 
     hasKey, 
+    isKeyValid,
+    claudeAvailable,
+    availableModels,
     isChecking, 
     handleSaveApiKey 
   };

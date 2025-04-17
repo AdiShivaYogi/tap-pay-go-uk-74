@@ -1,4 +1,3 @@
-
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
@@ -266,24 +265,80 @@ async function callDeepseekAPI(systemPrompt, message, apiKey) {
  * @returns {Promise<Object>} The API response
  */
 async function callClaudeAPI(systemPrompt, message, apiKey) {
-  return await fetch('https://openrouter.ai/api/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-      'HTTP-Referer': Deno.env.get('SUPABASE_URL') || 'https://utraomhphgnnrpyfwwla.supabase.co',
-      'X-Title': 'TapPayGo Platform'
-    },
-    body: JSON.stringify({
-      model: 'anthropic/claude-3-opus:2024-05-16',
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: message }
-      ],
-      temperature: 0.7,
-      max_tokens: 1500
-    })
-  });
+  // Obține modelul preferat din parametri sau folosește un model implicit
+  // Preferințe de model în ordine: claude-3.5-sonnet, claude-3-opus, claude-3-sonnet, claude-3-haiku
+  const preferredModel = "anthropic/claude-3.5-sonnet";
+  const fallbackModels = [
+    "anthropic/claude-3-opus:2024-05-16",
+    "anthropic/claude-3-sonnet", 
+    "anthropic/claude-3-haiku"
+  ];
+  
+  // Prima încercare cu modelul preferat
+  try {
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': Deno.env.get('SUPABASE_URL') || 'https://tappaygo.com',
+        'X-Title': 'TapPayGo Platform'
+      },
+      body: JSON.stringify({
+        model: preferredModel,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: message }
+        ],
+        temperature: 0.7,
+        max_tokens: 1500
+      })
+    });
+    
+    if (response.ok) {
+      return response;
+    }
+    
+    // Dacă modelul preferat nu este disponibil, încearcă modelele de rezervă
+    const errorData = await response.json();
+    console.log(`Modelul preferat ${preferredModel} nu este disponibil: ${errorData.error?.message || 'Eroare necunoscută'}`);
+    
+    // Încearcă modelele alternative
+    for (const fallbackModel of fallbackModels) {
+      console.log(`Se încearcă modelul alternativ: ${fallbackModel}`);
+      
+      const fallbackResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': Deno.env.get('SUPABASE_URL') || 'https://tappaygo.com',
+          'X-Title': 'TapPayGo Platform'
+        },
+        body: JSON.stringify({
+          model: fallbackModel,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: message }
+          ],
+          temperature: 0.7,
+          max_tokens: 1500
+        })
+      });
+      
+      if (fallbackResponse.ok) {
+        console.log(`Se folosește modelul alternativ: ${fallbackModel}`);
+        return fallbackResponse;
+      }
+    }
+    
+    // Dacă niciun model nu este disponibil, returnează eroarea inițială
+    throw new Error(`Niciun model Claude disponibil: ${errorData.error?.message || 'Eroare necunoscută'}`);
+    
+  } catch (error) {
+    console.error('Eroare la apelarea API-ului Claude:', error);
+    throw error;
+  }
 }
 
 /**

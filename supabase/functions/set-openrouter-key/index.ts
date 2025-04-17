@@ -5,7 +5,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+};
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -23,7 +23,7 @@ serve(async (req) => {
     // Parse the request body
     const { key } = await req.json();
 
-    // Validate the key is not empty
+    // Validare de bază
     if (!key || key.trim() === '') {
       return new Response(JSON.stringify({ error: 'API key cannot be empty' }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -31,7 +31,7 @@ serve(async (req) => {
       });
     }
 
-    // Validare de bază pentru formatul cheii OpenRouter
+    // Validare format cheie OpenRouter
     if (!key.startsWith('sk-or-')) {
       return new Response(JSON.stringify({ 
         error: 'Format invalid pentru cheia OpenRouter. Cheile OpenRouter încep cu sk-or-' 
@@ -41,14 +41,14 @@ serve(async (req) => {
       });
     }
 
-    console.log('Validare reușită, se salvează cheia OpenRouter...');
+    console.log('Validare inițială reușită, se testează cheia OpenRouter...');
 
+    // Testăm cheia cu o cerere simplă către API-ul OpenRouter
     try {
-      // Testăm cheia cu o cerere simplă către API-ul OpenRouter
       const testResponse = await fetch('https://openrouter.ai/api/v1/models', {
         headers: {
           'Authorization': `Bearer ${key}`,
-          'HTTP-Referer': Deno.env.get('SUPABASE_URL') || 'https://localhost',
+          'HTTP-Referer': Deno.env.get('SUPABASE_URL') || 'https://tappaygo.com',
           'X-Title': 'TapPayGo Platform'
         }
       });
@@ -56,6 +56,18 @@ serve(async (req) => {
       if (!testResponse.ok) {
         const errorData = await testResponse.json();
         throw new Error(`Cheie API invalidă: ${errorData.error?.message || 'Eroare necunoscută'}`);
+      }
+
+      const modelsData = await testResponse.json();
+      const availableModels = modelsData.data?.map((m: any) => m.id) || [];
+      
+      // Verifică dacă modelele Claude sunt disponibile
+      const claudeModels = availableModels.filter((model: string) => 
+        model.includes('claude') || model.includes('anthropic')
+      );
+      
+      if (claudeModels.length === 0) {
+        console.log('Avertisment: Nu s-au găsit modele Claude disponibile cu această cheie.');
       }
 
       // Store the OpenRouter API key as a secret
@@ -75,7 +87,9 @@ serve(async (req) => {
       console.log('OpenRouter API key saved successfully');
       return new Response(JSON.stringify({ 
         message: 'API key saved successfully',
-        validated: true
+        validated: true,
+        availableModels: claudeModels.length > 0 ? claudeModels : [],
+        claudeAvailable: claudeModels.length > 0
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200
