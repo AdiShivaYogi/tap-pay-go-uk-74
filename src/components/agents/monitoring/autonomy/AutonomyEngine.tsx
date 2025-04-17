@@ -6,6 +6,7 @@ import { useGodModeState } from '@/hooks/agent-god-mode/state/use-god-mode-state
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { AnthropicApiKeyDialog } from '@/components/agents/AnthropicApiKeyDialog';
+import { Rocket, Zap } from 'lucide-react';
 
 export const AutonomyEngine: React.FC = () => {
   const { user } = useAuth();
@@ -300,29 +301,29 @@ export const AutonomyEngine: React.FC = () => {
         </div>
       )}
       
-      {/* Buton pentru generare manuală de propuneri */}
+      {/* Buton pentru generare automată de propuneri cu stil nou */}
       <div className="fixed bottom-4 left-4 z-50">
         <button 
           onClick={() => generateAutomaticProposals(true)}
           disabled={isGeneratingProposals}
-          className={`bg-gradient-to-r from-amber-500 to-orange-600 text-white px-4 py-2 rounded-lg
-                      shadow-lg hover:from-amber-600 hover:to-orange-700 transition-all
-                      flex items-center gap-2 ${isGeneratingProposals ? 'opacity-70 cursor-not-allowed' : ''}`}
+          className={`
+            flex items-center justify-center gap-2 
+            bg-gradient-to-r from-purple-600 to-indigo-600 
+            text-white px-4 py-2 rounded-lg 
+            shadow-lg hover:from-purple-700 hover:to-indigo-700 
+            transition-all duration-300 ease-in-out
+            ${isGeneratingProposals ? 'opacity-60 cursor-not-allowed' : 'hover:scale-105'}
+          `}
         >
           {isGeneratingProposals ? (
             <>
-              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
+              <Zap className="animate-pulse h-5 w-5" />
               Generare...
             </>
           ) : (
             <>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
-              </svg>
-              Generează propuneri
+              <Rocket className="h-5 w-5" />
+              Generează Propuneri
             </>
           )}
         </button>
