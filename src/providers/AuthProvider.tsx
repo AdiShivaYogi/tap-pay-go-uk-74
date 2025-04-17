@@ -5,6 +5,12 @@ import { toast } from '@/hooks/use-toast';
 import { AuthContextType, User } from '@/types/auth';
 import { handleStripeConnection, handleStripeDisconnection } from '@/services/auth/stripe-auth';
 
+// Define lock status type
+type LockStatus = {
+  is_locked: boolean;
+  minutes_left: number;
+};
+
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -132,10 +138,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.error('Eroare la verificarea blocării contului:', lockCheckError);
       }
       
-      // Asigurăm-ne că tratăm datele fie ca obiect, fie ca array
-      const lockStatus = Array.isArray(data) && data.length > 0 
-        ? data[0] 
-        : (data || { is_locked: false, minutes_left: 0 });
+      // Process response - ensure we get a proper lock status object
+      let lockStatus: LockStatus;
+      
+      if (Array.isArray(data)) {
+        // If it's an array, take the first item
+        lockStatus = data.length > 0 ? data[0] : { is_locked: false, minutes_left: 0 };
+      } else {
+        // If it's an object or null/undefined
+        lockStatus = data || { is_locked: false, minutes_left: 0 };
+      }
       
       if (lockStatus.is_locked) {
         return {

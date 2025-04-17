@@ -6,6 +6,12 @@ import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthFormValues } from "@/components/admin-auth/auth-validation";
 
+// Define lock status type
+type LockStatus = {
+  is_locked: boolean;
+  minutes_left: number;
+};
+
 export const useAuthSubmit = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
@@ -71,10 +77,16 @@ export const useAuthSubmit = () => {
             p_email: email
           });
           
-          // Asigurăm-ne că tratăm datele fie ca obiect, fie ca array
-          const lockStatus = Array.isArray(data) && data.length > 0 
-            ? data[0] 
-            : (data || { is_locked: false, minutes_left: 0 });
+          // Process response - ensure we get a proper lock status object
+          let lockStatus: LockStatus;
+          
+          if (Array.isArray(data)) {
+            // If it's an array, take the first item
+            lockStatus = data.length > 0 ? data[0] : { is_locked: false, minutes_left: 0 };
+          } else {
+            // If it's an object or null/undefined
+            lockStatus = data || { is_locked: false, minutes_left: 0 };
+          }
           
           if (lockStatus.is_locked) {
             setErrorMessage(`Cont blocat temporar. Încercați din nou în ${lockStatus.minutes_left} minute.`);
