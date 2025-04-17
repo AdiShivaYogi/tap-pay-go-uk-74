@@ -54,6 +54,108 @@ function createSystemPromptForFeedback(itemType, item) {
   }
 }
 
+// Funcția de apelare a API-ului Anthropic direct
+async function callAnthropicAPI(systemPrompt, message, apiKey) {
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'claude-3-sonnet-20240229',
+        system: systemPrompt,
+        messages: [
+          { role: 'user', content: message }
+        ],
+        temperature: 0.7,
+        max_tokens: 1500
+      })
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`Eroare API Anthropic: ${errorData.error?.message || 'Eroare necunoscută'}`);
+    }
+    
+    const data = await response.json();
+    return data.content?.[0]?.text || "Nu am putut genera feedback cu Anthropic.";
+  } catch (error) {
+    console.error('Eroare la apelarea API-ului Anthropic:', error);
+    throw error;
+  }
+}
+
+// Funcția de apelare a API-ului OpenRouter pentru Claude
+async function callOpenRouterAPI(systemPrompt, message, apiKey) {
+  try {
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': Deno.env.get('SUPABASE_URL') || 'https://tappaygo.com',
+        'X-Title': 'TapPayGo Platform'
+      },
+      body: JSON.stringify({
+        model: 'anthropic/claude-3-sonnet',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: message }
+        ],
+        temperature: 0.7,
+        max_tokens: 1500
+      })
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`Eroare API OpenRouter/Claude: ${errorData.error?.message || 'Eroare necunoscută'}`);
+    }
+    
+    const data = await response.json();
+    return data.choices?.[0]?.message?.content || data.choices?.[0]?.content || "Nu am putut genera feedback cu Claude.";
+  } catch (error) {
+    console.error('Eroare la apelarea API-ului OpenRouter:', error);
+    throw error;
+  }
+}
+
+// Funcția de apelare a API-ului DeepSeek
+async function callDeepseekAPI(systemPrompt, message, apiKey) {
+  try {
+    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: message }
+        ],
+        temperature: 0.7,
+        max_tokens: 1500
+      })
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`Eroare API DeepSeek: ${errorData.error?.message || 'Eroare necunoscută'}`);
+    }
+    
+    const data = await response.json();
+    return data.choices?.[0]?.message?.content || "Nu am putut genera feedback cu DeepSeek.";
+  } catch (error) {
+    console.error('Eroare la apelarea API-ului DeepSeek:', error);
+    throw error;
+  }
+}
+
 // Funcția principală pentru generarea de feedback
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -90,106 +192,68 @@ serve(async (req) => {
     const openrouterApiKey = Deno.env.get('OPENROUTER_API_KEY');
     const anthropicApiKey = Deno.env.get('ANTHROPIC_API_KEY');
     
-    let responseText = '';
+    // Verificare chei API
+    if (model === 'deepseek' && !deepseekApiKey) {
+      return new Response(
+        JSON.stringify({ error: 'Cheia API pentru DeepSeek nu este configurată' }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 500
+        }
+      );
+    } else if (model === 'claude' && !openrouterApiKey) {
+      return new Response(
+        JSON.stringify({ error: 'Cheia API pentru OpenRouter nu este configurată' }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 500
+        }
+      );
+    } else if (model === 'anthropic' && !anthropicApiKey) {
+      return new Response(
+        JSON.stringify({ error: 'Cheia API pentru Anthropic nu este configurată' }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 500
+        }
+      );
+    }
     
     // Creează promptul sistem pentru cererea către model
     const systemPrompt = createSystemPromptForFeedback(itemType, item);
+    const userPrompt = "Generează feedback detaliat pentru această propunere.";
+    
+    let responseText = '';
+    let modelUsed = model;
     
     // Apelează API-ul corespunzător modelului selectat
-    if (model === 'deepseek') {
-      if (!deepseekApiKey) {
-        throw new Error('Cheia API pentru DeepSeek nu este configurată');
+    try {
+      console.log(`Generare feedback folosind modelul: ${model}`);
+      
+      if (model === 'deepseek') {
+        responseText = await callDeepseekAPI(systemPrompt, userPrompt, deepseekApiKey);
+      } else if (model === 'claude') {
+        responseText = await callOpenRouterAPI(systemPrompt, userPrompt, openrouterApiKey);
+      } else if (model === 'anthropic') {
+        responseText = await callAnthropicAPI(systemPrompt, userPrompt, anthropicApiKey);
+      } else {
+        throw new Error(`Model necunoscut: ${model}`);
       }
+    } catch (apiError) {
+      console.error(`Eroare la apelarea API-ului ${model}:`, apiError);
       
-      const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${deepseekApiKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          model: 'deepseek-chat',
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: "Generează feedback detaliat pentru această propunere." }
-          ],
-          temperature: 0.7,
-          max_tokens: 1500
-        })
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Eroare API DeepSeek: ${errorData.error?.message || 'Eroare necunoscută'}`);
+      // Încercăm fallback pe alt model dacă cel selectat eșuează
+      if (model === 'anthropic' && openrouterApiKey) {
+        console.log('Fallback la OpenRouter Claude');
+        modelUsed = 'claude';
+        responseText = await callOpenRouterAPI(systemPrompt, userPrompt, openrouterApiKey);
+      } else if ((model === 'claude' || model === 'anthropic') && deepseekApiKey) {
+        console.log('Fallback la DeepSeek');
+        modelUsed = 'deepseek';
+        responseText = await callDeepseekAPI(systemPrompt, userPrompt, deepseekApiKey);
+      } else {
+        throw apiError;
       }
-      
-      const data = await response.json();
-      responseText = data.choices?.[0]?.message?.content || "Nu am putut genera feedback cu DeepSeek.";
-      
-    } else if (model === 'claude') {
-      if (!openrouterApiKey) {
-        throw new Error('Cheia API pentru OpenRouter nu este configurată');
-      }
-      
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${openrouterApiKey}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': supabaseUrl || 'https://tappaygo.com',
-          'X-Title': 'TapPayGo Platform'
-        },
-        body: JSON.stringify({
-          model: 'anthropic/claude-3.5-sonnet',
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: "Generează feedback detaliat pentru această propunere." }
-          ],
-          temperature: 0.7,
-          max_tokens: 1500
-        })
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Eroare API OpenRouter/Claude: ${errorData.error?.message || 'Eroare necunoscută'}`);
-      }
-      
-      const data = await response.json();
-      responseText = data.choices?.[0]?.message?.content || data.choices?.[0]?.content || "Nu am putut genera feedback cu Claude.";
-      
-    } else if (model === 'anthropic') {
-      if (!anthropicApiKey) {
-        throw new Error('Cheia API pentru Anthropic nu este configurată');
-      }
-      
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'x-api-key': anthropicApiKey,
-          'anthropic-version': '2023-06-01',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          model: 'claude-3-sonnet-20240229',
-          system: systemPrompt,
-          messages: [
-            { role: 'user', content: "Generează feedback detaliat pentru această propunere." }
-          ],
-          temperature: 0.7,
-          max_tokens: 1500
-        })
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Eroare API Anthropic: ${errorData.error?.message || 'Eroare necunoscută'}`);
-      }
-      
-      const data = await response.json();
-      responseText = data.content?.[0]?.text || "Nu am putut genera feedback cu Anthropic.";
-    } else {
-      throw new Error(`Model necunoscut: ${model}`);
     }
     
     // Înregistrăm utilizarea pentru monitorizare
@@ -198,7 +262,7 @@ serve(async (req) => {
         user_id: userId,
         item_type: itemType,
         item_id: item.id,
-        model: model,
+        model: modelUsed,
         generated_at: new Date().toISOString(),
         prompt_tokens: systemPrompt.length,  // Aproximativ
         completion_tokens: responseText.length,  // Aproximativ
@@ -212,7 +276,7 @@ serve(async (req) => {
     // Returnează feedback-ul generat
     return new Response(JSON.stringify({ 
       feedback: responseText,
-      model: model
+      model: modelUsed
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200

@@ -21,7 +21,7 @@ export const useAgentGodMode = (props?: UseAgentGodModeProps) => {
   const [isGeneratingFeedback, setIsGeneratingFeedback] = useState<boolean>(false);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [preferredModel, setPreferredModel] = useState<"deepseek" | "claude" | "anthropic">(
-    autoExecutionConfig?.preferredModel || "deepseek"
+    autoExecutionConfig?.preferredModel || "anthropic" // Default to Anthropic Direct (Claude)
   );
 
   // Sincronizează modelul preferat cu configurația
@@ -66,9 +66,15 @@ export const useAgentGodMode = (props?: UseAgentGodModeProps) => {
       
       if (result?.feedback) {
         setFeedback(result.feedback);
+        
+        const modelDisplayName = 
+          preferredModel === "anthropic" ? "Claude (Anthropic Direct)" : 
+          preferredModel === "claude" ? "Claude (OpenRouter)" : 
+          "DeepSeek";
+        
         toast({
           title: "Feedback generat",
-          description: `S-a generat feedback pentru propunerea selectată utilizând ${preferredModel === "anthropic" ? "Claude (Anthropic Direct)" : preferredModel === "claude" ? "Claude (OpenRouter)" : "DeepSeek"}.`
+          description: `S-a generat feedback pentru propunerea selectată utilizând ${modelDisplayName}.`
         });
       }
     } catch (error) {
@@ -113,10 +119,15 @@ export const useAgentGodMode = (props?: UseAgentGodModeProps) => {
       });
       
       if (result?.success) {
+        const modelDisplayName = 
+          preferredModel === "anthropic" ? "Claude (Anthropic Direct)" : 
+          preferredModel === "claude" ? "Claude (OpenRouter)" : 
+          "DeepSeek";
+          
         toast({
           title: isGodModeEnabled ? "Propunere aprobată" : "Feedback trimis",
           description: isGodModeEnabled 
-            ? `Propunerea a fost aprobată și feedback-ul a fost trimis către agent utilizând ${preferredModel === "anthropic" ? "Claude (Anthropic Direct)" : preferredModel === "claude" ? "Claude (OpenRouter)" : "DeepSeek"}.` 
+            ? `Propunerea a fost aprobată și feedback-ul a fost trimis către agent utilizând ${modelDisplayName}.` 
             : "Feedback-ul a fost trimis către agent."
         });
         resetState();
@@ -142,7 +153,12 @@ export const useAgentGodMode = (props?: UseAgentGodModeProps) => {
 
   const handleModelChange = (model: "deepseek" | "claude" | "anthropic") => {
     setPreferredModel(model);
-    // Nu salvăm automat în configurație pentru a evita prea multe cereri
+    // Salvăm automat în configurație pentru o experiență mai bună
+    if (autoExecutionConfig && updateAutoExecutionConfig) {
+      updateAutoExecutionConfig({
+        preferredModel: model
+      });
+    }
   };
 
   return {

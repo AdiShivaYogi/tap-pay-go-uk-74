@@ -58,8 +58,17 @@ export const FeedbackForm = ({
   
   const learningValue = calculateLearningValue();
 
+  const getModelDisplayName = (model: string) => {
+    switch(model) {
+      case 'anthropic': return 'Claude (Anthropic Direct)';
+      case 'claude': return 'Claude (OpenRouter)';
+      case 'deepseek': return 'DeepSeek Chat';
+      default: return model;
+    }
+  };
+
   return (
-    <Card className="p-4 mt-4">
+    <Card className="p-4 mt-4 border border-amber-100 bg-gradient-to-br from-amber-50/30 to-white">
       <FeedbackFormHeader 
         feedbackType={feedbackType}
         currentSubmission={currentSubmission}
@@ -71,11 +80,22 @@ export const FeedbackForm = ({
           <label htmlFor="feedback" className="block text-sm font-medium">
             {isGeneratingFeedback ? "Se generează feedback..." : "Feedback pentru agent:"}
           </label>
-          <ModelSelector
-            value={preferredModel}
-            onChange={onModelChange}
-            disabled={isGeneratingFeedback || isProcessing}
-          />
+          <div className="flex items-center gap-2">
+            {preferredModel && (
+              <Badge 
+                variant="outline" 
+                className="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200"
+              >
+                {getModelDisplayName(preferredModel)}
+              </Badge>
+            )}
+            <ModelSelector
+              value={preferredModel}
+              onChange={onModelChange}
+              disabled={isGeneratingFeedback || isProcessing}
+              showAnthropicDirect={true}
+            />
+          </div>
         </div>
         <Textarea
           id="feedback"

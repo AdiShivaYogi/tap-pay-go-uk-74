@@ -20,13 +20,14 @@ export const GodModeToggle = ({
   updateAutoExecutionConfig
 }: GodModeToggleProps) => {
   return (
-    <div className="flex items-center justify-between mb-4">
+    <div className="flex items-center justify-between mb-4 p-3 rounded-lg bg-gradient-to-br from-amber-50/50 to-white border border-amber-100">
       <div>
         <div className="flex items-center gap-2">
+          <Crown className={`h-5 w-5 ${isGodModeEnabled ? 'text-amber-500' : 'text-muted-foreground'}`} />
           <h3 className="font-medium">God Mode</h3>
           <Badge 
             variant={isGodModeEnabled ? "default" : "outline"} 
-            className={isGodModeEnabled ? "bg-amber-500 hover:bg-amber-600" : ""}
+            className={isGodModeEnabled ? "bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 border-0" : ""}
           >
             {isGodModeEnabled ? "Activ" : "Inactiv"}
           </Badge>
@@ -49,6 +50,7 @@ export const GodModeToggle = ({
         <Switch
           checked={isGodModeEnabled}
           onCheckedChange={toggleGodMode}
+          className={`${isGodModeEnabled ? 'bg-gradient-to-r from-amber-500 to-orange-600 border-amber-200' : ''}`}
         />
       </div>
     </div>
