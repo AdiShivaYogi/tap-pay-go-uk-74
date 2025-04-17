@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/layout";
 import { Section } from "@/components/ui/layout/section";
@@ -17,7 +16,14 @@ import { OpenRouterApiKeyDialog } from "@/components/agents/OpenRouterApiKeyDial
 import { AutoExecution } from "@/features/agent-autonomy/AutoExecution";
 import { Separator } from "@/components/ui/separator";
 import { useAutonomousAgents } from "@/hooks/use-autonomous-agents";
-import { BrainCircuit, Sparkles, Server, Bot, Command, Shield } from "lucide-react";
+import { 
+  BrainCircuit, 
+  Sparkles, 
+  Server, 
+  Bot, 
+  Command, 
+  Shield 
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from "@/components/ui/card";
 import { StatsCard } from "@/components/ui/cards";
