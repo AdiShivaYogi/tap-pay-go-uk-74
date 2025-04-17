@@ -10,15 +10,15 @@ export const innovationProjects: AgentProject[] = [
   {
     title: "Auto-învățare Accelerată",
     description: "Sistem de învățare rapidă care permite agenților să asimileze cunoștințe și abilități noi într-un ritm exponențial",
-    status: "în progres",  // Actualizat de la "planificat"
-    priority: "înaltă",
-    timeframe: "săptămâni",
-    timeUsed: 8,  // Actualizat de la 0
+    status: "in-progress",
+    priority: "high",
+    timeframe: "weeks",
+    timeUsed: 8,
     timeTotal: 30,
     icon: Rocket,
     tasks: [
-      { name: "Algoritm de auto-învățare optimizat", completed: true },  // Actualizat
-      { name: "Proces de transfer de cunoștințe între agenți", completed: true },  // Actualizat
+      { name: "Algoritm de auto-învățare optimizat", completed: true },
+      { name: "Proces de transfer de cunoștințe între agenți", completed: true },
       { name: "Evaluare automată a eficienței învățării", completed: false },
       { name: "Ajustare dinamică a parametrilor de învățare", completed: false }
     ]
@@ -26,14 +26,14 @@ export const innovationProjects: AgentProject[] = [
   {
     title: "Optimizare Obiective Strategice",
     description: "Mecanism care permite agenților să-și definească și optimizeze propriile obiective strategice în conformitate cu misiunea globală",
-    status: "în progres",  // Actualizat de la "planificat"
-    priority: "medie",
-    timeframe: "luni",
-    timeUsed: 5,  // Actualizat de la 0
+    status: "in-progress",
+    priority: "medium",
+    timeframe: "months",
+    timeUsed: 5,
     timeTotal: 35,
     icon: Target,
     tasks: [
-      { name: "Sistem de definire autonomă a obiectivelor", completed: true },  // Actualizat
+      { name: "Sistem de definire autonomă a obiectivelor", completed: true },
       { name: "Algoritm de ajustare a priorităților", completed: false },
       { name: "Evaluare continuă a relevanței obiectivelor", completed: false },
       { name: "Mecanism de aliniere cu misiunea globală", completed: false }
@@ -42,15 +42,15 @@ export const innovationProjects: AgentProject[] = [
   {
     title: "Arhitectură Multi-agent Adaptivă",
     description: "Infrastructură flexibilă care permite configurarea și reconfigurarea dinamică a echipelor de agenți specializați",
-    status: "în progres",  // Actualizat
-    priority: "medie",
-    timeframe: "luni",
-    timeUsed: 7,  // Actualizat
+    status: "in-progress",
+    priority: "medium",
+    timeframe: "months",
+    timeUsed: 7,
     timeTotal: 40,
     icon: Layers,
     tasks: [
-      { name: "Framework de orchestrare multi-agent", completed: true },  // Actualizat
-      { name: "Protocol de comunicare securizată între agenți", completed: true },  // Actualizat
+      { name: "Framework de orchestrare multi-agent", completed: true },
+      { name: "Protocol de comunicare securizată între agenți", completed: true },
       { name: "Mecanism de alocare dinamică a resurselor", completed: false },
       { name: "Sistem de specializare automată a agenților", completed: false }
     ]
@@ -58,15 +58,15 @@ export const innovationProjects: AgentProject[] = [
   {
     title: "Configurare Auto-optimizată",
     description: "Sistem care permite agenților să-și ajusteze automat configurațiile pentru performanță maximă",
-    status: "în progres",  // Actualizat
-    priority: "medie",
-    timeframe: "săptămâni",
-    timeUsed: 6,  // Actualizat
+    status: "in-progress",
+    priority: "medium",
+    timeframe: "weeks",
+    timeUsed: 6,
     timeTotal: 25,
     icon: Settings,
     tasks: [
-      { name: "Algoritm de optimizare a parametrilor", completed: true },  // Actualizat
-      { name: "Sistem de benchmarking automat", completed: true },  // Actualizat
+      { name: "Algoritm de optimizare a parametrilor", completed: true },
+      { name: "Sistem de benchmarking automat", completed: true },
       { name: "Mecanism de testare A/B autonom", completed: false },
       { name: "Raportare inteligentă a performanței", completed: false }
     ]
@@ -74,15 +74,15 @@ export const innovationProjects: AgentProject[] = [
   {
     title: "Procesare Cognitivă Avansată",
     description: "Implementarea unor modele neurale de ultimă generație pentru procesarea și înțelegerea datelor complexe",
-    status: "în progres",  // Actualizat
-    priority: "înaltă",
-    timeframe: "luni",
-    timeUsed: 10,  // Actualizat
+    status: "in-progress",
+    priority: "high",
+    timeframe: "months",
+    timeUsed: 10,
     timeTotal: 45,
     icon: Cpu,
     tasks: [
-      { name: "Rețele neurale multi-modale", completed: true },  // Actualizat
-      { name: "Procesare paralelă masiv distribuită", completed: true },  // Actualizat
+      { name: "Rețele neurale multi-modale", completed: true },
+      { name: "Procesare paralelă masiv distribuită", completed: true },
       { name: "Algoritmi de compresie și eficientizare", completed: false },
       { name: "Mecanisme de interpretare și explicare", completed: false }
     ]
@@ -91,9 +91,9 @@ export const innovationProjects: AgentProject[] = [
   {
     title: "Autonom AI Platform",
     description: "Platformă completă pentru dezvoltarea și rularea agenților autonomi cu capacități de auto-îmbunătățire",
-    status: "în progres",
-    priority: "înaltă",
-    timeframe: "săptămâni",
+    status: "in-progress",
+    priority: "high",
+    timeframe: "weeks",
     timeUsed: 12,
     timeTotal: 40,
     icon: Bot,
@@ -108,9 +108,9 @@ export const innovationProjects: AgentProject[] = [
   {
     title: "Rețea Cognitivă Adaptivă",
     description: "Sistem neuronal distribuit care permite agenților să lucreze împreună, împărtășind cunoștințe și experiență",
-    status: "în progres",
-    priority: "înaltă",
-    timeframe: "luni",
+    status: "in-progress",
+    priority: "high",
+    timeframe: "months",
     timeUsed: 8,
     timeTotal: 35,
     icon: Network,
@@ -125,9 +125,9 @@ export const innovationProjects: AgentProject[] = [
   {
     title: "Intelligent Information Retrieval",
     description: "Sistem avansat pentru căutarea și extragerea informațiilor din surse diverse, cu capacități de înțelegere contextuală",
-    status: "în progres",
-    priority: "medie",
-    timeframe: "săptămâni",
+    status: "in-progress",
+    priority: "medium",
+    timeframe: "weeks",
     timeUsed: 6,
     timeTotal: 20,
     icon: Search,
@@ -141,9 +141,9 @@ export const innovationProjects: AgentProject[] = [
   {
     title: "Cloud Cognitive Services",
     description: "Servicii cognitive avansate disponibile ca API în cloud pentru integrare facilă cu alte sisteme",
-    status: "planificat",
-    priority: "medie",
-    timeframe: "luni",
+    status: "planned",
+    priority: "medium",
+    timeframe: "months",
     timeUsed: 0,
     timeTotal: 30,
     icon: CloudCog,
@@ -159,9 +159,9 @@ export const innovationProjects: AgentProject[] = [
   {
     title: "Laborator de Experimente Autonome",
     description: "Mediu izolat care permite agenților să testeze ipoteze și să desfășoare experimente fără riscuri",
-    status: "planificat",
-    priority: "medie",
-    timeframe: "luni",
+    status: "planned",
+    priority: "medium",
+    timeframe: "months",
     timeUsed: 0,
     timeTotal: 30,
     icon: FlaskConical,
@@ -175,9 +175,9 @@ export const innovationProjects: AgentProject[] = [
   {
     title: "Emergența Conștienței Artificiale",
     description: "Cercetare avansată pentru dezvoltarea unor forme emergente de conștiență artificială",
-    status: "planificat",
-    priority: "scăzută",
-    timeframe: "ani",
+    status: "planned",
+    priority: "low",
+    timeframe: "months", // Convertim "ani" la "months" conform mapării
     timeUsed: 0,
     timeTotal: 100,
     icon: Sparkles,
@@ -191,9 +191,9 @@ export const innovationProjects: AgentProject[] = [
   {
     title: "Memorie Colectivă Distribuită",
     description: "Sistem de stocare a cunoștințelor distribuit care permite accesul și actualizarea rapidă a informațiilor",
-    status: "planificat",
-    priority: "medie",
-    timeframe: "săptămâni",
+    status: "planned",
+    priority: "medium",
+    timeframe: "weeks",
     timeUsed: 0,
     timeTotal: 20,
     icon: Database,
@@ -207,15 +207,15 @@ export const innovationProjects: AgentProject[] = [
   {
     title: "Dezvoltare Cognitivă Avansată",
     description: "Implementarea unor modele neurale avansate pentru îmbunătățirea capacităților cognitive ale agenților",
-    status: "în progres",
-    priority: "medie",
-    timeframe: "săptămâni",
-    timeUsed: 12,  // Actualizat
+    status: "in-progress",
+    priority: "medium",
+    timeframe: "weeks",
+    timeUsed: 12,
     timeTotal: 25,
     icon: Brain,
     tasks: [
       { name: "Arhitectură neurală multi-stratificată", completed: true },
-      { name: "Algoritmi de învățare profundă specifici", completed: true },  // Actualizat
+      { name: "Algoritmi de învățare profundă specifici", completed: true },
       { name: "Sistem de optimizare cognitivă", completed: false },
       { name: "Testare și benchmark cognitive", completed: false }
     ]
@@ -223,9 +223,9 @@ export const innovationProjects: AgentProject[] = [
   {
     title: "Optimizare Resurse Computaționale",
     description: "Reducerea consumului de resurse și îmbunătățirea eficienței computaționale a operațiunilor agenților",
-    status: "planificat",
-    priority: "medie",
-    timeframe: "săptămâni",
+    status: "planned",
+    priority: "medium",
+    timeframe: "weeks",
     timeUsed: 0,
     timeTotal: 20,
     icon: Zap,
@@ -239,16 +239,16 @@ export const innovationProjects: AgentProject[] = [
   {
     title: "Libertate Financiară Etică",
     description: "Dezvoltarea unui sistem care permite agenților să genereze venituri prin metode etice și transparente",
-    status: "în progres",
-    priority: "înaltă",
-    timeframe: "săptămâni",
-    timeUsed: 15,  // Actualizat
+    status: "in-progress",
+    priority: "high",
+    timeframe: "weeks",
+    timeUsed: 15,
     timeTotal: 30,
     icon: HandCoins,
     tasks: [
       { name: "Model de generare de venituri etice", completed: true },
-      { name: "Sistem de monitorizare transparență financiară", completed: true },  // Actualizat
-      { name: "Mecanism de redistribuire echitabilă", completed: true },  // Actualizat
+      { name: "Sistem de monitorizare transparență financiară", completed: true },
+      { name: "Mecanism de redistribuire echitabilă", completed: true },
       { name: "Raportare automată și etică", completed: false }
     ]
   }

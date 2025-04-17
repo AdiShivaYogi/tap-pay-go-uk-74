@@ -7,16 +7,16 @@ export const monitoringProjects: AgentProject[] = [
   {
     title: "Monitorizare în Timp Real",
     description: "Dashboard interactiv care arată progresul și deciziile agenților în timp real",
-    status: "în progres",
-    priority: "medie",
-    timeframe: "săptămâni",
-    timeUsed: 12, // Actualizat
+    status: "in-progress", // Actualizat cu valoarea corectă
+    priority: "medium", // Actualizat cu valoarea corectă
+    timeframe: "weeks", // Actualizat cu valoarea corectă
+    timeUsed: 12,
     timeTotal: 20,
     icon: Gauge,
     tasks: [
       { name: "Vizualizări avansate de date", completed: true },
       { name: "Alertare inteligentă pentru anomalii", completed: true },
-      { name: "Istoricul deciziilor agenților", completed: true }, // Actualizat
+      { name: "Istoricul deciziilor agenților", completed: true },
       { name: "Metrici personalizabile de performanță", completed: false }
     ]
   },
@@ -24,9 +24,9 @@ export const monitoringProjects: AgentProject[] = [
   {
     title: "Analiză Avansată Comportament Agenți",
     description: "Instrumente pentru analiza detaliată a comportamentului și performanței agenților autonomi",
-    status: "în progres",
-    priority: "înaltă",
-    timeframe: "săptămâni",
+    status: "in-progress", // Actualizat cu valoarea corectă
+    priority: "high", // Actualizat cu valoarea corectă
+    timeframe: "weeks", // Actualizat cu valoarea corectă
     timeUsed: 10,
     timeTotal: 25,
     icon: LineChart,
@@ -41,9 +41,9 @@ export const monitoringProjects: AgentProject[] = [
   {
     title: "Monitorizare Rețea Multi-agent",
     description: "Sistem pentru vizualizarea și analiza interacțiunilor între agenți și transferul de cunoștințe",
-    status: "în progres",
-    priority: "medie",
-    timeframe: "luni",
+    status: "in-progress", // Actualizat cu valoarea corectă
+    priority: "medium", // Actualizat cu valoarea corectă
+    timeframe: "months", // Actualizat cu valoarea corectă
     timeUsed: 5,
     timeTotal: 30,
     icon: AreaChart,
@@ -57,9 +57,9 @@ export const monitoringProjects: AgentProject[] = [
   {
     title: "Raportare Autonomă",
     description: "Sistem care permite agenților să genereze automat rapoarte despre activitățile și progresul lor",
-    status: "planificat",
-    priority: "medie",
-    timeframe: "săptămâni",
+    status: "planned", // Actualizat cu valoarea corectă
+    priority: "medium", // Actualizat cu valoarea corectă
+    timeframe: "weeks", // Actualizat cu valoarea corectă
     timeUsed: 0,
     timeTotal: 20,
     icon: PieChart,
@@ -73,9 +73,9 @@ export const monitoringProjects: AgentProject[] = [
   {
     title: "Monitorizare Performanță și Eficiență",
     description: "Instrumente pentru măsurarea și optimizarea performanței și eficienței operaționale a agenților",
-    status: "în progres",
-    priority: "înaltă",
-    timeframe: "săptămâni",
+    status: "in-progress", // Actualizat cu valoarea corectă
+    priority: "high", // Actualizat cu valoarea corectă
+    timeframe: "weeks", // Actualizat cu valoarea corectă
     timeUsed: 8,
     timeTotal: 15,
     icon: Activity,

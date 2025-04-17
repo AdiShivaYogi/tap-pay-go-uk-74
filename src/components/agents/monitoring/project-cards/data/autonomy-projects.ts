@@ -18,9 +18,9 @@ export const AUTONOMY_PROJECTS: AgentProject[] = [
     ],
     timeUsed: 15,
     timeTotal: 30,
-    status: "in-progress",  // Valori corectate conform tipului ProjectStatus
-    priority: "high",       // Valori corectate conform tipului ProjectPriority
-    timeframe: "weeks",     // Valori corectate conform tipului ProjectTimeframe
+    status: "in-progress",
+    priority: "high",
+    timeframe: "weeks",
     integrationProgress: 65
   },
   {
@@ -36,9 +36,9 @@ export const AUTONOMY_PROJECTS: AgentProject[] = [
     ],
     timeUsed: 10,
     timeTotal: 25,
-    status: "in-progress",  // Valori corectate conform tipului ProjectStatus
-    priority: "medium",     // Valori corectate conform tipului ProjectPriority
-    timeframe: "weeks",     // Valori corectate conform tipului ProjectTimeframe
+    status: "in-progress",
+    priority: "medium",
+    timeframe: "weeks",
   },
   {
     id: "self-improvement",
