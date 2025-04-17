@@ -1,25 +1,37 @@
 
 import React from "react";
-import { useRouter } from "@/hooks/use-router";
-import { Bot, ChevronRight, PlusCircle, Settings, LineChart, AlertTriangle, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { 
+  Bot, 
+  ChevronRight, 
+  PlusCircle, 
+  Settings, 
+  LineChart, 
+  AlertTriangle, 
+  Sparkles 
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/ui/layout/page-header";
 import { useAgentMonitoring } from "./hooks";
 import { AutoExecutionButton } from "./autonomy/AutoExecutionButton";
+import { useAutonomousEngine } from "@/components/agents/autonomous-engine/AutonomousEngineProvider";
 
 interface MonitoringHeaderProps {
-  agentsRunning: boolean;
+  agentsRunning?: boolean;
 }
 
-export const MonitoringHeader: React.FC<MonitoringHeaderProps> = ({ agentsRunning }) => {
-  const router = useRouter();
+export const MonitoringHeader: React.FC<MonitoringHeaderProps> = ({ agentsRunning: externalAgentsRunning }) => {
+  const navigate = useNavigate();
   const { autoExecutionStatus } = useAgentMonitoring();
+  const { isRunning: autonomousAgentsRunning } = useAutonomousEngine();
+  
+  // Folosim starea internă dacă cea externă nu e definită
+  const agentsRunning = externalAgentsRunning !== undefined ? externalAgentsRunning : autonomousAgentsRunning;
   
   // Verificăm dacă toate privilegiile sunt activate
-  const allPrivilegesGranted = autoExecutionStatus && 
-    Object.values(autoExecutionStatus).every(status => status === true);
-  
+  const allPrivilegesGranted = autoExecutionStatus && Object.values(autoExecutionStatus).every((status) => status === true);
+
   return (
     <div className="flex flex-col gap-2 mb-6">
       <div className="flex justify-between items-center">
@@ -28,21 +40,22 @@ export const MonitoringHeader: React.FC<MonitoringHeaderProps> = ({ agentsRunnin
           title="Control & Monitorizare Agenți"
           description="Supraveghere și control al agenților autonomi din platformă"
         />
+        
         <div className="flex items-center gap-2">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             size="sm"
-            onClick={() => router.push('/admin/agents/settings')}
+            onClick={() => navigate('/admin/agents/settings')}
             className="flex items-center gap-1.5"
           >
             <Settings size={14} />
             Setări
           </Button>
           
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             size="sm"
-            onClick={() => router.push('/admin/agents/analytics')}
+            onClick={() => navigate('/admin/agents/analytics')}
             className="hidden md:flex items-center gap-1.5"
           >
             <LineChart size={14} />
@@ -58,7 +71,7 @@ export const MonitoringHeader: React.FC<MonitoringHeaderProps> = ({ agentsRunnin
       
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-2">
-          <Badge 
+          <Badge
             variant={agentsRunning ? "success" : "default"}
             className="flex items-center gap-1"
           >
@@ -67,7 +80,7 @@ export const MonitoringHeader: React.FC<MonitoringHeaderProps> = ({ agentsRunnin
           </Badge>
           
           {allPrivilegesGranted && (
-            <Badge 
+            <Badge
               variant="warning"
               className="flex items-center gap-1"
             >
@@ -81,7 +94,7 @@ export const MonitoringHeader: React.FC<MonitoringHeaderProps> = ({ agentsRunnin
           size="sm"
           variant="ghost"
           className="flex items-center gap-1 text-xs font-normal"
-          onClick={() => router.push('/admin/agents/add')}
+          onClick={() => navigate('/admin/agents/add')}
         >
           <PlusCircle size={14} />
           Adaugă agent
