@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from "react";
 import { extendedSupabase as supabase } from "@/integrations/supabase/extended-client";
 import { useAuth } from "@/hooks/use-auth";
@@ -37,15 +36,20 @@ export const useAgentMonitoring = () => {
     setIsLoading(true);
     
     try {
-      // Obținerea activității agenților din tabela agent_activity
+      // Logging adăugat pentru monitorizare detaliată
+      console.log('Fetching latest agent activities...');
+      
       const { data: agentActivities, error: activitiesError } = await supabase
         .from('agent_activity')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(25); // Limităm pentru a nu supraîncărca sistemul
       
       if (activitiesError) {
         throw activitiesError;
       }
+      
+      console.log(`Retrieved ${agentActivities?.length || 0} agent activities`);
       
       // Obținerea logurilor de activitate din tabela agent_activity_logs
       const { data: activityLogsData, error: logsError } = await supabase
@@ -111,18 +115,22 @@ export const useAgentMonitoring = () => {
       setCategories(Array.from(uniqueCategories));
       setTotalActivities(agentActivities?.length || 0);
       
+      // Log pentru categorii și activitate
+      console.log('Agent activity categories:', categories);
+      console.log('Total monitored activities:', totalActivities);
+      
     } catch (error) {
-      console.error('Eroare la preluarea datelor de activitate ale agenților:', error);
+      console.error('Detailed error fetching agent activities:', error);
       toast({
-        title: "Eroare",
-        description: "Nu s-au putut încărca datele de monitorizare a agenților.",
+        title: "Eroare monitorizare",
+        description: "Nu s-au putut prelua datele de activitate ale agenților.",
         variant: "destructive"
       });
     } finally {
       setIsLoading(false);
     }
   }, [user, toast]);
-  
+
   // Inițial încărcăm datele și configurăm ascultarea pentru real-time updates
   useEffect(() => {
     fetchAgentActivity();
@@ -173,6 +181,22 @@ export const useAgentMonitoring = () => {
     isLoading,
     categories,
     refreshData,
-    totalActivities
+    totalActivities,
+    logDetailedAgentActivity: (agentId: string, description: string) => {
+      // Metodă pentru logging suplimentar din alte componente
+      supabase
+        .from('agent_activity_logs')
+        .insert({
+          agent_id: agentId,
+          agent_name: 'N/A', // You might want to fetch the agent name here if needed
+          description: description,
+          category: 'monitoring',
+          timestamp: new Date().toISOString()
+        })
+        .select()
+        .then(({ data, error }) => {
+          if (error) console.error('Failed to log agent activity:', error);
+        });
+    }
   };
 };
