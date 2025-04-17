@@ -68,6 +68,7 @@ serve(async (req) => {
 
       if (!testResponse.ok) {
         const errorData = await testResponse.json();
+        console.error('Răspuns negativ de la API-ul Anthropic:', errorData);
         throw new Error(`Cheie API invalidă: ${errorData.error?.message || 'Eroare necunoscută'}`);
       }
 
@@ -81,7 +82,8 @@ serve(async (req) => {
         console.error('Eroare la salvarea cheii Anthropic:', error);
         return new Response(JSON.stringify({ 
           error: 'Nu s-a putut salva cheia API', 
-          userMessage: 'A apărut o problemă la salvarea cheii. Vă rugăm să încercați din nou.'
+          userMessage: 'A apărut o problemă la salvarea cheii. Vă rugăm să încercați din nou.',
+          details: error.message || 'Eroare la salvarea secretului'
         }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           status: 500
