@@ -1,6 +1,5 @@
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -14,110 +13,52 @@ serve(async (req) => {
   }
 
   try {
-    // Creăm clientul Supabase
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
-
-    // Obținem cheia API OpenRouter din secretele funcției
-    const openrouterApiKey = Deno.env.get('OPENROUTER_API_KEY');
-
-    // Verificăm dacă cheia există
-    if (!openrouterApiKey) {
+    const apiKey = Deno.env.get('OPENROUTER_API_KEY');
+    
+    if (!apiKey) {
       return new Response(
-        JSON.stringify({ 
-          hasKey: false,
-          isValid: false,
-          message: 'Cheia API OpenRouter nu este configurată'
-        }),
-        {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 200
-        }
+        JSON.stringify({ hasKey: false, isValid: false, message: 'Cheia API pentru OpenRouter nu este configurată' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
-
-    // Verificăm dacă cheia este validă făcând o cerere simplă către API-ul OpenRouter pentru a lista modelele
-    try {
-      const response = await fetch('https://openrouter.ai/api/v1/models', {
-        headers: {
-          'Authorization': `Bearer ${openrouterApiKey}`,
-          'HTTP-Referer': Deno.env.get('SUPABASE_URL') || 'https://tappaygo.com',
-          'X-Title': 'TapPayGo Platform'
-        }
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Răspuns negativ de la API-ul OpenRouter:', errorData);
-        
-        return new Response(
-          JSON.stringify({ 
-            hasKey: true,
-            isValid: false,
-            error: errorData.error?.message || 'Răspuns invalid de la API',
-            message: 'Cheia API OpenRouter este configurată, dar nu este validă'
-          }),
-          {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-            status: 200
-          }
-        );
-      }
-
-      const data = await response.json();
-      const models = data.data?.map((model: any) => model.id) || [];
-      
-      // Verificăm dacă avem modele Claude disponibile
-      const claudeModels = models.filter((model: string) => 
-        model.toLowerCase().includes('claude') || 
-        model.toLowerCase().includes('anthropic')
-      );
-      
-      return new Response(
-        JSON.stringify({ 
-          hasKey: true,
-          isValid: true,
-          claudeAvailable: claudeModels.length > 0,
-          models: models,
-          message: 'Cheia API OpenRouter este configurată și validă'
-        }),
-        {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 200
-        }
-      );
-    } catch (error) {
-      console.error('Eroare la validarea cheii OpenRouter:', error);
-      
-      return new Response(
-        JSON.stringify({ 
-          hasKey: true,
-          isValid: false,
-          error: error instanceof Error ? error.message : 'Eroare necunoscută',
-          message: 'Cheia API OpenRouter este configurată, dar nu a putut fi validată'
-        }),
-        {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 200
-        }
-      );
+    
+    // Facem o cerere simplă către API pentru a verifica validitatea cheii
+    // Folosim un prompt minimal pentru a economisi tokeni
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': Deno.env.get('SUPABASE_URL') || 'https://tappaygo.com',
+        'X-Title': 'TapPayGo Platform'
+      },
+      body: JSON.stringify({
+        model: 'anthropic/claude-3-haiku',
+        messages: [
+          { role: 'system', content: 'You are a helpful assistant.' },
+          { role: 'user', content: 'Just respond with OK for API validation.' }
+        ],
+        temperature: 0,
+        max_tokens: 10
+      })
+    });
+    
+    const isValid = response.ok;
+    let message = isValid ? 'Cheia API pentru OpenRouter este validă' : 'Cheia API pentru OpenRouter este invalidă';
+    
+    if (!isValid) {
+      const errorData = await response.json();
+      message = `Eroare validare API OpenRouter: ${errorData.error?.message || errorData.error || 'Eroare necunoscută'}`;
     }
-  } catch (err) {
-    console.error('Eroare neașteptată:', err);
     
     return new Response(
-      JSON.stringify({ 
-        error: 'Eroare internă',
-        message: err instanceof Error ? err.message : 'Eroare necunoscută',
-        hasKey: false,
-        isValid: false
-      }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500
-      }
+      JSON.stringify({ hasKey: true, isValid, message }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  } catch (err) {
+    return new Response(
+      JSON.stringify({ hasKey: true, isValid: false, message: `Eroare la testarea API-ului OpenRouter: ${err.message}` }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
     );
   }
 });

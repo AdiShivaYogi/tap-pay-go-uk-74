@@ -1,121 +1,139 @@
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import React from "react";
 import { Button } from "@/components/ui/button";
-import { Settings2 } from "lucide-react";
-import { useState } from "react";
-import { AutoExecutionConfig } from "@/hooks/agent-god-mode/types";
-import { Slider } from "@/components/ui/slider";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
+import { Settings } from "lucide-react";
+import { AutoExecutionConfig } from "@/hooks/agent-god-mode/types";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface AdvancedConfigDialogProps {
   config: AutoExecutionConfig;
   updateConfig: (updates: Partial<AutoExecutionConfig>) => Promise<void>;
 }
 
-export function AdvancedConfigDialog({ config, updateConfig }: AdvancedConfigDialogProps) {
-  const [open, setOpen] = useState(false);
-  const [localConfig, setLocalConfig] = useState<AutoExecutionConfig>({...config});
-  const [isSaving, setIsSaving] = useState(false);
-  
-  const handleSave = async () => {
+export const AdvancedConfigDialog = ({ config, updateConfig }: AdvancedConfigDialogProps) => {
+  const [localConfig, setLocalConfig] = React.useState<AutoExecutionConfig>({ ...config });
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [isSaving, setIsSaving] = React.useState(false);
+
+  // Sincronizează state-ul local când configurația se schimbă
+  React.useEffect(() => {
+    setLocalConfig({ ...config });
+  }, [config]);
+
+  const handleChange = (key: keyof AutoExecutionConfig, value: any) => {
+    setLocalConfig(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleSaveChanges = async () => {
     setIsSaving(true);
     await updateConfig(localConfig);
     setIsSaving(false);
-    setOpen(false);
-  };
-  
-  const handleChange = (key: keyof AutoExecutionConfig, value: any) => {
-    setLocalConfig(prev => ({
-      ...prev,
-      [key]: value
-    }));
+    setIsOpen(false);
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="icon" className="border-amber-200">
-          <Settings2 className="h-4 w-4 text-amber-600" />
+        <Button variant="outline" size="sm" className="ml-2 px-2">
+          <Settings className="h-4 w-4" />
+          <span className="sr-only">Setări avansate</span>
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Configurare Avansată God Mode</DialogTitle>
+          <DialogTitle>Setări avansate God Mode</DialogTitle>
           <DialogDescription>
-            Personalizează comportamentul God Mode și setările de autonomie pentru agenți.
+            Configurați parametrii pentru auto-execuție și feedback agent inteligent
           </DialogDescription>
         </DialogHeader>
-        
-        <div className="space-y-6 py-4">
-          <div className="space-y-2">
-            <Label>Nivel de autonomie ({localConfig.autonomyLevel}%)</Label>
-            <Slider 
-              min={20} 
+
+        <div className="grid gap-4 py-4">
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="autonomyLevel">Nivel autonomie agent: {localConfig.autonomyLevel}%</Label>
+            <Slider
+              id="autonomyLevel"
+              min={50}
               max={100}
               step={5}
               value={[localConfig.autonomyLevel]}
-              onValueChange={(value) => handleChange("autonomyLevel", value[0])}
-              className="py-4"
+              onValueChange={(value) => handleChange('autonomyLevel', value[0])}
             />
-            <p className="text-xs text-muted-foreground">
-              {localConfig.autonomyLevel < 50 ? 'Autonomie limitată - supervizare manuală frecventă' : 
-               localConfig.autonomyLevel < 80 ? 'Autonomie moderată - supervizare periodică' : 
-               'Autonomie ridicată - supervizare minimală'}
-            </p>
+            <span className="text-xs text-muted-foreground">
+              Un nivel mai ridicat permite agenților să ia decizii mai independente.
+            </span>
           </div>
-          
-          <div className="space-y-2">
-            <Label>Prag de auto-aprobare ({localConfig.autoApproveThreshold}%)</Label>
-            <Slider 
-              min={50} 
-              max={95}
+
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="autoApproveThreshold">Prag aprobare automată: {localConfig.autoApproveThreshold}%</Label>
+            <Slider
+              id="autoApproveThreshold"
+              min={60}
+              max={100}
               step={5}
               value={[localConfig.autoApproveThreshold]}
-              onValueChange={(value) => handleChange("autoApproveThreshold", value[0])}
-              className="py-4"
+              onValueChange={(value) => handleChange('autoApproveThreshold', value[0])}
             />
-            <p className="text-xs text-muted-foreground">
-              Pragul minim de încredere pentru aprobarea automată a propunerilor
-            </p>
+            <span className="text-xs text-muted-foreground">
+              Propunerile care depășesc acest scor de încredere vor fi aprobate automat.
+            </span>
           </div>
-          
-          <div className="space-y-2">
-            <Label>Stil feedback</Label>
-            <RadioGroup 
-              value={localConfig.feedbackStyle} 
-              onValueChange={(value) => handleChange("feedbackStyle", value)}
+
+          <div className="flex items-center justify-between">
+            <Label htmlFor="useAnthropicDirect">Folosește Anthropic Direct API</Label>
+            <Switch
+              id="useAnthropicDirect"
+              checked={localConfig.useAnthropicDirect}
+              onCheckedChange={(checked) => handleChange('useAnthropicDirect', checked)}
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="preferredModel">Model preferat</Label>
+            <Select 
+              value={localConfig.preferredModel} 
+              onValueChange={(value) => handleChange('preferredModel', value as "anthropic" | "claude" | "deepseek")}
             >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="constructive" id="constructive" />
-                <label htmlFor="constructive">Constructiv</label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="direct" id="direct" />
-                <label htmlFor="direct">Direct</label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="instructional" id="instructional" />
-                <label htmlFor="instructional">Instructiv</label>
-              </div>
-            </RadioGroup>
+              <SelectTrigger id="preferredModel">
+                <SelectValue placeholder="Selectează model" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="anthropic">Claude (Anthropic Direct)</SelectItem>
+                <SelectItem value="claude">Claude (OpenRouter)</SelectItem>
+                <SelectItem value="deepseek">DeepSeek</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-          
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setOpen(false)}>Anulează</Button>
-            <Button onClick={handleSave} disabled={isSaving}>
-              {isSaving ? 'Se salvează...' : 'Salvează configurația'}
-            </Button>
+
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="feedbackStyle">Stil feedback</Label>
+            <Select 
+              value={localConfig.feedbackStyle} 
+              onValueChange={(value) => handleChange('feedbackStyle', value as "constructive" | "detailed" | "concise")}
+            >
+              <SelectTrigger id="feedbackStyle">
+                <SelectValue placeholder="Selectează stil" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="constructive">Constructiv</SelectItem>
+                <SelectItem value="detailed">Detaliat</SelectItem>
+                <SelectItem value="concise">Concis</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
+
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setIsOpen(false)}>Anulează</Button>
+          <Button onClick={handleSaveChanges} disabled={isSaving}>
+            {isSaving ? 'Se salvează...' : 'Salvează setările'}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
-}
+};

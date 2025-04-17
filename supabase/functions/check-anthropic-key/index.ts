@@ -1,6 +1,5 @@
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -14,109 +13,50 @@ serve(async (req) => {
   }
 
   try {
-    // Creăm clientul Supabase
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
-
-    // Obținem cheia API Anthropic din secretele funcției
-    const anthropicApiKey = Deno.env.get('ANTHROPIC_API_KEY');
-
-    // Verificăm dacă cheia există
-    if (!anthropicApiKey) {
+    const apiKey = Deno.env.get('ANTHROPIC_API_KEY');
+    
+    if (!apiKey) {
       return new Response(
-        JSON.stringify({ 
-          hasKey: false,
-          isValid: false,
-          message: 'Cheia API Anthropic nu este configurată'
-        }),
-        {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 200
-        }
+        JSON.stringify({ hasKey: false, isValid: false, message: 'Cheia API pentru Anthropic nu este configurată' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
-
-    // Verificăm dacă cheia este validă făcând o cerere simplă către API-ul Anthropic
-    try {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'x-api-key': anthropicApiKey,
-          'anthropic-version': '2023-06-01',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          model: 'claude-3-sonnet-20240229',
-          max_tokens: 5,
-          messages: [
-            { role: 'user', content: 'Hello!' }
-          ]
-        })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Răspuns negativ de la API-ul Anthropic:', errorData);
-        
-        return new Response(
-          JSON.stringify({ 
-            hasKey: true,
-            isValid: false,
-            error: errorData.error?.message || 'Răspuns invalid de la API',
-            message: 'Cheia API Anthropic este configurată, dar nu este validă'
-          }),
-          {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-            status: 200
-          }
-        );
-      }
-
-      const data = await response.json();
-      return new Response(
-        JSON.stringify({ 
-          hasKey: true,
-          isValid: true,
-          model: data.model || 'claude-3-sonnet-20240229',
-          message: 'Cheia API Anthropic este configurată și validă'
-        }),
-        {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 200
-        }
-      );
-    } catch (error) {
-      console.error('Eroare la validarea cheii Anthropic:', error);
-      
-      return new Response(
-        JSON.stringify({ 
-          hasKey: true,
-          isValid: false,
-          error: error instanceof Error ? error.message : 'Eroare necunoscută',
-          message: 'Cheia API Anthropic este configurată, dar nu a putut fi validată'
-        }),
-        {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 200
-        }
-      );
+    
+    // Facem o cerere simplă către API pentru a verifica validitatea cheii
+    // Folosim un prompt minimal pentru a economisi tokeni
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'claude-3-haiku-20240307',
+        messages: [
+          { role: 'user', content: 'Just respond with "OK" for API validation.' }
+        ],
+        temperature: 0,
+        max_tokens: 10
+      })
+    });
+    
+    const isValid = response.ok;
+    let message = isValid ? 'Cheia API pentru Anthropic este validă' : 'Cheia API pentru Anthropic este invalidă';
+    
+    if (!isValid) {
+      const errorData = await response.json();
+      message = `Eroare validare API Anthropic: ${errorData.error?.message || 'Eroare necunoscută'}`;
     }
-  } catch (err) {
-    console.error('Eroare neașteptată:', err);
     
     return new Response(
-      JSON.stringify({ 
-        error: 'Eroare internă',
-        message: err instanceof Error ? err.message : 'Eroare necunoscută',
-        hasKey: false,
-        isValid: false
-      }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500
-      }
+      JSON.stringify({ hasKey: true, isValid, message }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  } catch (err) {
+    return new Response(
+      JSON.stringify({ hasKey: true, isValid: false, message: `Eroare la testarea API-ului Anthropic: ${err.message}` }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
     );
   }
 });

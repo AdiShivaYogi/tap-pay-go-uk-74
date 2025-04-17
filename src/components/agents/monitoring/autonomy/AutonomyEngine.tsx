@@ -1,57 +1,61 @@
 
-import React, { useEffect } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { logAgentActivity } from "../hooks/utils/activity-processing";
-import { AgentLearningProgress } from "../AgentLearningProgress";
-import { EthicsProtocol } from "./EthicsProtocol";
-import { EvaluationMechanism } from "./EvaluationMechanism";
-import { StyledCard } from "@/components/ui/cards";
-import { Sparkles } from "lucide-react";
+import React, { useEffect, useState } from 'react';
+import { AutoExecution } from '@/features/agent-autonomy/AutoExecution';
+import { useAuth } from '@/hooks/use-auth';
+import { useGodModeState } from '@/hooks/agent-god-mode/state/use-god-mode-state';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
-export const AutonomyEngine = () => {
+export const AutonomyEngine: React.FC = () => {
+  const { user } = useAuth();
+  const userId = user?.id;
   const { toast } = useToast();
-  
-  // Inițializăm motorul de autonomie la încărcarea componentei
+  const { isGodModeEnabled, toggleGodMode, autoExecutionConfig, updateAutoExecutionConfig } = useGodModeState({ userId });
+  const [initialized, setInitialized] = useState<boolean>(false);
+
+  // Activează automat God Mode la prima încărcare dacă utilizatorul este admin
   useEffect(() => {
-    const initializeAutonomyEngine = () => {
-      // Înregistrăm inițializarea motorului de autonomie
-      logAgentActivity(
-        "system-core",
-        "Motorul de autonomie a fost inițializat cu protecție etică și capacitate de auto-evaluare",
-        "autonomy"
-      );
-      
-      toast({
-        title: "Motorul de Autonomie activat",
-        description: "Toate sistemele de autonomie sunt active și funcționale",
-        duration: 5000,
-      });
+    const activateGodMode = async () => {
+      if (!userId || initialized) return;
+
+      try {
+        // Verifică dacă utilizatorul are rol de admin
+        const { data, error } = await supabase.rpc('user_has_role', { _role: 'admin' });
+        
+        if (error) {
+          console.error('Eroare la verificarea rolului:', error);
+          return;
+        }
+        
+        // Dacă utilizatorul este admin și God Mode nu este activat, activează-l
+        if (data && !isGodModeEnabled) {
+          await updateAutoExecutionConfig({
+            enabled: true,
+            autonomyLevel: 85,
+            autoApproveThreshold: 80,
+            feedbackStyle: "constructive",
+            useAnthropicDirect: true,
+            preferredModel: "anthropic"
+          });
+          
+          toast({
+            title: "God Mode activat automat",
+            description: "Sistemul de aprobare automată și generare de feedback a fost activat pentru agenți.",
+          });
+        }
+        
+        setInitialized(true);
+      } catch (err) {
+        console.error('Eroare la activarea God Mode:', err);
+      }
     };
     
-    // Inițializăm cu întârziere pentru a permite încărcarea celorlalte componente
-    const timer = setTimeout(() => {
-      initializeAutonomyEngine();
-    }, 1500);
-    
-    return () => clearTimeout(timer);
-  }, [toast]);
-  
+    activateGodMode();
+  }, [userId, isGodModeEnabled, updateAutoExecutionConfig, initialized, toast]);
+
   return (
-    <div className="space-y-6 mt-6">
-      <StyledCard>
-        <div className="p-4 flex items-center gap-2 text-primary border-b">
-          <Sparkles className="h-5 w-5" />
-          <h3 className="text-lg font-medium">Auto-Învățare și Evoluție</h3>
-        </div>
-        <div className="p-4">
-          <AgentLearningProgress />
-        </div>
-      </StyledCard>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <EthicsProtocol />
-        <EvaluationMechanism />
-      </div>
-    </div>
+    <>
+      <AutoExecution />
+    </>
   );
 };
