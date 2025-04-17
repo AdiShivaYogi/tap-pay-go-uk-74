@@ -9,3 +9,6 @@ verify_jwt = true
 
 [functions.set-openrouter-key]
 verify_jwt = true
+
+[functions.monitor-agent-activity]
+verify_jwt = true
