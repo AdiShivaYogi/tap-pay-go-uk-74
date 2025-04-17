@@ -2,13 +2,14 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AutoExecutionConfig } from "../types";
+import { toast } from "@/hooks/use-toast";  // Adăugăm toast pentru feedback
 
 export interface UseGodModeStateProps {
   userId?: string;
 }
 
 const defaultConfig: AutoExecutionConfig = {
-  enabled: false,
+  enabled: false,  // Asigurăm că valoarea implicită este false
   useAnthropicDirect: true,
   preferredModel: "anthropic",
   autonomyLevel: 80,
@@ -52,10 +53,16 @@ export const useGodModeState = (props?: UseGodModeStateProps) => {
   }, [props?.userId]);
   
   const toggleGodMode = async () => {
-    const newState = !isGodModeEnabled;
-    setIsGodModeEnabled(newState);
+    if (!props?.userId) {
+      toast({
+        title: "Eroare",
+        description: "Utilizatorul nu este autentificat pentru a activa God Mode",
+        variant: "destructive"
+      });
+      return;
+    }
     
-    if (!props?.userId) return;
+    const newState = !isGodModeEnabled;
     
     try {
       const updatedConfig: AutoExecutionConfig = {
@@ -74,44 +81,33 @@ export const useGodModeState = (props?: UseGodModeStateProps) => {
       
       if (error) {
         console.error('Error saving God Mode state:', error);
-        // Revert starea dacă salvarea a eșuat
-        setIsGodModeEnabled(!newState);
+        toast({
+          title: "Eroare",
+          description: "Nu s-a putut salva starea God Mode",
+          variant: "destructive"
+        });
         return;
       }
       
+      // Actualizăm starea locală
+      setIsGodModeEnabled(newState);
       setAutoExecutionConfig(updatedConfig);
+      
+      // Adăugăm un toast pentru confirmare
+      toast({
+        title: "God Mode",
+        description: newState 
+          ? "God Mode a fost activat. Propunerile vor fi aprobate automat." 
+          : "God Mode a fost dezactivat. Propunerile vor necesita aprobare manuală."
+      });
+      
     } catch (err) {
       console.error('Exception saving God Mode state:', err);
-      // Revert starea dacă salvarea a eșuat
-      setIsGodModeEnabled(!newState);
-    }
-  };
-  
-  const updateAutoExecutionConfig = async (updates: Partial<AutoExecutionConfig>) => {
-    if (!props?.userId) return;
-    
-    const updatedConfig: AutoExecutionConfig = {
-      ...autoExecutionConfig,
-      ...updates
-    };
-    
-    try {
-      const { error } = await (supabase as any)
-        .from('user_preferences')
-        .upsert({
-          user_id: props.userId,
-          god_mode_config: updatedConfig,
-          updated_at: new Date().toISOString()
-        });
-      
-      if (error) {
-        console.error('Error updating God Mode config:', error);
-        return;
-      }
-      
-      setAutoExecutionConfig(updatedConfig);
-    } catch (err) {
-      console.error('Exception updating God Mode config:', err);
+      toast({
+        title: "Eroare",
+        description: "A apărut o eroare la schimbarea modului God Mode",
+        variant: "destructive"
+      });
     }
   };
 
@@ -122,3 +118,4 @@ export const useGodModeState = (props?: UseGodModeStateProps) => {
     updateAutoExecutionConfig
   };
 };
+
