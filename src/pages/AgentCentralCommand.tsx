@@ -15,6 +15,7 @@ import { AnthropicApiKeyDialog } from "@/components/agents/AnthropicApiKeyDialog
 import { OpenRouterApiKeyDialog } from "@/components/agents/OpenRouterApiKeyDialog";
 import { AutoExecution } from "@/features/agent-autonomy/AutoExecution";
 import { Separator } from "@/components/ui/separator";
+import { useAgentAdminData } from "@/hooks/use-agent-admin-data";
 import { useAutonomousAgents } from "@/hooks/use-autonomous-agents";
 import { 
   BrainCircuit, 
