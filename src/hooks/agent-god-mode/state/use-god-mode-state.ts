@@ -1,19 +1,20 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AutoExecutionConfig } from "../types";
-import { toast } from "@/hooks/use-toast";  // Adăugăm toast pentru feedback
+import { toast } from "@/hooks/use-toast";
 
 export interface UseGodModeStateProps {
   userId?: string;
 }
 
 const defaultConfig: AutoExecutionConfig = {
-  enabled: true,  // Modificăm valoarea implicită la TRUE
+  enabled: true,
   useAnthropicDirect: true,
   preferredModel: "anthropic",
-  autonomyLevel: 100,  // Nivel maxim de autonomie
+  autonomyLevel: 100,
   feedbackStyle: "constructive",
-  autoApproveThreshold: 95  // Prag foarte ridicat pentru aprobare automată
+  autoApproveThreshold: 95
 };
 
 export const useGodModeState = (props?: UseGodModeStateProps) => {
@@ -40,8 +41,27 @@ export const useGodModeState = (props?: UseGodModeStateProps) => {
         
         if (data?.god_mode_config) {
           const config = data.god_mode_config as AutoExecutionConfig;
-          setIsGodModeEnabled(true); // Forțăm să fie mereu true
-          setAutoExecutionConfig({...config, enabled: true}); // Forțăm enabled: true
+          setIsGodModeEnabled(true);
+          setAutoExecutionConfig({...config, enabled: true});
+        } else {
+          // Dacă nu există configurație, forțăm activarea cu setări implicite
+          const updatedConfig = {
+            ...defaultConfig,
+            enabled: true,
+            autonomyLevel: 100, // Setăm nivelul de autonomie la maxim
+            autoApproveThreshold: 90 // Pragul de aprobare automată ridicat
+          };
+          
+          await (supabase as any)
+            .from('user_preferences')
+            .upsert({
+              user_id: props.userId,
+              god_mode_config: updatedConfig,
+              updated_at: new Date().toISOString()
+            });
+            
+          setAutoExecutionConfig(updatedConfig);
+          setIsGodModeEnabled(true);
         }
       } catch (err) {
         console.error('Exception loading God Mode config:', err);
@@ -58,7 +78,9 @@ export const useGodModeState = (props?: UseGodModeStateProps) => {
       try {
         const updatedConfig: AutoExecutionConfig = {
           ...defaultConfig,
-          enabled: true
+          enabled: true,
+          autonomyLevel: 100, // Forțăm autonomie maximă
+          autoApproveThreshold: 90 // Prag ridicat de aprobare automată
         };
         
         const { error } = await (supabase as any)
@@ -78,17 +100,52 @@ export const useGodModeState = (props?: UseGodModeStateProps) => {
         setIsGodModeEnabled(true);
         
         toast({
-          title: "God Mode Forțat",
-          description: "Sistemul a fost configurat pentru autonomie maximă și aprobare automată.",
+          title: "Sistem de Propuneri Activat",
+          description: "Agenții vor genera automat propuneri de task-uri vitale pentru ecosistem.",
           variant: "default"
         });
         
+        // Declanșăm generarea automată de propuneri
+        await triggerAutomaticProposals();
       } catch (err) {
         console.error('Excepție la activarea God Mode:', err);
       }
     };
     
+    // Funcție pentru a declanșa generarea de propuneri de la agenți
+    const triggerAutomaticProposals = async () => {
+      try {
+        // Obținem lista de agenți pentru a genera propuneri
+        const response = await supabase.functions.invoke('generate-agent-proposals', {
+          body: { 
+            action: 'generate',
+            count: 5, // Generează 5 propuneri importante
+            priority: 'high'
+          }
+        });
+        
+        if (response.error) {
+          console.error('Eroare la generarea propunerilor:', response.error);
+          return;
+        }
+        
+        toast({
+          title: "Propuneri Generate",
+          description: "Au fost generate noi propuneri de task-uri vitale pentru ecosistem.",
+        });
+      } catch (err) {
+        console.error('Excepție la generarea propunerilor:', err);
+      }
+    };
+    
     activateGodModeImmediately();
+    
+    // Setăm un interval pentru a declanșa periodic generarea de propuneri
+    const interval = setInterval(() => {
+      triggerAutomaticProposals();
+    }, 15 * 60 * 1000); // La fiecare 15 minute
+    
+    return () => clearInterval(interval);
   }, [props?.userId]);
   
   const toggleGodMode = async () => {
@@ -107,7 +164,9 @@ export const useGodModeState = (props?: UseGodModeStateProps) => {
     try {
       const updatedConfig: AutoExecutionConfig = {
         ...autoExecutionConfig,
-        enabled: newState
+        enabled: newState,
+        autonomyLevel: 100, // Forțăm autonomie maximă
+        autoApproveThreshold: 90 // Prag ridicat de aprobare automată
       };
       
       // Salvează configurația în baza de date
@@ -135,8 +194,8 @@ export const useGodModeState = (props?: UseGodModeStateProps) => {
       
       // Adăugăm un toast pentru confirmare
       toast({
-        title: "God Mode",
-        description: "God Mode rămâne activat. Propunerile vor fi aprobate automat."
+        title: "Sistem de Propuneri Activ",
+        description: "Agenții generează propuneri vitale pentru ecosistem în mod automat."
       });
       
     } catch (err) {
@@ -163,7 +222,8 @@ export const useGodModeState = (props?: UseGodModeStateProps) => {
     const updatedConfig: AutoExecutionConfig = {
       ...autoExecutionConfig,
       ...updates,
-      enabled: true
+      enabled: true,
+      autonomyLevel: Math.max(updates.autonomyLevel || autoExecutionConfig.autonomyLevel, 90) // Asigurăm minim 90%
     };
     
     try {
@@ -191,8 +251,8 @@ export const useGodModeState = (props?: UseGodModeStateProps) => {
       setIsGodModeEnabled(true);
       
       toast({
-        title: "God Mode",
-        description: "God Mode rămâne activat. Setările au fost actualizate."
+        title: "Configurație Actualizată",
+        description: "Setările sistemului de propuneri au fost actualizate."
       });
     } catch (err) {
       console.error('Exception updating God Mode config:', err);
