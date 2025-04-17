@@ -9,11 +9,13 @@ import { cn } from "@/lib/utils";
 interface AutoExecutionButtonProps {
   variant?: 'default' | 'headerButton';
   className?: string;
+  onExecuteTasks?: () => void;
 }
 
 export const AutoExecutionButton: React.FC<AutoExecutionButtonProps> = ({ 
   variant = 'default',
-  className 
+  className,
+  onExecuteTasks
 }) => {
   const [isExecuting, setIsExecuting] = React.useState(false);
   const { toast } = useToast();
@@ -22,8 +24,14 @@ export const AutoExecutionButton: React.FC<AutoExecutionButtonProps> = ({
     agentsRunning
   } = useSafetyPanel();
 
+  // Progress tracking for automated tasks
+  const [autoProgress, setAutoProgress] = React.useState(0);
+
   const handleAutoExecution = async () => {
+    if (isExecuting) return;
+    
     setIsExecuting(true);
+    setAutoProgress(0);
     
     try {
       // Simulăm un delay scurt pentru a arăta feedback vizual de procesare
@@ -37,6 +45,24 @@ export const AutoExecutionButton: React.FC<AutoExecutionButtonProps> = ({
         description: "Toți agenții operează acum în mod complet autonom.",
         duration: 5000,
       });
+
+      // Execute the tasks automation if provided
+      if (onExecuteTasks) {
+        onExecuteTasks();
+      }
+
+      // Simulate progress for animation effect
+      const progressInterval = setInterval(() => {
+        setAutoProgress(prev => {
+          const newProgress = prev + 5;
+          if (newProgress >= 100) {
+            clearInterval(progressInterval);
+            setTimeout(() => setIsExecuting(false), 500);
+            return 100;
+          }
+          return newProgress;
+        });
+      }, 300);
     } catch (error) {
       toast({
         title: "Eroare la activarea autoexecuției",
@@ -44,7 +70,6 @@ export const AutoExecutionButton: React.FC<AutoExecutionButtonProps> = ({
         variant: "destructive",
         duration: 5000,
       });
-    } finally {
       setIsExecuting(false);
     }
   };
@@ -65,7 +90,7 @@ export const AutoExecutionButton: React.FC<AutoExecutionButtonProps> = ({
         ) : (
           <Zap className="h-4 w-4 mr-2" />
         )}
-        {agentsRunning ? "Toți Agenții Activi" : "Toți Agenții Activi"}
+        {agentsRunning ? "Toți Agenții Activi" : "Activează Agenții"}
       </Button>
     );
   }
@@ -87,7 +112,7 @@ export const AutoExecutionButton: React.FC<AutoExecutionButtonProps> = ({
       ) : (
         <Zap className="h-5 w-5 text-white" />
       )}
-      {agentsRunning ? "Autoexecuție Activată" : "Activează Autoexecuție"}
+      {isExecuting ? "Executare automată..." : agentsRunning ? "Autoexecuție Activată" : "Activează Autoexecuție"}
     </Button>
   );
 };

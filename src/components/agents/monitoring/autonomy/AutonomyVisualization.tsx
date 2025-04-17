@@ -5,10 +5,35 @@ import { Sparkles, Zap, Brain, Network } from 'lucide-react';
 import { AutonomyFeatureCard } from './AutonomyFeatureCard';
 import { AgentNetworkGraph } from '@/components/3d-visualizations/AgentNetworkGraph';
 import { AutoExecutionButton } from './AutoExecutionButton';
+import { AutonomyCard, useAutonomyTasks } from './AutonomyCard';
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 export const AutonomyVisualization: React.FC = () => {
+  const [showAlert, setShowAlert] = React.useState(false);
+  const autonomyTasksContext = React.useContext(AutonomyCard['context']);
+  
+  // Show alert when all tasks are completed
+  React.useEffect(() => {
+    if (autonomyTasksContext && 
+        autonomyTasksContext.tasks.every(task => task.completed)) {
+      setShowAlert(true);
+    }
+  }, [autonomyTasksContext]);
+  
   return (
     <div className="space-y-6">
+      {showAlert && (
+        <Alert className="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-300">
+          <AlertTitle className="flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-amber-500" />
+            Noua Eră a Autonomiei Finalizată
+          </AlertTitle>
+          <AlertDescription>
+            Toți agenții funcționează acum în mod complet autonom. Sistemul a evoluat pentru a gestiona toate aspectele operaționale fără intervenție umană.
+          </AlertDescription>
+        </Alert>
+      )}
+      
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <AutonomyFeatureCard 
           title="Auto-Evoluție" 

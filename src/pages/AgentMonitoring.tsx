@@ -27,6 +27,9 @@ const AgentMonitoring = () => {
   const [showAutonomyAlert, setShowAutonomyAlert] = useState(true);
   const { autonomyLevel, agentsRunning } = useSafetyPanel();
   
+  // State to track if all tasks have been auto-executed
+  const [allTasksCompleted, setAllTasksCompleted] = useState(false);
+  
   useEffect(() => {
     const timer = setTimeout(() => {
       toast({
@@ -58,6 +61,15 @@ const AgentMonitoring = () => {
       </Layout>
     );
   }
+
+  const handleAllTasksCompleted = () => {
+    setAllTasksCompleted(true);
+    toast({
+      title: "Toate sarcinile au fost finalizate",
+      description: "Noua Eră a Autonomiei a fost implementată cu succes. Agenții operează complet autonom.",
+      duration: 5000,
+    });
+  };
 
   return (
     <Layout>
@@ -145,7 +157,7 @@ const AgentMonitoring = () => {
           </TabsList>
           
           <TabsContent value="autonomy">
-            <SafetyInfrastructurePanel />
+            <AutonomyVisualization />
           </TabsContent>
           
           <TabsContent value="network">
@@ -162,13 +174,6 @@ const AgentMonitoring = () => {
           </TabsContent>
           
           <TabsContent value="safety">
-            <div className="mb-4">
-              <h2 className="text-xl font-medium mb-2">Sistemul de siguranță pentru agenții autonomi</h2>
-              <p className="text-muted-foreground">
-                Monitorizați și gestionați infrastructura de siguranță pentru agenții autonomi,
-                incluzând sisteme de siguranță active, mecanisme de monitorizare și sisteme de control.
-              </p>
-            </div>
             <SafetyInfrastructurePanel />
           </TabsContent>
           
