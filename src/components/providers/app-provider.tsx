@@ -1,7 +1,8 @@
+
 import React from "react";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { SupabaseProvider } from "@/integrations/supabase/supabase-provider";
-import { ToastProvider } from "@/components/ui/use-toast";
+import { ToastProvider } from "@/components/ui/toast-provider";
 import { AutonomousEngineProvider } from "@/components/agents/autonomous-engine/AutonomousEngineProvider";
 import { AutoExecution } from "@/features/agent-autonomy/AutoExecution";
 
