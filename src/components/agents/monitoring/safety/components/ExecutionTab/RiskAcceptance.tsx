@@ -1,10 +1,10 @@
 
 import React from "react";
 import { StyledCard, StyledCardHeader, StyledCardTitle, StyledCardContent } from "@/components/ui/cards";
-import { AlertTriangle, Check, Zap, ArrowRight, Rocket } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { AlertTriangle, Check, Zap } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { RiskLevel } from "../../types";
+import { AutoExecutionButton } from "@/components/agents/monitoring/autonomy/AutoExecutionButton";
 
 interface RiskAcceptanceProps {
   acceptedRisks: RiskLevel[];
@@ -37,7 +37,7 @@ export const RiskAcceptance: React.FC<RiskAcceptanceProps> = ({
         
         <div className="mb-3 p-2 rounded-md bg-amber-50 border border-amber-100">
           <p className="text-xs text-amber-700 font-medium">
-            <Rocket className="h-3 w-3 inline mr-1" /> Lansare completă a tuturor agenților disponibili
+            <Zap className="h-3 w-3 inline mr-1" /> Lansare completă a tuturor agenților disponibili
           </p>
           <p className="text-xs text-amber-700">
             Toți agenții vor evolua independent, colectând și procesând date în timp real
@@ -79,14 +79,9 @@ export const RiskAcceptance: React.FC<RiskAcceptanceProps> = ({
           </div>
         </div>
         
-        <Button 
-          variant={allRisksAccepted ? "default" : "outline"}
-          className={`w-full mt-4 gap-2 ${allRisksAccepted ? "bg-amber-500 hover:bg-amber-600 animate-pulse" : ""}`}
-          onClick={startAutonomousExecution}
-        >
-          <Rocket className={`h-4 w-4 ${allRisksAccepted ? "text-white" : ""}`} />
-          Lansare Imediată - Toți Agenții Autonomi
-        </Button>
+        <div className="mt-4">
+          <AutoExecutionButton />
+        </div>
       </StyledCardContent>
     </StyledCard>
   );

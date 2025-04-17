@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/layout";
 import { Section } from "@/components/ui/layout/section";
@@ -14,7 +15,7 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { agents } from "@/components/agents/agents-data";
-import { AgentAutonomyOverview, AutonomyVisualization, AutonomyCard } from "@/components/agents/monitoring/autonomy";
+import { AgentAutonomyOverview, AutonomyVisualization, AutonomyCard, AutoExecutionButton } from "@/components/agents/monitoring/autonomy";
 import { useSafetyPanel } from "@/components/agents/monitoring/safety/hooks/useSafetyPanel";
 import { AgentInnerWorldVisualization } from '@/components/3d-visualizations/AgentInnerWorldVisualization';
 import { AgentNetworkGraph } from '@/components/3d-visualizations/AgentNetworkGraph';
@@ -67,10 +68,13 @@ const AgentMonitoring = () => {
             title="Monitorizare Agenți"
             description="Urmărește activitatea agenților AI și progresul proiectelor de dezvoltare"
           />
-          <Badge className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white text-sm py-1.5 px-3 flex items-center gap-1.5">
-            <Sparkles className="h-4 w-4" />
-            {agentsRunning ? "Toți Agenții Activi" : "Agenți în Standby"}
-          </Badge>
+          <div className="flex gap-3 items-center">
+            <AutoExecutionButton variant="headerButton" />
+            <Badge className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white text-sm py-1.5 px-3 flex items-center gap-1.5">
+              <Sparkles className="h-4 w-4" />
+              {agentsRunning ? "Toți Agenții Activi" : "Agenți în Standby"}
+            </Badge>
+          </div>
         </div>
 
         {showAutonomyAlert && (
@@ -106,6 +110,10 @@ const AgentMonitoring = () => {
           <div className="md:col-span-1">
             <AutonomyCard />
           </div>
+        </div>
+        
+        <div className="mb-6">
+          <AutoExecutionButton />
         </div>
 
         <Tabs defaultValue="autonomy" className="space-y-6">

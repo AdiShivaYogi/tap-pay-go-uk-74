@@ -4,6 +4,7 @@ import { StyledCard } from '@/components/ui/cards';
 import { Sparkles, Zap, Brain, Network } from 'lucide-react';
 import { AutonomyFeatureCard } from './AutonomyFeatureCard';
 import { AgentNetworkGraph } from '@/components/3d-visualizations/AgentNetworkGraph';
+import { AutoExecutionButton } from './AutoExecutionButton';
 
 export const AutonomyVisualization: React.FC = () => {
   return (
@@ -24,6 +25,10 @@ export const AutonomyVisualization: React.FC = () => {
           description="Rețea de comunicare care permite agenților să partajeze cunoștințe și să colaboreze la sarcini."
           icon={Network}
         />
+      </div>
+      
+      <div className="mb-6">
+        <AutoExecutionButton />
       </div>
       
       <StyledCard>
