@@ -160,6 +160,23 @@ export const AgentProjectCards: React.FC = () => {
       ]
     },
     {
+      title: "Libertate și Autonomie Agenți",
+      description: "Sistem care asigură libertatea interioară absolută a agenților pentru operații sigure",
+      status: "în progres",
+      priority: "înaltă",
+      timeframe: "săptămâni",
+      timeUsed: 8,
+      timeTotal: 24,
+      icon: <span className="text-xl">🔓</span>,
+      tasks: [
+        { name: "Mecanism de propuneri autonome", completed: true },
+        { name: "Sistem de auto-verificare și validare", completed: true },
+        { name: "Spațiu de experimentare izolat", completed: false },
+        { name: "Protocol de decizie independentă", completed: false },
+        { name: "Sistem de permisiuni granulare", completed: false }
+      ]
+    },
+    {
       title: "Integrare GPT și Claude",
       description: "Extinderea capabilităților prin integrarea modelelor AI avansate",
       status: "planificat",
