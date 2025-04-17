@@ -3,7 +3,7 @@ import React from "react";
 import { FeedbackItem } from "@/hooks/agent-god-mode/types";
 
 interface FeedbackFormHeaderProps {
-  feedbackType: "submission" | "proposal" | null;
+  feedbackType: "submission" | "proposal" | undefined;
   currentSubmission: FeedbackItem | null;
   currentProposal: FeedbackItem | null;
 }

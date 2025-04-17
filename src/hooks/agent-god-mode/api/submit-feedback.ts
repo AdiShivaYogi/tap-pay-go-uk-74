@@ -1,6 +1,28 @@
 
 import { extendedSupabase as supabase } from "@/integrations/supabase/extended-client";
 
+export const submitFeedbackAPI = async ({
+  itemType,
+  itemId,
+  feedback,
+  userId,
+  approve
+}: {
+  itemType: "submission" | "proposal";
+  itemId: string;
+  feedback: string;
+  userId: string | undefined;
+  approve: boolean;
+}): Promise<{ success: boolean }> => {
+  if (itemType === "submission") {
+    await submitSubmissionFeedback(itemId, feedback, approve, userId);
+  } else {
+    await submitProposalFeedback(itemId, feedback, approve, userId);
+  }
+  
+  return { success: true };
+};
+
 export const submitSubmissionFeedback = async (
   submissionId: string,
   feedback: string,

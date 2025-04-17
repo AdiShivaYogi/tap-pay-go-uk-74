@@ -20,12 +20,13 @@ export const GodModeCard = ({ userId }: GodModeCardProps) => {
     currentSubmission,
     currentProposal,
     feedback,
-    preferredModel, // Direct renaming
+    preferredModel,
     toggleGodMode,
     generateFeedback,
     submitFeedback,
     cancelFeedback,
     setFeedback,
+    setPreferredModel
   } = useAgentGodMode({ userId });
 
   const hasActiveFeedback = currentSubmission || currentProposal;
@@ -54,12 +55,12 @@ export const GodModeCard = ({ userId }: GodModeCardProps) => {
             currentSubmission={currentSubmission}
             currentProposal={currentProposal}
             feedback={feedback}
-            selectedModel={preferredModel}
+            preferredModel={preferredModel}
             isGeneratingFeedback={isGeneratingFeedback}
             isProcessing={isProcessing}
             isGodModeEnabled={isGodModeEnabled}
             onFeedbackChange={setFeedback}
-            onModelChange={() => {}} // Placeholder, will be implemented in useAgentGodMode
+            onModelChange={setPreferredModel}
             onSubmit={submitFeedback}
             onCancel={cancelFeedback}
           />
@@ -70,4 +71,3 @@ export const GodModeCard = ({ userId }: GodModeCardProps) => {
     </StyledCard>
   );
 };
-

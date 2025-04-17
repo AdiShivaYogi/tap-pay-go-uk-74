@@ -10,6 +10,7 @@ import { useSubmissionHandlers } from "./handlers/submission-handlers";
 import { useCodeProposalHandlers } from "./handlers/code-proposal-handlers";
 import { AgentGodMode } from "./AgentGodMode";
 import { useToast } from "@/hooks/use-toast";
+import { FeedbackItem } from "@/hooks/agent-god-mode/types";
 
 interface AgentAdminTabsProps {
   submissions: any[];
@@ -58,6 +59,15 @@ export const AgentAdminTabs = ({
     }
   }, [loading, submissions.length, codeProposals.length, toast]);
 
+  // Helper function to adapt the generateFeedback function to work with both SubmissionsTab and CodeProposalsTab
+  const handleGenerateFeedbackForSubmission = async (type: "submission", item: any) => {
+    await generateFeedback(item as FeedbackItem, type);
+  };
+
+  const handleGenerateFeedbackForProposal = async (type: "proposal", item: any) => {
+    await generateFeedback(item as FeedbackItem, type);
+  };
+
   return (
     <>
       <AgentGodMode 
@@ -85,7 +95,7 @@ export const AgentAdminTabs = ({
             submissions={submissions} 
             onApproveSubmission={handleApproveSubmission} 
             onRejectSubmission={handleRejectSubmission}
-            onGenerateFeedback={generateFeedback}
+            onGenerateFeedback={handleGenerateFeedbackForSubmission}
             loading={loading}
           />
         </TabsContent>
@@ -95,7 +105,7 @@ export const AgentAdminTabs = ({
             proposals={codeProposals} 
             onApproveProposal={handleApproveProposal} 
             onRejectProposal={handleRejectProposal}
-            onGenerateFeedback={generateFeedback}
+            onGenerateFeedback={handleGenerateFeedbackForProposal}
             loading={loading}
           />
         </TabsContent>

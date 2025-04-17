@@ -19,7 +19,7 @@ export const useAgentGodMode = ({ userId }: UseAgentGodModeProps) => {
   const [feedback, setFeedback] = useState<string>("");
   const [isGeneratingFeedback, setIsGeneratingFeedback] = useState<boolean>(false);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  const [selectedModel, setSelectedModel] = useState<"deepseek" | "claude">("deepseek");
+  const [preferredModel, setPreferredModel] = useState<"deepseek" | "claude">("deepseek");
 
   const resetState = useCallback(() => {
     setCurrentSubmission(null);
@@ -51,7 +51,7 @@ export const useAgentGodMode = ({ userId }: UseAgentGodModeProps) => {
         itemType,
         item,
         userId,
-        model: selectedModel
+        model: preferredModel
       });
       
       if (result?.feedback) {
@@ -71,7 +71,7 @@ export const useAgentGodMode = ({ userId }: UseAgentGodModeProps) => {
     } finally {
       setIsGeneratingFeedback(false);
     }
-  }, [userId, toast, selectedModel]);
+  }, [userId, toast, preferredModel]);
 
   const submitFeedback = useCallback(async () => {
     if (!userId || (!currentSubmission && !currentProposal)) {
@@ -130,9 +130,9 @@ export const useAgentGodMode = ({ userId }: UseAgentGodModeProps) => {
     feedback,
     isGeneratingFeedback,
     isProcessing,
-    selectedModel,
+    preferredModel,
     setFeedback,
-    setSelectedModel,
+    setPreferredModel,
     generateFeedback,
     submitFeedback,
     cancelFeedback: resetState

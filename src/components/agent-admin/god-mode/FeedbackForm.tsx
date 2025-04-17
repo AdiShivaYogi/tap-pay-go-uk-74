@@ -8,7 +8,7 @@ import { FeedbackFormActions } from "./FeedbackFormActions";
 import { ModelSelector } from "./ModelSelector";
 
 interface FeedbackFormProps {
-  feedbackType: "submission" | "proposal" | null;
+  feedbackType: "submission" | "proposal" | undefined;
   currentSubmission: FeedbackItem | null;
   currentProposal: FeedbackItem | null;
   feedback: string;
