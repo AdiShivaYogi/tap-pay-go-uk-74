@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/layout";
 import { Section } from "@/components/ui/layout/section";
 import { AgentCentralCommandSidebar } from "@/components/agents/AgentCentralCommandSidebar";
@@ -17,6 +17,16 @@ const AgentCentralCommand = () => {
   const { isAdmin } = useUserRole();
   const [activeTab, setActiveTab] = useState("monitoring");
   const { submissions, progressHistory, codeProposals, loading } = useAgentAdminData(!!isAdmin);
+  const [submissionsState, setSubmissionsState] = useState<any[]>([]);
+  const [codeProposalsState, setCodeProposalsState] = useState<any[]>([]);
+  
+  // When data is loaded from the hook, update our state
+  useEffect(() => {
+    if (!loading) {
+      setSubmissionsState(submissions);
+      setCodeProposalsState(codeProposals);
+    }
+  }, [submissions, codeProposals, loading]);
 
   if (!user || !isAdmin) {
     return (
@@ -40,10 +50,12 @@ const AgentCentralCommand = () => {
       case "admin":
         return (
           <AgentAdminTabs 
-            submissions={submissions}
-            codeProposals={codeProposals}
+            submissions={submissionsState}
+            codeProposals={codeProposalsState}
             progressHistory={progressHistory}
             userId={user?.id}
+            setSubmissions={setSubmissionsState}
+            setCodeProposals={setCodeProposalsState}
             loading={loading}
           />
         );

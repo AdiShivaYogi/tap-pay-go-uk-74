@@ -61,10 +61,11 @@ export function AgentCentralCommandSidebar({
               {sidebarItems.map((item) => (
                 <SidebarMenuItem 
                   key={item.value}
-                  active={activeTab === item.value}
+                  className={activeTab === item.value ? "bg-accent" : ""}
                 >
                   <SidebarMenuButton 
                     onClick={() => onTabChange(item.value)}
+                    className={activeTab === item.value ? "text-accent-foreground font-medium" : ""}
                   >
                     <item.icon className="mr-2 h-4 w-4" />
                     <span>{item.title}</span>
