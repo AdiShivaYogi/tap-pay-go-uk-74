@@ -30,8 +30,16 @@ export const BaseMonitoringPage: React.FC<BaseMonitoringPageProps> = ({
   const { toast } = useToast();
   const [showAutonomyAlert, setShowAutonomyAlert] = useState(true);
   
-  // Convertim boolean la number pentru a rezolva eroarea de tip
-  const { autonomyLevel = 0, agentsRunning = 0 } = useSafetyPanel();
+  // Asiguram conversia explicită la tipul number pentru a evita erori TypeScript
+  const safetyPanelData = useSafetyPanel();
+  // Utilizăm un număr implicit (0) dacă autonomyLevel sau agentsRunning este boolean sau undefined
+  const autonomyLevel: number = typeof safetyPanelData.autonomyLevel === 'number' 
+    ? safetyPanelData.autonomyLevel 
+    : 0;
+    
+  const agentsRunning: number = typeof safetyPanelData.agentsRunning === 'number'
+    ? safetyPanelData.agentsRunning
+    : 0;
   
   const { submissions, progressHistory, codeProposals, loading } = useAgentAdminData(!!isAdmin);
   const [submissionsState, setSubmissionsState] = useState<any[]>([]);
