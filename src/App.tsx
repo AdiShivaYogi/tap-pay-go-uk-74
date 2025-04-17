@@ -1,4 +1,3 @@
-
 import { Route, Routes } from "react-router-dom";
 import Index from "./pages/Index";
 import About from "./pages/About";
@@ -27,7 +26,8 @@ import UserProfile from "./pages/UserProfile";
 import BillingSettings from "./pages/BillingSettings";
 import NotificationSettings from "./pages/NotificationSettings";
 import Agents from "./pages/Agents";
-import AgentAdmin from "./pages/AgentAdmin"; // Added import for AgentAdmin
+import AgentAdmin from "./pages/AgentAdmin";
+import AgentMonitoring from "./pages/AgentMonitoring";
 
 function App() {
   return (
@@ -58,7 +58,8 @@ function App() {
       <Route path="/status" element={<Status />} />
       <Route path="/connect-stripe" element={<ConnectStripe />} />
       <Route path="/agents" element={<Agents />} />
-      <Route path="/agent-admin" element={<AgentAdmin />} /> {/* Added route for AgentAdmin */}
+      <Route path="/agent-admin" element={<AgentAdmin />} />
+      <Route path="/agent-monitoring" element={<AgentMonitoring />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
