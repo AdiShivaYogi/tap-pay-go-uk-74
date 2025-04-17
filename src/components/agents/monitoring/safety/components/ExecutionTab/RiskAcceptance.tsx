@@ -1,7 +1,7 @@
 
 import React from "react";
 import { StyledCard, StyledCardHeader, StyledCardTitle, StyledCardContent } from "@/components/ui/cards";
-import { AlertTriangle, Check, Zap } from "lucide-react";
+import { AlertTriangle, Check, Zap, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { RiskLevel } from "../../types";
@@ -26,10 +26,18 @@ export const RiskAcceptance: React.FC<RiskAcceptanceProps> = ({
         </StyledCardTitle>
       </StyledCardHeader>
       <StyledCardContent>
-        <p className="text-sm mb-4">
-          Pentru a activa operațiuni autonome complete, trebuie să acceptați explicit 
-          anumite niveluri de risc:
+        <p className="text-sm mb-2">
+          Pentru a activa operațiuni autonome complete, acceptați riscurile și porniți execuția:
         </p>
+        
+        <div className="mb-3 p-2 rounded-md bg-amber-50 border border-amber-100">
+          <p className="text-xs text-amber-700 font-medium">
+            <ArrowRight className="h-3 w-3 inline mr-1" /> Autonomia deplină necesită acceptarea riscurilor ridicate
+          </p>
+          <p className="text-xs text-amber-700">
+            Agenții vor evolua independent colectând date în timpul rulării
+          </p>
+        </div>
         
         <div className="space-y-2">
           <div className="flex items-center justify-between p-2 rounded-md bg-green-50 border border-green-100">
@@ -72,7 +80,7 @@ export const RiskAcceptance: React.FC<RiskAcceptanceProps> = ({
           onClick={startAutonomousExecution}
         >
           <Zap className={`h-4 w-4 ${acceptedRisks.includes("ridicat") ? "text-white" : ""}`} />
-          Pornire Execuție Autonomă
+          Pornire Imediată - Agenți Autonomi
         </Button>
       </StyledCardContent>
     </StyledCard>

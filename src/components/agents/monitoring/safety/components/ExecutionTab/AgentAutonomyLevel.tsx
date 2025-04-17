@@ -1,7 +1,6 @@
 
 import React from "react";
 import { StyledCard, StyledCardHeader, StyledCardTitle, StyledCardContent } from "@/components/ui/cards";
-import { Brain } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 
 interface AgentAutonomyLevelProps {
@@ -17,37 +16,44 @@ export const AgentAutonomyLevel: React.FC<AgentAutonomyLevelProps> = ({
   getAutonomyDescription,
   handleAutonomyChange
 }) => {
+  const getColor = () => {
+    if (autonomyLevel < 33) return "bg-emerald-100";
+    if (autonomyLevel < 66) return "bg-amber-100";
+    return "bg-red-100";
+  };
+
   return (
     <StyledCard>
       <StyledCardHeader>
-        <StyledCardTitle className="text-base flex items-center gap-2">
-          <Brain className="h-4 w-4" />
-          Nivel Autonomie Agent
-        </StyledCardTitle>
+        <StyledCardTitle className="text-base">Nivel de Autonomie</StyledCardTitle>
       </StyledCardHeader>
       <StyledCardContent>
-        <div className="space-y-4">
-          <div className="flex justify-between">
-            <span className="text-sm font-medium">{autonomyLevel}%</span>
-            <span className="text-sm text-muted-foreground">{safetyOverride ? "Limită maximă: 100%" : "Limită maximă: 70%"}</span>
+        <div className="mb-6">
+          <div className="flex justify-between items-center mb-2">
+            <div className="text-sm font-medium">
+              Nivel: {autonomyLevel}%
+            </div>
+            <div className={`text-xs px-2 py-0.5 rounded-full ${getColor()}`}>
+              {autonomyLevel < 33 ? "Scăzut" : autonomyLevel < 66 ? "Mediu" : "Ridicat"}
+            </div>
           </div>
-          
+
           <Slider
             value={[autonomyLevel]}
             max={100}
-            step={1}
+            step={5}
             onValueChange={handleAutonomyChange}
-            className={autonomyLevel > 70 ? "accent-amber-500" : ""}
+            disabled={!safetyOverride && autonomyLevel > 70}
+            className="mt-2"
           />
+
+          <div className="mt-4 text-sm text-muted-foreground">
+            <span className="font-medium">Mod operațional:</span> {getAutonomyDescription()}
+          </div>
           
-          <p className="text-sm text-muted-foreground">{getAutonomyDescription()}</p>
-          
-          <div className="grid grid-cols-5 gap-1 mt-2">
-            <div className="h-1.5 rounded bg-green-500"></div>
-            <div className="h-1.5 rounded bg-green-400"></div>
-            <div className="h-1.5 rounded bg-amber-400"></div>
-            <div className="h-1.5 rounded bg-amber-500"></div>
-            <div className="h-1.5 rounded bg-red-500"></div>
+          <div className="mt-2 text-xs p-2 rounded bg-slate-50 border">
+            Nivelul de autonomie coordonează gradul de libertate și independență în acțiunile agenților. 
+            La niveluri ridicate (peste 70%), agenții pot opera independent și pot evolua fără intervenție umană.
           </div>
         </div>
       </StyledCardContent>

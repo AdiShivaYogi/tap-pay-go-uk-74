@@ -9,6 +9,7 @@ export const useSafetyPanel = () => {
   const [safetyOverride, setSafetyOverride] = useState(true);
   const [acceptedRisks, setAcceptedRisks] = useState<RiskLevel[]>(["mediu"]);
   const [showAutonomyAlert, setShowAutonomyAlert] = useState(true);
+  const [agentsRunning, setAgentsRunning] = useState(false);
   
   const [systemsActive, setSystemsActive] = useState({
     riskEvaluation: true,
@@ -96,6 +97,7 @@ export const useSafetyPanel = () => {
 
   const handleEmergencyStop = () => {
     setAutonomyLevel(0);
+    setAgentsRunning(false);
     setSystemsActive({
       riskEvaluation: true,
       ethicalBoundaries: true,
@@ -176,9 +178,38 @@ export const useSafetyPanel = () => {
       return;
     }
 
+    // Activăm agenții cu setări speciale pentru evoluție autonomă
+    setAgentsRunning(true);
+    setAutonomyLevel(85);
+    setSystemsActive(prev => ({
+      ...prev,
+      riskEvaluation: true,
+      humanSupervision: false,
+      autonomyLimits: false,
+      dataSources: true,
+      realTimeMonitoring: true,
+      adaptiveSafety: true
+    }));
+    
+    // Activăm conexiunile necesare
+    setDataConnections({
+      agentSystem: true,
+      monitoringPlatform: true,
+      analyticsEngine: true,
+      safetyFramework: true
+    });
+    
+    // Actualizăm parametrii de monitorizare
+    setMonitoringParameters({
+      autonomyLevels: true,
+      resourceUsage: true,
+      decisionQuality: true,
+      learningProgress: true
+    });
+
     toast({
       title: "Execuție autonomă activată",
-      description: "Agenții au fost lansați în modul autonom conform parametrilor configurați.",
+      description: "Agenții au fost lansați în modul autonom și vor începe să colecteze date în timp real pentru evoluție.",
     });
   };
 
@@ -191,6 +222,7 @@ export const useSafetyPanel = () => {
     monitoringParameters,
     implementationProgress,
     showAutonomyAlert,
+    agentsRunning,
     setShowAutonomyAlert,
     handleToggleSystem,
     getSystemName,
