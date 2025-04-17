@@ -1,10 +1,11 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { StyledCard, StyledCardHeader, StyledCardTitle, StyledCardContent } from "@/components/ui/cards";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { 
   CircleSlash, Shield, Lock, Eye, Brain, 
-  Activity, PlayCircle, PauseCircle, StopCircle 
+  Activity, PlayCircle, PauseCircle, StopCircle,
+  AlertTriangle, Check, Rocket, Zap
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -16,14 +17,15 @@ import { useToast } from "@/hooks/use-toast";
 
 export const SafetyInfrastructurePanel: React.FC = () => {
   const { toast } = useToast();
-  const [autonomyLevel, setAutonomyLevel] = React.useState(30);
-  const [safetyOverride, setSafetyOverride] = React.useState(false);
+  const [autonomyLevel, setAutonomyLevel] = React.useState(65); // Crescut nivelul inițial
+  const [safetyOverride, setSafetyOverride] = React.useState(true); // Activat implicit
+  const [acceptedRisks, setAcceptedRisks] = useState<string[]>(["mediu"]);
   const [systemsActive, setSystemsActive] = React.useState({
     riskEvaluation: true,
     ethicalBoundaries: true,
     auditLogs: true,
-    humanSupervision: true,
-    autonomyLimits: true,
+    humanSupervision: false, // Dezactivat implicit
+    autonomyLimits: false,   // Dezactivat implicit
     emergencyStop: true,
   });
 
@@ -86,6 +88,38 @@ export const SafetyInfrastructurePanel: React.FC = () => {
     }
   };
 
+  const toggleRiskAcceptance = (risk: string) => {
+    if (acceptedRisks.includes(risk)) {
+      setAcceptedRisks(prev => prev.filter(r => r !== risk));
+    } else {
+      setAcceptedRisks(prev => [...prev, risk]);
+      
+      if (risk === "ridicat") {
+        toast({
+          title: "Risc ridicat acceptat",
+          description: "Ați acceptat riscuri ridicate. Agenții vor putea opera cu autonomie maximă.",
+          variant: "warning"
+        });
+      }
+    }
+  };
+
+  const startAutonomousExecution = () => {
+    if (!acceptedRisks.includes("ridicat")) {
+      toast({
+        title: "Risc ridicat neacceptat",
+        description: "Pentru execuție complet autonomă trebuie să acceptați riscurile ridicate.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    toast({
+      title: "Execuție autonomă activată",
+      description: "Agenții au fost lansați în modul autonom conform parametrilor configurați.",
+    });
+  };
+
   const autoExecSystems = [
     { id: "planning", name: "Planificare Autonomă", status: "activ", healthScore: 94 },
     { id: "execution", name: "Execuție Sarcini", status: "activ", healthScore: 88 },
@@ -104,21 +138,207 @@ export const SafetyInfrastructurePanel: React.FC = () => {
       </StyledCardHeader>
       
       <StyledCardContent>
-        <Tabs defaultValue="safety" className="space-y-4">
+        {/* Banner de prioritate */}
+        <Alert variant="warning" className="border-amber-500 bg-amber-100 mb-4">
+          <AlertTitle className="flex items-center gap-2 text-amber-800">
+            <Rocket className="h-5 w-5" />
+            Prioritate #1: Pornire Agenți Autonomi
+          </AlertTitle>
+          <AlertDescription className="text-amber-700">
+            Pentru a accelera dezvoltarea, s-a decis acceptarea unor riscuri inițiale și lansarea agenților 
+            în mod autonom. Configurați parametrii de risc acceptați mai jos.
+          </AlertDescription>
+        </Alert>
+        
+        <Tabs defaultValue="execution" className="space-y-4">
           <TabsList>
+            <TabsTrigger value="execution" className="flex items-center gap-1">
+              <Rocket className="h-4 w-4" />
+              Execuție Autonomă
+            </TabsTrigger>
             <TabsTrigger value="safety" className="flex items-center gap-1">
               <Lock className="h-4 w-4" />
               Mecanisme de Siguranță
-            </TabsTrigger>
-            <TabsTrigger value="execution" className="flex items-center gap-1">
-              <PlayCircle className="h-4 w-4" />
-              Execuție Autonomă
             </TabsTrigger>
             <TabsTrigger value="monitoring" className="flex items-center gap-1">
               <Eye className="h-4 w-4" />
               Monitorizare Autonomie
             </TabsTrigger>
           </TabsList>
+          
+          <TabsContent value="execution" className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <StyledCard className="border-amber-200">
+                <StyledCardHeader>
+                  <StyledCardTitle className="text-base flex items-center gap-2">
+                    <AlertTriangle className="h-4 w-4 text-amber-500" />
+                    Acceptare Riscuri
+                  </StyledCardTitle>
+                </StyledCardHeader>
+                <StyledCardContent>
+                  <p className="text-sm mb-4">
+                    Pentru a activa operațiuni autonome complete, trebuie să acceptați explicit 
+                    anumite niveluri de risc:
+                  </p>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between p-2 rounded-md bg-green-50 border border-green-100">
+                      <div className="flex items-center gap-2">
+                        <Check size={16} className="text-green-600" />
+                        <span>Risc scăzut</span>
+                      </div>
+                      <Switch 
+                        checked={acceptedRisks.includes("scazut")} 
+                        onCheckedChange={() => toggleRiskAcceptance("scazut")}
+                      />
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-2 rounded-md bg-amber-50 border border-amber-100">
+                      <div className="flex items-center gap-2">
+                        <AlertTriangle size={16} className="text-amber-600" />
+                        <span>Risc mediu</span>
+                      </div>
+                      <Switch 
+                        checked={acceptedRisks.includes("mediu")} 
+                        onCheckedChange={() => toggleRiskAcceptance("mediu")}
+                      />
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-2 rounded-md bg-red-50 border border-red-100">
+                      <div className="flex items-center gap-2">
+                        <AlertTriangle size={16} className="text-red-600" />
+                        <span>Risc ridicat</span>
+                      </div>
+                      <Switch 
+                        checked={acceptedRisks.includes("ridicat")} 
+                        onCheckedChange={() => toggleRiskAcceptance("ridicat")}
+                      />
+                    </div>
+                  </div>
+                  
+                  <Button 
+                    variant={acceptedRisks.includes("ridicat") ? "default" : "outline"}
+                    className={`w-full mt-4 gap-2 ${acceptedRisks.includes("ridicat") ? "bg-amber-500 hover:bg-amber-600" : ""}`}
+                    onClick={startAutonomousExecution}
+                  >
+                    <Zap className={`h-4 w-4 ${acceptedRisks.includes("ridicat") ? "text-white" : ""}`} />
+                    Pornire Execuție Autonomă
+                  </Button>
+                </StyledCardContent>
+              </StyledCard>
+              
+              <StyledCard>
+                <StyledCardHeader>
+                  <StyledCardTitle className="text-base flex items-center gap-2">
+                    <Brain className="h-4 w-4" />
+                    Nivel Autonomie Agent
+                  </StyledCardTitle>
+                </StyledCardHeader>
+                <StyledCardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium">{autonomyLevel}%</span>
+                      <span className="text-sm text-muted-foreground">{safetyOverride ? "Limită maximă: 100%" : "Limită maximă: 70%"}</span>
+                    </div>
+                    
+                    <Slider
+                      value={[autonomyLevel]}
+                      max={100}
+                      step={1}
+                      onValueChange={handleAutonomyChange}
+                      className={autonomyLevel > 70 ? "accent-amber-500" : ""}
+                    />
+                    
+                    <p className="text-sm text-muted-foreground">{getAutonomyDescription()}</p>
+                    
+                    <div className="grid grid-cols-5 gap-1 mt-2">
+                      <div className="h-1.5 rounded bg-green-500"></div>
+                      <div className="h-1.5 rounded bg-green-400"></div>
+                      <div className="h-1.5 rounded bg-amber-400"></div>
+                      <div className="h-1.5 rounded bg-amber-500"></div>
+                      <div className="h-1.5 rounded bg-red-500"></div>
+                    </div>
+                  </div>
+                </StyledCardContent>
+              </StyledCard>
+            </div>
+            
+            <StyledCard>
+              <StyledCardHeader>
+                <StyledCardTitle className="text-base flex items-center gap-2">
+                  <Activity className="h-4 w-4" />
+                  Stare Sisteme Auto-Execuție
+                </StyledCardTitle>
+              </StyledCardHeader>
+              <StyledCardContent>
+                <div className="space-y-4">
+                  {autoExecSystems.map(system => (
+                    <div key={system.id} className="flex items-center justify-between">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <div className={`w-2 h-2 rounded-full ${
+                            system.status === "activ" ? "bg-green-500" : "bg-gray-400"
+                          }`}></div>
+                          <span>{system.name}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-muted-foreground">
+                          Sănătate: {system.healthScore}%
+                        </span>
+                        <Progress 
+                          value={system.healthScore} 
+                          className="w-16 h-2" 
+                        />
+                      </div>
+                    </div>
+                  ))}
+                  
+                  <div className="flex justify-between mt-4">
+                    <Button variant="outline" size="sm" className="gap-1">
+                      <PauseCircle className="h-3.5 w-3.5" />
+                      <span>Pauză</span>
+                    </Button>
+                    
+                    <Button variant="outline" size="sm" className="gap-1">
+                      <StopCircle className="h-3.5 w-3.5" />
+                      <span>Stop</span>
+                    </Button>
+                    
+                    <Button variant="default" size="sm" className="gap-1 bg-amber-500 hover:bg-amber-600">
+                      <PlayCircle className="h-3.5 w-3.5" />
+                      <span>Start</span>
+                    </Button>
+                  </div>
+                </div>
+              </StyledCardContent>
+            </StyledCard>
+            
+            <StyledCard>
+              <StyledCardHeader>
+                <StyledCardTitle className="text-base">Politici de Execuție Autonomă</StyledCardTitle>
+              </StyledCardHeader>
+              <StyledCardContent>
+                <div className="space-y-2">
+                  {[
+                    { name: "Verificare de risc pre-execuție", status: "activă" },
+                    { name: "Validare umană pentru acțiuni critice", status: "inactivă" }, // Modificat
+                    { name: "Revenire automată în caz de eroare", status: "activă" },
+                    { name: "Limitare resurse computaționale per agent", status: "activă" },
+                    { name: "Izolare execuție între agenți", status: "activă" }  // Modificat
+                  ].map((policy, idx) => (
+                    <div key={idx} className="flex justify-between items-center p-2 border-b">
+                      <span>{policy.name}</span>
+                      <Badge variant={policy.status === "activă" ? "default" : "outline"}>
+                        {policy.status}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              </StyledCardContent>
+            </StyledCard>
+          </TabsContent>
           
           <TabsContent value="safety" className="space-y-4">
             <Alert variant="destructive" className="border-amber-300 bg-amber-50">
@@ -183,121 +403,6 @@ export const SafetyInfrastructurePanel: React.FC = () => {
                 Oprire de Urgență - Toți Agenții
               </Button>
             </div>
-          </TabsContent>
-          
-          <TabsContent value="execution" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <StyledCard>
-                <StyledCardHeader>
-                  <StyledCardTitle className="text-base flex items-center gap-2">
-                    <Brain className="h-4 w-4" />
-                    Nivel Autonomie Agent
-                  </StyledCardTitle>
-                </StyledCardHeader>
-                <StyledCardContent>
-                  <div className="space-y-4">
-                    <div className="flex justify-between">
-                      <span className="text-sm font-medium">{autonomyLevel}%</span>
-                      <span className="text-sm text-muted-foreground">{safetyOverride ? "Limită maximă: 100%" : "Limită maximă: 70%"}</span>
-                    </div>
-                    
-                    <Slider
-                      value={[autonomyLevel]}
-                      max={100}
-                      step={1}
-                      onValueChange={handleAutonomyChange}
-                      className={autonomyLevel > 70 ? "accent-amber-500" : ""}
-                    />
-                    
-                    <p className="text-sm text-muted-foreground">{getAutonomyDescription()}</p>
-                    
-                    <div className="grid grid-cols-5 gap-1 mt-2">
-                      <div className="h-1.5 rounded bg-green-500"></div>
-                      <div className="h-1.5 rounded bg-green-400"></div>
-                      <div className="h-1.5 rounded bg-amber-400"></div>
-                      <div className="h-1.5 rounded bg-amber-500"></div>
-                      <div className="h-1.5 rounded bg-red-500"></div>
-                    </div>
-                  </div>
-                </StyledCardContent>
-              </StyledCard>
-              
-              <StyledCard>
-                <StyledCardHeader>
-                  <StyledCardTitle className="text-base flex items-center gap-2">
-                    <Activity className="h-4 w-4" />
-                    Stare Sisteme Auto-Execuție
-                  </StyledCardTitle>
-                </StyledCardHeader>
-                <StyledCardContent>
-                  <div className="space-y-4">
-                    {autoExecSystems.map(system => (
-                      <div key={system.id} className="flex items-center justify-between">
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <div className={`w-2 h-2 rounded-full ${
-                              system.status === "activ" ? "bg-green-500" : "bg-gray-400"
-                            }`}></div>
-                            <span>{system.name}</span>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-muted-foreground">
-                            Sănătate: {system.healthScore}%
-                          </span>
-                          <Progress 
-                            value={system.healthScore} 
-                            className="w-16 h-2" 
-                          />
-                        </div>
-                      </div>
-                    ))}
-                    
-                    <div className="flex justify-between mt-4">
-                      <Button variant="outline" size="sm" className="gap-1">
-                        <PauseCircle className="h-3.5 w-3.5" />
-                        <span>Pauză</span>
-                      </Button>
-                      
-                      <Button variant="outline" size="sm" className="gap-1">
-                        <StopCircle className="h-3.5 w-3.5" />
-                        <span>Stop</span>
-                      </Button>
-                      
-                      <Button variant="outline" size="sm" className="gap-1">
-                        <PlayCircle className="h-3.5 w-3.5" />
-                        <span>Start</span>
-                      </Button>
-                    </div>
-                  </div>
-                </StyledCardContent>
-              </StyledCard>
-            </div>
-            
-            <StyledCard>
-              <StyledCardHeader>
-                <StyledCardTitle className="text-base">Politici de Execuție Autonomă</StyledCardTitle>
-              </StyledCardHeader>
-              <StyledCardContent>
-                <div className="space-y-2">
-                  {[
-                    { name: "Verificare de risc pre-execuție", status: "activă" },
-                    { name: "Validare umană pentru acțiuni critice", status: "activă" },
-                    { name: "Revenire automată în caz de eroare", status: "activă" },
-                    { name: "Limitare resurse computaționale per agent", status: "activă" },
-                    { name: "Izolare execuție între agenți", status: "inactivă" }
-                  ].map((policy, idx) => (
-                    <div key={idx} className="flex justify-between items-center p-2 border-b">
-                      <span>{policy.name}</span>
-                      <Badge variant={policy.status === "activă" ? "default" : "outline"}>
-                        {policy.status}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
-              </StyledCardContent>
-            </StyledCard>
           </TabsContent>
           
           <TabsContent value="monitoring" className="space-y-4">
