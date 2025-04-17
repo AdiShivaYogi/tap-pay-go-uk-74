@@ -27,6 +27,10 @@ serve(async (req: Request) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" } 
       });
     }
+    
+    // Validăm categoria pentru a se potrivi cu constrângerea din baza de date
+    const validCategories = ['task', 'proposal', 'conversation', 'monitoring', 'learning', 'autonomy', 'project_task', 'auto_execution', 'other'];
+    const validCategory = validCategories.includes(category) ? category : 'other';
 
     // Creare client Supabase cu cheile preluate din variabile de mediu
     const supabaseClient = createClient(
@@ -41,7 +45,7 @@ serve(async (req: Request) => {
         { 
           agent_id: agentId,
           agent_name: agentName,
-          category,
+          category: validCategory,
           action: action || 'default'
         }
       ])
@@ -58,7 +62,7 @@ serve(async (req: Request) => {
         {
           agent_id: agentId,
           agent_name: agentName,
-          category,
+          category: validCategory,
           description,
           timestamp: new Date().toISOString()
         }

@@ -119,7 +119,6 @@ async function recordAgentLearning(itemId: string, itemType: string, feedback: s
     );
     
     // Folosim tabela agent_activity_logs pentru înregistrarea activităților de învățare
-    // în loc de agent_learning_activities care nu există în schema
     await supabase.from('agent_activity_logs').insert({
       agent_id: 'system',
       agent_name: 'Learning Engine',

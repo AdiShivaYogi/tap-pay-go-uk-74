@@ -8,16 +8,34 @@ import { v4 as uuidv4 } from 'uuid';
  */
 export const logAgentActivity = async (agentId: string, description: string, category: string = "general") => {
   try {
+    // Verificăm și mapăm categoria la una din valorile permise conform constrângerii actualizate
+    let validCategory = category;
+    
+    // Lista categoriilor valide conform constrângerii din baza de date
+    const validCategories = [
+      'task', 'proposal', 'conversation', 'monitoring', 
+      'learning', 'autonomy', 'project_task', 'auto_execution', 'other'
+    ];
+    
+    // Dacă categoria nu este în lista de categorii valide, o setăm pe 'other'
+    if (!validCategories.includes(validCategory)) {
+      console.warn(`Categorie necunoscută "${category}"; se folosește "other" în schimb.`);
+      validCategory = 'other';
+    }
+    
     const { data, error } = await supabase
       .from('agent_activity')
       .insert({
         agent_id: agentId,
         agent_name: getAgentNameById(agentId),
         action: description,
-        category
+        category: validCategory
       });
       
-    if (error) throw error;
+    if (error) {
+      console.error('Eroare la înregistrarea activității agentului:', error);
+      throw error;
+    }
     
     return data;
   } catch (error) {

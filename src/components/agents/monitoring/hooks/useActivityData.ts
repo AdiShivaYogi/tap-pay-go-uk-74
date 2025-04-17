@@ -17,16 +17,16 @@ export const useActivityData = () => {
     try {
       setIsLoading(true);
       
-      // În implementarea reală, aici am face un request la API
-      // Pentru acest exemplu, simulăm un delay și date mock
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
+      // Realizăm cererea către baza de date
       const { data, error } = await supabase
         .from('agent_activity')
         .select('*')
         .order('created_at', { ascending: false });
         
-      if (error) throw error;
+      if (error) {
+        console.error('Eroare la încărcarea activității agenților:', error);
+        throw error;
+      }
       
       // Procesează datele și extrage categoriile
       const { processedActivityData, uniqueCategories } = processActivityData(data || []);
