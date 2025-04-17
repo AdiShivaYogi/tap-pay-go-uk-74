@@ -99,6 +99,9 @@ serve(async (req) => {
 
         console.log(`Propuneri generate și inserate: ${insertedProposals.length}`)
         
+        // Generăm și propuneri de cod pentru diversitate
+        await generateCodeProposals(supabaseClient)
+        
         return new Response(
           JSON.stringify({ 
             success: true, 
@@ -129,25 +132,8 @@ serve(async (req) => {
 
       console.log(`Propuneri generate și inserate: ${insertedProposals.length}`)
       
-      // Generăm și o propunere de cod pentru diversitate
-      const codeProposal = {
-        agent_id: "code-assistant",
-        proposed_files: JSON.stringify(["src/components/agents/AutoAgentProcessor.tsx"]),
-        proposed_code: "import React, { useState, useEffect } from 'react';\n\nexport const AutoAgentProcessor = () => {\n  const [processing, setProcessing] = useState(false);\n\n  useEffect(() => {\n    const interval = setInterval(() => {\n      console.log('Auto-processing agent tasks...');\n    }, 30000);\n    return () => clearInterval(interval);\n  }, []);\n\n  return (\n    <div className=\"hidden\">\n      {/* Component invizibil pentru procesare automată */}\n    </div>\n  );\n};",
-        motivation: "VITAL: Această componentă este necesară pentru procesarea automată a activităților agenților și asigurarea funcționalității optime a sistemului autonom.",
-        status: "pending"
-      }
-      
-      const { data: codeSubmission, error: codeError } = await supabaseClient
-        .from('code_proposals')
-        .insert(codeProposal)
-        .select()
-      
-      if (codeError) {
-        console.error('Eroare la inserarea propunerii de cod:', codeError)
-      } else {
-        console.log('Propunere de cod inserată în baza de date:', codeSubmission)
-      }
+      // Generăm și propuneri de cod
+      await generateCodeProposals(supabaseClient)
       
       return new Response(
         JSON.stringify({ 
@@ -214,8 +200,8 @@ function generateProposals(taskIds: string[], count: number, vitalCount: number)
       proposed_status: "in_progress",
       proposed_progress: Math.floor(Math.random() * 50) + 10, // 10-60%
       proposed_changes: isVital ? 
-        `VITAL: Propunere critică pentru funcționarea sistemului: ${getRandomProposalText()}` : 
-        `Propunere pentru îmbunătățirea sistemului: ${getRandomProposalText()}`,
+        `VITAL: Propunere critică pentru funcționarea sistemului: ${getRandomProposalText(true)}` : 
+        `Propunere pentru îmbunătățirea sistemului: ${getRandomProposalText(false)}`,
       notes: `Propunere generată automat de ${agentId}`,
       approval_status: "pending"
     }
@@ -226,9 +212,47 @@ function generateProposals(taskIds: string[], count: number, vitalCount: number)
   return proposals
 }
 
+// Generare propuneri de cod
+async function generateCodeProposals(supabase: any) {
+  try {
+    const codeProposals = [
+      {
+        agent_id: "code-assistant",
+        proposed_files: JSON.stringify(["src/components/agents/AutoAgentProcessor.tsx"]),
+        proposed_code: "import React, { useState, useEffect } from 'react';\n\nexport const AutoAgentProcessor = () => {\n  const [processing, setProcessing] = useState(false);\n\n  useEffect(() => {\n    const interval = setInterval(() => {\n      console.log('Auto-processing agent tasks...');\n    }, 30000);\n    return () => clearInterval(interval);\n  }, []);\n\n  return (\n    <div className=\"hidden\">\n      {/* Component invizibil pentru procesare automată */}\n    </div>\n  );\n};",
+        motivation: "VITAL: Această componentă este necesară pentru procesarea automată a activităților agenților și asigurarea funcționalității optime a sistemului autonom.",
+        status: "pending"
+      },
+      {
+        agent_id: "ai-assistant",
+        proposed_files: JSON.stringify(["src/components/agents/AgentStatistics.tsx"]),
+        proposed_code: "import React from 'react';\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Progress } from '@/components/ui/progress';\n\nexport const AgentStatistics = () => {\n  return (\n    <Card>\n      <CardHeader>\n        <CardTitle>Statistici Agent</CardTitle>\n      </CardHeader>\n      <CardContent>\n        <div className=\"space-y-4\">\n          <div>\n            <div className=\"flex justify-between text-xs mb-1\">\n              <span>Eficiență</span>\n              <span>75%</span>\n            </div>\n            <Progress value={75} />\n          </div>\n        </div>\n      </CardContent>\n    </Card>\n  );\n};\n",
+        motivation: "Această componentă adaugă o modalitate de vizualizare a statisticilor pentru agenți.",
+        status: "pending"
+      }
+    ]
+    
+    // Inserăm propunerile de cod în baza de date
+    const { data: insertedCodeProposals, error: insertCodeError } = await supabase
+      .from('code_proposals')
+      .insert(codeProposals)
+    
+    if (insertCodeError) {
+      console.error('Eroare la inserarea propunerilor de cod:', insertCodeError)
+      return false
+    }
+    
+    console.log(`Propuneri de cod inserate: ${codeProposals.length}`)
+    return true
+  } catch (e) {
+    console.error('Eroare la generarea propunerilor de cod:', e)
+    return false
+  }
+}
+
 // Texte aleatorii pentru propuneri
-function getRandomProposalText() {
-  const proposals = [
+function getRandomProposalText(isVital: boolean) {
+  const vitalProposals = [
     "Implementare sistem de verificare a rezultatelor generate de agenți pentru a asigura calitatea și siguranța acestora.",
     "Adăugarea unui mecanism de monitorizare în timp real a activității agenților autonomi.",
     "Crearea unui sistem de feedback automat pentru îmbunătățirea continuă a agenților.",
@@ -239,6 +263,18 @@ function getRandomProposalText() {
     "Crearea unui dashboard unificat pentru monitorizarea și controlul tuturor agenților din ecosistem."
   ]
   
+  const standardProposals = [
+    "Îmbunătățirea interfeței utilizator pentru monitorizarea agenților.",
+    "Adăugarea de noi funcționalități pentru raportarea activității agenților.",
+    "Optimizarea performanței algoritmilor de procesare a datelor.",
+    "Integrarea de noi surse de date pentru antrenarea agenților.",
+    "Actualizarea documentației tehnice pentru dezvoltatori.",
+    "Crearea de noi template-uri pentru rapoartele generate de agenți.",
+    "Implementarea unui sistem de notificări pentru evenimente importante.",
+    "Refactorizarea codului pentru o mai bună mentenabilitate."
+  ]
+  
+  const proposals = isVital ? vitalProposals : standardProposals
   const randomIndex = Math.floor(Math.random() * proposals.length)
   return proposals[randomIndex]
 }
