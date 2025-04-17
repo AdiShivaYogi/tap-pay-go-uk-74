@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { StyledCard, StyledCardContent } from "@/components/ui/cards";
 import { useAgentMonitoring } from "./hooks";
@@ -13,6 +14,12 @@ import { Rocket } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export const AgentActivityMonitor: React.FC = () => {
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
+  const [showTestTools, setShowTestTools] = useState(false);
+  const [showLearning, setShowLearning] = useState(false);
+  const [showAutoLearning, setShowAutoLearning] = useState(true); // Activat implicit
+  const { toast } = useToast();
+  
   const { 
     activityData, 
     activityLogs, 
