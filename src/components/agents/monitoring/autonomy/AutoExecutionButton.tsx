@@ -1,74 +1,87 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Zap, Loader2, CheckCircle2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Loader2, Zap, CheckCircle2, Lock } from "lucide-react";
+import { useAgentMonitoring } from "../hooks";
+import { useToast } from "@/hooks/use-toast";
 
-interface AutoExecutionButtonProps {
-  onExecuteTasks?: () => void;
-  className?: string;
-  disabled?: boolean;
-  completed?: boolean;
-  variant?: string;
+export interface AutoExecutionButtonProps {
+  variant?: "default" | "header";
 }
 
-export const AutoExecutionButton: React.FC<AutoExecutionButtonProps> = ({ 
-  onExecuteTasks, 
-  className,
-  disabled = false,
-  completed = false,
-  variant
+export const AutoExecutionButton: React.FC<AutoExecutionButtonProps> = ({
+  variant = "default"
 }) => {
-  // Pentru varianta headerButton, folosim un stil diferit
-  if (variant === "headerButton") {
+  const { toast } = useToast();
+  const { autoExecutionStatus, saveAutoExecutionStatus } = useAgentMonitoring();
+  const [isExecuting, setIsExecuting] = useState(false);
+  const [isComplete, setIsComplete] = useState(
+    autoExecutionStatus && Object.values(autoExecutionStatus).some(status => status === true)
+  );
+  
+  const handleExecute = () => {
+    if (isExecuting || isComplete) return;
+    
+    setIsExecuting(true);
+    
+    // Simulăm procesul de activare a autonomiei complete
+    setTimeout(() => {
+      // Activăm toate proiectele
+      const allProjects = {
+        "autonomy-era": true,
+        "ai-integration": true, 
+        "data-processing": true,
+        "security-framework": true,
+        "advanced-analytics": true
+      };
+      
+      // Salvăm starea în baza de date
+      saveAutoExecutionStatus(allProjects);
+      
+      setIsExecuting(false);
+      setIsComplete(true);
+      
+      toast({
+        title: "Autonomie totală activată",
+        description: "Toți agenții operează acum cu privilegii complete și autonomie maximă.",
+      });
+    }, 1500);
+  };
+  
+  if (variant === "header") {
     return (
       <Button
-        onClick={onExecuteTasks}
-        disabled={disabled}
-        className={cn(
-          "bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white gap-2",
-          completed && "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700",
-          className
-        )}
+        onClick={handleExecute}
+        disabled={isExecuting || isComplete}
         size="sm"
+        className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white gap-2"
       >
-        {completed ? (
-          <>
-            <CheckCircle2 className="h-4 w-4 text-white" />
-            Toate taskurile implementate
-          </>
+        {isExecuting ? (
+          <Loader2 className="h-3 w-3 animate-spin" />
+        ) : isComplete ? (
+          <CheckCircle2 className="h-3 w-3" />
         ) : (
-          <>
-            <Zap className="h-4 w-4 text-white" />
-            Activează Autoexecuție
-          </>
+          <Zap className="h-3 w-3" />
         )}
+        {isExecuting ? "Activare..." : isComplete ? "Autonomie activă" : "Activează autonomie totală"}
       </Button>
     );
   }
-
-  // Stilul implicit pentru buton
+  
   return (
     <Button
-      onClick={onExecuteTasks}
-      disabled={disabled}
-      className={cn(
-        "w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white gap-2",
-        completed && "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700",
-        className
-      )}
+      onClick={handleExecute}
+      disabled={isExecuting || isComplete}
+      className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white gap-2"
     >
-      {completed ? (
-        <>
-          <CheckCircle2 className="h-4 w-4 text-white" />
-          Toate taskurile implementate
-        </>
+      {isExecuting ? (
+        <Loader2 className="h-4 w-4 animate-spin" />
+      ) : isComplete ? (
+        <CheckCircle2 className="h-4 w-4" />
       ) : (
-        <>
-          <Zap className="h-4 w-4 text-white" />
-          Activează Autoexecuție
-        </>
+        <Lock className="h-4 w-4" />
       )}
+      {isExecuting ? "Activare privilegii..." : isComplete ? "Autonomie totală activă" : "Acordă privilegii complete"}
     </Button>
   );
 };

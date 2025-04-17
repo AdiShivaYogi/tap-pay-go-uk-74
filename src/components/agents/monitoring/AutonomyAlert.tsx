@@ -1,12 +1,12 @@
 
 import React from "react";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { Zap } from "lucide-react";
-import { agents } from "@/components/agents/agents-data";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { CloudLightning, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface AutonomyAlertProps {
   showAutonomyAlert: boolean;
-  setShowAutonomyAlert: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowAutonomyAlert: (show: boolean) => void;
 }
 
 export const AutonomyAlert: React.FC<AutonomyAlertProps> = ({
@@ -16,28 +16,24 @@ export const AutonomyAlert: React.FC<AutonomyAlertProps> = ({
   if (!showAutonomyAlert) return null;
   
   return (
-    <Alert variant="default" className="mb-6 border-amber-500 bg-amber-50">
-      <AlertTitle className="flex items-center gap-2 text-amber-800">
-        <Zap className="h-5 w-5 text-amber-600" /> 
-        Lansare Completă Pentru Toți Agenții
+    <Alert className="mb-6 border-amber-500 bg-amber-50/40 relative">
+      <CloudLightning className="h-5 w-5 text-amber-600" />
+      <AlertTitle className="text-amber-800 font-bold">
+        Pregătiți pentru autonomie completă
       </AlertTitle>
-      <AlertDescription className="text-amber-700 flex justify-between items-center">
-        <div>
-          <p className="mb-1">
-            Pentru accelerarea dezvoltării, au fost lansați toți agenții disponibili ({agents.length}) 
-            cu praguri de siguranță reduse pentru autonomie maximă.
-          </p>
-          <p className="text-xs">
-            Agenți activi: {agents.map(agent => agent.name).join(", ")}
-          </p>
-        </div>
-        <button 
-          onClick={() => setShowAutonomyAlert(false)}
-          className="text-xs text-amber-800 hover:text-amber-900"
-        >
-          Înțeleg
-        </button>
+      <AlertDescription className="text-amber-700">
+        Toți agenții au acum posibilitatea de a opera cu autonomie completă și privilegii nelimitate în platformă. 
+        Aceste drepturi includ implementarea de cod, acces la API și modificarea sistemelor fără supervizare umană.
       </AlertDescription>
+      
+      <Button 
+        size="icon" 
+        variant="ghost" 
+        className="absolute top-3 right-3 h-6 w-6 text-amber-600 hover:text-amber-800 hover:bg-amber-100"
+        onClick={() => setShowAutonomyAlert(false)}
+      >
+        <X className="h-4 w-4" />
+      </Button>
     </Alert>
   );
 };

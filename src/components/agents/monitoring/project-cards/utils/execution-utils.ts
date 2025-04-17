@@ -1,62 +1,55 @@
 
-import { logAgentActivity } from "../../hooks/utils/activity-processing";
-import { AgentProject, TaskItem } from "../types";
+import { Task } from "../types";
+import { Dispatch, SetStateAction } from "react";
 
-export async function handleTaskExecution(
-  taskIndex: number,
-  tasks: (TaskItem & { inProgress?: boolean })[],
-  setTasks: React.Dispatch<React.SetStateAction<(TaskItem & { inProgress?: boolean })[]>>,
-  setProgress: React.Dispatch<React.SetStateAction<number>>,
-  totalIncompleteTasks: number,
-  currentTaskIndex: number,
-  projectTitle: string,
-  toast: any
-) {
-  const taskName = tasks[taskIndex].name;
+export const handleTaskExecution = async (
+  task: Task,
+  setTasks: Dispatch<SetStateAction<Task[]>>,
+  toast: any,
+  setProgress: (progress: number) => void,
+  progressValue: number
+): Promise<void> => {
+  // Marcăm task-ul ca fiind în progres
+  setTasks(prevTasks =>
+    prevTasks.map(t =>
+      t.id === task.id ? { ...t, inProgress: true } : t
+    )
+  );
   
-  // Actualizăm starea pentru a arăta progresul
-  setTasks(prev => {
-    const newTasks = [...prev];
-    newTasks[taskIndex] = { ...newTasks[taskIndex], inProgress: true };
-    return newTasks;
-  });
+  // Simulăm execuția task-ului
+  await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 1200));
   
-  // Calculăm și actualizăm progresul general
-  const progressPercent = Math.round((currentTaskIndex + 0.5) / totalIncompleteTasks * 100);
-  setProgress(progressPercent);
+  // Marcăm task-ul ca fiind completat
+  setTasks(prevTasks =>
+    prevTasks.map(t =>
+      t.id === task.id ? { ...t, completed: true, inProgress: false } : t
+    )
+  );
   
-  // Completăm taskul după un delay
-  await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 2000));
+  // Actualizăm progresul
+  setProgress(progressValue);
   
-  // Marcăm taskul ca fiind completat
-  setTasks(prev => {
-    const newTasks = [...prev];
-    newTasks[taskIndex] = { ...newTasks[taskIndex], completed: true, inProgress: false };
-    return newTasks;
-  });
-  
-  // Actualizăm progresul din nou după finalizarea taskului
-  const newProgressPercent = Math.round((currentTaskIndex + 1) / totalIncompleteTasks * 100);
-  setProgress(newProgressPercent);
-  
-  // Trimitem notificare
+  // Notificăm utilizatorul
   toast({
-    title: "Task finalizat",
-    description: `"${taskName}" a fost implementat cu succes pentru proiectul "${projectTitle}"`,
+    title: "Task implementat",
+    description: task.description,
     duration: 3000,
   });
-  
-  // Salvăm progresul în baza de date
-  try {
-    await logAgentActivity('system', `Task completat: ${taskName} (Proiect: ${projectTitle})`, 'project_task');
-  } catch (error) {
-    console.error("Eroare la salvarea progresului taskului:", error);
-  }
-}
+};
 
-export function getProjectClass(isAutonomyProject: boolean, executionComplete: boolean) {
-  if (isAutonomyProject || executionComplete) {
-    return "border-green-300 shadow-green-100/50 shadow-md";
+export const getProjectClass = (project: any): string => {
+  if (project.id === "autonomy-era") {
+    return "border-amber-300 shadow-amber-100/50";
   }
-  return "";
-}
+  
+  switch (project.status) {
+    case "completed":
+      return "border-green-300 shadow-green-100/50";
+    case "in-progress":
+      return "border-blue-300 shadow-blue-100/50";
+    case "pending":
+      return "border-orange-300 shadow-orange-100/50";
+    default:
+      return "";
+  }
+};
