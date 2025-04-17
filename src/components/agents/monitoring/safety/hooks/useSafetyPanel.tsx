@@ -1,4 +1,3 @@
-
 import { useToast } from "@/hooks/use-toast";
 import { useAutonomyControls } from "./useAutonomyControls";
 import { useSystemsControls } from "./useSystemsControls";
@@ -6,11 +5,11 @@ import { useImplementationProgress } from "./useImplementationProgress";
 import { useDataConnections } from "./useDataConnections";
 import { useExecutionControls } from "./useExecutionControls";
 import { useAutoLaunch } from "./useAutoLaunch";
+import { agents } from "@/components/agents/agents-data";
 
 export const useSafetyPanel = () => {
   const { toast } = useToast();
   
-  // Import hooks for different functionalities
   const { 
     autonomyLevel, 
     setAutonomyLevel,
@@ -59,7 +58,6 @@ export const useSafetyPanel = () => {
     setAutonomyLevel
   });
 
-  // Wrapper pentru handleEmergencyStop pentru a include restul funcționalităților
   const handleEmergencyStop = () => {
     baseHandleEmergencyStop();
     setSystemsActive({
@@ -76,7 +74,6 @@ export const useSafetyPanel = () => {
     });
   };
 
-  // Integrare cu hook-ul de auto lansare
   const { 
     autoLaunchPending, 
     timeToAutoLaunch,
@@ -88,46 +85,84 @@ export const useSafetyPanel = () => {
     startAutonomousExecution
   );
 
+  const startAutonomousExecution = () => {
+    setAgentsRunning(true);
+    setAutonomyLevel(100);
+    setSystemsActive({
+      riskEvaluation: true,
+      humanSupervision: false,
+      autonomyLimits: false,
+      dataSources: true,
+      realTimeMonitoring: true,
+      adaptiveSafety: true,
+      riskAlgorithm: true,
+      auditLogs: true,
+      ethicalBoundaries: true,
+      emergencyStop: true
+    });
+
+    setDataConnections({
+      agentSystem: true,
+      monitoringPlatform: true,
+      analyticsEngine: true,
+      safetyFramework: true,
+      dataLake: true,
+      externalAPIs: true,
+      modelTraining: true
+    });
+
+    setMonitoringParameters({
+      autonomyLevels: true,
+      resourceUsage: true,
+      decisionQuality: true,
+      learningProgress: true,
+      adaptationRate: true,
+      errorCorrection: true,
+      selfImprovement: true
+    });
+
+    setAcceptedRisks(["scazut", "mediu", "ridicat"]);
+    setSafetyOverride(true);
+
+    const agentNames = agents.map(agent => agent.name).join(", ");
+    
+    toast({
+      title: "Lansare Completă a Tuturor Agenților",
+      description: `${agentNames} sunt acum complet autonomi și operaționali.`,
+      duration: 6000,
+    });
+  };
+
   return {
-    // State și funcții pentru nivelul de autonomie
     autonomyLevel,
     safetyOverride,
     acceptedRisks,
     agentsRunning,
     
-    // State și funcții pentru sistemele active
     systemsActive,
     
-    // State și funcții pentru conexiunile de date
     dataConnections,
     monitoringParameters,
     
-    // State pentru progresul implementării
     implementationProgress,
     
-    // State pentru alerte și auto-lansare
     showAutonomyAlert,
     autoLaunchPending,
     timeToAutoLaunch,
     
-    // Setteri
     setShowAutonomyAlert,
     
-    // Funcții pentru sisteme
     handleToggleSystem,
     getSystemName,
     
-    // Funcții pentru autonomie
     getAutonomyDescription,
     handleEmergencyStop,
     handleAutonomyChange,
     toggleRiskAcceptance,
     
-    // Funcții pentru conexiuni de date
     toggleDataConnection,
     toggleMonitoringParameter,
     
-    // Funcții pentru execuție și lansare
     startAutonomousExecution,
     setSafetyOverride,
     acceptAllRisks,
