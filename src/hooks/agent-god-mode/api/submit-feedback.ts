@@ -16,7 +16,7 @@ export const submitFeedbackAPI = async (params: SubmitFeedbackParams): Promise<{
       const { error } = await supabase
         .from('agent_task_submissions')
         .update({
-          status: approve ? 'approved' : 'feedback',
+          approval_status: approve ? 'approved' : 'feedback',
           feedback: feedback,
           feedback_by: userId,
           updated_at: new Date().toISOString(),

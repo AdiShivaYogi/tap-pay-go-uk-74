@@ -15,9 +15,9 @@ interface FeedbackFormProps {
   isGeneratingFeedback: boolean;
   isProcessing: boolean;
   isGodModeEnabled: boolean;
-  preferredModel: "deepseek" | "claude";
+  preferredModel: "deepseek" | "claude" | "anthropic";
   onFeedbackChange: (feedback: string) => void;
-  onModelChange: (model: "deepseek" | "claude") => void;
+  onModelChange: (model: "deepseek" | "claude" | "anthropic") => void;
   onSubmit: () => Promise<void>;
   onCancel: () => void;
 }

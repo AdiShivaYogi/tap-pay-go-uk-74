@@ -12,12 +12,12 @@ interface FeedbackFormProps {
   currentSubmission: FeedbackItem | null;
   currentProposal: FeedbackItem | null;
   feedback: string;
-  preferredModel: "deepseek" | "claude";
+  preferredModel: "deepseek" | "claude" | "anthropic";
   isGeneratingFeedback: boolean;
   isProcessing: boolean;
   isGodModeEnabled: boolean;
   onFeedbackChange: (feedback: string) => void;
-  onModelChange: (model: "deepseek" | "claude") => void;
+  onModelChange: (model: "deepseek" | "claude" | "anthropic") => void;
   onSubmit: () => Promise<void>;
   onCancel: () => void;
 }
