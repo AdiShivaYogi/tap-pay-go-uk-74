@@ -3,13 +3,21 @@ import React from "react";
 import { Crown } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
+import { AutoExecutionConfig } from "@/hooks/agent-god-mode/types";
 
 interface GodModeToggleProps {
   isGodModeEnabled: boolean;
   toggleGodMode: () => void;
+  autoExecutionConfig?: AutoExecutionConfig;
+  updateAutoExecutionConfig?: (updates: Partial<AutoExecutionConfig>) => Promise<void>;
 }
 
-export const GodModeToggle = ({ isGodModeEnabled, toggleGodMode }: GodModeToggleProps) => {
+export const GodModeToggle = ({ 
+  isGodModeEnabled, 
+  toggleGodMode,
+  autoExecutionConfig,
+  updateAutoExecutionConfig 
+}: GodModeToggleProps) => {
   return (
     <div className="flex items-center justify-between mb-4">
       <div>

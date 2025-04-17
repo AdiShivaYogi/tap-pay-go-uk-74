@@ -3,13 +3,22 @@ import React from "react";
 import { Crown } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
+import { AutoExecutionConfig } from "@/hooks/agent-god-mode/types";
+import { AdvancedConfigDialog } from "./AdvancedConfigDialog";
 
 interface GodModeToggleProps {
   isGodModeEnabled: boolean;
   toggleGodMode: () => void;
+  autoExecutionConfig?: AutoExecutionConfig;
+  updateAutoExecutionConfig?: (updates: Partial<AutoExecutionConfig>) => Promise<void>;
 }
 
-export const GodModeToggle = ({ isGodModeEnabled, toggleGodMode }: GodModeToggleProps) => {
+export const GodModeToggle = ({ 
+  isGodModeEnabled, 
+  toggleGodMode,
+  autoExecutionConfig,
+  updateAutoExecutionConfig
+}: GodModeToggleProps) => {
   return (
     <div className="flex items-center justify-between mb-4">
       <div>
@@ -21,6 +30,14 @@ export const GodModeToggle = ({ isGodModeEnabled, toggleGodMode }: GodModeToggle
           >
             {isGodModeEnabled ? "Activ" : "Inactiv"}
           </Badge>
+          
+          {/* Advanced config button - only show if both props are provided */}
+          {autoExecutionConfig && updateAutoExecutionConfig && (
+            <AdvancedConfigDialog 
+              config={autoExecutionConfig} 
+              updateConfig={updateAutoExecutionConfig} 
+            />
+          )}
         </div>
         <p className="text-sm text-muted-foreground mt-1">
           {isGodModeEnabled 
