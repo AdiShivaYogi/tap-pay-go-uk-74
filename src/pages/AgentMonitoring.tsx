@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/layout";
 import { Section } from "@/components/ui/layout/section";
 import { PageHeader } from "@/components/ui/layout/page-header";
-import { Activity, BarChart3, Bot, ChartPie, Shield, Rocket, Sparkles, Zap } from "lucide-react";
+import { Activity, BarChart3, Bot, ChartPie, Shield, Rocket, Sparkles, Zap, Brain } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useUserRole } from "@/hooks/use-user-role";
 import { AccessRestrictionAlert } from "@/features/roadmap/components/AccessRestrictionAlert";
@@ -15,12 +15,15 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { agents } from "@/components/agents/agents-data";
+import { AgentAutonomyOverview } from "@/components/agents/monitoring/autonomy/AgentAutonomyOverview";
+import { useSafetyPanel } from "@/components/agents/monitoring/safety/hooks/useSafetyPanel";
 
 const AgentMonitoring = () => {
   const { user } = useAuth();
   const { isAdmin } = useUserRole();
   const { toast } = useToast();
   const [showAutonomyAlert, setShowAutonomyAlert] = useState(true);
+  const { autonomyLevel, agentsRunning } = useSafetyPanel();
   
   // Afișează toast la încărcarea paginii pentru a evidenția prioritatea lansării tuturor agenților
   useEffect(() => {
@@ -66,7 +69,7 @@ const AgentMonitoring = () => {
           />
           <Badge className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white text-sm py-1.5 px-3 flex items-center gap-1.5">
             <Sparkles className="h-4 w-4" />
-            Toți Agenții Activați
+            {agentsRunning ? "Toți Agenții Activi" : "Agenți în Standby"}
           </Badge>
         </div>
 
@@ -96,24 +99,46 @@ const AgentMonitoring = () => {
           </Alert>
         )}
 
-        <Tabs defaultValue="safety" className="space-y-6">
+        {/* Adăugăm Secțiunea de Prezentare a Autonomiei */}
+        <AgentAutonomyOverview autonomyLevel={autonomyLevel} agentsRunning={agentsRunning} />
+
+        <Tabs defaultValue="autonomy" className="space-y-6 mt-6">
           <TabsList className="mb-4">
+            <TabsTrigger value="autonomy" className="flex items-center gap-1">
+              <Brain className="h-4 w-4" />
+              Autonomie & Execuție
+            </TabsTrigger>
             <TabsTrigger value="safety" className="flex items-center gap-1">
               <Shield className="h-4 w-4" />
               Infrastructură de siguranță
-            </TabsTrigger>
-            <TabsTrigger value="projects" className="flex items-center gap-1">
-              <BarChart3 className="h-4 w-4" />
-              Proiecte agenți
             </TabsTrigger>
             <TabsTrigger value="activity" className="flex items-center gap-1">
               <ChartPie className="h-4 w-4" />
               Activitate în timp real
             </TabsTrigger>
+            <TabsTrigger value="projects" className="flex items-center gap-1">
+              <BarChart3 className="h-4 w-4" />
+              Proiecte agenți
+            </TabsTrigger>
           </TabsList>
           
-          <TabsContent value="safety">
+          <TabsContent value="autonomy">
             <SafetyInfrastructurePanel />
+          </TabsContent>
+          
+          <TabsContent value="safety">
+            <div className="mb-4">
+              <h2 className="text-xl font-medium mb-2">Sistemul de siguranță pentru agenții autonomi</h2>
+              <p className="text-muted-foreground">
+                Monitorizați și gestionați infrastructura de siguranță pentru agenții autonomi,
+                incluzând sisteme de siguranță active, mecanisme de monitorizare și sisteme de control.
+              </p>
+            </div>
+            <SafetyInfrastructurePanel />
+          </TabsContent>
+          
+          <TabsContent value="activity">
+            <AgentActivityMonitor />
           </TabsContent>
           
           <TabsContent value="projects">
@@ -125,10 +150,6 @@ const AgentMonitoring = () => {
               </p>
             </div>
             <AgentProjectCards />
-          </TabsContent>
-          
-          <TabsContent value="activity">
-            <AgentActivityMonitor />
           </TabsContent>
         </Tabs>
       </Section>
