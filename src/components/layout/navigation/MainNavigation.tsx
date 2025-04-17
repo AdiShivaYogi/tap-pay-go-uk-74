@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { LogIn, CreditCard, BrainCircuit } from "lucide-react";
 import { useUserRole } from "@/hooks/use-user-role";
 import { useLocation } from "react-router-dom";
+import { NavigationItem } from "@/config/navigation";
 
 interface MainNavigationProps {
   currentPath: string;
@@ -18,7 +19,7 @@ export function MainNavigation({ currentPath, isVisible, user }: MainNavigationP
   const { pathname } = useLocation();
   
   // Adăugăm link-uri rapide către paginile de agenți
-  const agentLinks = [
+  const agentLinks: NavigationItem[] = [
     {
       title: "Agenți",
       href: "/agents",

@@ -22,7 +22,7 @@ export interface NavigationItem {
   icon?: ComponentType<SVGProps<SVGSVGElement>>;
   admin?: boolean;
   highlight?: boolean;
-  newUser?: boolean; // Flag pentru a marca elementele destinate noilor utilizatori
+  newUser?: boolean; // Adding this property to fix the errors
 }
 
 // Pentru compatibilitate cu codul existent până când toate fișierele sunt actualizate

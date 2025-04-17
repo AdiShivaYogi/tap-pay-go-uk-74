@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { config } from "@/config/navigation";
 import { Link } from "react-router-dom";
 import { useUserRole } from "@/hooks/use-user-role";
+import { NavigationItem } from "@/config/navigation";
 
 interface MobileMenuProps {
   currentPath: string;
@@ -29,7 +30,7 @@ export function MobileMenu({ currentPath, isVisible, user }: MobileMenuProps) {
   };
   
   // Adăugăm link-uri rapide către paginile de agenți
-  const agentLinks = [
+  const agentLinks: NavigationItem[] = [
     {
       title: "Agenți",
       href: "/agents",
