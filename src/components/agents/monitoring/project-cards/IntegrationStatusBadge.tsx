@@ -3,9 +3,9 @@ import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { Database, Cpu, Activity, Server, Shield } from "lucide-react";
+import { Database, Cpu, Activity, Server, Shield, Sparkles } from "lucide-react";
 
-export type IntegrationType = "dataSources" | "riskEvaluation" | "monitoring" | "logging" | "adaptiveSafety";
+export type IntegrationType = "dataSources" | "riskEvaluation" | "monitoring" | "logging" | "adaptiveSafety" | "autonomy";
 
 interface IntegrationTypeConfig {
   label: string;
@@ -43,6 +43,12 @@ const integrationTypeConfig: Record<IntegrationType, IntegrationTypeConfig> = {
     label: "Adapt",
     icon: Cpu,
     activeColor: "bg-rose-500 hover:bg-rose-600",
+    inactiveColor: "bg-slate-400 hover:bg-slate-500"
+  },
+  autonomy: {
+    label: "Autonom",
+    icon: Sparkles,
+    activeColor: "bg-amber-500 hover:bg-amber-600",
     inactiveColor: "bg-slate-400 hover:bg-slate-500"
   }
 };
