@@ -5,12 +5,12 @@ import { Sparkles, Zap, Brain, Network } from 'lucide-react';
 import { AutonomyFeatureCard } from './AutonomyFeatureCard';
 import { AgentNetworkGraph } from '@/components/3d-visualizations/AgentNetworkGraph';
 import { AutoExecutionButton } from './AutoExecutionButton';
-import { AutonomyCard, useAutonomyTasks } from './AutonomyCard';
+import { AutonomyCard, AutonomyTasksContext } from './AutonomyCard';
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 export const AutonomyVisualization: React.FC = () => {
   const [showAlert, setShowAlert] = React.useState(false);
-  const autonomyTasksContext = React.useContext(AutonomyCard['context']);
+  const autonomyTasksContext = React.useContext(AutonomyTasksContext);
   
   // Show alert when all tasks are completed
   React.useEffect(() => {

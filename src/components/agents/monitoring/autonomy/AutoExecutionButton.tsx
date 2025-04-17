@@ -10,12 +10,14 @@ interface AutoExecutionButtonProps {
   variant?: 'default' | 'headerButton';
   className?: string;
   onExecuteTasks?: () => void;
+  disabled?: boolean;
 }
 
 export const AutoExecutionButton: React.FC<AutoExecutionButtonProps> = ({ 
   variant = 'default',
   className,
-  onExecuteTasks
+  onExecuteTasks,
+  disabled = false
 }) => {
   const [isExecuting, setIsExecuting] = React.useState(false);
   const { toast } = useToast();
@@ -78,7 +80,7 @@ export const AutoExecutionButton: React.FC<AutoExecutionButtonProps> = ({
     return (
       <Button
         onClick={handleAutoExecution}
-        disabled={isExecuting || agentsRunning}
+        disabled={isExecuting || agentsRunning || disabled}
         className={cn(
           "bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white", 
           agentsRunning && "opacity-50 cursor-not-allowed",
@@ -98,7 +100,7 @@ export const AutoExecutionButton: React.FC<AutoExecutionButtonProps> = ({
   return (
     <Button
       onClick={handleAutoExecution}
-      disabled={isExecuting || agentsRunning}
+      disabled={isExecuting || agentsRunning || disabled}
       className={cn(
         "w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white gap-2",
         agentsRunning && "opacity-50 cursor-not-allowed",
