@@ -118,13 +118,13 @@ async function recordAgentLearning(itemId: string, itemType: string, feedback: s
       100
     );
     
-    await supabase.from('agent_learning_activities').insert({
-      source_id: itemId,
-      source_type: sourceType,
-      learning_summary: learningSummary,
-      complexity_score: complexityScore,
-      knowledge_units: Math.round(feedback.length / 15),
-      created_at: new Date().toISOString()
+    // Folosim tabela agent_activity_logs pentru înregistrarea activităților de învățare
+    // în loc de agent_learning_activities care nu există în schema
+    await supabase.from('agent_activity_logs').insert({
+      agent_id: 'system',
+      agent_name: 'Learning Engine',
+      category: 'learning',
+      description: `${sourceType} - ${learningSummary} (Complexitate: ${complexityScore}%)`
     });
     
   } catch (error) {
