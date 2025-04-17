@@ -31,8 +31,8 @@ export const SafetyInfrastructurePanel: React.FC = () => {
     setSystemsActive(prev => ({ ...prev, [system]: !prev[system] }));
     
     toast({
-      title: prev => prev[system] ? "Sistem dezactivat" : "Sistem activat",
-      description: `Sistemul de ${getSystemName(system)} a fost ${prev => prev[system] ? "dezactivat" : "activat"}.`,
+      title: systemsActive[system] ? "Sistem dezactivat" : "Sistem activat",
+      description: `Sistemul de ${getSystemName(system)} a fost ${systemsActive[system] ? "dezactivat" : "activat"}.`,
     });
   };
 
@@ -80,7 +80,7 @@ export const SafetyInfrastructurePanel: React.FC = () => {
       toast({
         title: "Nivelul de autonomie este ridicat",
         description: "Activați suprascrierea de siguranță pentru a permite un nivel mai ridicat de autonomie.",
-        variant: "warning"
+        variant: "destructive"
       });
       setAutonomyLevel(70);
     }
@@ -121,7 +121,7 @@ export const SafetyInfrastructurePanel: React.FC = () => {
           </TabsList>
           
           <TabsContent value="safety" className="space-y-4">
-            <Alert variant="warning" className="border-amber-300 bg-amber-50">
+            <Alert variant="destructive" className="border-amber-300 bg-amber-50">
               <AlertTitle className="flex items-center gap-1">
                 <CircleSlash className="h-4 w-4" />
                 Infrastructură de Siguranță
