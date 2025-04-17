@@ -223,6 +223,92 @@ export const AgentProjectCards: React.FC = () => {
         { name: "Metrici de evaluare automată", completed: false },
         { name: "Pipeline de îmbunătățire continuă", completed: false }
       ]
+    },
+    // Adăugare proiecte noi:
+    {
+      title: "Autonomie Decizională",
+      description: "Sistem care permite agenților să ia decizii autonome în limitele de siguranță stabilite",
+      status: "planificat",
+      priority: "înaltă",
+      timeframe: "săptămâni",
+      timeUsed: 0,
+      timeTotal: 22,
+      icon: <span className="text-xl">🧠</span>,
+      tasks: [
+        { name: "Framework de luare a deciziilor", completed: false },
+        { name: "Sistem de evaluare a riscurilor", completed: false },
+        { name: "Mecanisme de siguranță și limitare", completed: false },
+        { name: "Interfață de aprobare pentru decizii critice", completed: false },
+        { name: "Documentare automată a raționalului deciziilor", completed: false }
+      ]
+    },
+    {
+      title: "Colaborare Inter-agenți",
+      description: "Sistem care permite agenților să colaboreze pentru rezolvarea problemelor complexe",
+      status: "planificat",
+      priority: "medie",
+      timeframe: "luni",
+      timeUsed: 0,
+      timeTotal: 35,
+      icon: <span className="text-xl">👥</span>,
+      tasks: [
+        { name: "Protocol de comunicare între agenți", completed: false },
+        { name: "Delegare de sarcini și responsabilități", completed: false },
+        { name: "Rezolvare colaborativă de probleme", completed: false },
+        { name: "Mecanisme de consens și decizie de grup", completed: false },
+        { name: "Sistem de raportare a progresului colaborativ", completed: false }
+      ]
+    },
+    {
+      title: "Învățare Continuă Independentă",
+      description: "Implementarea unui sistem care permite agenților să-și îmbunătățească continuu abilitățile",
+      status: "planificat",
+      priority: "înaltă",
+      timeframe: "luni",
+      timeUsed: 0,
+      timeTotal: 28,
+      icon: <span className="text-xl">📈</span>,
+      tasks: [
+        { name: "Mecanism de auto-evaluare a performanței", completed: false },
+        { name: "Sistem de identificare a zonelor de îmbunătățire", completed: false },
+        { name: "Proces de învățare din interacțiuni anterioare", completed: false },
+        { name: "Adaptare la noi tipuri de cereri și contexte", completed: false },
+        { name: "Rafinarea continuă a răspunsurilor", completed: false }
+      ]
+    },
+    {
+      title: "Inovație și Creativitate AI",
+      description: "Dezvoltarea capacităților creative și inovative ale agenților pentru rezolvarea problemelor",
+      status: "planificat",
+      priority: "medie",
+      timeframe: "luni",
+      timeUsed: 0,
+      timeTotal: 40,
+      icon: <span className="text-xl">💡</span>,
+      tasks: [
+        { name: "Generator de idei și soluții", completed: false },
+        { name: "Sistem de evaluare a originalității", completed: false },
+        { name: "Framework pentru gândire laterală", completed: false },
+        { name: "Tehnici de brainstorming automat", completed: false },
+        { name: "Aplicarea creativității în diverse domenii", completed: false }
+      ]
+    },
+    {
+      title: "Transparență și Explicabilitate",
+      description: "Sistem care face procesul decizional al agenților transparent și explicabil pentru utilizatori",
+      status: "planificat",
+      priority: "înaltă",
+      timeframe: "săptămâni",
+      timeUsed: 0,
+      timeTotal: 20,
+      icon: <span className="text-xl">🔍</span>,
+      tasks: [
+        { name: "Generare de explicații pentru decizii", completed: false },
+        { name: "Vizualizarea procesului de gândire", completed: false },
+        { name: "Transparență în sursa informațiilor", completed: false },
+        { name: "Niveluri de detaliu adaptabile", completed: false },
+        { name: "Sistem de feedback pentru clarificări", completed: false }
+      ]
     }
   ];
 
