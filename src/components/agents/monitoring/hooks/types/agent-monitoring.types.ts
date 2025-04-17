@@ -81,7 +81,7 @@ export interface AgentMonitoringHook {
   learningReports: LearningReport[];
   startLearningProcess: (sourceId: string, targetId: string, learningType: string) => any;
   updateLearningProgress: (id: string, progress: number) => void;
-  completeLearningProcess: (id: string) => void;
-  getLearningReports: () => void;
+  completeLearningProcess: (id: string) => LearningReport | void;
+  getLearningReports: () => LearningReport[];
   executeAutoLearning: () => void;
 }

@@ -71,7 +71,7 @@ export const useLearningProgress = (activityData: ActivityData[]) => {
   }, []);
 
   // Finalizăm un proces de învățare și generăm un raport
-  const completeLearningProcess = useCallback((id: string) => {
+  const completeLearningProcess = useCallback((id: string): LearningReport | void => {
     // Găsim procesul de învățare și îl marcăm ca finalizat
     const progressItem = learningProgress.find(p => p.id === id);
     
@@ -108,6 +108,7 @@ export const useLearningProgress = (activityData: ActivityData[]) => {
       insights: insights,
       learningDate: new Date(),
       conceptsLearned: insights,
+      duration: Math.floor(Math.random() * 40) + 20, // Adăugăm o durație random pentru compatibilitate
       summary: "Proces de învățare autonomă finalizat cu succes. Îmbunătățiri substanțiale în capacitatea de analiză și procesare a sarcinilor complexe."
     };
     
@@ -118,7 +119,7 @@ export const useLearningProgress = (activityData: ActivityData[]) => {
   }, [learningProgress, activityData]);
 
   // Obținem rapoartele de învățare
-  const getLearningReports = useCallback(() => {
+  const getLearningReports = useCallback((): LearningReport[] => {
     // În implementarea reală, aici am face un request la API
     // Pentru acest exemplu, păstrăm starea curentă
     return learningReports;

@@ -1,108 +1,100 @@
 
 import { extendedSupabase as supabase } from "@/integrations/supabase/extended-client";
 import { ActivityData, ActivityLog } from "../types/agent-monitoring.types";
+import { v4 as uuidv4 } from 'uuid';
 
-export const processActivityData = (agentActivities: any[]): {
-  processedActivityData: ActivityData[];
-  uniqueCategories: Set<string>;
-} => {
-  const processedActivityData: ActivityData[] = [];
-  const uniqueAgents = new Map<string, {id: string, name: string}>();
-  const uniqueCategories = new Set<string>();
-  
-  // Extragere agenți și categorii unice
-  agentActivities.forEach(activity => {
-    uniqueAgents.set(activity.agent_id, { 
-      id: activity.agent_id, 
-      name: activity.agent_name 
-    });
-    uniqueCategories.add(activity.category);
-  });
-
-  // Prelucrare date pentru afișare
-  Array.from(uniqueAgents.values()).forEach(agent => {
-    const agentTasks = agentActivities.filter(
-      a => a.agent_id === agent.id && a.category === 'task'
-    ).length || 0;
-    
-    const agentProposals = agentActivities.filter(
-      a => a.agent_id === agent.id && a.category === 'proposal'
-    ).length || 0;
-    
-    const agentConversations = agentActivities.filter(
-      a => a.agent_id === agent.id && a.category === 'conversation'
-    ).length || 0;
-    
-    const agentLearning = agentActivities.filter(
-      a => a.agent_id === agent.id && a.category === 'learning'
-    ).length || 0;
-
-    processedActivityData.push({
-      agentId: agent.id,
-      agentName: agent.name,
-      category: agentActivities.find(a => a.agent_id === agent.id)?.category || 'other',
-      taskCount: agentTasks,
-      proposalCount: agentProposals,
-      conversationCount: agentConversations,
-      learningCount: agentLearning
-    });
-  });
-
-  return {
-    processedActivityData,
-    uniqueCategories
-  };
-};
-
-export const processActivityLogs = (activityLogsData: any[]): ActivityLog[] => {
-  return activityLogsData?.map(log => ({
-    id: log.id,
-    agentId: log.agent_id,
-    agentName: log.agent_name,
-    description: log.description,
-    category: log.category,
-    timestamp: log.timestamp
-  })) || [];
-};
-
-export const logAgentActivity = async (
-  agentId: string, 
-  description: string,
-  category: string = 'monitoring'
-): Promise<void> => {
+/**
+ * Logează o activitate a unui agent
+ */
+export const logAgentActivity = async (agentId: string, description: string, category: string = "general") => {
   try {
-    // Găsim numele agentului
-    const { data: agentData } = await supabase
-      .from('agent_activity')
-      .select('agent_name')
-      .eq('agent_id', agentId)
-      .limit(1);
-      
-    const agentName = agentData && agentData.length > 0 
-      ? agentData[0].agent_name 
-      : 'Agent Necunoscut';
-
-    // Înregistrăm activitatea
-    await supabase
-      .from('agent_activity_logs')
-      .insert({
-        agent_id: agentId,
-        agent_name: agentName,
-        description: description,
-        category: category,
-        timestamp: new Date().toISOString()
-      });
-      
-    // Înregistrăm și în tabela de activități pentru statistici
-    await supabase
+    const { data, error } = await supabase
       .from('agent_activity')
       .insert({
         agent_id: agentId,
-        agent_name: agentName,
-        category: category,
-        action: 'log'
+        agent_name: getAgentNameById(agentId),
+        action: description,
+        category
       });
+      
+    if (error) throw error;
+    
+    return data;
   } catch (error) {
-    console.error('Failed to log agent activity:', error);
+    console.error('Error logging agent activity:', error);
+    return null;
   }
+};
+
+/**
+ * Transformă datele brute în structura ActivityData
+ */
+export const processActivityData = (rawData: any[]): ActivityData[] => {
+  // Grupăm activitățile după agentId și category
+  const groupedData: Record<string, Record<string, any[]>> = {};
+  
+  rawData.forEach(item => {
+    const key = `${item.agent_id}:${item.agent_name}`;
+    
+    if (!groupedData[key]) {
+      groupedData[key] = {};
+    }
+    
+    if (!groupedData[key][item.category]) {
+      groupedData[key][item.category] = [];
+    }
+    
+    groupedData[key][item.category].push(item);
+  });
+  
+  // Convertim la formatul ActivityData
+  const result: ActivityData[] = [];
+  
+  Object.entries(groupedData).forEach(([agentKey, categories]) => {
+    const [agentId, agentName] = agentKey.split(':');
+    
+    Object.entries(categories).forEach(([category, items]) => {
+      result.push({
+        agentId,
+        agentName,
+        category,
+        count: items.length,
+        data: items
+      });
+    });
+  });
+  
+  return result;
+};
+
+/**
+ * Transformă datele brute în lista de log-uri
+ */
+export const processActivityLogs = (rawData: any[]): ActivityLog[] => {
+  return rawData.map(item => ({
+    id: item.id,
+    agentId: item.agent_id,
+    agentName: item.agent_name,
+    action: item.action,
+    category: item.category,
+    timestamp: new Date(item.created_at)
+  }));
+};
+
+/**
+ * Obține numele unui agent după ID
+ */
+export const getAgentNameById = (id: string): string => {
+  // Map de test pentru nume de agenți
+  const agentNames: Record<string, string> = {
+    'agent-1': 'Development Assistant',
+    'agent-2': 'Research Agent',
+    'agent-3': 'Data Processing Agent', 
+    'agent-4': 'Security Monitor',
+    'agent-5': 'Project Manager',
+    'agent-6': 'Code Reviewer',
+    'system': 'System Agent'
+  };
+  
+  return agentNames[id] || `Agent ${id}`;
 };
