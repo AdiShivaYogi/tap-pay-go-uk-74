@@ -5,7 +5,8 @@ import {
   AgentTaskProgressTables,
   AgentFeedbackTables,
   CodeProposalTables,
-  CodeProposalFeedbackTables 
+  CodeProposalFeedbackTables,
+  AgentActivityTables 
 } from './agent-types';
 import { ApiUsageTables } from './api-usage-types';
 import { AuthTables } from './auth-types';
@@ -24,7 +25,8 @@ export interface ExtendedDatabase {
             CodeProposalTables &
             CodeProposalFeedbackTables &
             RoadmapTables &
-            ApiUsageTables;
+            ApiUsageTables &
+            AgentActivityTables;
     
     // Păstrăm restul definițiilor
     Views: Database['public']['Views'];

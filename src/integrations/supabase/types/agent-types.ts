@@ -70,8 +70,7 @@ export type {
   AgentTaskProgressTables,
   AgentFeedbackTables,
   CodeProposalTables,
-  CodeProposalFeedbackTables,
-  AgentActivityTables
+  CodeProposalFeedbackTables
 };
 
 // Export a combined type for backward compatibility
