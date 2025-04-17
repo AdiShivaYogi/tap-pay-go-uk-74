@@ -10,21 +10,36 @@ export const submitFeedbackAPI = async (params: SubmitFeedbackParams): Promise<{
       ? 'roadmap-submissions' 
       : 'code-proposals';
     
-    // Actualizează statusul și feedback-ul pentru propunerea specificată
-    const { data, error } = await supabase
-      .from(endpoint)
-      .update({
-        status: approve ? 'approved' : 'feedback',
-        feedback: feedback,
-        feedback_by: userId,
-        updated_at: new Date().toISOString(),
-        feedback_model: model || 'deepseek'  // Adăugăm modelul folosit pentru feedback
-      })
-      .eq('id', itemId);
-    
-    if (error) {
-      console.error(`Error updating ${itemType}:`, error);
-      throw new Error(`Eroare la actualizarea ${itemType === "submission" ? "propunerii de task" : "propunerii de cod"}: ${error.message || 'Eroare necunoscută'}`);
+    // Using this approach instead of dynamic table names to avoid type issues
+    // For submissions
+    if (itemType === "submission") {
+      const { error } = await supabase
+        .from('agent_task_submissions')
+        .update({
+          status: approve ? 'approved' : 'feedback',
+          feedback: feedback,
+          feedback_by: userId,
+          updated_at: new Date().toISOString(),
+          feedback_model: model || 'deepseek'
+        })
+        .eq('id', itemId);
+        
+      if (error) throw error;
+    } 
+    // For code proposals
+    else {
+      const { error } = await supabase
+        .from('code_proposals')
+        .update({
+          status: approve ? 'approved' : 'feedback',
+          feedback: feedback,
+          feedback_by: userId,
+          updated_at: new Date().toISOString(),
+          feedback_model: model || 'deepseek'
+        })
+        .eq('id', itemId);
+        
+      if (error) throw error;
     }
     
     return { success: true };

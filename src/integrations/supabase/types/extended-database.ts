@@ -13,6 +13,41 @@ import { AuthTables } from './auth-types';
 import { RoadmapTables } from './roadmap-types';
 import { TransactionTables } from './transaction-types';
 
+// User preferences table type definition
+interface UserPreferencesTables {
+  user_preferences: {
+    Row: {
+      id: string;
+      user_id: string;
+      god_mode_config: any;
+      updated_at: string;
+      created_at: string;
+    };
+    Insert: {
+      id?: string;
+      user_id: string;
+      god_mode_config?: any;
+      updated_at?: string;
+      created_at?: string;
+    };
+    Update: {
+      id?: string;
+      user_id?: string;
+      god_mode_config?: any;
+      updated_at?: string;
+      created_at?: string;
+    };
+    Relationships: [
+      {
+        foreignKeyName: "user_preferences_user_id_fkey";
+        columns: ["user_id"];
+        referencedRelation: "users";
+        referencedColumns: ["id"];
+      }
+    ];
+  };
+}
+
 // Extinde tipurile Database pentru a include tabelele noi folosite de agenți
 export interface ExtendedDatabase {
   public: {
@@ -26,6 +61,7 @@ export interface ExtendedDatabase {
             CodeProposalFeedbackTables &
             RoadmapTables &
             ApiUsageTables &
+            UserPreferencesTables &
             AgentActivityTables;
     
     // Păstrăm restul definițiilor

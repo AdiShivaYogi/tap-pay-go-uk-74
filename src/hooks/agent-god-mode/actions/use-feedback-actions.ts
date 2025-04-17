@@ -1,7 +1,7 @@
 
 import { FeedbackItem } from "../types";
 import { generateAgentFeedback } from "../api/generate-feedback";
-import { submitSubmissionFeedback, submitProposalFeedback } from "../feedback-service";
+import { submitFeedbackAPI } from "../api/submit-feedback";
 
 export function useFeedbackActions(state: any) {
   const {
@@ -33,7 +33,7 @@ export function useFeedbackActions(state: any) {
     }
     
     try {
-      // Adjusted call to match the expected parameters
+      // Fixed function call parameters
       const generatedFeedback = await generateAgentFeedback({
         itemType: type,
         item,
@@ -67,21 +67,27 @@ export function useFeedbackActions(state: any) {
     
     try {
       if (feedbackType === "submission" && state.currentSubmission) {
-        await submitSubmissionFeedback(
-          state.currentSubmission.id, 
+        // Fixed function call using the updated API
+        await submitFeedbackAPI({
+          itemType: "submission",
+          itemId: state.currentSubmission.id, 
           feedback, 
-          isGodModeEnabled, 
-          userId
-        );
+          approve: isGodModeEnabled, 
+          userId,
+          model: preferredModel
+        });
         
         showSuccessToast("submission");
       } else if (feedbackType === "proposal" && state.currentProposal) {
-        await submitProposalFeedback(
-          state.currentProposal.id, 
+        // Fixed function call using the updated API
+        await submitFeedbackAPI({
+          itemType: "proposal",
+          itemId: state.currentProposal.id, 
           feedback, 
-          isGodModeEnabled, 
-          userId
-        );
+          approve: isGodModeEnabled, 
+          userId,
+          model: preferredModel
+        });
         
         showSuccessToast("proposal");
       }

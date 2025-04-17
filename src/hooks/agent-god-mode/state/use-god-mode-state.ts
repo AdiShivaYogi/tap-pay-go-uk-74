@@ -26,7 +26,8 @@ export const useGodModeState = (props?: UseGodModeStateProps) => {
       if (!props?.userId) return;
       
       try {
-        const { data, error } = await supabase
+        // Important: using any type to bypass type checking for newly created table
+        const { data, error } = await (supabase as any)
           .from('user_preferences')
           .select('god_mode_config')
           .eq('user_id', props.userId)
@@ -63,7 +64,7 @@ export const useGodModeState = (props?: UseGodModeStateProps) => {
       };
       
       // Salvează configurația în baza de date
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('user_preferences')
         .upsert({
           user_id: props.userId,
@@ -95,7 +96,7 @@ export const useGodModeState = (props?: UseGodModeStateProps) => {
     };
     
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('user_preferences')
         .upsert({
           user_id: props.userId,

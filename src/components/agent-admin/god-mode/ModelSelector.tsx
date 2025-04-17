@@ -3,7 +3,7 @@ import React from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface ModelSelectorProps {
-  value: string;
+  value: "deepseek" | "claude" | "anthropic";
   onChange: (value: "deepseek" | "claude" | "anthropic") => void;
   disabled?: boolean;
   showAnthropicDirect?: boolean;
