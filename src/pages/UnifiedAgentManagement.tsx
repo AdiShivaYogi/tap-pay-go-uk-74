@@ -8,7 +8,6 @@ const UnifiedAgentManagement = () => {
   return (
     <AutonomousEngineProvider>
       <BaseMonitoringPage tabs="unified" />
-      {/* Adăugăm motorul de autonomie pentru generare activitate autonomă reală */}
       <AutonomyEngine />
     </AutonomousEngineProvider>
   );
