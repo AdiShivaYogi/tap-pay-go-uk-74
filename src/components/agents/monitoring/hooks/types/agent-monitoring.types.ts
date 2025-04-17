@@ -1,12 +1,9 @@
-
-import { Dispatch, SetStateAction } from "react";
-
 export interface ActivityData {
   agentId: string;
   agentName: string;
-  count: number;
   category: string;
-  data?: any[];
+  count: number;
+  data: any[];
 }
 
 export interface ActivityLog {
@@ -14,51 +11,35 @@ export interface ActivityLog {
   agentId: string;
   agentName: string;
   action: string;
-  description?: string; // Adăugat pentru compatibilitate
   category: string;
   timestamp: Date;
 }
 
-export interface AgentInteraction {
-  sourceAgentId: string;
-  targetAgentId: string;
-  learningType: string;
-  timestamp: Date;
-}
-
-export interface AgentLearningRule {
-  sourceAgentId: string;
-  targetAgentId: string;
-  learningTypes: string[];
-  interval: number;
-  isActive: boolean;
-  lastExecuted?: Date;
-}
-
-export interface LearningProgress {
+export interface LearningRule {
   id: string;
-  sourceAgentId: string;
-  targetAgentId: string;
-  learningType: string;
-  progress: number;
-  status: 'pending' | 'in-progress' | 'completed' | 'failed';
-  startTime: Date;
-  endTime?: Date;
-  estimatedEndTime: Date; // Adăugat pentru compatibilitate cu componenta existentă
+  name: string;
+  description: string;
+  enabled: boolean;
+  priority: number;
+  conditions: {
+    activityType?: string;
+    minCount?: number;
+    timeWindow?: number;
+  };
+  actions: {
+    startLearning: boolean;
+    topic?: string;
+  };
 }
 
 export interface LearningReport {
   id: string;
-  sourceAgentId: string;
-  sourceAgentName: string;
-  targetAgentId: string;
-  targetAgentName: string;
-  learningType: string;
-  insights: string[];
-  learningDate: Date;
-  duration?: number; // Adăugat pentru compatibilitate
-  conceptsLearned?: string[]; // Adăugat pentru compatibilitate
-  summary?: string; // Adăugat pentru compatibilitate
+  agentId: string;
+  agentName: string;
+  topic: string;
+  content: string;
+  timestamp: Date;
+  learningDuration: number;
 }
 
 export interface AgentMonitoringHook {
@@ -66,22 +47,25 @@ export interface AgentMonitoringHook {
   activityLogs: ActivityLog[];
   isLoading: boolean;
   categories: string[];
-  refreshData: () => Promise<void>;
   totalActivities: number;
+  refreshData: () => Promise<void>;
   logDetailedAgentActivity: (agentId: string, description: string, category?: string) => void;
   autoRefresh: boolean;
   toggleAutoRefresh: () => void;
   lastRefresh: Date;
-  logAgentInteraction: (sourceAgentId: string, targetAgentId: string, learningType: string) => AgentInteraction;
-  learningRules: AgentLearningRule[];
-  addLearningRule: (rule: Omit<AgentLearningRule, 'lastExecuted'>) => void;
-  removeLearningRule: (sourceId: string, targetId: string) => void;
-  toggleLearningRule: (sourceId: string, targetId: string) => void;
-  learningProgress: LearningProgress[];
+  logAgentInteraction: (agentId: string, action: string, status: string) => Promise<void>;
+  learningRules: LearningRule[];
+  addLearningRule: (rule: LearningRule) => void;
+  removeLearningRule: (id: string) => void;
+  toggleLearningRule: (id: string, enabled: boolean) => void;
+  learningProgress: Map<string, number>;
   learningReports: LearningReport[];
-  startLearningProcess: (sourceId: string, targetId: string, learningType: string) => any;
-  updateLearningProgress: (id: string, progress: number) => void;
-  completeLearningProcess: (id: string) => LearningReport | void;
-  getLearningReports: () => LearningReport[];
+  startLearningProcess: (agentId: string, topic: string) => void;
+  updateLearningProgress: (agentId: string, progress: number) => void;
+  completeLearningProcess: (agentId: string, report: string) => void;
+  getLearningReports: () => void;
   executeAutoLearning: () => void;
+  // Adăugăm noile proprietăți pentru starea de autoexecuție
+  autoExecutionStatus: Record<string, boolean>;
+  saveAutoExecutionStatus: (projectId: string, status: boolean) => Promise<void>;
 }

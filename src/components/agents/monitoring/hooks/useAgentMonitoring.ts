@@ -25,7 +25,9 @@ export const useAgentMonitoring = (): AgentMonitoringHook => {
     categories, 
     totalActivities, 
     lastRefresh, 
-    fetchAgentActivity 
+    fetchAgentActivity,
+    autoExecutionStatus,
+    saveAutoExecutionStatus 
   } = useActivityData();
   
   const { autoRefresh, toggleAutoRefresh } = useAutoRefresh(fetchAgentActivity);
@@ -101,6 +103,9 @@ export const useAgentMonitoring = (): AgentMonitoringHook => {
     updateLearningProgress,
     completeLearningProcess,
     getLearningReports,
-    executeAutoLearning
+    executeAutoLearning,
+    // Adăugăm noile funcționalități
+    autoExecutionStatus,
+    saveAutoExecutionStatus
   };
 };

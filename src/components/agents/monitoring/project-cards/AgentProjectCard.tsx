@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyledCard, StyledCardContent } from "@/components/ui/cards";
 import { ProgressBar } from "./ProgressBar";
 import { StatusBadge } from "./StatusBadge";
@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { extendedSupabase as supabase } from "@/integrations/supabase/extended-client";
 import { logAgentActivity } from "../hooks/utils/activity-processing";
+import { useAgentMonitoring } from "../hooks";
 
 interface AgentProjectCardProps {
   project: AgentProject;
@@ -29,6 +30,8 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
   const [tasks, setTasks] = useState(project.tasks);
   const [progress, setProgress] = useState(0);
   
+  const { autoExecutionStatus, saveAutoExecutionStatus } = useAgentMonitoring();
+  
   // Calculați procentul de finalizare a taskurilor
   const completedTasksCount = tasks.filter(task => task.completed).length;
   const totalTasks = tasks.length;
@@ -36,6 +39,22 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
   
   // Verificați dacă toate taskurile sunt finalizate
   const allTasksCompleted = completedTasksCount === totalTasks;
+  
+  // Restaurăm starea de executare din baza de date la încărcarea componentei
+  useEffect(() => {
+    if (autoExecutionStatus && project.id) {
+      const status = autoExecutionStatus[project.id];
+      if (status) {
+        setExecutionComplete(status);
+        // Dacă execuția este completă, marcăm toate task-urile ca fiind completate
+        if (status) {
+          setTasks(prevTasks => 
+            prevTasks.map(task => ({ ...task, completed: true, inProgress: false }))
+          );
+        }
+      }
+    }
+  }, [autoExecutionStatus, project.id]);
   
   const handleAutoExecution = async () => {
     if (isExecuting || allTasksCompleted) return;
@@ -58,6 +77,11 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
         description: `Proiectul "${project.title}" are toate taskurile finalizate.`,
         duration: 3000,
       });
+      
+      // Salvăm statusul în baza de date
+      if (project.id) {
+        saveAutoExecutionStatus(project.id, true);
+      }
       
       return;
     }
@@ -90,6 +114,11 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
         // Salvăm starea finală în baza de date și logăm finalizarea
         try {
           await logAgentActivity('system', `Execuție automată finalizată pentru proiectul: ${project.title}`, 'auto_execution');
+          
+          // Salvăm statusul de finalizare în baza de date
+          if (project.id) {
+            saveAutoExecutionStatus(project.id, true);
+          }
         } catch (error) {
           console.error("Eroare la salvarea progresului:", error);
         }
