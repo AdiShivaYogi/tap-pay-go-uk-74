@@ -9,6 +9,60 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      agent_activity: {
+        Row: {
+          action: string
+          agent_id: string
+          agent_name: string
+          category: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          action?: string
+          agent_id: string
+          agent_name: string
+          category: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          action?: string
+          agent_id?: string
+          agent_name?: string
+          category?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      agent_activity_logs: {
+        Row: {
+          agent_id: string
+          agent_name: string
+          category: string
+          description: string
+          id: string
+          timestamp: string
+        }
+        Insert: {
+          agent_id: string
+          agent_name: string
+          category: string
+          description: string
+          id?: string
+          timestamp?: string
+        }
+        Update: {
+          agent_id?: string
+          agent_name?: string
+          category?: string
+          description?: string
+          id?: string
+          timestamp?: string
+        }
+        Relationships: []
+      }
       agent_task_progress: {
         Row: {
           agent_id: string
