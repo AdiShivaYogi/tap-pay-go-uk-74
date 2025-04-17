@@ -1,4 +1,3 @@
-
 import { ReactNode } from "react";
 import { 
   Lock, Unlock, Users, Brain, Lightbulb, Shield, HandCoins, Zap, 
@@ -292,11 +291,79 @@ export const newProjects = [
   }
 ];
 
+export const safetyInfrastructureProjects = [
+  {
+    title: "Conectare Sisteme Reale",
+    description: "Integrarea infrastructurii de siguranță cu sistemele de monitorizare a agenților",
+    status: "în progres" as const,
+    priority: "înaltă" as const,
+    timeframe: "săptămâni" as const,
+    timeUsed: 0,
+    timeTotal: 20,
+    icon: Network,
+    tasks: [
+      { name: "Identificare surse de date", completed: false },
+      { name: "Definire interfețe de integrare", completed: false },
+      { name: "Implementare conexiuni securizate", completed: false },
+      { name: "Testare flux de date", completed: false }
+    ]
+  },
+  {
+    title: "Algoritm Evaluare Dinamică Riscuri",
+    description: "Sistem inteligent de identificare și cuantificare a riscurilor operaționale",
+    status: "în progres" as const,
+    priority: "înaltă" as const,
+    timeframe: "săptămâni" as const,
+    timeUsed: 0,
+    timeTotal: 25,
+    icon: Shield,
+    tasks: [
+      { name: "Definire parametri de risc", completed: false },
+      { name: "Implementare model matematic", completed: false },
+      { name: "Sistem de scorare dinamică", completed: false },
+      { name: "Mecanism de alertare", completed: false }
+    ]
+  },
+  {
+    title: "Jurnalizare Avansată",
+    description: "Sistem complet de monitorizare și înregistrare a acțiunilor agenților",
+    status: "în progres" as const,
+    priority: "medie" as const,
+    timeframe: "săptămâni" as const,
+    timeUsed: 0,
+    timeTotal: 15,
+    icon: FileCode,
+    tasks: [
+      { name: "Definire format jurnal standard", completed: false },
+      { name: "Implementare mecanisme de stocare", completed: false },
+      { name: "Sistem de indexare și căutare", completed: false },
+      { name: "Raportare automată", completed: false }
+    ]
+  },
+  {
+    title: "Siguranță Adaptivă",
+    description: "Mecanism de auto-ajustare a parametrilor de siguranță bazat pe istoric",
+    status: "planificat" as const,
+    priority: "medie" as const,
+    timeframe: "luni" as const,
+    timeUsed: 0,
+    timeTotal: 40,
+    icon: Settings,
+    tasks: [
+      { name: "Model de învățare automată", completed: false },
+      { name: "Analiză istorică a incidentelor", completed: false },
+      { name: "Mecanism de recalibrare", completed: false },
+      { name: "Validare umană", completed: false }
+    ]
+  }
+];
+
 // Combinăm toate proiectele pentru interfața principală
 export const agentProjects = [
   ...quickWinProjects,
   ...autonomyProjects,
   ...newProjects,
+  ...safetyInfrastructureProjects,
   // Păstrăm câteva din proiectele existente care nu au fost reorganizate
   {
     title: "Securitate și Etică",
