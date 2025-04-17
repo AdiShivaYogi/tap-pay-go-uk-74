@@ -47,7 +47,7 @@ export const AutoLaunchCountdown: React.FC<AutoLaunchCountdownProps> = ({
             onClick={cancelAutoLaunch} 
             variant="outline"
             size="sm"
-            className="text-amber-700 border-amber-300"
+            className="text-amber-700 border-amber-300 hover:bg-amber-50"
           >
             Anulare lansare automată
           </Button>
@@ -68,3 +68,4 @@ export const AutoLaunchCountdown: React.FC<AutoLaunchCountdownProps> = ({
     </Alert>
   );
 };
+

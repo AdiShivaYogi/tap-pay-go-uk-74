@@ -12,10 +12,15 @@ export const SafetyInfrastructurePanel: React.FC = () => {
       <PanelHeader />
       
       <StyledCardContent>
+        <div className="mb-6">
+          <h2 className="text-xl font-medium mb-2">Infrastructură de siguranță și control execuție</h2>
+          <PanelDescription />
+        </div>
+        
         <AutoLaunchContainer />
-        <PanelDescription />
         <TabsContainer />
       </StyledCardContent>
     </StyledCard>
   );
 };
+

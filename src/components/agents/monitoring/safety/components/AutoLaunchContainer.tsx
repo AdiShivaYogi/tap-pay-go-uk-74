@@ -22,7 +22,7 @@ export const AutoLaunchContainer: React.FC = () => {
         show={showAutonomyAlert} 
       />
       
-      {autoLaunchPending && (
+      {autoLaunchPending && timeToAutoLaunch > 0 && (
         <AutoLaunchCountdown 
           timeToAutoLaunch={timeToAutoLaunch}
           cancelAutoLaunch={cancelAutoLaunch}
@@ -33,3 +33,4 @@ export const AutoLaunchContainer: React.FC = () => {
     </>
   );
 };
+
