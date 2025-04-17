@@ -16,7 +16,7 @@ interface AgentAdminTabsProps {
   submissions: any[];
   codeProposals: any[];
   progressHistory: any[];
-  userId: string | undefined;
+  userId?: string | undefined;
   setSubmissions: (submissions: any[]) => void;
   setCodeProposals: (codeProposals: any[]) => void;
   loading?: boolean;
@@ -42,10 +42,11 @@ export const AgentAdminTabs = ({
     setProposals: setCodeProposals 
   });
 
+  // Pass userId explicitly to avoid destructuring issues
   const { 
     isGeneratingFeedback,
     generateFeedback,
-  } = useAgentGodMode({ userId });
+  } = useAgentGodMode(userId ? { userId } : undefined);
   
   // Notificare despre numărul de propuneri
   useEffect(() => {

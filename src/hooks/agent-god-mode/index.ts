@@ -4,15 +4,16 @@ import { useToast } from "@/hooks/use-toast";
 import { FeedbackItem } from "./types";
 import { generateFeedbackAPI } from "./api/generate-feedback";
 import { submitFeedbackAPI } from "./api/submit-feedback";
-import { useGodModeState } from "./state/use-god-mode-state";
+import { useGodModeState, UseGodModeStateProps } from "./state/use-god-mode-state";
 
 interface UseAgentGodModeProps {
   userId?: string;
 }
 
-export const useAgentGodMode = ({ userId }: UseAgentGodModeProps) => {
+export const useAgentGodMode = (props?: UseAgentGodModeProps) => {
   const { toast } = useToast();
-  const { isGodModeEnabled, toggleGodMode } = useGodModeState();
+  // Pass the props to useGodModeState
+  const { isGodModeEnabled, toggleGodMode } = useGodModeState(props);
   
   const [currentSubmission, setCurrentSubmission] = useState<FeedbackItem | null>(null);
   const [currentProposal, setCurrentProposal] = useState<FeedbackItem | null>(null);
@@ -30,7 +31,7 @@ export const useAgentGodMode = ({ userId }: UseAgentGodModeProps) => {
   }, []);
 
   const generateFeedback = useCallback(async (item: FeedbackItem, itemType: "submission" | "proposal") => {
-    if (!userId) {
+    if (!props?.userId) {
       toast({
         title: "Eroare",
         description: "Utilizatorul nu este autentificat",
@@ -50,7 +51,7 @@ export const useAgentGodMode = ({ userId }: UseAgentGodModeProps) => {
       const result = await generateFeedbackAPI({
         itemType,
         item,
-        userId,
+        userId: props.userId,
         model: preferredModel
       });
       
@@ -71,10 +72,10 @@ export const useAgentGodMode = ({ userId }: UseAgentGodModeProps) => {
     } finally {
       setIsGeneratingFeedback(false);
     }
-  }, [userId, toast, preferredModel]);
+  }, [props?.userId, toast, preferredModel]);
 
   const submitFeedback = useCallback(async () => {
-    if (!userId || (!currentSubmission && !currentProposal)) {
+    if (!props?.userId || (!currentSubmission && !currentProposal)) {
       toast({
         title: "Eroare",
         description: "Datele pentru feedback sunt incomplete",
@@ -97,7 +98,7 @@ export const useAgentGodMode = ({ userId }: UseAgentGodModeProps) => {
         itemType,
         itemId: item.id,
         feedback,
-        userId,
+        userId: props.userId,
         approve: isGodModeEnabled
       });
       
@@ -120,7 +121,7 @@ export const useAgentGodMode = ({ userId }: UseAgentGodModeProps) => {
     } finally {
       setIsProcessing(false);
     }
-  }, [userId, currentSubmission, currentProposal, feedback, isGodModeEnabled, toast, resetState]);
+  }, [props?.userId, currentSubmission, currentProposal, feedback, isGodModeEnabled, toast, resetState]);
 
   return {
     isGodModeEnabled,

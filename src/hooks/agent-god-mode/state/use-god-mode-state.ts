@@ -4,10 +4,12 @@ import { FeedbackItem } from "../types";
 import { useToast } from "@/hooks/use-toast";
 
 export interface UseGodModeStateProps {
-  userId: string | undefined;
+  userId?: string | undefined;
 }
 
-export function useGodModeState({ userId }: UseGodModeStateProps) {
+export function useGodModeState(props?: UseGodModeStateProps) {
+  // Handle case when props are undefined
+  const userId = props?.userId;
   const { toast } = useToast();
   const [isGodModeEnabled, setIsGodModeEnabled] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
