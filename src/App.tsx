@@ -27,9 +27,6 @@ import UserProfile from "./pages/UserProfile";
 import BillingSettings from "./pages/BillingSettings";
 import NotificationSettings from "./pages/NotificationSettings";
 import Agents from "./pages/Agents";
-import AgentAdmin from "./pages/AgentAdmin";
-import AgentMonitoring from "./pages/AgentMonitoring";
-import UnifiedAgentManagement from "./pages/UnifiedAgentManagement";
 import AgentCentralCommand from "./pages/AgentCentralCommand";
 
 function App() {
@@ -62,13 +59,14 @@ function App() {
       <Route path="/connect-stripe" element={<ConnectStripe />} />
       <Route path="/agents" element={<Agents />} />
       
-      {/* Noua pagină unificată */}
+      {/* Centru de comandă unificat principal */}
       <Route path="/agent-central-command" element={<AgentCentralCommand />} />
       
-      {/* Păstrăm rutele vechi temporar pentru compatibilitate */}
+      {/* Redirecționări pentru rutele vechi - vor trimite toate la centrul unificat */}
       <Route path="/agent-admin" element={<AgentCentralCommand />} />
       <Route path="/agent-monitoring" element={<AgentCentralCommand />} />
       <Route path="/agent-management" element={<AgentCentralCommand />} />
+      <Route path="/unified-agent-management" element={<AgentCentralCommand />} />
       
       <Route path="*" element={<NotFound />} />
     </Routes>

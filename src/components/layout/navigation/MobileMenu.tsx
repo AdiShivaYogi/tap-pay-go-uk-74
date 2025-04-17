@@ -47,6 +47,8 @@ export function MobileMenu({ currentPath, isVisible, user }: MobileMenuProps) {
             )
             .map((item) => {
               const isActive = currentPath === item.href;
+              const isHighlighted = item.highlight;
+              
               return (
                 <Link
                   key={item.href}
@@ -54,11 +56,22 @@ export function MobileMenu({ currentPath, isVisible, user }: MobileMenuProps) {
                   onClick={handleLinkClick}
                   className={cn(
                     "flex items-center gap-2 py-2 px-3 text-base rounded-md hover:bg-accent",
-                    isActive ? "text-foreground font-medium" : "text-muted-foreground"
+                    isActive ? "text-foreground font-medium" : "text-muted-foreground",
+                    isHighlighted && !isActive
+                      ? "bg-green-50/80 text-green-700 hover:bg-green-100/80 hover:text-green-800"
+                      : "",
+                    isHighlighted && isActive
+                      ? "bg-green-100 text-green-800 font-medium"
+                      : ""
                   )}
                 >
                   {item.icon && <item.icon className="h-5 w-5" />}
                   <span>{item.title}</span>
+                  {isHighlighted && (
+                    <span className="ml-1 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-200/70 text-green-800">
+                      Nou
+                    </span>
+                  )}
                 </Link>
               );
             })}

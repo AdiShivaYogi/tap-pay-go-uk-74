@@ -47,6 +47,7 @@ export const config = {
       href: "/agent-central-command",
       icon: Command,
       admin: true,
+      highlight: true, // Adăugăm această proprietate pentru a evidenția în UI
     },
   ],
 };
