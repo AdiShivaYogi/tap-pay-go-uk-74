@@ -71,8 +71,10 @@ export const useAuthSubmit = () => {
             p_email: email
           });
           
-          // Verificăm datele returnate de procedura stocată
-          const lockStatus = data ? data : { is_locked: false, minutes_left: 0 };
+          // Asigurăm-ne că tratăm datele fie ca obiect, fie ca array
+          const lockStatus = Array.isArray(data) && data.length > 0 
+            ? data[0] 
+            : (data || { is_locked: false, minutes_left: 0 });
           
           if (lockStatus.is_locked) {
             setErrorMessage(`Cont blocat temporar. Încercați din nou în ${lockStatus.minutes_left} minute.`);

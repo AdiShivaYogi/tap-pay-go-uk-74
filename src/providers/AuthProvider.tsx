@@ -124,7 +124,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.log('Attempting to sign in with email:', email);
       
       // Verificăm dacă contul este blocat
-      const { data: lockStatus, error: lockCheckError } = await supabase.rpc('check_login_attempts', {
+      const { data, error: lockCheckError } = await supabase.rpc('check_login_attempts', {
         p_email: email
       });
       
@@ -132,7 +132,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.error('Eroare la verificarea blocării contului:', lockCheckError);
       }
       
-      if (lockStatus && lockStatus.is_locked) {
+      // Asigurăm-ne că tratăm datele fie ca obiect, fie ca array
+      const lockStatus = Array.isArray(data) && data.length > 0 
+        ? data[0] 
+        : (data || { is_locked: false, minutes_left: 0 });
+      
+      if (lockStatus.is_locked) {
         return {
           error: {
             message: `Cont blocat temporar. Încercați din nou în ${lockStatus.minutes_left} minute.`
