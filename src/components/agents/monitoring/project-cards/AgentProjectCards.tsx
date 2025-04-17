@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { AgentProjectCard } from "./AgentProjectCard";
-import { agentProjects } from "./data";
+import { normalizedAgentProjects } from "./data"; // Use normalized projects
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 export const AgentProjectCards: React.FC = () => {
@@ -9,9 +9,9 @@ export const AgentProjectCards: React.FC = () => {
   
   // Filtrăm proiectele în funcție de categorie
   const filteredProjects = category === "all" 
-    ? agentProjects 
+    ? normalizedAgentProjects 
     : category === "safety" 
-      ? agentProjects.filter(project => 
+      ? normalizedAgentProjects.filter(project => 
           project.title.includes("Conectare") ||
           project.title.includes("Algoritm") ||
           project.title.includes("Jurnalizare") ||
@@ -23,7 +23,7 @@ export const AgentProjectCards: React.FC = () => {
           project.title === "Noua Eră a Autonomiei"
         )
       : category === "autonomy"
-        ? agentProjects.filter(project => 
+        ? normalizedAgentProjects.filter(project => 
             project.title.includes("Autonomie") || 
             project.title.includes("Auto-") ||
             project.title.includes("Creativitate") ||
@@ -31,7 +31,7 @@ export const AgentProjectCards: React.FC = () => {
             project.title.includes("Execuție Autonomă") ||
             project.title === "Noua Eră a Autonomiei"
           )
-        : agentProjects.filter(project => 
+        : normalizedAgentProjects.filter(project => 
             !project.title.includes("Conectare") &&
             !project.title.includes("Algoritm") &&
             !project.title.includes("Jurnalizare") &&

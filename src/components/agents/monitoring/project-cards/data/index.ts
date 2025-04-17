@@ -1,24 +1,43 @@
-import { Rocket, ShieldAlert, BrainCircuit, Lightbulb, Book, Search, Code, Terminal, GraduationCap, Sparkles } from "lucide-react";
 
-// Task types
-interface TaskItem {
-  name: string;
-  completed: boolean;
+import { Rocket, ShieldAlert, BrainCircuit, Lightbulb, Book, Search, Code, Terminal, GraduationCap, Sparkles } from "lucide-react";
+import { AgentProject, ProjectStatus, ProjectPriority, ProjectTimeframe } from "../types";
+
+// Map for Romanian to English status terms
+const statusMap = {
+  "în progres": "in-progress",
+  "planificat": "planned",
+  "finalizat": "completed",
+  "blocat": "stuck"
+} as const;
+
+// Map for Romanian to English priority terms
+const priorityMap = {
+  "înaltă": "high",
+  "medie": "medium",
+  "scăzută": "low"
+} as const;
+
+// Map for Romanian to English timeframe terms
+const timeframeMap = {
+  "zile": "days",
+  "săptămâni": "weeks",
+  "luni": "months",
+  "ani": "months" // Map "ani" (years) to months for compatibility
+} as const;
+
+// Helper function to convert status string to correct type
+function convertStatus(status: string): ProjectStatus {
+  return statusMap[status as keyof typeof statusMap] || "planned";
 }
 
-// Project types
-interface AgentProject {
-  id?: string;
-  title: string;
-  description: string;
-  icon: React.ComponentType;
-  tasks: TaskItem[];
-  timeUsed: number;
-  timeTotal: number;
-  status: string;
-  priority: string;
-  timeframe: string;
-  integrationProgress?: number;
+// Helper function to convert priority string to correct type
+function convertPriority(priority: string): ProjectPriority {
+  return priorityMap[priority as keyof typeof priorityMap] || "medium";
+}
+
+// Helper function to convert timeframe string to correct type
+function convertTimeframe(timeframe: string): ProjectTimeframe {
+  return timeframeMap[timeframe as keyof typeof timeframeMap] || "weeks";
 }
 
 // Adăugăm ID-uri unice pentru fiecare proiect pentru a le putea urmări starea
@@ -249,3 +268,11 @@ export const agentProjects: AgentProject[] = [
     integrationProgress: 70,
   },
 ];
+
+// Convert any Romanian status/priority/timeframe values to English for older data
+export const normalizedAgentProjects = agentProjects.map(project => ({
+  ...project,
+  status: convertStatus(project.status as string),
+  priority: convertPriority(project.priority as string),
+  timeframe: convertTimeframe(project.timeframe as string)
+}));

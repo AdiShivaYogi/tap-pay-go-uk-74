@@ -11,10 +11,10 @@ export interface TaskItem {
   inProgress?: boolean;
 }
 
-export type AgentTask = TaskItem; // Adăugat alias pentru TaskItem
+export type AgentTask = TaskItem;
 
 export interface AgentProject {
-  id?: string;  // ID pentru a identifica și urmări proiectele
+  id?: string;
   title: string;
   description: string;
   icon: LucideIcon;

@@ -1,4 +1,3 @@
-
 import { extendedSupabase as supabase } from "@/integrations/supabase/extended-client";
 import { ActivityData, ActivityLog } from "../types/agent-monitoring.types";
 import { v4 as uuidv4 } from 'uuid';
@@ -98,14 +97,15 @@ export const processActivityData = (rawData: any[]): {
 /**
  * Transformă datele brute în lista de log-uri
  */
-export const processActivityLogs = (rawData: any[]): ActivityLog[] => {
-  return rawData.map(item => ({
+export const processActivityLogs = (data: any[]): ActivityLog[] => {
+  return data.map(item => ({
     id: item.id,
     agentId: item.agent_id,
     agentName: item.agent_name,
     action: item.action,
     category: item.category,
-    timestamp: new Date(item.created_at)
+    timestamp: new Date(item.created_at),
+    description: item.action // Use action as description for backward compatibility
   }));
 };
 
