@@ -1,10 +1,10 @@
 
 import React from "react";
 import { TaskItem } from "./TaskItem";
-import { AgentProjectTask } from "./types";
+import { AgentTask } from "./types";
 
 interface TaskListProps {
-  tasks: AgentProjectTask[];
+  tasks: AgentTask[];
 }
 
 export const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
