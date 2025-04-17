@@ -13,6 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { AgentLearningPanel } from "./AgentLearningPanel";
 import { AgentAutoLearning } from "./AgentAutoLearning";
+import { AgentLearningReports } from "./AgentLearningReports";
 import { formatDistanceToNow } from "date-fns";
 import { ro } from "date-fns/locale";
 
