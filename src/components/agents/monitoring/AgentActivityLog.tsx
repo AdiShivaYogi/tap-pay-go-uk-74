@@ -1,6 +1,6 @@
 
 import React from "react";
-import { ActivityLog } from "./hooks/useAgentMonitoring";
+import { ActivityLog } from "./hooks";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CheckCircle, Circle, Clock, Code, MessageSquare, AlertTriangle } from "lucide-react";
