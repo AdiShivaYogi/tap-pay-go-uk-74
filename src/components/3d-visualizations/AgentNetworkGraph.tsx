@@ -1,9 +1,8 @@
 
 import React, { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Sphere, Line } from '@react-three/drei';
-import { agents } from '@/components/agents/agents-data';
 import * as THREE from 'three';
+import { agents } from '@/components/agents/agents-data';
 
 interface AgentNodeProps {
   position: [number, number, number];
@@ -39,14 +38,20 @@ const AgentConnection: React.FC<{
   start: [number, number, number];
   end: [number, number, number];
 }> = ({ start, end }) => {
+  // Creăm geometria și materialul manual pentru conexiuni
+  const geometry = new THREE.BufferGeometry();
+  const vertices = new Float32Array([
+    start[0], start[1], start[2],
+    end[0], end[1], end[2]
+  ]);
+  
+  geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+  
   return (
-    <Line
-      points={[new THREE.Vector3(...start), new THREE.Vector3(...end)]}
-      color="white"
-      lineWidth={1}
-      opacity={0.5}
-      transparent
-    />
+    <primitive object={new THREE.LineSegments(
+      geometry,
+      new THREE.LineBasicMaterial({ color: 0xffffff, opacity: 0.5, transparent: true })
+    )} />
   );
 };
 

@@ -41,48 +41,55 @@ const IntelligenceSphere: React.FC<{ autonomyLevel: number }> = ({ autonomyLevel
 };
 
 const ProcessingNetworks: React.FC<{ autonomyLevel: number }> = ({ autonomyLevel }) => {
-  const linesRef = useRef<THREE.Group>(null);
+  const networkRef = useRef<THREE.Group>(null);
 
   useFrame(() => {
-    if (linesRef.current) {
-      linesRef.current.rotation.z += 0.003;
+    if (networkRef.current) {
+      networkRef.current.rotation.z += 0.003;
     }
   });
 
+  // Folosim un sistem diferit pentru a reprezenta conexiunile, fără componenta line
+  // care cauzează eroarea
   const generateNetworkConnections = () => {
-    const connections = [];
     const connectionCount = Math.floor(autonomyLevel / 10);
+    const connections = [];
 
     for (let i = 0; i < connectionCount; i++) {
-      const points = [
-        new THREE.Vector3(
-          Math.random() * 2 - 1, 
-          Math.random() * 2 - 1, 
-          Math.random() * 2 - 1
-        ),
-        new THREE.Vector3(
-          Math.random() * 2 - 1, 
-          Math.random() * 2 - 1, 
-          Math.random() * 2 - 1
-        )
-      ];
-
+      const startPoint = new THREE.Vector3(
+        Math.random() * 2 - 1, 
+        Math.random() * 2 - 1, 
+        Math.random() * 2 - 1
+      );
+      
+      const endPoint = new THREE.Vector3(
+        Math.random() * 2 - 1, 
+        Math.random() * 2 - 1, 
+        Math.random() * 2 - 1
+      );
+      
+      // Creăm geometria pentru linie manual
+      const geometry = new THREE.BufferGeometry();
+      const vertices = new Float32Array([
+        startPoint.x, startPoint.y, startPoint.z,
+        endPoint.x, endPoint.y, endPoint.z
+      ]);
+      
+      geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+      
       connections.push(
-        <line key={`connection-${i}`}>
-          <bufferGeometry attach="geometry" attributes-position={new THREE.BufferAttribute(new Float32Array([
-            points[0].x, points[0].y, points[0].z,
-            points[1].x, points[1].y, points[1].z
-          ]), 3)} />
-          <lineBasicMaterial color={0x00ffff} opacity={0.5} transparent />
-        </line>
+        <primitive key={`connection-${i}`} object={new THREE.LineSegments(
+          geometry,
+          new THREE.LineBasicMaterial({ color: 0x00ffff, opacity: 0.5, transparent: true })
+        )} />
       );
     }
-
+    
     return connections;
   };
 
   return (
-    <group ref={linesRef} position={[0, 0, 0]}>
+    <group ref={networkRef}>
       {generateNetworkConnections()}
     </group>
   );
