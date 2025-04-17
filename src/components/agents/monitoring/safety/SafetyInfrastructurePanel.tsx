@@ -12,6 +12,7 @@ import { ExecutionTab } from "./components/ExecutionTab";
 import { SafetyTab } from "./components/SafetyTab";
 import { MonitoringTab } from "./components/MonitoringTab";
 import { IntegrationTab } from "./components/IntegrationTab";
+import { AutoLaunchCountdown } from "./components/ExecutionTab/AutoLaunchCountdown";
 
 export const SafetyInfrastructurePanel: React.FC = () => {
   const {
@@ -23,6 +24,8 @@ export const SafetyInfrastructurePanel: React.FC = () => {
     monitoringParameters,
     implementationProgress,
     showAutonomyAlert,
+    autoLaunchPending,
+    timeToAutoLaunch,
     setShowAutonomyAlert,
     handleToggleSystem,
     getSystemName,
@@ -33,7 +36,9 @@ export const SafetyInfrastructurePanel: React.FC = () => {
     toggleDataConnection,
     toggleMonitoringParameter,
     startAutonomousExecution,
-    setSafetyOverride
+    setSafetyOverride,
+    acceptAllRisks,
+    cancelAutoLaunch
   } = useSafetyPanel();
 
   return (
@@ -45,6 +50,15 @@ export const SafetyInfrastructurePanel: React.FC = () => {
           onDismiss={() => setShowAutonomyAlert(false)} 
           show={showAutonomyAlert} 
         />
+        
+        {autoLaunchPending && (
+          <AutoLaunchCountdown 
+            timeToAutoLaunch={timeToAutoLaunch}
+            cancelAutoLaunch={cancelAutoLaunch}
+            acceptAllRisks={acceptAllRisks}
+            startAutonomousExecution={startAutonomousExecution}
+          />
+        )}
         
         <Tabs defaultValue="execution" className="space-y-4">
           <TabsList>

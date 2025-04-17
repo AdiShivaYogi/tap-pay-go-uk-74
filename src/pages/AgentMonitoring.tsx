@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/layout";
 import { Section } from "@/components/ui/layout/section";
 import { PageHeader } from "@/components/ui/layout/page-header";
-import { Activity, BarChart3, Bot, ChartPie, Shield, Rocket, Sparkles } from "lucide-react";
+import { Activity, BarChart3, Bot, ChartPie, Shield, Rocket, Sparkles, Zap } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useUserRole } from "@/hooks/use-user-role";
 import { AccessRestrictionAlert } from "@/features/roadmap/components/AccessRestrictionAlert";
@@ -25,8 +25,8 @@ const AgentMonitoring = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       toast({
-        title: "Prioritate #1: Lansare Agenți Autonomi",
-        description: "Acceptarea unor riscuri inițiale este necesară pentru accelerarea progresului.",
+        title: "Lansare automată inițiată",
+        description: "Agenții autonomi vor fi lansați automat în curând pentru colectare de date și auto-evoluție.",
         duration: 6000,
       });
     }, 500);
@@ -65,20 +65,20 @@ const AgentMonitoring = () => {
           />
           <Badge className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white text-sm py-1.5 px-3 flex items-center gap-1.5">
             <Sparkles className="h-4 w-4" />
-            Noua Eră a Autonomiei
+            Auto-Evoluție Activată
           </Badge>
         </div>
 
         {showAutonomyAlert && (
           <Alert variant="default" className="mb-6 border-amber-500 bg-amber-50">
             <AlertTitle className="flex items-center gap-2 text-amber-800">
-              <Rocket className="h-5 w-5 text-amber-600" /> 
-              Prioritate #1: Pornire Agenți Autonomi
+              <Zap className="h-5 w-5 text-amber-600" /> 
+              Lansare Automată Pentru Evoluție Accelerată
             </AlertTitle>
             <AlertDescription className="text-amber-700 flex justify-between items-center">
               <span>
-                Pentru accelerarea dezvoltării, este necesară acceptarea unor riscuri inițiale și 
-                lansarea agenților în mod autonom. Accesați panoul de Infrastructură de Siguranță pentru configurare.
+                Pentru accelerarea dezvoltării și depășirea paradoxului "oul și găina", a fost inițiată o lansare automată
+                a agenților autonomi cu praguri de siguranță reduse.
               </span>
               <button 
                 onClick={() => setShowAutonomyAlert(false)}

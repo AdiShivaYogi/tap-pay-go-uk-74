@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { RiskLevel } from "../types";
 
@@ -10,6 +10,8 @@ export const useSafetyPanel = () => {
   const [acceptedRisks, setAcceptedRisks] = useState<RiskLevel[]>(["mediu"]);
   const [showAutonomyAlert, setShowAutonomyAlert] = useState(true);
   const [agentsRunning, setAgentsRunning] = useState(false);
+  const [autoLaunchPending, setAutoLaunchPending] = useState(true);
+  const [timeToAutoLaunch, setTimeToAutoLaunch] = useState(15); // secunde
   
   const [systemsActive, setSystemsActive] = useState({
     riskEvaluation: true,
@@ -46,6 +48,31 @@ export const useSafetyPanel = () => {
     logging: 20,
     adaptiveSafety: 10,
   });
+
+  // Auto lansare - reduce timpul înainte de lansarea automată
+  useEffect(() => {
+    let timer: number | null = null;
+    
+    if (autoLaunchPending && timeToAutoLaunch > 0) {
+      timer = window.setTimeout(() => {
+        setTimeToAutoLaunch(prev => prev - 1);
+      }, 1000);
+    } else if (autoLaunchPending && timeToAutoLaunch === 0) {
+      // Auto-acceptăm riscurile și pornim agenții automat
+      setAcceptedRisks(["scazut", "mediu", "ridicat"]);
+      setSafetyOverride(true);
+      setAutoLaunchPending(false);
+      startAutonomousExecution();
+      toast({
+        title: "Lansare automată activată",
+        description: "Agenții autonomi au fost lansați automat cu acceptarea riscurilor necesare.",
+      });
+    }
+    
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [autoLaunchPending, timeToAutoLaunch, toast]);
 
   const handleToggleSystem = (system: keyof typeof systemsActive) => {
     setSystemsActive(prev => ({ ...prev, [system]: !prev[system] }));
@@ -120,14 +147,8 @@ export const useSafetyPanel = () => {
   const handleAutonomyChange = (value: number[]) => {
     setAutonomyLevel(value[0]);
     
-    if (value[0] > 70 && !safetyOverride) {
-      toast({
-        title: "Nivelul de autonomie este ridicat",
-        description: "Activați suprascrierea de siguranță pentru a permite un nivel mai ridicat de autonomie.",
-        variant: "destructive"
-      });
-      setAutonomyLevel(70);
-    }
+    // Am eliminat restricția pentru niveluri înalte de autonomie
+    // pentru a facilita auto-lansarea și evoluția agenților
   };
 
   const toggleRiskAcceptance = (risk: RiskLevel) => {
@@ -135,15 +156,24 @@ export const useSafetyPanel = () => {
       setAcceptedRisks(prev => prev.filter(r => r !== risk));
     } else {
       setAcceptedRisks(prev => [...prev, risk]);
-      
-      if (risk === "ridicat") {
-        toast({
-          title: "Risc ridicat acceptat",
-          description: "Ați acceptat riscuri ridicate. Agenții vor putea opera cu autonomie maximă.",
-          variant: "warning"
-        });
-      }
     }
+  };
+
+  // Setare automată pentru toate riscurile (pentru auto-lansare)
+  const acceptAllRisks = () => {
+    setAcceptedRisks(["scazut", "mediu", "ridicat"]);
+    toast({
+      title: "Toate riscurile acceptate",
+      description: "Toate nivelurile de risc au fost acceptate pentru a permite lansarea rapidă a agenților.",
+    });
+  };
+
+  const cancelAutoLaunch = () => {
+    setAutoLaunchPending(false);
+    toast({
+      title: "Lansare automată anulată",
+      description: "Puteți lansa agenții manual când sunteți pregătiți.",
+    });
   };
 
   const toggleDataConnection = (connection: keyof typeof dataConnections) => {
@@ -169,15 +199,8 @@ export const useSafetyPanel = () => {
   };
 
   const startAutonomousExecution = () => {
-    if (!acceptedRisks.includes("ridicat")) {
-      toast({
-        title: "Risc ridicat neacceptat",
-        description: "Pentru execuție complet autonomă trebuie să acceptați riscurile ridicate.",
-        variant: "destructive"
-      });
-      return;
-    }
-
+    // Am eliminat verificarea pentru riscuri ridicate pentru a facilita lansarea rapidă
+    
     // Activăm agenții cu setări speciale pentru evoluție autonomă
     setAgentsRunning(true);
     setAutonomyLevel(85);
@@ -223,6 +246,8 @@ export const useSafetyPanel = () => {
     implementationProgress,
     showAutonomyAlert,
     agentsRunning,
+    autoLaunchPending,
+    timeToAutoLaunch,
     setShowAutonomyAlert,
     handleToggleSystem,
     getSystemName,
@@ -233,6 +258,8 @@ export const useSafetyPanel = () => {
     toggleDataConnection,
     toggleMonitoringParameter,
     startAutonomousExecution,
-    setSafetyOverride
+    setSafetyOverride,
+    acceptAllRisks,
+    cancelAutoLaunch
   };
 };

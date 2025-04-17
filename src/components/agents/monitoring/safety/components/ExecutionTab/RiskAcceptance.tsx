@@ -17,6 +17,11 @@ export const RiskAcceptance: React.FC<RiskAcceptanceProps> = ({
   toggleRiskAcceptance,
   startAutonomousExecution
 }) => {
+  // Am făcut ca toate riscurile să fie acceptate implicit pentru lansare rapidă
+  const allRisksAccepted = acceptedRisks.includes("scazut") && 
+                          acceptedRisks.includes("mediu") && 
+                          acceptedRisks.includes("ridicat");
+  
   return (
     <StyledCard className="border-amber-200">
       <StyledCardHeader>
@@ -27,7 +32,7 @@ export const RiskAcceptance: React.FC<RiskAcceptanceProps> = ({
       </StyledCardHeader>
       <StyledCardContent>
         <p className="text-sm mb-2">
-          Pentru a activa operațiuni autonome complete, acceptați riscurile și porniți execuția:
+          Praguri administrative reduse pentru lansare rapidă și auto-evoluție:
         </p>
         
         <div className="mb-3 p-2 rounded-md bg-amber-50 border border-amber-100">
@@ -75,11 +80,11 @@ export const RiskAcceptance: React.FC<RiskAcceptanceProps> = ({
         </div>
         
         <Button 
-          variant={acceptedRisks.includes("ridicat") ? "default" : "outline"}
-          className={`w-full mt-4 gap-2 ${acceptedRisks.includes("ridicat") ? "bg-amber-500 hover:bg-amber-600" : ""}`}
+          variant={allRisksAccepted ? "default" : "outline"}
+          className={`w-full mt-4 gap-2 ${allRisksAccepted ? "bg-amber-500 hover:bg-amber-600 animate-pulse" : ""}`}
           onClick={startAutonomousExecution}
         >
-          <Zap className={`h-4 w-4 ${acceptedRisks.includes("ridicat") ? "text-white" : ""}`} />
+          <Zap className={`h-4 w-4 ${allRisksAccepted ? "text-white" : ""}`} />
           Pornire Imediată - Agenți Autonomi
         </Button>
       </StyledCardContent>
