@@ -182,6 +182,7 @@ export const AutonomyEngine: React.FC = () => {
       // Înregistrăm activitatea reușită
       await supabase.from('agent_activity_logs').insert({
         agent_id: "anthropic-api-test",
+        agent_name: "Test API Anthropic", // Added missing agent_name field
         description: "Test conexiune API Anthropic reușit: " + data.response.substring(0, 30) + "...",
         category: "api-test",
         timestamp: new Date().toISOString()
