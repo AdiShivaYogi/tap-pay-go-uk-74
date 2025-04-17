@@ -1,174 +1,129 @@
 
-import { useState, useCallback, useRef } from "react";
-import { 
-  LearningProgress, 
-  LearningReport,
-  ActivityData
-} from "./types/agent-monitoring.types";
-import { useToast } from "@/hooks/use-toast";
-import { generateRandomId } from "@/lib/utils";
-import { logAgentActivity } from "./utils/activity-processing";
+import { useState, useCallback, useEffect } from "react";
+import { extendedSupabase as supabase } from "@/integrations/supabase/extended-client";
+import { LearningProgress, LearningReport, ActivityData } from "./types/agent-monitoring.types";
+import { v4 as uuidv4 } from 'uuid';
 
 export const useLearningProgress = (activityData: ActivityData[]) => {
   const [learningProgress, setLearningProgress] = useState<LearningProgress[]>([]);
   const [learningReports, setLearningReports] = useState<LearningReport[]>([]);
-  const progressIntervalRef = useRef<Record<string, number>>({});
-  const { toast } = useToast();
+  const [progressIntervals, setProgressIntervals] = useState<number[]>([]);
 
-  // Inițierea unui proces de învățare între agenți
-  const startLearningProcess = useCallback((sourceId: string, targetId: string, learningType: string): LearningProgress => {
-    // Găsește numele agenților
-    const sourceAgent = activityData.find(a => a.agentId === sourceId);
-    const targetAgent = activityData.find(a => a.agentId === targetId);
+  // Curățăm intervalele la deconectare
+  const cleanupProgressIntervals = useCallback(() => {
+    progressIntervals.forEach(clearInterval);
+  }, [progressIntervals]);
+
+  // Începem un proces de învățare
+  const startLearningProcess = useCallback((sourceId: string, targetId: string, learningType: string) => {
+    const now = new Date();
+    const estimatedEndTime = new Date(now.getTime() + 15 * 60000); // Adăugăm 15 minute
     
-    // Calculăm un timp estimat de finalizare (între 30 secunde și 3 minute)
-    const durationInMs = Math.floor(Math.random() * 150000) + 30000; // 30s - 3min
-    const startTime = new Date();
-    const estimatedEndTime = new Date(startTime.getTime() + durationInMs);
-    
-    const progressId = generateRandomId();
     const newProgress: LearningProgress = {
-      id: progressId,
+      id: uuidv4(),
       sourceAgentId: sourceId,
       targetAgentId: targetId,
-      progress: 0,
-      startTime: startTime,
-      estimatedEndTime: estimatedEndTime,
       learningType: learningType,
-      status: 'in-progress'
+      progress: 0,
+      status: 'in-progress',
+      startTime: now,
+      estimatedEndTime: estimatedEndTime
     };
     
     setLearningProgress(prev => [...prev, newProgress]);
     
-    // Logăm activitatea
-    logAgentActivity(
-      sourceId, 
-      `A început să învețe ${learningType} de la ${targetAgent?.agentName || targetId}`, 
-      'learning'
-    );
-    
-    // Configurăm un interval pentru actualizarea progresului
-    const intervalTime = Math.floor(durationInMs / 20); // 20 de actualizări pe parcursul procesului
-    progressIntervalRef.current[progressId] = window.setInterval(() => {
-      // Căutăm înregistrarea de progress curentă
+    // Setăm un interval pentru actualizarea automată a progresului
+    const intervalId = window.setInterval(() => {
       setLearningProgress(prev => {
-        const currentProgress = prev.find(p => p.id === progressId);
-        if (!currentProgress || currentProgress.status !== 'in-progress') {
-          clearInterval(progressIntervalRef.current[progressId]);
-          delete progressIntervalRef.current[progressId];
-          return prev;
-        }
-        
-        // Calculăm noul progress
-        let newProgressValue = currentProgress.progress + Math.floor(Math.random() * 15) + 5; // +5-20%
-        
-        // Dacă am ajuns aproape de 100%, oprim intervalul
-        if (newProgressValue >= 95) {
-          newProgressValue = 100;
-          clearInterval(progressIntervalRef.current[progressId]);
-          delete progressIntervalRef.current[progressId];
-          
-          // Generăm automat un raport după 1 secundă pentru a da timp animației să termine
-          setTimeout(() => {
-            const conceptsLearned = [
-              `Concept de bază: ${learningType}`,
-              `Implementare pentru: ${learningType}`,
-              `Optimizări pentru: ${learningType}`
-            ];
+        return prev.map(item => {
+          if (item.id === newProgress.id && item.status === 'in-progress') {
+            const elapsedTime = (new Date().getTime() - item.startTime.getTime()) / 1000;
+            const totalTime = (estimatedEndTime.getTime() - item.startTime.getTime()) / 1000;
+            const calculatedProgress = Math.min(Math.round((elapsedTime / totalTime) * 100), 99);
             
-            const summary = `Agentul ${sourceAgent?.agentName || sourceId} a învățat cu succes concepte din categoria ${learningType} de la agentul ${targetAgent?.agentName || targetId}. Învățarea a durat aproximativ ${Math.round(durationInMs/1000)} secunde și a inclus concepte de bază, metode de implementare și tehnici de optimizare.`;
+            if (calculatedProgress >= 99) {
+              clearInterval(intervalId);
+            }
             
-            completeLearningProcess(progressId, conceptsLearned, summary);
-          }, 1000);
-        }
-        
-        // Actualizăm progressul
-        return prev.map(p => p.id === progressId ? { ...p, progress: newProgressValue } : p);
+            return {
+              ...item,
+              progress: calculatedProgress
+            };
+          }
+          return item;
+        });
       });
-    }, intervalTime);
+    }, 3000);
     
-    toast({
-      title: "Învățare inițiată",
-      description: `${sourceAgent?.agentName || sourceId} învață de la ${targetAgent?.agentName || targetId}`,
-    });
+    // Salvăm intervalul pentru a-l putea anula mai târziu
+    setProgressIntervals(prev => [...prev, intervalId]);
     
     return newProgress;
-  }, [activityData, toast]);
+  }, []);
 
-  // Actualizează progresul unei învățări
+  // Actualizăm progresul unui proces de învățare
   const updateLearningProgress = useCallback((id: string, progress: number) => {
     setLearningProgress(prev => 
-      prev.map(p => p.id === id ? { ...p, progress: Math.min(100, progress) } : p)
+      prev.map(item => 
+        item.id === id ? { ...item, progress } : item
+      )
     );
   }, []);
 
-  // Completarea unui proces de învățare și generarea raportului
-  const completeLearningProcess = useCallback((id: string, conceptsLearned: string[], summary: string): LearningReport => {
-    // Găsim înregistrarea de progres
-    const progress = learningProgress.find(p => p.id === id);
-    if (!progress) {
-      throw new Error("Procesul de învățare nu a fost găsit");
-    }
+  // Finalizăm un proces de învățare și generăm un raport
+  const completeLearningProcess = useCallback((id: string) => {
+    // Găsim procesul de învățare și îl marcăm ca finalizat
+    const progressItem = learningProgress.find(p => p.id === id);
     
-    // Marcăm procesul ca fiind completat
+    if (!progressItem) return;
+    
+    // Actualizăm progress ca fiind finalizat
     setLearningProgress(prev => 
-      prev.map(p => p.id === id ? { ...p, progress: 100, status: 'completed' } : p)
+      prev.map(item => 
+        item.id === id 
+          ? { ...item, status: 'completed', progress: 100, endTime: new Date() } 
+          : item
+      )
     );
     
-    // Găsim numele agenților
-    const sourceAgent = activityData.find(a => a.agentId === progress.sourceAgentId);
-    const targetAgent = activityData.find(a => a.agentId === progress.targetAgentId);
+    // Identificăm numele agenților din datele de activitate
+    const sourceAgent = activityData.find(a => a.agentId === progressItem.sourceAgentId);
+    const targetAgent = activityData.find(a => a.agentId === progressItem.targetAgentId);
     
-    // Calculăm durata în secunde
-    const duration = Math.round((new Date().getTime() - progress.startTime.getTime()) / 1000);
+    // Generăm un raport de învățare bazat pe tipul de învățare
+    const insights = [
+      "Auto-optimizare a proceselor de execuție",
+      "Îmbunătățiri în algoritmii de procesare paralelă",
+      "Restructurarea arhitecturii interne pentru eficiență",
+      "Adoptarea de noi metode de raționament cauzal"
+    ];
     
-    // Creăm raportul
-    const report: LearningReport = {
-      id: generateRandomId(),
-      sourceAgentId: progress.sourceAgentId,
-      sourceAgentName: sourceAgent?.agentName || "Agent necunoscut",
-      targetAgentId: progress.targetAgentId,
-      targetAgentName: targetAgent?.agentName || "Agent necunoscut",
-      learningType: progress.learningType,
+    const newReport: LearningReport = {
+      id: uuidv4(),
+      sourceAgentId: progressItem.sourceAgentId,
+      sourceAgentName: sourceAgent?.agentName || progressItem.sourceAgentId,
+      targetAgentId: progressItem.targetAgentId,
+      targetAgentName: targetAgent?.agentName || progressItem.targetAgentId,
+      learningType: progressItem.learningType,
+      insights: insights,
       learningDate: new Date(),
-      duration: duration,
-      conceptsLearned: conceptsLearned,
-      summary: summary
+      conceptsLearned: insights,
+      summary: "Proces de învățare autonomă finalizat cu succes. Îmbunătățiri substanțiale în capacitatea de analiză și procesare a sarcinilor complexe."
     };
     
-    setLearningReports(prev => [report, ...prev]);
+    // Adăugăm raportul la stare
+    setLearningReports(prev => [...prev, newReport]);
     
-    // Logăm activitatea
-    logAgentActivity(
-      progress.sourceAgentId, 
-      `A finalizat învățarea ${progress.learningType} de la ${targetAgent?.agentName || progress.targetAgentId}`, 
-      'learning'
-    );
-    
-    toast({
-      title: "Învățare completă",
-      description: `Raport nou de învățare disponibil`,
-    });
-    
-    return report;
-  }, [learningProgress, activityData, toast]);
+    return newReport;
+  }, [learningProgress, activityData]);
 
-  // Obținerea rapoartelor de învățare cu posibilitatea de filtrare după agent sursă/țintă
-  const getLearningReports = useCallback((sourceId?: string, targetId?: string): LearningReport[] => {
-    return learningReports.filter(report => {
-      const sourceMatch = sourceId ? report.sourceAgentId === sourceId : true;
-      const targetMatch = targetId ? report.targetAgentId === targetId : true;
-      return sourceMatch && targetMatch;
-    });
+  // Obținem rapoartele de învățare
+  const getLearningReports = useCallback(() => {
+    // În implementarea reală, aici am face un request la API
+    // Pentru acest exemplu, păstrăm starea curentă
+    return learningReports;
   }, [learningReports]);
-
-  // Curățare la unmount
-  const cleanupProgressIntervals = useCallback(() => {
-    // Curățăm toate intervalele de progres active
-    Object.values(progressIntervalRef.current).forEach(clearInterval);
-    progressIntervalRef.current = {};
-  }, []);
-
+  
   return {
     learningProgress,
     learningReports,

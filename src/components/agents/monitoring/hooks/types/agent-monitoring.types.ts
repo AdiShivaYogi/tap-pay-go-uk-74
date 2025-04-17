@@ -14,6 +14,7 @@ export interface ActivityLog {
   agentId: string;
   agentName: string;
   action: string;
+  description?: string; // Adăugat pentru compatibilitate
   category: string;
   timestamp: Date;
 }
@@ -43,6 +44,7 @@ export interface LearningProgress {
   status: 'pending' | 'in-progress' | 'completed' | 'failed';
   startTime: Date;
   endTime?: Date;
+  estimatedEndTime: Date; // Adăugat pentru compatibilitate cu componenta existentă
 }
 
 export interface LearningReport {
@@ -54,6 +56,9 @@ export interface LearningReport {
   learningType: string;
   insights: string[];
   learningDate: Date;
+  duration?: number; // Adăugat pentru compatibilitate
+  conceptsLearned?: string[]; // Adăugat pentru compatibilitate
+  summary?: string; // Adăugat pentru compatibilitate
 }
 
 export interface AgentMonitoringHook {
@@ -80,4 +85,3 @@ export interface AgentMonitoringHook {
   getLearningReports: () => void;
   executeAutoLearning: () => void;
 }
-

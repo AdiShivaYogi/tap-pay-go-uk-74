@@ -6,6 +6,7 @@ import {
   Book, 
   Bot, 
   Activity,
+  Command
 } from "lucide-react";
 import { ComponentType, SVGProps } from "react";
 
@@ -41,6 +42,12 @@ export const config = {
       title: "Agenți",
       href: "/agents",
       icon: Bot,
+    },
+    {
+      title: "Management Agenți",
+      href: "/agent-management",
+      icon: Command,
+      admin: true,
     },
     {
       title: "Administrare Agenți",

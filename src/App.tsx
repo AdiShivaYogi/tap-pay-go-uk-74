@@ -1,3 +1,4 @@
+
 import { Route, Routes } from "react-router-dom";
 import Index from "./pages/Index";
 import About from "./pages/About";
@@ -28,6 +29,7 @@ import NotificationSettings from "./pages/NotificationSettings";
 import Agents from "./pages/Agents";
 import AgentAdmin from "./pages/AgentAdmin";
 import AgentMonitoring from "./pages/AgentMonitoring";
+import UnifiedAgentManagement from "./pages/UnifiedAgentManagement";
 
 function App() {
   return (
@@ -60,6 +62,7 @@ function App() {
       <Route path="/agents" element={<Agents />} />
       <Route path="/agent-admin" element={<AgentAdmin />} />
       <Route path="/agent-monitoring" element={<AgentMonitoring />} />
+      <Route path="/agent-management" element={<UnifiedAgentManagement />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

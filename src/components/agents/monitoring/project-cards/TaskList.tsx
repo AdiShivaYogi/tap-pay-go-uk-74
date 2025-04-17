@@ -4,15 +4,18 @@ import { TaskItem } from "./TaskItem";
 import { AgentTask } from "./types";
 
 interface TaskListProps {
-  tasks: AgentTask[];
+  tasks: (AgentTask & { inProgress?: boolean })[];
 }
 
 export const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
   return (
-    <ul className="space-y-2">
+    <div className="mt-4 space-y-2">
       {tasks.map((task, index) => (
-        <TaskItem key={index} name={task.name} completed={task.completed} />
+        <TaskItem 
+          key={index} 
+          task={task} 
+        />
       ))}
-    </ul>
+    </div>
   );
 };

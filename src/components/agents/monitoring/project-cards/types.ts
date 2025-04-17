@@ -5,6 +5,7 @@ import { LucideIcon } from "lucide-react";
 export interface AgentTask {
   name: string;
   completed: boolean;
+  inProgress?: boolean;
 }
 
 export interface AgentProject {

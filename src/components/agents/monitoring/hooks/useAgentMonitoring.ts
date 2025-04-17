@@ -101,6 +101,6 @@ export const useAgentMonitoring = (): AgentMonitoringHook => {
     updateLearningProgress,
     completeLearningProcess,
     getLearningReports,
-    executeAutoLearning // Make sure this is included in the return object
+    executeAutoLearning
   };
 };
