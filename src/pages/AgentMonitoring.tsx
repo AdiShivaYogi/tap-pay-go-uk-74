@@ -14,10 +14,10 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { agents } from "@/components/agents/agents-data";
-import { AgentAutonomyOverview } from "@/components/agents/monitoring/autonomy/AgentAutonomyOverview";
+import { AgentAutonomyOverview, AutonomyVisualization, AutonomyCard } from "@/components/agents/monitoring/autonomy";
 import { useSafetyPanel } from "@/components/agents/monitoring/safety/hooks/useSafetyPanel";
-import { AutonomyVisualization } from "@/components/agents/monitoring/autonomy/AutonomyVisualization";
 import { AgentInnerWorldVisualization } from '@/components/3d-visualizations/AgentInnerWorldVisualization';
+import { AgentNetworkGraph } from '@/components/3d-visualizations/AgentNetworkGraph';
 
 const AgentMonitoring = () => {
   const { user } = useAuth();
@@ -99,11 +99,16 @@ const AgentMonitoring = () => {
           </Alert>
         )}
 
-        <AgentAutonomyOverview autonomyLevel={autonomyLevel} agentsRunning={agentsRunning} />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <div className="md:col-span-2">
+            <AgentAutonomyOverview autonomyLevel={autonomyLevel} agentsRunning={agentsRunning} />
+          </div>
+          <div className="md:col-span-1">
+            <AutonomyCard />
+          </div>
+        </div>
 
-        <AutonomyVisualization />
-
-        <Tabs defaultValue="autonomy" className="space-y-6 mt-6">
+        <Tabs defaultValue="autonomy" className="space-y-6">
           <TabsList className="mb-4">
             <TabsTrigger value="autonomy" className="flex items-center gap-1">
               <Brain className="h-4 w-4" />
@@ -143,7 +148,9 @@ const AgentMonitoring = () => {
                 Utilizați mouse-ul pentru a roti și examina relațiile dintre agenți.
               </p>
             </div>
-            <AutonomyVisualization />
+            <div className="h-[500px] border rounded-lg overflow-hidden">
+              <AgentNetworkGraph />
+            </div>
           </TabsContent>
           
           <TabsContent value="safety">
