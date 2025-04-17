@@ -83,12 +83,13 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
       "auto_execution"
     );
     
-    // Salvăm starea în baza de date
+    // Salvăm starea în baza de date folosind obiectul actualizat
     if (project.id) {
-      saveAutoExecutionStatus({
+      const updatedStatus = {
         ...autoExecutionStatus,
         [project.id]: true
-      });
+      };
+      saveAutoExecutionStatus(updatedStatus);
     }
     
     setIsExecuting(false);
@@ -126,7 +127,7 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
         
         <ProjectProgress
           progress={progress}
-          completedTasksCount={completedTasksCount}
+          completedTasks={completedTasksCount}
           totalTasks={totalTasks}
           isExecuting={isExecuting}
         />

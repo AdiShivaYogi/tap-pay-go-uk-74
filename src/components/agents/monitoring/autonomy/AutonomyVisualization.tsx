@@ -93,7 +93,7 @@ export const AutonomyVisualization: React.FC = () => {
       </div>
       
       <div className="mb-6">
-        <AutoExecutionButton disabled={true} completed={true} />
+        <AutoExecutionButton completed={true} disabled={true} />
       </div>
       
       <StyledCard>

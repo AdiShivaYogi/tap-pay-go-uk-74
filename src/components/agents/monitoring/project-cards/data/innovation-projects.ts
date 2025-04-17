@@ -253,3 +253,10 @@ export const innovationProjects: AgentProject[] = [
     ]
   }
 ];
+
+// Adaugă name = title pentru toate obiectele din innovationProjects
+for (const project of innovationProjects) {
+  if (!project.name) {
+    project.name = project.title;
+  }
+}

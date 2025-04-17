@@ -87,3 +87,10 @@ export const monitoringProjects: AgentProject[] = [
     ]
   }
 ];
+
+// Adaugă name = title pentru toate obiectele din monitoringProjects
+for (const project of monitoringProjects) {
+  if (!project.name) {
+    project.name = project.title;
+  }
+}

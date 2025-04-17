@@ -5,7 +5,7 @@ import { AgentMonitoringHook } from "./types/agent-monitoring.types";
 import { formatDistanceToNow } from "date-fns";
 import { ro } from "date-fns/locale";
 
-export const useActivityData = (): AgentMonitoringHook => {
+export const useActivityData = () => {
   const [activityData, setActivityData] = useState<any[]>([]);
   const [activityLogs, setActivityLogs] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);

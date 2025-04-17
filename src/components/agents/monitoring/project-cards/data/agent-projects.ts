@@ -1,4 +1,3 @@
-
 import { Rocket, ShieldAlert, BrainCircuit, Lightbulb, Book, Search, Code, Terminal, GraduationCap, Sparkles } from "lucide-react";
 import { AgentProject } from "../types";
 
@@ -8,6 +7,7 @@ export const agentProjects: AgentProject[] = [
   {
     id: "autonomy-1",
     title: "Noua Eră a Autonomiei",
+    name: "Noua Eră a Autonomiei",
     description: "Lansarea unui cadru complet autonom care permite agenților să evolueze și să învețe independent",
     icon: Sparkles,
     tasks: [
@@ -27,6 +27,7 @@ export const agentProjects: AgentProject[] = [
   {
     id: "autonomy-2",
     title: "Integrarea Sistemelor de Auto-Învățare",
+    name: "Integrarea Sistemelor de Auto-Învățare",
     description: "Implementarea algoritmilor de machine learning pentru adaptarea continuă a agenților",
     icon: GraduationCap,
     tasks: [
@@ -45,6 +46,7 @@ export const agentProjects: AgentProject[] = [
   {
     id: "autonomy-3",
     title: "Dezvoltarea Abilităților de Auto-Corectare",
+    name: "Dezvoltarea Abilităților de Auto-Corectare",
     description: "Crearea unui sistem care permite agenților să identifice și să corecteze erorile fără intervenție umană",
     icon: BrainCircuit,
     tasks: [
@@ -62,6 +64,7 @@ export const agentProjects: AgentProject[] = [
   {
     id: "autonomy-4",
     title: "Optimizarea Proceselor de Planificare Autonomă",
+    name: "Optimizarea Proceselor de Planificare Autonomă",
     description: "Îmbunătățirea capacității agenților de a planifica și executa sarcini complexe fără supervizare",
     icon: Lightbulb,
     tasks: [
@@ -79,6 +82,7 @@ export const agentProjects: AgentProject[] = [
   {
     id: "autonomy-5",
     title: "Creșterea Creativității Agenților",
+    name: "Creșterea Creativității Agenților",
     description: "Explorarea metodelor de a spori creativitatea și inovația agenților în rezolvarea problemelor",
     icon: Sparkles,
     tasks: [
@@ -97,6 +101,7 @@ export const agentProjects: AgentProject[] = [
   {
     id: "safety-1",
     title: "Îmbunătățirea Conectării la Algoritmul de Risc",
+    name: "Îmbunătățirea Conectării la Algoritmul de Risc",
     description: "Integrarea cu algoritmul de risc pentru a evalua și minimiza potențialele amenințări",
     icon: ShieldAlert,
     tasks: [
@@ -114,6 +119,7 @@ export const agentProjects: AgentProject[] = [
   {
     id: "safety-2",
     title: "Implementarea Jurnalizării Centralizate",
+    name: "Implementarea Jurnalizării Centralizate",
     description: "Crearea unui sistem centralizat de jurnalizare pentru monitorizarea activităților agenților",
     icon: Book,
     tasks: [
@@ -131,6 +137,7 @@ export const agentProjects: AgentProject[] = [
   {
     id: "safety-3",
     title: "Dezvoltarea Sistemului de Siguranță",
+    name: "Dezvoltarea Sistemului de Siguranță",
     description: "Crearea unui sistem de siguranță robust pentru a proteja agenții și mediul lor",
     icon: ShieldAlert,
     tasks: [
@@ -147,6 +154,7 @@ export const agentProjects: AgentProject[] = [
   {
     id: "safety-4",
     title: "Integrarea Parametrilor de Monitorizare",
+    name: "Integrarea Parametrilor de Monitorizare",
     description: "Integrarea parametrilor de monitorizare pentru a urmări performanța și comportamentul agenților",
     icon: Search,
     tasks: [
@@ -164,6 +172,7 @@ export const agentProjects: AgentProject[] = [
   {
     id: "safety-5",
     title: "Crearea Sistemului de Raportare",
+    name: "Crearea Sistemului de Raportare",
     description: "Crearea unui sistem de raportare detaliat pentru a urmări activitățile agenților",
     icon: Code,
     tasks: [
@@ -180,6 +189,7 @@ export const agentProjects: AgentProject[] = [
   {
     id: "safety-6",
     title: "Implementarea Protocolului de Securitate",
+    name: "Implementarea Protocolului de Securitate",
     description: "Implementarea unui protocol de securitate pentru a proteja agenții împotriva amenințărilor externe",
     icon: Terminal,
     tasks: [
@@ -197,6 +207,7 @@ export const agentProjects: AgentProject[] = [
   {
     id: "safety-7",
     title: "Dezvoltarea Mecanismelor de Limitare",
+    name: "Dezvoltarea Mecanismelor de Limitare",
     description: "Crearea unor mecanisme de limitare pentru a preveni comportamentul necontrolat al agenților",
     icon: ShieldAlert,
     tasks: [
@@ -215,6 +226,7 @@ export const agentProjects: AgentProject[] = [
   {
     id: "other-1",
     title: "Integrarea cu Sistemul de Management al Proiectelor",
+    name: "Integrarea cu Sistemul de Management al Proiectelor",
     description: "Integrarea cu sistemul de management al proiectelor pentru a urmări progresul și sarcinile agenților",
     icon: Rocket,
     tasks: [
@@ -230,3 +242,10 @@ export const agentProjects: AgentProject[] = [
     integrationProgress: 70,
   },
 ];
+
+// Adaugă name = title pentru toate obiectele din agentProjects
+for (const project of agentProjects) {
+  if (!project.name) {
+    project.name = project.title;
+  }
+}

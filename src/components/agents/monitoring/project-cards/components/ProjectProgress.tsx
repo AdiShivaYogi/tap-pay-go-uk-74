@@ -1,75 +1,48 @@
 
 import React from "react";
-import { cn } from "@/lib/utils";
-import { ProgressBar } from "../ProgressBar";
+import { Progress } from "@/components/ui/progress";
+import { Loader2, CheckCircle2 } from "lucide-react";
 
-interface ProjectProgressProps {
+export interface ProjectProgressProps {
   progress: number;
-  completedTasksCount?: number;
-  totalTasks?: number;
-  isExecuting?: boolean;
-  timeUsed?: number;
-  timeTotal?: number;
-  isAutonomyProject?: boolean;
-  executionComplete?: boolean;
+  completedTasks: number;
+  totalTasks: number;
+  isExecuting: boolean;
 }
 
-export const ProjectProgress: React.FC<ProjectProgressProps> = ({
-  isExecuting,
-  progress,
-  completedTasksCount,
+export const ProjectProgress: React.FC<ProjectProgressProps> = ({ 
+  progress, 
+  completedTasks, 
   totalTasks,
-  timeUsed = 0,
-  timeTotal = 0,
-  isAutonomyProject = false,
-  executionComplete = false,
+  isExecuting
 }) => {
-  if (isExecuting) {
-    return (
-      <div className="w-full">
-        <div className="flex justify-between text-xs text-muted-foreground mb-1">
-          <span>Implementare automată în curs...</span>
-          <span>{progress}%</span>
-        </div>
-        <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-          <div 
-            className={cn(
-              "h-full rounded-full transition-all duration-500 ease-out",
-              progress < 30 ? "bg-amber-500" : 
-              progress < 70 ? "bg-amber-400" : "bg-green-500"
-            )}
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-      </div>
-    );
-  }
-  
-  if (completedTasksCount !== undefined && totalTasks !== undefined) {
-    return (
-      <div className="mb-4">
-        <div className="flex justify-between text-xs text-muted-foreground mb-1">
-          <span>Progres implementare</span>
-          <span>{completedTasksCount} din {totalTasks} taskuri</span>
-        </div>
-        <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-          <div 
-            className={cn(
-              "h-full rounded-full transition-all duration-300",
-              completedTasksCount === totalTasks ? "bg-green-500" : "bg-amber-500"
-            )}
-            style={{ width: `${(completedTasksCount / totalTasks) * 100}%` }}
-          />
-        </div>
-      </div>
-    );
-  }
+  const completionPercentage = Math.round((completedTasks / totalTasks) * 100);
   
   return (
-    <ProgressBar 
-      timeUsed={isAutonomyProject ? 30 : timeUsed} 
-      timeTotal={timeTotal} 
-      completed={isAutonomyProject || executionComplete}
-    />
+    <div className="mt-4 mb-2">
+      <div className="flex items-center justify-between mb-1">
+        <span className="text-xs font-medium text-muted-foreground">
+          {isExecuting ? (
+            <span className="flex items-center text-amber-600">
+              <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+              Execuție automată...
+            </span>
+          ) : completedTasks === totalTasks ? (
+            <span className="flex items-center text-green-600">
+              <CheckCircle2 className="h-3 w-3 mr-1" />
+              Complet implementat
+            </span>
+          ) : (
+            `${completedTasks} din ${totalTasks} taskuri finalizate`
+          )}
+        </span>
+        <span className="text-xs font-medium">{completionPercentage}%</span>
+      </div>
+      
+      <Progress 
+        value={isExecuting ? progress : completionPercentage} 
+        className="h-1.5"
+      />
+    </div>
   );
 };

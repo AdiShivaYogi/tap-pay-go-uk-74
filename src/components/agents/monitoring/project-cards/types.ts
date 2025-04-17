@@ -19,7 +19,7 @@ export interface AgentProject {
   id?: string;
   agentId?: string;
   title: string;
-  name: string;
+  name?: string; // Facem opțional pentru a fi compatibil cu datele existente
   description: string;
   icon: LucideIcon;
   tasks: TaskItem[];

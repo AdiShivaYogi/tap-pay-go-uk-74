@@ -1,3 +1,4 @@
+
 import { Layout, BrainCircuit, Network, Sparkles, Shield, LineChart, Gauge } from "lucide-react";
 import { AgentProject } from "../types";
 
@@ -6,6 +7,7 @@ export const AUTONOMY_PROJECTS: AgentProject[] = [
   {
     id: "autonomy-era",
     title: "Noua Eră a Autonomiei",
+    name: "Noua Eră a Autonomiei",
     description: "Lansarea unui cadru complet autonom care permite agenților să evolueze, să învețe și să se adapteze independent",
     icon: Sparkles,
     tasks: [
@@ -25,6 +27,7 @@ export const AUTONOMY_PROJECTS: AgentProject[] = [
   {
     id: "agent-communication",
     title: "Protocol de Comunicare Inter-Agent",
+    name: "Protocol de Comunicare Inter-Agent",
     description: "Implementarea unui protocol standardizat pentru comunicarea eficientă între agenți autonomi",
     icon: Network,
     tasks: [
@@ -42,6 +45,7 @@ export const AUTONOMY_PROJECTS: AgentProject[] = [
   {
     id: "self-improvement",
     title: "Auto-îmbunătățire Continuă",
+    name: "Auto-îmbunătățire Continuă",
     description: "Implementarea mecanismelor prin care agenții își pot evolua capabilitățile prin feedback și iterații autonome",
     icon: BrainCircuit,
     tasks: [
@@ -59,6 +63,7 @@ export const AUTONOMY_PROJECTS: AgentProject[] = [
   {
     id: "safety-framework",
     title: "Cadru de Siguranță Avansat",
+    name: "Cadru de Siguranță Avansat",
     description: "Mecanisme de siguranță și limitări etice pentru operarea autonomă a agenților în diverse contexte",
     icon: Shield,
     tasks: [
@@ -76,6 +81,7 @@ export const AUTONOMY_PROJECTS: AgentProject[] = [
   {
     id: "monitoring-system",
     title: "Sistem de Monitorizare Avansată",
+    name: "Sistem de Monitorizare Avansată",
     description: "Platformă comprehensivă pentru monitorizarea activității, performanței și stării agenților autonomi",
     icon: LineChart,
     tasks: [
@@ -93,6 +99,7 @@ export const AUTONOMY_PROJECTS: AgentProject[] = [
   {
     id: "optimization-engine",
     title: "Motor de Optimizare Continuă",
+    name: "Motor de Optimizare Continuă",
     description: "Sistem automat de optimizare a performanței agenților pe baza datelor istorice și a modelelor predictive",
     icon: Gauge,
     tasks: [

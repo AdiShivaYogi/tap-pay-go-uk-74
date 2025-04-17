@@ -12,13 +12,13 @@ export interface ActivityLog {
   agentId: string;
   agentName: string;
   action: string;
-  description: string; // Adăugat pentru a rezolva eroarea în AgentActivityLog.tsx
+  description: string;
   category: string;
   timestamp: Date;
 }
 
 export interface LearningRule {
-  id?: string; // Poate fi generat automat
+  id?: string;
   sourceAgentId: string;
   targetAgentId: string;
   learningTypes: string[];
@@ -64,7 +64,7 @@ export interface LearningReport {
   learningType: string;
   learningDate: Date;
   conceptsLearned: string[];
-  duration: number; // în secunde
+  duration: number;
   insights: string[];
   summary: string;
 }
@@ -76,10 +76,11 @@ export interface AgentMonitoringHook {
   categories: string[];
   totalActivities: number;
   refreshData: () => Promise<void>;
+  fetchAgentActivity: () => Promise<void>; // Adăugat pentru compatibilitate
   logDetailedAgentActivity: (agentId: string, description: string, category?: string) => void;
   autoRefresh: boolean;
   toggleAutoRefresh: () => void;
-  lastRefresh: Date;
+  lastRefresh: Date | string | null; // Actualizat pentru a accepta și string sau null
   logAgentInteraction: (sourceAgentId: string, targetAgentId: string, learningType: string) => AgentInteraction;
   learningRules: AgentLearningRule[];
   addLearningRule: (rule: Omit<AgentLearningRule, 'lastExecuted'>) => void;
@@ -92,7 +93,7 @@ export interface AgentMonitoringHook {
   completeLearningProcess: (id: string) => LearningReport | undefined;
   getLearningReports: () => LearningReport[];
   executeAutoLearning: () => void;
-  // Adăugăm noile proprietăți pentru starea de autoexecuție
+  // Actualizăm semnătura funcției pentru a accepta un obiect, nu două parametri separați
   autoExecutionStatus: Record<string, boolean>;
-  saveAutoExecutionStatus: (projectId: string, status: boolean) => Promise<void>;
+  saveAutoExecutionStatus: (status: Record<string, boolean>) => Promise<boolean>;
 }

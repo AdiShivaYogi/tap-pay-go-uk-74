@@ -141,3 +141,10 @@ export const safetyInfrastructureProjects: AgentProject[] = [
     ]
   }
 ];
+
+// Adaugă name = title pentru toate obiectele din safetyInfrastructureProjects
+for (const project of safetyInfrastructureProjects) {
+  if (!project.name) {
+    project.name = project.title;
+  }
+}
