@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Menu, X, LogIn, CreditCard } from "lucide-react";
+import { Menu, X, LogIn, CreditCard, BrainCircuit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -28,8 +28,30 @@ export function MobileMenu({ currentPath, isVisible, user }: MobileMenuProps) {
     setIsOpen(false);
   };
   
+  // Adăugăm link-uri rapide către paginile de agenți
+  const agentLinks = [
+    {
+      title: "Agenți",
+      href: "/agents",
+      icon: BrainCircuit,
+      admin: false,
+    },
+    {
+      title: "Centru de Comandă",
+      href: "/agent-central-command",
+      icon: BrainCircuit,
+      admin: true,
+      highlight: true
+    }
+  ];
+  
+  // Combinăm link-urile de agenți cu restul navigației
+  const combinedNavItems = [...config.mainNav, ...agentLinks.filter(
+    item => !config.mainNav.some(navItem => navItem.href === item.href)
+  )];
+  
   // Filtrăm elementele de navigare relevante pentru tipul de utilizator
-  const navItems = config.mainNav.filter(item => {
+  const navItems = combinedNavItems.filter(item => {
     // Pentru utilizatori neautentificați, afișăm doar elementele marcate pentru noii utilizatori
     if (!user) {
       return item.newUser === true;

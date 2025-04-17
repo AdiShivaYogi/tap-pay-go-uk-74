@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { config } from "@/config/navigation";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogIn, CreditCard } from "lucide-react";
+import { LogIn, CreditCard, BrainCircuit } from "lucide-react";
 import { useUserRole } from "@/hooks/use-user-role";
 import { useLocation } from "react-router-dom";
 
@@ -17,8 +17,30 @@ export function MainNavigation({ currentPath, isVisible, user }: MainNavigationP
   const { isAdmin } = useUserRole();
   const { pathname } = useLocation();
   
+  // Adăugăm link-uri rapide către paginile de agenți
+  const agentLinks = [
+    {
+      title: "Agenți",
+      href: "/agents",
+      icon: BrainCircuit,
+      admin: false,
+    },
+    {
+      title: "Centru de Comandă",
+      href: "/agent-central-command",
+      icon: BrainCircuit,
+      admin: true,
+      highlight: true
+    }
+  ];
+  
+  // Combinăm link-urile de agenți cu restul navigației
+  const combinedNavItems = [...config.mainNav, ...agentLinks.filter(
+    item => !config.mainNav.some(navItem => navItem.href === item.href)
+  )];
+  
   // Filtrăm elementele de navigare relevante pentru tipul de utilizator
-  const navItems = config.mainNav.filter(item => {
+  const navItems = combinedNavItems.filter(item => {
     // Pentru utilizatori neautentificați, afișăm doar elementele marcate pentru noii utilizatori
     if (!user) {
       return item.newUser === true;
