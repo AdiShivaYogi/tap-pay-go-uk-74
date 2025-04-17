@@ -29,7 +29,10 @@ export const BaseMonitoringPage: React.FC<BaseMonitoringPageProps> = ({
   const { isAdmin } = useUserRole();
   const { toast } = useToast();
   const [showAutonomyAlert, setShowAutonomyAlert] = useState(true);
-  const { autonomyLevel, agentsRunning } = useSafetyPanel();
+  
+  // Convertim boolean la number pentru a rezolva eroarea de tip
+  const { autonomyLevel = 0, agentsRunning = 0 } = useSafetyPanel();
+  
   const { submissions, progressHistory, codeProposals, loading } = useAgentAdminData(!!isAdmin);
   const [submissionsState, setSubmissionsState] = useState<any[]>([]);
   const [codeProposalsState, setCodeProposalsState] = useState<any[]>([]);
