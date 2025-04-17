@@ -34,7 +34,7 @@ export const useAutonomousAgents = (options: UseAutonomousAgentsOptions = {}) =>
     if (isRunning) return;
     
     setIsRunning(true);
-    setAutonomyLevel(100);
+    setAutonomyLevel(prev => Math.min(prev + 20, 100));
     
     toast({
       title: "Agenți autonomi activați",

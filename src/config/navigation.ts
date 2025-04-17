@@ -11,7 +11,8 @@ import {
   FileText,
   Shield,
   HelpCircle,
-  Home
+  Home,
+  BrainCircuit
 } from "lucide-react";
 import { ComponentType, SVGProps } from "react";
 
@@ -71,7 +72,7 @@ export const config = {
     {
       title: "Centru de Comandă Agenți",
       href: "/agent-central-command",
-      icon: Command,
+      icon: BrainCircuit,
       admin: true,
       highlight: true,
     },
