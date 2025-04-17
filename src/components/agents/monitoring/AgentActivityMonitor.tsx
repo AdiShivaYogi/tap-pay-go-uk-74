@@ -5,7 +5,7 @@ import { AgentActivityChart } from "./AgentActivityChart";
 import { AgentActivityLog } from "./AgentActivityLog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAgentMonitoring } from "./hooks";
-import { BarChart4, ListFilter, RefreshCw, Settings, Clock, BrainCircuit } from "lucide-react";
+import { BarChart4, ListFilter, RefreshCw, Settings, Clock, BrainCircuit, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { TestAgentActivity } from "./TestAgentActivity";
@@ -167,6 +167,12 @@ export const AgentActivityMonitor: React.FC = () => {
               <ListFilter className="h-4 w-4" />
               Activitate
             </TabsTrigger>
+            {showAutoLearning && (
+              <TabsTrigger value="learning" className="flex items-center gap-1">
+                <FileText className="h-4 w-4" />
+                Rapoarte
+              </TabsTrigger>
+            )}
           </TabsList>
           
           <TabsContent value="chart">
@@ -186,6 +192,20 @@ export const AgentActivityMonitor: React.FC = () => {
               filter={activeFilter}
             />
           </TabsContent>
+          
+          {showAutoLearning && (
+            <TabsContent value="learning">
+              <div className="mb-4">
+                <h3 className="text-lg font-medium mb-2">Rapoarte de învățare între agenți</h3>
+                <p className="text-muted-foreground">
+                  Vizualizați detalii despre procesele de învățare terminate între agenți și conceptele dobândite.
+                </p>
+              </div>
+              <div className="h-[350px] overflow-y-auto pr-2">
+                <AgentLearningReports />
+              </div>
+            </TabsContent>
+          )}
         </Tabs>
       </StyledCardContent>
     </StyledCard>

@@ -13,6 +13,8 @@ import { useAgentMonitoring } from "./hooks";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
 import { ro } from "date-fns/locale";
+import { AgentLearningProgress } from "./AgentLearningProgress";
+import { AgentLearningReports } from "./AgentLearningReports";
 
 const TEST_AGENTS = [
   { id: "agent-1", name: "CodeAssistant" },
@@ -41,7 +43,8 @@ export const AgentAutoLearning = () => {
     learningRules, 
     addLearningRule, 
     removeLearningRule, 
-    toggleLearningRule 
+    toggleLearningRule,
+    startLearningProcess
   } = useAgentMonitoring();
   
   const handleAddRule = () => {
@@ -82,177 +85,216 @@ export const AgentAutoLearning = () => {
     setSelectedLearningTypes(selectedLearningTypes.filter(t => t !== type));
   };
 
+  const handleStartManualLearning = () => {
+    if (sourceAgent === targetAgent) {
+      toast({
+        title: "Operație invalidă",
+        description: "Un agent nu poate învăța de la sine însuși",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (selectedLearningTypes.length === 0) {
+      toast({
+        title: "Selecție invalidă",
+        description: "Selectați cel puțin un tip de învățare",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Alege un tip aleatoriu din cele selectate
+    const randomType = selectedLearningTypes[Math.floor(Math.random() * selectedLearningTypes.length)];
+    startLearningProcess(sourceAgent, targetAgent, randomType);
+  };
+
   return (
-    <Card>
-      <CardHeader className="pb-3">
-        <CardTitle className="text-lg flex items-center gap-2">
-          <BrainCircuit className="h-5 w-5" />
-          Auto-învățare între agenți
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <Label htmlFor="source-agent" className="mb-1 block">Agent care învață</Label>
-            <Select value={sourceAgent} onValueChange={setSourceAgent}>
-              <SelectTrigger className="w-full" id="source-agent">
-                <SelectValue placeholder="Selectează agentul" />
-              </SelectTrigger>
-              <SelectContent>
-                {TEST_AGENTS.map(agent => (
-                  <SelectItem key={`source-${agent.id}`} value={agent.id}>
-                    {agent.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          
-          <div>
-            <Label htmlFor="target-agent" className="mb-1 block">Agent sursă de cunoștințe</Label>
-            <Select value={targetAgent} onValueChange={setTargetAgent}>
-              <SelectTrigger className="w-full" id="target-agent">
-                <SelectValue placeholder="Selectează agentul" />
-              </SelectTrigger>
-              <SelectContent>
-                {TEST_AGENTS.map(agent => (
-                  <SelectItem key={`target-${agent.id}`} value={agent.id}>
-                    {agent.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          
-          <div>
-            <Label htmlFor="interval" className="mb-1 block">Interval (minute)</Label>
-            <Input
-              id="interval"
-              type="number"
-              min={1}
-              value={interval}
-              onChange={(e) => setInterval(parseInt(e.target.value) || 1)}
-            />
-          </div>
-        </div>
-        
-        <div>
-          <Label className="mb-2 block">Tipuri de învățare</Label>
-          <div className="flex flex-wrap gap-2 mb-2">
-            {selectedLearningTypes.map(type => (
-              <Badge 
-                key={type} 
-                variant="secondary"
-                className="flex items-center gap-1"
-              >
-                {type}
-                <button 
-                  onClick={() => handleRemoveLearningType(type)}
-                  className="ml-1 hover:text-destructive"
-                >
-                  ×
-                </button>
-              </Badge>
-            ))}
-          </div>
-          
-          <Select onValueChange={handleAddLearningType}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Adaugă tip de învățare" />
-            </SelectTrigger>
-            <SelectContent>
-              {LEARNING_TYPES.filter(type => !selectedLearningTypes.includes(type)).map(type => (
-                <SelectItem key={type} value={type}>
-                  {type}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        
-        <div className="flex justify-end">
-          <Button 
-            onClick={handleAddRule}
-            className="flex items-center gap-2"
-          >
-            <Plus className="h-4 w-4" />
-            Adaugă regulă de auto-învățare
-          </Button>
-        </div>
-        
-        {learningRules.length > 0 && (
-          <>
-            <Separator />
+    <div className="space-y-6">
+      <AgentLearningProgress />
+      
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <BrainCircuit className="h-5 w-5" />
+            Auto-învățare între agenți
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <h3 className="text-sm font-medium mb-2">Reguli de auto-învățare active:</h3>
-              <div className="space-y-2">
-                {learningRules.map((rule, index) => {
-                  const sourceName = TEST_AGENTS.find(a => a.id === rule.sourceAgentId)?.name;
-                  const targetName = TEST_AGENTS.find(a => a.id === rule.targetAgentId)?.name;
-                  const lastRun = rule.lastExecuted ? formatDistanceToNow(rule.lastExecuted, { addSuffix: true, locale: ro }) : "niciodată";
-                  
-                  return (
-                    <div key={index} className="p-3 border rounded-md">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="font-medium">{sourceName} → {targetName}</div>
-                          <div className="text-xs text-muted-foreground flex items-center gap-1">
-                            <Clock className="h-3 w-3" /> 
-                            La fiecare {rule.interval} minute • Ultima execuție: {lastRun}
+              <Label htmlFor="source-agent" className="mb-1 block">Agent care învață</Label>
+              <Select value={sourceAgent} onValueChange={setSourceAgent}>
+                <SelectTrigger className="w-full" id="source-agent">
+                  <SelectValue placeholder="Selectează agentul" />
+                </SelectTrigger>
+                <SelectContent>
+                  {TEST_AGENTS.map(agent => (
+                    <SelectItem key={`source-${agent.id}`} value={agent.id}>
+                      {agent.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <Label htmlFor="target-agent" className="mb-1 block">Agent sursă de cunoștințe</Label>
+              <Select value={targetAgent} onValueChange={setTargetAgent}>
+                <SelectTrigger className="w-full" id="target-agent">
+                  <SelectValue placeholder="Selectează agentul" />
+                </SelectTrigger>
+                <SelectContent>
+                  {TEST_AGENTS.map(agent => (
+                    <SelectItem key={`target-${agent.id}`} value={agent.id}>
+                      {agent.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <Label htmlFor="interval" className="mb-1 block">Interval (minute)</Label>
+              <Input
+                id="interval"
+                type="number"
+                min={1}
+                value={interval}
+                onChange={(e) => setInterval(parseInt(e.target.value) || 1)}
+              />
+            </div>
+          </div>
+          
+          <div>
+            <Label className="mb-2 block">Tipuri de învățare</Label>
+            <div className="flex flex-wrap gap-2 mb-2">
+              {selectedLearningTypes.map(type => (
+                <Badge 
+                  key={type} 
+                  variant="secondary"
+                  className="flex items-center gap-1"
+                >
+                  {type}
+                  <button 
+                    onClick={() => handleRemoveLearningType(type)}
+                    className="ml-1 hover:text-destructive"
+                  >
+                    ×
+                  </button>
+                </Badge>
+              ))}
+            </div>
+            
+            <Select onValueChange={handleAddLearningType}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Adaugă tip de învățare" />
+              </SelectTrigger>
+              <SelectContent>
+                {LEARNING_TYPES.filter(type => !selectedLearningTypes.includes(type)).map(type => (
+                  <SelectItem key={type} value={type}>
+                    {type}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div className="flex justify-between">
+            <Button 
+              variant="secondary"
+              onClick={handleStartManualLearning}
+              className="flex items-center gap-2"
+            >
+              <Play className="h-4 w-4" />
+              Pornește învățare acum
+            </Button>
+            
+            <Button 
+              onClick={handleAddRule}
+              className="flex items-center gap-2"
+            >
+              <Plus className="h-4 w-4" />
+              Adaugă regulă de auto-învățare
+            </Button>
+          </div>
+          
+          {learningRules.length > 0 && (
+            <>
+              <Separator />
+              <div>
+                <h3 className="text-sm font-medium mb-2">Reguli de auto-învățare active:</h3>
+                <div className="space-y-2">
+                  {learningRules.map((rule, index) => {
+                    const sourceName = TEST_AGENTS.find(a => a.id === rule.sourceAgentId)?.name || rule.sourceAgentId;
+                    const targetName = TEST_AGENTS.find(a => a.id === rule.targetAgentId)?.name || rule.targetAgentId;
+                    const lastRun = rule.lastExecuted ? formatDistanceToNow(rule.lastExecuted, { addSuffix: true, locale: ro }) : "niciodată";
+                    
+                    return (
+                      <div key={index} className="p-3 border rounded-md">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="font-medium">{sourceName} → {targetName}</div>
+                            <div className="text-xs text-muted-foreground flex items-center gap-1">
+                              <Clock className="h-3 w-3" /> 
+                              La fiecare {rule.interval} minute • Ultima execuție: {lastRun}
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => toggleLearningRule(rule.sourceAgentId, rule.targetAgentId)}
+                            >
+                              {rule.isActive ? (
+                                <Pause className="h-4 w-4" />
+                              ) : (
+                                <Play className="h-4 w-4" />
+                              )}
+                            </Button>
+                            
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-destructive"
+                              onClick={() => removeLearningRule(rule.sourceAgentId, rule.targetAgentId)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
                           </div>
                         </div>
                         
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => toggleLearningRule(rule.sourceAgentId, rule.targetAgentId)}
-                          >
-                            {rule.isActive ? (
-                              <Pause className="h-4 w-4" />
-                            ) : (
-                              <Play className="h-4 w-4" />
-                            )}
-                          </Button>
-                          
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-destructive"
-                            onClick={() => removeLearningRule(rule.sourceAgentId, rule.targetAgentId)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                        <div className="mt-2 flex flex-wrap gap-1">
+                          {rule.learningTypes.map(type => (
+                            <Badge key={type} variant="outline" className="text-xs">
+                              {type}
+                            </Badge>
+                          ))}
+                        </div>
+                        
+                        <div className="mt-2 flex items-center">
+                          <Switch
+                            id={`rule-${index}`}
+                            checked={rule.isActive}
+                            onCheckedChange={() => toggleLearningRule(rule.sourceAgentId, rule.targetAgentId)}
+                            className="mr-2"
+                          />
+                          <Label htmlFor={`rule-${index}`} className="text-xs">
+                            {rule.isActive ? "Activ" : "Inactiv"}
+                          </Label>
                         </div>
                       </div>
-                      
-                      <div className="mt-2 flex flex-wrap gap-1">
-                        {rule.learningTypes.map(type => (
-                          <Badge key={type} variant="outline" className="text-xs">
-                            {type}
-                          </Badge>
-                        ))}
-                      </div>
-                      
-                      <div className="mt-2 flex items-center">
-                        <Switch
-                          id={`rule-${index}`}
-                          checked={rule.isActive}
-                          onCheckedChange={() => toggleLearningRule(rule.sourceAgentId, rule.targetAgentId)}
-                          className="mr-2"
-                        />
-                        <Label htmlFor={`rule-${index}`} className="text-xs">
-                          {rule.isActive ? "Activ" : "Inactiv"}
-                        </Label>
-                      </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          </>
-        )}
-      </CardContent>
-    </Card>
+            </>
+          )}
+        </CardContent>
+      </Card>
+      
+      <AgentLearningReports />
+    </div>
   );
 };

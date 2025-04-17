@@ -25,6 +25,30 @@ export interface AgentInteraction {
   timestamp: Date;
 }
 
+export interface LearningProgress {
+  id: string;
+  sourceAgentId: string;
+  targetAgentId: string;
+  progress: number; // 0-100
+  startTime: Date;
+  estimatedEndTime: Date;
+  learningType: string;
+  status: 'in-progress' | 'completed' | 'failed';
+}
+
+export interface LearningReport {
+  id: string;
+  sourceAgentId: string;
+  sourceAgentName: string;
+  targetAgentId: string;
+  targetAgentName: string;
+  learningType: string;
+  learningDate: Date;
+  duration: number; // în secunde
+  conceptsLearned: string[];
+  summary: string;
+}
+
 export interface AgentLearningRule {
   sourceAgentId: string;
   targetAgentId: string;
@@ -43,6 +67,8 @@ export interface AgentMonitoringState {
   autoRefresh: boolean;
   lastRefresh: Date;
   learningRules: AgentLearningRule[];
+  learningProgress: LearningProgress[];
+  learningReports: LearningReport[];
 }
 
 export interface AgentMonitoringHook extends AgentMonitoringState {
@@ -53,4 +79,8 @@ export interface AgentMonitoringHook extends AgentMonitoringState {
   addLearningRule: (rule: Omit<AgentLearningRule, 'lastExecuted'>) => void;
   removeLearningRule: (sourceId: string, targetId: string) => void;
   toggleLearningRule: (sourceId: string, targetId: string) => void;
+  startLearningProcess: (sourceId: string, targetId: string, learningType: string) => LearningProgress;
+  updateLearningProgress: (id: string, progress: number) => void;
+  completeLearningProcess: (id: string, conceptsLearned: string[], summary: string) => LearningReport;
+  getLearningReports: (sourceId?: string, targetId?: string) => LearningReport[];
 }
