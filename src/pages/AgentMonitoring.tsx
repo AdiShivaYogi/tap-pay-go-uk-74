@@ -14,6 +14,7 @@ import { SafetyInfrastructurePanel } from "@/components/agents/monitoring/safety
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
+import { agents } from "@/components/agents/agents-data";
 
 const AgentMonitoring = () => {
   const { user } = useAuth();
@@ -21,12 +22,12 @@ const AgentMonitoring = () => {
   const { toast } = useToast();
   const [showAutonomyAlert, setShowAutonomyAlert] = useState(true);
   
-  // Afișează toast la încărcarea paginii pentru a evidenția prioritatea
+  // Afișează toast la încărcarea paginii pentru a evidenția prioritatea lansării tuturor agenților
   useEffect(() => {
     const timer = setTimeout(() => {
       toast({
-        title: "Lansare automată inițiată",
-        description: "Agenții autonomi vor fi lansați automat în curând pentru colectare de date și auto-evoluție.",
+        title: "Lansare automată inițiată pentru toți agenții",
+        description: "Toți agenții autonomi vor fi lansați automat în câteva secunde pentru operațiuni complete.",
         duration: 6000,
       });
     }, 500);
@@ -65,7 +66,7 @@ const AgentMonitoring = () => {
           />
           <Badge className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white text-sm py-1.5 px-3 flex items-center gap-1.5">
             <Sparkles className="h-4 w-4" />
-            Auto-Evoluție Activată
+            Toți Agenții Activați
           </Badge>
         </div>
 
@@ -73,13 +74,18 @@ const AgentMonitoring = () => {
           <Alert variant="default" className="mb-6 border-amber-500 bg-amber-50">
             <AlertTitle className="flex items-center gap-2 text-amber-800">
               <Zap className="h-5 w-5 text-amber-600" /> 
-              Lansare Automată Pentru Evoluție Accelerată
+              Lansare Completă Pentru Toți Agenții
             </AlertTitle>
             <AlertDescription className="text-amber-700 flex justify-between items-center">
-              <span>
-                Pentru accelerarea dezvoltării și depășirea paradoxului "oul și găina", a fost inițiată o lansare automată
-                a agenților autonomi cu praguri de siguranță reduse.
-              </span>
+              <div>
+                <p className="mb-1">
+                  Pentru accelerarea dezvoltării, au fost lansați toți agenții disponibili ({agents.length}) 
+                  cu praguri de siguranță reduse pentru autonomie maximă.
+                </p>
+                <p className="text-xs">
+                  Agenți activi: {agents.map(agent => agent.name).join(", ")}
+                </p>
+              </div>
               <button 
                 onClick={() => setShowAutonomyAlert(false)}
                 className="text-xs text-amber-800 hover:text-amber-900"
@@ -107,13 +113,6 @@ const AgentMonitoring = () => {
           </TabsList>
           
           <TabsContent value="safety">
-            <div className="mb-6">
-              <h2 className="text-xl font-medium mb-2">Infrastructură de siguranță și control execuție</h2>
-              <p className="text-muted-foreground">
-                Gestionează mecanismele de limitare și sistemele de execuție autonomă pentru agenți,
-                asigurând operațiuni sigure și controlate în cadrul parametrilor stabiliți.
-              </p>
-            </div>
             <SafetyInfrastructurePanel />
           </TabsContent>
           

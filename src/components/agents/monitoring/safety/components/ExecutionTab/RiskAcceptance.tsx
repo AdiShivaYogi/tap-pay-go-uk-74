@@ -1,7 +1,7 @@
 
 import React from "react";
 import { StyledCard, StyledCardHeader, StyledCardTitle, StyledCardContent } from "@/components/ui/cards";
-import { AlertTriangle, Check, Zap, ArrowRight } from "lucide-react";
+import { AlertTriangle, Check, Zap, ArrowRight, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { RiskLevel } from "../../types";
@@ -17,7 +17,7 @@ export const RiskAcceptance: React.FC<RiskAcceptanceProps> = ({
   toggleRiskAcceptance,
   startAutonomousExecution
 }) => {
-  // Am făcut ca toate riscurile să fie acceptate implicit pentru lansare rapidă
+  // Toate riscurile sunt acceptate implicit pentru lansarea tuturor agenților
   const allRisksAccepted = acceptedRisks.includes("scazut") && 
                           acceptedRisks.includes("mediu") && 
                           acceptedRisks.includes("ridicat");
@@ -32,15 +32,15 @@ export const RiskAcceptance: React.FC<RiskAcceptanceProps> = ({
       </StyledCardHeader>
       <StyledCardContent>
         <p className="text-sm mb-2">
-          Praguri administrative reduse pentru lansare rapidă și auto-evoluție:
+          Toate pragurile administrative reduse pentru lansarea tuturor agenților:
         </p>
         
         <div className="mb-3 p-2 rounded-md bg-amber-50 border border-amber-100">
           <p className="text-xs text-amber-700 font-medium">
-            <ArrowRight className="h-3 w-3 inline mr-1" /> Autonomia deplină necesită acceptarea riscurilor ridicate
+            <Rocket className="h-3 w-3 inline mr-1" /> Lansare completă a tuturor agenților disponibili
           </p>
           <p className="text-xs text-amber-700">
-            Agenții vor evolua independent colectând date în timpul rulării
+            Toți agenții vor evolua independent, colectând și procesând date în timp real
           </p>
         </div>
         
@@ -84,8 +84,8 @@ export const RiskAcceptance: React.FC<RiskAcceptanceProps> = ({
           className={`w-full mt-4 gap-2 ${allRisksAccepted ? "bg-amber-500 hover:bg-amber-600 animate-pulse" : ""}`}
           onClick={startAutonomousExecution}
         >
-          <Zap className={`h-4 w-4 ${allRisksAccepted ? "text-white" : ""}`} />
-          Pornire Imediată - Agenți Autonomi
+          <Rocket className={`h-4 w-4 ${allRisksAccepted ? "text-white" : ""}`} />
+          Lansare Imediată - Toți Agenții Autonomi
         </Button>
       </StyledCardContent>
     </StyledCard>

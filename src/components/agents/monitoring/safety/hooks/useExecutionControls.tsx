@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { agents } from "@/components/agents/agents-data";
 
 type SetSystemsActiveType = React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
 type SetDataConnectionsType = React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
@@ -28,40 +29,53 @@ export const useExecutionControls = ({
   const [showAutonomyAlert, setShowAutonomyAlert] = useState(true);
 
   const startAutonomousExecution = () => {
-    // Am eliminat verificarea pentru riscuri ridicate pentru a facilita lansarea rapidă
+    // Lansăm toți agenții rămași și activăm toate sistemele pentru evoluție maximă
     
-    // Activăm agenții cu setări speciale pentru evoluție autonomă
+    // Activăm agenții cu setări pentru autonomie completă
     setAgentsRunning(true);
-    setAutonomyLevel(85);
-    setSystemsActive(prev => ({
-      ...prev,
+    setAutonomyLevel(100); // Nivel maxim de autonomie
+    setSystemsActive({
       riskEvaluation: true,
-      humanSupervision: false,
-      autonomyLimits: false,
+      humanSupervision: false, // Dezactivăm supervizarea umană pentru autonomie completă
+      autonomyLimits: false,   // Dezactivăm limitările de autonomie
       dataSources: true,
       realTimeMonitoring: true,
-      adaptiveSafety: true
-    }));
+      adaptiveSafety: true,
+      riskAlgorithm: true,     // Activăm algoritmul de risc
+      auditLogs: true,         // Menținem jurnalele de audit pentru trasabilitate
+      ethicalBoundaries: true, // Menținem limitele etice
+      emergencyStop: true      // Păstrăm opțiunea de oprire de urgență
+    });
     
-    // Activăm conexiunile necesare
+    // Activăm toate conexiunile pentru acces complet la date
     setDataConnections({
       agentSystem: true,
       monitoringPlatform: true,
       analyticsEngine: true,
-      safetyFramework: true
+      safetyFramework: true,
+      dataLake: true,          // Adăugăm acces la toate sursele de date
+      externalAPIs: true,      // Permitem conectare la API-uri externe
+      modelTraining: true      // Permitem training de modele
     });
     
-    // Actualizăm parametrii de monitorizare
+    // Actualizăm parametrii de monitorizare pentru control maxim
     setMonitoringParameters({
       autonomyLevels: true,
       resourceUsage: true,
       decisionQuality: true,
-      learningProgress: true
+      learningProgress: true,
+      adaptationRate: true,    // Monitorizăm rata de adaptare
+      errorCorrection: true,   // Monitorizăm corecția de erori
+      selfImprovement: true    // Monitorizăm auto-îmbunătățirea
     });
 
+    // Notificăm utilizatorul despre lansarea tuturor agenților
+    const agentNames = agents.map(agent => agent.name).join(", ");
+    
     toast({
-      title: "Execuție autonomă activată",
-      description: "Agenții au fost lansați în modul autonom și vor începe să colecteze date în timp real pentru evoluție.",
+      title: "Toți agenții au fost lansați",
+      description: `${agentNames} operează acum la capacitate maximă cu autonomie completă.`,
+      duration: 6000,
     });
   };
 

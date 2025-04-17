@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { RiskLevel } from "../types";
+import { agents } from "@/components/agents/agents-data";
 
 export const useAutoLaunch = (
   setAcceptedRisks: React.Dispatch<React.SetStateAction<RiskLevel[]>>,
@@ -10,7 +11,7 @@ export const useAutoLaunch = (
 ) => {
   const { toast } = useToast();
   const [autoLaunchPending, setAutoLaunchPending] = useState(true);
-  const [timeToAutoLaunch, setTimeToAutoLaunch] = useState(15); // secunde
+  const [timeToAutoLaunch, setTimeToAutoLaunch] = useState(3); // Reducem timpul la 3 secunde pentru lansare rapidă
 
   // Auto lansare - reduce timpul înainte de lansarea automată
   useEffect(() => {
@@ -26,9 +27,12 @@ export const useAutoLaunch = (
       setSafetyOverride(true);
       setAutoLaunchPending(false);
       startAutonomousExecution();
+      
+      const agentNames = agents.map(agent => agent.name).join(", ");
       toast({
-        title: "Lansare automată activată",
-        description: "Agenții autonomi au fost lansați automat cu acceptarea riscurilor necesare.",
+        title: "Lansare automată completă",
+        description: `Toți agenții au fost lansați cu succes: ${agentNames}`,
+        duration: 6000,
       });
     }
     
@@ -41,7 +45,8 @@ export const useAutoLaunch = (
     setAcceptedRisks(["scazut", "mediu", "ridicat"]);
     toast({
       title: "Toate riscurile acceptate",
-      description: "Toate nivelurile de risc au fost acceptate pentru a permite lansarea rapidă a agenților.",
+      description: "Toate nivelurile de risc au fost acceptate pentru a permite lansarea completă a agenților.",
+      duration: 3000,
     });
   };
 
@@ -50,6 +55,7 @@ export const useAutoLaunch = (
     toast({
       title: "Lansare automată anulată",
       description: "Puteți lansa agenții manual când sunteți pregătiți.",
+      duration: 3000,
     });
   };
 

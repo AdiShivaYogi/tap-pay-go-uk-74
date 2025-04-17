@@ -18,8 +18,8 @@ export const AutoLaunchCountdown: React.FC<AutoLaunchCountdownProps> = ({
   acceptAllRisks,
   startAutonomousExecution
 }) => {
-  // Calcularea progresului de la 15 secunde până la 0
-  const startTime = 15; // secunde
+  // Calcularea progresului (de la 3 secunde până la 0)
+  const startTime = 3; // secunde - redus pentru lansare rapidă
   const progressValue = ((startTime - timeToAutoLaunch) / startTime) * 100;
   
   return (
@@ -27,7 +27,7 @@ export const AutoLaunchCountdown: React.FC<AutoLaunchCountdownProps> = ({
       <div className="flex justify-between">
         <AlertTitle className="flex items-center gap-2 text-amber-800">
           <Clock className="h-5 w-5 text-amber-600 animate-pulse" /> 
-          Lansare Automată în {timeToAutoLaunch} secunde
+          Lansarea Tuturor Agenților în {timeToAutoLaunch} secunde
         </AlertTitle>
         <button onClick={cancelAutoLaunch} className="text-amber-700 hover:text-amber-900">
           <X className="h-4 w-4" />
@@ -39,7 +39,7 @@ export const AutoLaunchCountdown: React.FC<AutoLaunchCountdownProps> = ({
         </div>
         
         <p className="mb-3 text-sm">
-          Pentru accelerarea evoluției agenților, va avea loc o lansare automată cu acceptarea tuturor riscurilor și reducerea pragurilor de siguranță.
+          Toți agenții disponibili vor fi lansați simultan pentru a optimiza procesele de auto-evoluție și colectare de date.
         </p>
         
         <div className="flex gap-3 justify-end">
@@ -68,4 +68,3 @@ export const AutoLaunchCountdown: React.FC<AutoLaunchCountdownProps> = ({
     </Alert>
   );
 };
-
