@@ -9,9 +9,9 @@ export const safetyInfrastructureProjects: AgentProject[] = [
   {
     title: "Conectare Sisteme Reale",
     description: "Integrarea infrastructurii de siguranță cu sistemele de monitorizare a agenților",
-    status: "în progres",
-    priority: "înaltă",
-    timeframe: "săptămâni",
+    status: "in-progress", // Corectare din "în progres" la "in-progress"
+    priority: "high", // Corectare din "înaltă" la "high"
+    timeframe: "weeks", // Corectare din "săptămâni" la "weeks"
     timeUsed: 4,
     timeTotal: 20,
     icon: Server,
@@ -26,9 +26,9 @@ export const safetyInfrastructureProjects: AgentProject[] = [
   {
     title: "Algoritm Evaluare Dinamică Riscuri",
     description: "Sistem inteligent de identificare și cuantificare a riscurilor operaționale",
-    status: "în progres",
-    priority: "înaltă",
-    timeframe: "săptămâni",
+    status: "in-progress", // Corectare din "în progres" la "in-progress"
+    priority: "high", // Corectare din "înaltă" la "high"
+    timeframe: "weeks", // Corectare din "săptămâni" la "weeks"
     timeUsed: 3,
     timeTotal: 25,
     icon: Shield,
@@ -43,9 +43,9 @@ export const safetyInfrastructureProjects: AgentProject[] = [
   {
     title: "Jurnalizare Avansată",
     description: "Sistem complet de monitorizare și înregistrare a acțiunilor agenților",
-    status: "în progres",
-    priority: "medie",
-    timeframe: "săptămâni",
+    status: "in-progress", // Corectare din "în progres" la "in-progress"
+    priority: "medium", // Corectare din "medie" la "medium"
+    timeframe: "weeks", // Corectare din "săptămâni" la "weeks"
     timeUsed: 2,
     timeTotal: 15,
     icon: Server,
@@ -60,9 +60,9 @@ export const safetyInfrastructureProjects: AgentProject[] = [
   {
     title: "Siguranță Adaptivă",
     description: "Mecanism de auto-ajustare a parametrilor de siguranță bazat pe istoric",
-    status: "planificat",
-    priority: "medie",
-    timeframe: "luni",
+    status: "planned", // Corectare din "planificat" la "planned"
+    priority: "medium", // Corectare din "medie" la "medium"
+    timeframe: "months", // Corectare din "luni" la "months"
     timeUsed: 0,
     timeTotal: 40,
     icon: Settings,
@@ -77,9 +77,9 @@ export const safetyInfrastructureProjects: AgentProject[] = [
   {
     title: "Parametri de Monitorizare Autonomi",
     description: "Definirea precisă a datelor colectate pentru fiecare nivel de autonomie", 
-    status: "în progres",
-    priority: "înaltă",
-    timeframe: "săptămâni",
+    status: "in-progress", // Corectare din "în progres" la "in-progress"
+    priority: "high", // Corectare din "înaltă" la "high"
+    timeframe: "weeks", // Corectare din "săptămâni" la "weeks"
     timeUsed: 3,
     timeTotal: 12,
     icon: ActivitySquare,
@@ -94,9 +94,9 @@ export const safetyInfrastructureProjects: AgentProject[] = [
   {
     title: "Raportare Avansată",
     description: "Generare de rapoarte detaliate pentru fiecare incident sau potențial risc",
-    status: "planificat",
-    priority: "medie",
-    timeframe: "săptămâni",
+    status: "planned", // Corectare din "planificat" la "planned"
+    priority: "medium", // Corectare din "medie" la "medium"
+    timeframe: "weeks", // Corectare din "săptămâni" la "weeks"
     timeUsed: 0,
     timeTotal: 15,
     icon: BarChart4,
@@ -111,9 +111,9 @@ export const safetyInfrastructureProjects: AgentProject[] = [
   {
     title: "Securitate și Etică",
     description: "Asigurarea că toți agenții respectă standarde ridicate de securitate și etică în toate activitățile lor",
-    status: "în progres",
-    priority: "înaltă",
-    timeframe: "săptămâni",
+    status: "in-progress", // Corectare din "în progres" la "in-progress"
+    priority: "high", // Corectare din "înaltă" la "high"
+    timeframe: "weeks", // Corectare din "săptămâni" la "weeks"
     timeUsed: 12,
     timeTotal: 30,
     icon: Shield,
@@ -127,9 +127,9 @@ export const safetyInfrastructureProjects: AgentProject[] = [
   {
     title: "Limitare și Siguranță",
     description: "Mecanisme care asigură că agenții autonomi operează în limite sigure și etice",
-    status: "în progres",
-    priority: "înaltă",
-    timeframe: "săptămâni",
+    status: "in-progress", // Corectare din "în progres" la "in-progress"
+    priority: "high", // Corectare din "înaltă" la "high"
+    timeframe: "weeks", // Corectare din "săptămâni" la "weeks"
     timeUsed: 10,
     timeTotal: 15,
     icon: CircleSlash,

@@ -1,12 +1,12 @@
 
 export * from "./types";
-export * from "./StatusBadge";
-export * from "./PriorityBadge";
-export * from "./TimeframeBadge";
-export * from "./ProgressBar";
-export * from "./TaskItem";
-export * from "./TaskList";
-export * from "./AgentProjectCard";
+export { StatusBadge } from "./StatusBadge";
+export { PriorityBadge } from "./PriorityBadge";
+export { TimeframeBadge } from "./TimeframeBadge";
+export { ProgressBar } from "./ProgressBar";
+export { TaskItem } from "./TaskItem";
+export { TaskList } from "./TaskList";
+export { AgentProjectCard } from "./AgentProjectCard";
 export * from "./projectsData";
-export * from "./AgentProjectCards";
-export * from "./IntegrationStatusBadge";
+export { AgentProjectCards } from "./AgentProjectCards";
+export { IntegrationStatusBadge } from "./IntegrationStatusBadge";
