@@ -3,7 +3,7 @@ import React from "react";
 import { ActivityLog } from "./hooks/useAgentMonitoring";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
-import { CheckCircle, Circle, Clock, Code, MessageSquare } from "lucide-react";
+import { CheckCircle, Circle, Clock, Code, MessageSquare, AlertTriangle } from "lucide-react";
 
 interface AgentActivityLogProps {
   logs: ActivityLog[];
@@ -59,43 +59,54 @@ export const AgentActivityLog: React.FC<AgentActivityLogProps> = ({
         return <Code className="h-4 w-4 text-green-500" />;
       case 'conversation':
         return <MessageSquare className="h-4 w-4 text-amber-500" />;
+      case 'monitoring':
+        return <AlertTriangle className="h-4 w-4 text-blue-500" />;
       default:
         return <Circle className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
+  if (Object.entries(groupedLogs).length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[300px] text-center p-4">
+        <AlertTriangle className="h-12 w-12 text-muted-foreground mb-4 opacity-30" />
+        <h3 className="font-medium mb-2">Nicio activitate înregistrată</h3>
+        <p className="text-sm text-muted-foreground max-w-md">
+          {filter 
+            ? `Nu s-au găsit activități pentru categoria "${filter}". Încearcă să selectezi altă categorie sau generează activități de test.`
+            : `Agenții nu au înregistrat activități încă. Folosește modul de testare pentru a genera activități demonstrative.`
+          }
+        </p>
+      </div>
+    );
+  }
+
   return (
     <ScrollArea className="h-[350px] pr-4">
-      {Object.entries(groupedLogs).length > 0 ? (
-        Object.entries(groupedLogs).map(([hour, hourLogs]) => (
-          <div key={hour} className="mb-4">
-            <div className="flex items-center gap-2 sticky top-0 bg-background py-1 z-10">
-              <Clock className="h-4 w-4 text-muted-foreground" />
-              <span className="text-xs font-medium text-muted-foreground">{hour}</span>
-            </div>
-            <div className="space-y-3 pl-4 border-l ml-2">
-              {hourLogs.map(log => (
-                <div key={log.id} className="relative">
-                  <div className="absolute -left-[17px] mt-1.5 w-3 h-3 rounded-full bg-background border-2 border-primary" />
-                  <div className="mb-1 flex items-center gap-2">
-                    <span className="font-medium">{log.agentName}</span>
-                    <span className="text-xs text-muted-foreground">{log.agentId}</span>
-                  </div>
-                  <p className="text-sm">{log.description}</p>
-                  <div className="mt-1 flex items-center gap-2">
-                    {getIconForCategory(log.category)}
-                    <span className="text-xs capitalize">{log.category}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+      {Object.entries(groupedLogs).map(([hour, hourLogs]) => (
+        <div key={hour} className="mb-4">
+          <div className="flex items-center gap-2 sticky top-0 bg-background py-1 z-10">
+            <Clock className="h-4 w-4 text-muted-foreground" />
+            <span className="text-xs font-medium text-muted-foreground">{hour}</span>
           </div>
-        ))
-      ) : (
-        <div className="flex items-center justify-center h-full text-muted-foreground">
-          {filter ? `Nicio activitate găsită pentru categoria "${filter}"` : "Nicio activitate înregistrată"}
+          <div className="space-y-3 pl-4 border-l ml-2">
+            {hourLogs.map(log => (
+              <div key={log.id} className="relative">
+                <div className="absolute -left-[17px] mt-1.5 w-3 h-3 rounded-full bg-background border-2 border-primary" />
+                <div className="mb-1 flex items-center gap-2">
+                  <span className="font-medium">{log.agentName}</span>
+                  <span className="text-xs text-muted-foreground">{log.agentId}</span>
+                </div>
+                <p className="text-sm">{log.description}</p>
+                <div className="mt-1 flex items-center gap-2">
+                  {getIconForCategory(log.category)}
+                  <span className="text-xs capitalize">{log.category}</span>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      )}
+      ))}
     </ScrollArea>
   );
 };

@@ -4,6 +4,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 import { ActivityData } from "./hooks/useAgentMonitoring";
 import { Skeleton } from "@/components/ui/skeleton";
+import { BarChart3 } from "lucide-react";
 
 interface AgentActivityChartProps {
   data: ActivityData[];
@@ -15,6 +16,7 @@ const chartConfig = {
   task: { color: "#8884d8" },
   proposal: { color: "#82ca9d" },
   conversation: { color: "#ffc658" },
+  monitoring: { color: "#4da3ff" },
   other: { color: "#ff8042" },
 };
 
@@ -39,6 +41,21 @@ export const AgentActivityChart: React.FC<AgentActivityChartProps> = ({
             <Skeleton className="h-4 w-16" />
           </div>
         </div>
+      </div>
+    );
+  }
+
+  if (filteredData.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full text-center p-4 border-2 border-dashed border-muted rounded-lg">
+        <BarChart3 className="h-12 w-12 text-muted-foreground mb-4 opacity-30" />
+        <h3 className="font-medium mb-2">Nu există date pentru grafic</h3>
+        <p className="text-sm text-muted-foreground max-w-md">
+          {filter 
+            ? `Nu există date pentru categoria "${filter}". Încearcă să selectezi altă categorie sau generează activități de test.`
+            : `Agenții nu au înregistrat activități încă. Folosește modul de testare pentru a genera activități demonstrative.`
+          }
+        </p>
       </div>
     );
   }
