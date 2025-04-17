@@ -21,17 +21,17 @@ const AgentNode: React.FC<AgentNodeProps> = ({ position, autonomyLevel, name }) 
   });
 
   // Determinăm culoarea în funcție de nivelul de autonomie
-  const sphereColor = autonomyLevel > 70 ? 'green' : 
-                       autonomyLevel > 40 ? 'yellow' : 'red';
+  const getColor = () => {
+    if (autonomyLevel > 70) return new THREE.Color('green');
+    if (autonomyLevel > 40) return new THREE.Color('yellow'); 
+    return new THREE.Color('red');
+  };
 
   return (
-    <Sphere 
-      ref={meshRef}
-      position={position} 
-      args={[autonomyLevel / 100 + 0.2, 32, 32]}
-    >
-      <meshStandardMaterial color={sphereColor} />
-    </Sphere>
+    <mesh ref={meshRef} position={position}>
+      <sphereGeometry args={[autonomyLevel / 100 + 0.2, 32, 32]} />
+      <meshStandardMaterial color={getColor()} />
+    </mesh>
   );
 };
 
