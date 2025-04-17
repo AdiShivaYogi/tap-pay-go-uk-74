@@ -1,27 +1,24 @@
+
 import { useState, useEffect, useCallback } from "react";
 import { extendedSupabase as supabase } from "@/integrations/supabase/extended-client";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
+import { 
+  ActivityData, 
+  ActivityLog, 
+  AgentMonitoringHook 
+} from "./types/agent-monitoring.types";
+import { 
+  processActivityData, 
+  processActivityLogs,
+  logAgentActivity
+} from "./utils/activity-processing";
+import { 
+  fetchAgentActivities,
+  setupRealtimeSubscription 
+} from "./api/agent-activity-api";
 
-export interface ActivityData {
-  agentId: string;
-  agentName: string;
-  category: string;
-  taskCount: number;
-  proposalCount: number;
-  conversationCount: number;
-}
-
-export interface ActivityLog {
-  id: string;
-  agentId: string;
-  agentName: string;
-  description: string;
-  category: string; // 'task', 'proposal', 'conversation', etc.
-  timestamp: string;
-}
-
-export const useAgentMonitoring = () => {
+export const useAgentMonitoring = (): AgentMonitoringHook => {
   const [activityData, setActivityData] = useState<ActivityData[]>([]);
   const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -36,89 +33,26 @@ export const useAgentMonitoring = () => {
     setIsLoading(true);
     
     try {
-      // Logging adăugat pentru monitorizare detaliată
-      console.log('Fetching latest agent activities...');
+      const { agentActivities, activityLogs, error } = await fetchAgentActivities();
       
-      const { data: agentActivities, error: activitiesError } = await supabase
-        .from('agent_activity')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(25); // Limităm pentru a nu supraîncărca sistemul
-      
-      if (activitiesError) {
-        throw activitiesError;
+      if (error) {
+        throw error;
       }
       
-      console.log(`Retrieved ${agentActivities?.length || 0} agent activities`);
-      
-      // Obținerea logurilor de activitate din tabela agent_activity_logs
-      const { data: activityLogsData, error: logsError } = await supabase
-        .from('agent_activity_logs')
-        .select('*')
-        .order('timestamp', { ascending: false })
-        .limit(25);
+      if (agentActivities && activityLogs) {
+        // Procesare date
+        const { processedActivityData, uniqueCategories } = processActivityData(agentActivities);
+        const processedLogs = processActivityLogs(activityLogs);
         
-      if (logsError) {
-        throw logsError;
+        setActivityData(processedActivityData);
+        setActivityLogs(processedLogs);
+        setCategories(Array.from(uniqueCategories));
+        setTotalActivities(agentActivities.length || 0);
+        
+        // Log pentru categorii și activitate
+        console.log('Agent activity categories:', categories);
+        console.log('Total monitored activities:', totalActivities);
       }
-
-      // Procesare date pentru a fi compatibile cu interfețele existente
-      const processedActivityData: ActivityData[] = [];
-      const uniqueAgents = new Map<string, {id: string, name: string}>();
-      const uniqueCategories = new Set<string>();
-      
-      // Extragere agenți și categorii unice
-      agentActivities?.forEach(activity => {
-        uniqueAgents.set(activity.agent_id, { 
-          id: activity.agent_id, 
-          name: activity.agent_name 
-        });
-        uniqueCategories.add(activity.category);
-      });
-
-      // Prelucrare date pentru afișare
-      Array.from(uniqueAgents.values()).forEach(agent => {
-        const agentTasks = agentActivities?.filter(
-          a => a.agent_id === agent.id && a.category === 'task'
-        ).length || 0;
-        
-        const agentProposals = agentActivities?.filter(
-          a => a.agent_id === agent.id && a.category === 'proposal'
-        ).length || 0;
-        
-        const agentConversations = agentActivities?.filter(
-          a => a.agent_id === agent.id && a.category === 'conversation'
-        ).length || 0;
-
-        processedActivityData.push({
-          agentId: agent.id,
-          agentName: agent.name,
-          category: agentActivities?.find(a => a.agent_id === agent.id)?.category || 'other',
-          taskCount: agentTasks,
-          proposalCount: agentProposals,
-          conversationCount: agentConversations
-        });
-      });
-
-      // Transformarea logurilor în formatul așteptat de componente
-      const processedLogs: ActivityLog[] = activityLogsData?.map(log => ({
-        id: log.id,
-        agentId: log.agent_id,
-        agentName: log.agent_name,
-        description: log.description,
-        category: log.category,
-        timestamp: log.timestamp
-      })) || [];
-
-      setActivityData(processedActivityData);
-      setActivityLogs(processedLogs);
-      setCategories(Array.from(uniqueCategories));
-      setTotalActivities(agentActivities?.length || 0);
-      
-      // Log pentru categorii și activitate
-      console.log('Agent activity categories:', categories);
-      console.log('Total monitored activities:', totalActivities);
-      
     } catch (error) {
       console.error('Detailed error fetching agent activities:', error);
       toast({
@@ -129,7 +63,7 @@ export const useAgentMonitoring = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [user, toast]);
+  }, [user, toast, categories, totalActivities]);
 
   // Inițial încărcăm datele și configurăm ascultarea pentru real-time updates
   useEffect(() => {
@@ -138,31 +72,7 @@ export const useAgentMonitoring = () => {
     // Configurare canal pentru actualizări real-time
     if (!user) return;
     
-    const channel = supabase
-      .channel('agent-activities-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'agent_activity'
-        },
-        () => {
-          fetchAgentActivity();
-        }
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'agent_activity_logs'
-        },
-        () => {
-          fetchAgentActivity();
-        }
-      )
-      .subscribe();
+    const channel = setupRealtimeSubscription(fetchAgentActivity);
     
     // Curățare la unmount
     return () => {
@@ -171,9 +81,14 @@ export const useAgentMonitoring = () => {
   }, [fetchAgentActivity, user]);
   
   // Funcție pentru actualizarea manuală a datelor
-  const refreshData = () => {
+  const refreshData = useCallback(() => {
     fetchAgentActivity();
-  };
+  }, [fetchAgentActivity]);
+  
+  // Funcție pentru logare activitate
+  const logDetailedAgentActivity = useCallback((agentId: string, description: string) => {
+    logAgentActivity(agentId, description);
+  }, []);
   
   return {
     activityData,
@@ -182,21 +97,6 @@ export const useAgentMonitoring = () => {
     categories,
     refreshData,
     totalActivities,
-    logDetailedAgentActivity: (agentId: string, description: string) => {
-      // Metodă pentru logging suplimentar din alte componente
-      supabase
-        .from('agent_activity_logs')
-        .insert({
-          agent_id: agentId,
-          agent_name: 'N/A', // You might want to fetch the agent name here if needed
-          description: description,
-          category: 'monitoring',
-          timestamp: new Date().toISOString()
-        })
-        .select()
-        .then(({ data, error }) => {
-          if (error) console.error('Failed to log agent activity:', error);
-        });
-    }
+    logDetailedAgentActivity
   };
 };
