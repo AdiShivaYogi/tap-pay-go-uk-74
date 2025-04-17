@@ -14,6 +14,7 @@ import { UnifiedMonitoringTabs } from "@/components/agents/unified-monitoring/Un
 import { useAgentAdminData } from "@/hooks/use-agent-admin-data";
 import { useSubmissionHandlers } from "@/components/agent-admin/handlers/submission-handlers";
 import { useCodeProposalHandlers } from "@/components/agent-admin/handlers/code-proposal-handlers";
+import { MonitoringTabs } from "@/components/agents/monitoring/MonitoringTabs";
 
 interface BaseMonitoringPageProps {
   tabs?: 'default' | 'unified';
@@ -119,4 +120,3 @@ export const BaseMonitoringPage: React.FC<BaseMonitoringPageProps> = ({
     </Layout>
   );
 };
-

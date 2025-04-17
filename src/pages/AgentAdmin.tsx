@@ -11,6 +11,7 @@ import { AgentAdminTabs } from "@/components/agent-admin/AgentAdminTabs";
 import { useAgentAdminData } from "@/hooks/use-agent-admin-data";
 import { AgentApiKeyDialog } from "@/components/agents/AgentApiKeyDialog";
 import { OpenRouterApiKeyDialog } from "@/components/agents/OpenRouterApiKeyDialog";
+import { AnthropicApiKeyDialog } from "@/components/agents/AnthropicApiKeyDialog";
 
 const AgentAdmin = () => {
   const { user } = useAuth();
@@ -59,6 +60,7 @@ const AgentAdmin = () => {
         <div className="flex flex-wrap gap-3 mb-4">
           <AgentApiKeyDialog />
           <OpenRouterApiKeyDialog />
+          <AnthropicApiKeyDialog />
         </div>
         
         <AgentAdminTabs 

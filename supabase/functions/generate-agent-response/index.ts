@@ -1,3 +1,4 @@
+
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
@@ -146,7 +147,7 @@ function calculateTokenCost(inputTokens, outputTokens, isCacheHit = false) {
  * @param {number} responseTime - Response time in seconds
  * @param {string} promptType - Type of prompt used
  * @param {boolean} isCacheHit - Whether the input tokens were served from cache
- * @param {string} model - The model used (deepseek or claude)
+ * @param {string} model - The model used (deepseek, claude, or anthropic)
  */
 async function recordTokenUsage(supabase, inputTokens, outputTokens, responseTime, promptType, isCacheHit = false, model = 'deepseek') {
   try {
@@ -342,6 +343,51 @@ async function callClaudeAPI(systemPrompt, message, apiKey) {
 }
 
 /**
+ * Calls the Anthropic API directly with the provided message and system prompt
+ * @param {string} systemPrompt - The system prompt to send to the API
+ * @param {string} message - The user message to send to the API
+ * @param {string} apiKey - The Anthropic API key
+ * @returns {Promise<Object>} The API response
+ */
+async function callAnthropicAPI(systemPrompt, message, apiKey) {
+  // Modelul preferat: claude-3-sonnet-20240229 este mai rapid și mai ieftin
+  // Alternativ, claude-3-opus-20240229 este mai puternic dar mai scump și lent
+  // claude-3-haiku-20240307 este cel mai rapid și ieftin, dar mai limitat
+  const preferredModel = "claude-3-sonnet-20240229";
+  
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: preferredModel,
+        system: systemPrompt,
+        messages: [
+          { role: 'user', content: message }
+        ],
+        temperature: 0.7,
+        max_tokens: 1500
+      })
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`Eroare API Anthropic: ${errorData.error?.message || 'Eroare necunoscută'}`);
+    }
+    
+    return response;
+    
+  } catch (error) {
+    console.error('Eroare la apelarea API-ului Anthropic:', error);
+    throw error;
+  }
+}
+
+/**
  * Main handler function for the Supabase Edge Function
  */
 serve(async (req) => {
@@ -364,6 +410,7 @@ serve(async (req) => {
     // Get API keys from environment
     const deepseekApiKey = Deno.env.get("DEEPSEEK_API_KEY") || "";
     const openrouterApiKey = Deno.env.get("OPENROUTER_API_KEY") || "";
+    const anthropicApiKey = Deno.env.get("ANTHROPIC_API_KEY") || "";
 
     // Parse request body
     const params = await req.json();
@@ -379,7 +426,8 @@ serve(async (req) => {
     }
 
     // Determine which model to use (default to deepseek if not specified)
-    const modelToUse = params.model?.toLowerCase() === 'claude' ? 'claude' : 'deepseek';
+    const modelToUse = params.model?.toLowerCase() === 'claude' ? 'claude' : 
+                      params.model?.toLowerCase() === 'anthropic' ? 'anthropic' : 'deepseek';
     
     // Check if the required API key is available
     if (modelToUse === 'claude' && !openrouterApiKey) {
@@ -387,6 +435,17 @@ serve(async (req) => {
         JSON.stringify({ 
           error: 'Cheia API OpenRouter nu este configurată',
           details: 'Pentru a utiliza modelele Claude, configurați o cheie API OpenRouter în setările aplicației.' 
+        }), 
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 400
+        }
+      );
+    } else if (modelToUse === 'anthropic' && !anthropicApiKey) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Cheia API Anthropic nu este configurată',
+          details: 'Pentru a utiliza modelele Claude direct, configurați o cheie API Anthropic în setările aplicației.' 
         }), 
         {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -410,13 +469,20 @@ serve(async (req) => {
     const systemPrompt = createSystemPrompt(params);
     const promptType = determinePromptType(params);
 
-    console.log(`Se trimite cererea la ${modelToUse === 'claude' ? 'Claude (OpenRouter)' : 'Deepseek'} API...`);
+    console.log(`Se trimite cererea la ${
+      modelToUse === 'claude' ? 'Claude (OpenRouter)' : 
+      modelToUse === 'anthropic' ? 'Claude (Anthropic)' : 'Deepseek'
+    } API...`);
+    
     const startTime = Date.now();
     
     // Call appropriate API based on model
     let response, data;
     if (modelToUse === 'claude') {
       response = await callClaudeAPI(systemPrompt, params.message, openrouterApiKey);
+      data = await response.json();
+    } else if (modelToUse === 'anthropic') {
+      response = await callAnthropicAPI(systemPrompt, params.message, anthropicApiKey);
       data = await response.json();
     } else {
       response = await callDeepseekAPI(systemPrompt, params.message, deepseekApiKey);
@@ -426,8 +492,19 @@ serve(async (req) => {
     const responseTime = (Date.now() - startTime) / 1000; // Convert to seconds
     
     // Extract token usage information (with fallbacks since different APIs may have different response formats)
-    const inputTokens = data.usage?.prompt_tokens || 0;
-    const outputTokens = data.usage?.completion_tokens || 0;
+    let inputTokens = 0;
+    let outputTokens = 0;
+    
+    if (modelToUse === 'deepseek') {
+      inputTokens = data.usage?.prompt_tokens || 0;
+      outputTokens = data.usage?.completion_tokens || 0;
+    } else if (modelToUse === 'claude') {
+      inputTokens = data.usage?.prompt_tokens || 0;
+      outputTokens = data.usage?.completion_tokens || 0;
+    } else if (modelToUse === 'anthropic') {
+      inputTokens = data.usage?.input_tokens || 0;
+      outputTokens = data.usage?.output_tokens || 0;
+    }
     
     // For now, we assume cache miss by default 
     // In a future version, we could track real cache hits from API response
@@ -451,6 +528,9 @@ serve(async (req) => {
       generatedResponse = data.choices?.[0]?.message?.content || 
                          data.choices?.[0]?.content || 
                          "Nu am putut genera un răspuns cu Claude.";
+    } else if (modelToUse === 'anthropic') {
+      generatedResponse = data.content?.[0]?.text || 
+                         "Nu am putut genera un răspuns cu Anthropic.";
     } else {
       generatedResponse = data.choices?.[0]?.message?.content || 
                          "Nu am putut genera un răspuns.";
