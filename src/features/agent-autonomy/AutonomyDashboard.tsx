@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { Rocket, Activity, Code, CheckCircle, Clock, ServerCrash } from 'lucide-react';
 import { AutoExecutionButton } from '@/components/agents/monitoring/autonomy/AutoExecutionButton';
+import { StrategicControl } from './StrategicControl';
 
 export const AutonomyDashboard = () => {
   const { toast } = useToast();
@@ -93,6 +94,11 @@ export const AutonomyDashboard = () => {
           <p className="text-muted-foreground">Activitatea sistemului de agenți autonomi care evoluează independent</p>
         </div>
         <AutoExecutionButton variant="header" />
+      </div>
+      
+      {/* Control Strategic - noul component adăugat */}
+      <div className="mb-6">
+        <StrategicControl />
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

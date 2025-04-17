@@ -7,6 +7,9 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+// Variabilă globală pentru stocarea direcției strategice curente
+let currentStrategicDirection = "optimization"; // valoarea implicită
+
 serve(async (req) => {
   // Gestionăm CORS pre-flight
   if (req.method === 'OPTIONS') {
@@ -25,8 +28,9 @@ serve(async (req) => {
       }
     )
 
-    // Acțiune implicită este obținerea statisticilor
-    const { action = 'getStats' } = await req.json()
+    // Extragem datele din body
+    const body = await req.json()
+    const { action = 'getStats', direction } = body
 
     // Obținem statistici despre propuneri
     if (action === 'getStats') {
@@ -40,6 +44,12 @@ serve(async (req) => {
         'get_code_proposal_stats'
       )
 
+      // Adăugăm și direcția strategică curentă în statistici
+      const strategicInfo = {
+        currentDirection: currentStrategicDirection,
+        lastUpdated: new Date().toISOString()
+      }
+
       if (taskError || codeError) {
         console.error('Eroare la obținerea statisticilor:', { taskError, codeError })
         throw new Error('Eroare la obținerea statisticilor')
@@ -50,8 +60,45 @@ serve(async (req) => {
           success: true,
           data: {
             taskStats: taskStats || {},
-            codeStats: codeStats || {}
+            codeStats: codeStats || {},
+            strategicInfo
           }
+        }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200 
+        }
+      )
+    }
+    // Actualizăm direcția strategică
+    else if (action === 'updateStrategy') {
+      if (!direction) {
+        throw new Error('Direcția strategică este obligatorie')
+      }
+      
+      // Actualizăm direcția curentă
+      currentStrategicDirection = direction
+      console.log(`Direcția strategică actualizată la: ${direction}`)
+      
+      // Înregistrăm modificarea în baza de date
+      const { error } = await supabaseClient
+        .from('agent_activity')
+        .insert({
+          agent_id: 'strategy-director',
+          agent_name: 'Director Strategic',
+          category: 'strategy',
+          action: `Actualizare direcție la: ${direction}`
+        })
+        
+      if (error) {
+        console.error('Eroare la înregistrarea activității:', error)
+      }
+      
+      return new Response(
+        JSON.stringify({
+          success: true,
+          message: 'Direcție strategică actualizată',
+          currentDirection: direction
         }),
         { 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
