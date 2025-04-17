@@ -1,8 +1,6 @@
 
 import { cn } from "@/lib/utils";
 import { config } from "@/config/navigation";
-import { NavLink } from "@/components/ui/navigation/nav-link";
-import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LogIn, CreditCard } from "lucide-react";
@@ -44,22 +42,6 @@ export function MainNavigation({ currentPath, isVisible, user }: MainNavigationP
             </Link>
           );
         })}
-      
-      {/* Adăugare link nou doar pentru admini */}
-      {isAdmin && (
-        <Link
-          to="/agent-monitoring"
-          className={cn(
-            "flex items-center px-3 py-2 text-sm transition-colors hover:text-foreground",
-            pathname === "/agent-monitoring" 
-              ? "text-foreground font-medium" 
-              : "text-muted-foreground"
-          )}
-        >
-          <Activity className="mr-1 h-4 w-4" />
-          Monitorizare
-        </Link>
-      )}
       
       {/* Afișează butonul de autentificare sau conectare Stripe pentru utilizatorii neautentificați */}
       {!user && (

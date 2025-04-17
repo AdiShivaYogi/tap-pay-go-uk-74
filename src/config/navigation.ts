@@ -16,8 +16,8 @@ export interface NavigationItem {
   admin?: boolean;
 }
 
-// For backward compatibility until all files are updated
-export const NAVIGATION: any[] = [];
+// Pentru compatibilitate cu codul existent până când toate fișierele sunt actualizate
+export const NAVIGATION: NavigationItem[] = [];
 
 export const config = {
   mainNav: [
