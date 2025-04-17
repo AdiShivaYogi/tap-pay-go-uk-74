@@ -54,18 +54,20 @@ export function AgentCentralCommandSidebar({
   onTabChange 
 }: AgentCentralCommandSidebarProps) {
   return (
-    <Sidebar className="bg-gradient-to-b from-slate-50 to-slate-100 border-r border-slate-200">
+    <Sidebar className="bg-white border-r border-slate-200">
       <SidebarContent>
         <div className="px-4 py-6">
           <div className="flex items-center gap-2 mb-2">
-            <BrainCircuit className="h-6 w-6 text-purple-600" />
+            <div className="h-8 w-8 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center">
+              <BrainCircuit className="h-5 w-5 text-white" />
+            </div>
             <h2 className="text-lg font-semibold text-slate-800">Centru Comandă</h2>
           </div>
-          <p className="text-xs text-slate-500">Sistem unificat de control & monitorizare agenți</p>
+          <p className="text-xs text-slate-500">Sistem unificat de monitorizare & control</p>
         </div>
         
         <SidebarGroup>
-          <SidebarGroupLabel className="text-sm font-medium text-slate-500">Meniu Agenți</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-sm font-medium text-slate-500">Meniu Principal</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {sidebarItems.map((item) => (
@@ -102,7 +104,7 @@ export function AgentCentralCommandSidebar({
         </SidebarGroup>
         
         <div className="px-4 py-6 mt-auto">
-          <div className="rounded-lg bg-gradient-to-r from-indigo-500/90 to-purple-600/90 p-4 text-white shadow-lg">
+          <div className="rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 p-4 text-white shadow-lg">
             <h3 className="text-sm font-semibold flex items-center gap-1.5">
               <Sparkles className="h-4 w-4" />
               Autonomie Sistem

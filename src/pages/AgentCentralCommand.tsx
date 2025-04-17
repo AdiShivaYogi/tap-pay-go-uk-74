@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/layout";
 import { Section } from "@/components/ui/layout/section";
@@ -9,7 +10,6 @@ import { BaseMonitoringPage } from "@/components/agents/monitoring/BaseMonitorin
 import { AutonomousEngineProvider } from "@/components/agents/autonomous-engine/AutonomousEngineProvider";
 import { AutonomyEngine } from "@/components/agents/monitoring/autonomy/AutonomyEngine";
 import { AgentAdminTabs } from "@/components/agent-admin/AgentAdminTabs";
-import { useAgentAdminData } from "@/hooks/use-agent-admin-data";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AnthropicApiKeyDialog } from "@/components/agents/AnthropicApiKeyDialog";
 import { OpenRouterApiKeyDialog } from "@/components/agents/OpenRouterApiKeyDialog";
@@ -134,8 +134,8 @@ const AgentCentralCommand = () => {
         return (
           <AutonomousEngineProvider>
             <CommandCenterHeader />
-            <Card className="mb-8 border-l-4 border-l-purple-500 bg-gradient-to-r from-purple-50 to-white">
-              <CardContent className="p-6">
+            <div className="mb-8 overflow-hidden rounded-lg border-l-4 border-l-purple-500 bg-gradient-to-r from-purple-50 to-white">
+              <div className="p-6">
                 <h2 className="text-lg font-semibold mb-2 flex items-center gap-2">
                   <Sparkles className="h-5 w-5 text-purple-600" />
                   Centru Unificat de Monitorizare
@@ -144,8 +144,8 @@ const AgentCentralCommand = () => {
                   Vizualizare integrată a tuturor activităților agenților autonomi, cu statistici în timp real
                   și capacități avansate de monitorizare. Sistemul este activ și monitorizează continuu toate operațiunile.
                 </p>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
             
             <BaseMonitoringPage tabs="default" />
             <AutonomyEngine />
@@ -156,8 +156,8 @@ const AgentCentralCommand = () => {
         return (
           <>
             <CommandCenterHeader />
-            <Card className="mb-8 border-l-4 border-l-blue-500 bg-gradient-to-r from-blue-50 to-white">
-              <CardContent className="p-6">
+            <div className="mb-8 overflow-hidden rounded-lg border-l-4 border-l-blue-500 bg-gradient-to-r from-blue-50 to-white">
+              <div className="p-6">
                 <h2 className="text-lg font-semibold mb-2 flex items-center gap-2">
                   <Bot className="h-5 w-5 text-blue-600" />
                   Administrare Propuneri și Feedback
@@ -166,8 +166,8 @@ const AgentCentralCommand = () => {
                   Gestionați propunerile generate de agenți și oferiți feedback pentru a îmbunătăți performanța sistemului.
                   Toate propunerile așteaptă revizuirea și aprobarea dumneavoastră.
                 </p>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
             
             <AgentAdminTabs 
               submissions={submissionsState}
@@ -184,8 +184,8 @@ const AgentCentralCommand = () => {
         return (
           <AutonomousEngineProvider>
             <CommandCenterHeader />
-            <Card className="mb-8 border-l-4 border-l-emerald-500 bg-gradient-to-r from-emerald-50 to-white">
-              <CardContent className="p-6">
+            <div className="mb-8 overflow-hidden rounded-lg border-l-4 border-l-emerald-500 bg-gradient-to-r from-emerald-50 to-white">
+              <div className="p-6">
                 <h2 className="text-lg font-semibold mb-2 flex items-center gap-2">
                   <Command className="h-5 w-5 text-emerald-600" />
                   Control Unificat Agenți
@@ -194,8 +194,8 @@ const AgentCentralCommand = () => {
                   Interfață unificată pentru controlul și monitorizarea tuturor agenților din ecosistem,
                   cu acces complet la toate funcționalitățile și setările sistemului.
                 </p>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
             
             <BaseMonitoringPage tabs="unified" />
             <AutonomyEngine />
@@ -206,8 +206,8 @@ const AgentCentralCommand = () => {
         return (
           <>
             <CommandCenterHeader />
-            <Card className="mb-8 border-l-4 border-l-amber-500 bg-gradient-to-r from-amber-50 to-white">
-              <CardContent className="p-6">
+            <div className="mb-8 overflow-hidden rounded-lg border-l-4 border-l-amber-500 bg-gradient-to-r from-amber-50 to-white">
+              <div className="p-6">
                 <h2 className="text-lg font-semibold mb-2 flex items-center gap-2">
                   <Server className="h-5 w-5 text-amber-600" />
                   Configurare API și Integrări
@@ -216,8 +216,8 @@ const AgentCentralCommand = () => {
                   Gestionați cheile API și configurați integrările necesare pentru funcționarea optimă a 
                   sistemului de agenți autonomi. Aceste configurări sunt esențiale pentru capacitățile avansate.
                 </p>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
             
             <div className="p-6 space-y-6 max-w-3xl bg-white rounded-lg border border-slate-200 shadow-sm">
               <div>
@@ -253,10 +253,10 @@ const AgentCentralCommand = () => {
                       </div>
                     </div>
                     
-                    <p className="text-sm bg-blue-50 border border-blue-200 rounded-md p-3">
+                    <div className="text-sm bg-blue-50 border border-blue-200 rounded-md p-3">
                       <strong className="text-blue-700">Sfat:</strong> Puteți configura ambele opțiuni pentru redundanță. 
                       Sistemul va încerca mai întâi conexiunea directă Anthropic și va folosi OpenRouter ca rezervă.
-                    </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -271,16 +271,18 @@ const AgentCentralCommand = () => {
   return (
     <Layout>
       <SidebarProvider>
-        <div className="flex min-h-screen w-full bg-slate-50">
+        <div className="flex min-h-screen w-full bg-gradient-to-b from-slate-50 to-slate-100">
           <AgentCentralCommandSidebar 
             activeTab={activeTab} 
             onTabChange={setActiveTab} 
           />
-          <Section className="flex-1 p-6">
-            <div className="max-w-[1300px] mx-auto">
-              {renderActiveTab()}
-            </div>
-          </Section>
+          <div className="flex-1 overflow-auto">
+            <Section className="p-6">
+              <div className="max-w-[1300px] mx-auto">
+                {renderActiveTab()}
+              </div>
+            </Section>
+          </div>
         </div>
       </SidebarProvider>
     </Layout>

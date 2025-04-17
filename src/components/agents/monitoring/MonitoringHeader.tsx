@@ -39,18 +39,18 @@ export const MonitoringHeader = ({ agentsRunning }: MonitoringHeaderProps) => {
       
       <div className="flex items-center gap-2 self-end sm:self-auto">
         {!isRunning ? (
-          <Button onClick={startAgents} size="sm" className="gap-2">
+          <Button onClick={startAgents} size="sm" className="gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700">
             <Play className="h-4 w-4" />
             <span>Start Agenți</span>
           </Button>
         ) : (
-          <Button onClick={stopAgents} variant="outline" size="sm" className="gap-2">
+          <Button onClick={stopAgents} variant="outline" size="sm" className="gap-2 border-purple-200 text-purple-700 hover:bg-purple-50">
             <Pause className="h-4 w-4" />
             <span>Oprire Agenți</span>
           </Button>
         )}
         
-        <Button variant="outline" size="sm" className="gap-2">
+        <Button variant="outline" size="sm" className="gap-2 border-slate-200 hover:bg-slate-50">
           <Settings className="h-4 w-4" />
           <span>Configurare</span>
         </Button>

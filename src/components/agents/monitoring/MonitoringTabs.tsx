@@ -11,24 +11,39 @@ import { Box, Brain, LayoutDashboard, Shield, Webhook } from "lucide-react";
 export const MonitoringTabs = () => {
   return (
     <Tabs defaultValue="autonomy" className="mt-4">
-      <TabsList className="grid grid-cols-5 mb-6">
-        <TabsTrigger value="autonomy" className="flex items-center gap-2">
+      <TabsList className="grid grid-cols-5 mb-6 bg-slate-100/80 p-1 rounded-lg">
+        <TabsTrigger 
+          value="autonomy" 
+          className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-purple-700 data-[state=active]:shadow-sm"
+        >
           <Brain className="h-4 w-4" />
           <span>Autonomie</span>
         </TabsTrigger>
-        <TabsTrigger value="monitoring" className="flex items-center gap-2">
+        <TabsTrigger 
+          value="monitoring" 
+          className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-purple-700 data-[state=active]:shadow-sm"
+        >
           <LayoutDashboard className="h-4 w-4" />
           <span>Monitorizare</span>
         </TabsTrigger>
-        <TabsTrigger value="safety" className="flex items-center gap-2">
+        <TabsTrigger 
+          value="safety" 
+          className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-purple-700 data-[state=active]:shadow-sm"
+        >
           <Shield className="h-4 w-4" />
           <span>Siguranță</span>
         </TabsTrigger>
-        <TabsTrigger value="projects" className="flex items-center gap-2">
+        <TabsTrigger 
+          value="projects" 
+          className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-purple-700 data-[state=active]:shadow-sm"
+        >
           <Box className="h-4 w-4" />
           <span>Proiecte</span>
         </TabsTrigger>
-        <TabsTrigger value="debugging" className="flex items-center gap-2">
+        <TabsTrigger 
+          value="debugging" 
+          className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-purple-700 data-[state=active]:shadow-sm"
+        >
           <Webhook className="h-4 w-4" />
           <span>Auto-Debug</span>
         </TabsTrigger>

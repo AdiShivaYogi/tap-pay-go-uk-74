@@ -16,7 +16,7 @@ export const AutonomyAlert = ({
   if (!showAutonomyAlert) return null;
   
   return (
-    <Alert className="mb-6 bg-amber-50 border-amber-200">
+    <Alert className="mb-6 bg-gradient-to-r from-amber-50 to-amber-100/50 border-amber-200 rounded-lg">
       <AlertCircle className="h-4 w-4 text-amber-600" />
       <AlertTitle className="text-amber-800">Monitorizare Autonomă Activă</AlertTitle>
       <AlertDescription className="text-amber-700">

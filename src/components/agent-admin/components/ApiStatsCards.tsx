@@ -18,7 +18,7 @@ export const ApiStatsCards: React.FC<ApiStatsCardsProps> = ({ stats, isLoading }
     return (
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="h-24 bg-muted animate-pulse rounded-lg" />
+          <div key={i} className="h-24 rounded-lg bg-slate-100 animate-pulse" />
         ))}
       </div>
     );
@@ -31,13 +31,14 @@ export const ApiStatsCards: React.FC<ApiStatsCardsProps> = ({ stats, isLoading }
         value={stats?.totalTokens.toLocaleString() || '0'}
         icon={Brain}
         description="Tokeni procesați în total"
+        colorClass="text-purple-600"
       />
       
       <StatsCard
         title="Cost total"
         value={`$${stats?.totalCost.toFixed(2) || '0.00'}`}
         icon={DollarSign}
-        colorClass="text-green-500"
+        colorClass="text-green-600"
         description="Cost total API"
       />
       
@@ -45,7 +46,7 @@ export const ApiStatsCards: React.FC<ApiStatsCardsProps> = ({ stats, isLoading }
         title="Prompt-uri procesate"
         value={stats?.totalPrompts.toLocaleString() || '0'}
         icon={MessageSquare}
-        colorClass="text-blue-500"
+        colorClass="text-blue-600"
         description="Număr total de prompt-uri"
       />
       
@@ -53,7 +54,7 @@ export const ApiStatsCards: React.FC<ApiStatsCardsProps> = ({ stats, isLoading }
         title="Timp mediu răspuns"
         value={`${stats?.avgResponseTime.toFixed(1) || '0.0'}s`}
         icon={Clock}
-        colorClass="text-purple-500"
+        colorClass="text-amber-600"
         description="Timp mediu de procesare"
       />
     </div>
