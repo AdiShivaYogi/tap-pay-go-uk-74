@@ -35,7 +35,7 @@ export const AgentActivityMonitor: React.FC = () => {
 
   // Inițiem auto-învățarea la încărcare
   useEffect(() => {
-    if (typeof executeAutoLearning === 'function' && showAutoLearning) {
+    if (showAutoLearning && executeAutoLearning) {
       executeAutoLearning();
       
       // Notificare despre activarea auto-învățării

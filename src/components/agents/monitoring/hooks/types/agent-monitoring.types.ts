@@ -1,21 +1,21 @@
 
+import { Dispatch, SetStateAction } from "react";
+
 export interface ActivityData {
   agentId: string;
   agentName: string;
+  count: number;
   category: string;
-  taskCount: number;
-  proposalCount: number;
-  conversationCount: number;
-  learningCount?: number;
+  data?: any[];
 }
 
 export interface ActivityLog {
   id: string;
   agentId: string;
   agentName: string;
-  description: string;
-  category: string; // 'task', 'proposal', 'conversation', 'learning', etc.
-  timestamp: string;
+  action: string;
+  category: string;
+  timestamp: Date;
 }
 
 export interface AgentInteraction {
@@ -25,15 +25,24 @@ export interface AgentInteraction {
   timestamp: Date;
 }
 
+export interface AgentLearningRule {
+  sourceAgentId: string;
+  targetAgentId: string;
+  learningTypes: string[];
+  interval: number;
+  isActive: boolean;
+  lastExecuted?: Date;
+}
+
 export interface LearningProgress {
   id: string;
   sourceAgentId: string;
   targetAgentId: string;
-  progress: number; // 0-100
-  startTime: Date;
-  estimatedEndTime: Date;
   learningType: string;
-  status: 'in-progress' | 'completed' | 'failed';
+  progress: number;
+  status: 'pending' | 'in-progress' | 'completed' | 'failed';
+  startTime: Date;
+  endTime?: Date;
 }
 
 export interface LearningReport {
@@ -43,44 +52,32 @@ export interface LearningReport {
   targetAgentId: string;
   targetAgentName: string;
   learningType: string;
+  insights: string[];
   learningDate: Date;
-  duration: number; // în secunde
-  conceptsLearned: string[];
-  summary: string;
 }
 
-export interface AgentLearningRule {
-  sourceAgentId: string;
-  targetAgentId: string;
-  learningTypes: string[];
-  interval: number; // în minute
-  isActive: boolean;
-  lastExecuted?: Date;
-}
-
-export interface AgentMonitoringState {
+export interface AgentMonitoringHook {
   activityData: ActivityData[];
   activityLogs: ActivityLog[];
   isLoading: boolean;
   categories: string[];
+  refreshData: () => Promise<void>;
   totalActivities: number;
-  autoRefresh: boolean;
-  lastRefresh: Date;
-  learningRules: AgentLearningRule[];
-  learningProgress: LearningProgress[];
-  learningReports: LearningReport[];
-}
-
-export interface AgentMonitoringHook extends AgentMonitoringState {
-  refreshData: () => void;
   logDetailedAgentActivity: (agentId: string, description: string, category?: string) => void;
+  autoRefresh: boolean;
   toggleAutoRefresh: () => void;
+  lastRefresh: Date;
   logAgentInteraction: (sourceAgentId: string, targetAgentId: string, learningType: string) => AgentInteraction;
+  learningRules: AgentLearningRule[];
   addLearningRule: (rule: Omit<AgentLearningRule, 'lastExecuted'>) => void;
   removeLearningRule: (sourceId: string, targetId: string) => void;
   toggleLearningRule: (sourceId: string, targetId: string) => void;
-  startLearningProcess: (sourceId: string, targetId: string, learningType: string) => LearningProgress;
+  learningProgress: LearningProgress[];
+  learningReports: LearningReport[];
+  startLearningProcess: (sourceId: string, targetId: string, learningType: string) => any;
   updateLearningProgress: (id: string, progress: number) => void;
-  completeLearningProcess: (id: string, conceptsLearned: string[], summary: string) => LearningReport;
-  getLearningReports: (sourceId?: string, targetId?: string) => LearningReport[];
+  completeLearningProcess: (id: string) => void;
+  getLearningReports: () => void;
+  executeAutoLearning: () => void;
 }
+

@@ -47,7 +47,7 @@ export const AutoExecutionButton: React.FC<AutoExecutionButtonProps> = ({
       startAutonomousExecution();
       
       // Inițiem auto-învățarea și autodezvoltarea
-      if (typeof executeAutoLearning === 'function') {
+      if (executeAutoLearning) {
         executeAutoLearning();
       }
 
