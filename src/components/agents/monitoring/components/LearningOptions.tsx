@@ -1,8 +1,9 @@
 
 import React from "react";
 import { AgentLearningPanel } from "../AgentLearningPanel";
-import { AgentAutoLearning } from "../AgentAutoLearning";
 import { AgentLearningProgress } from "../AgentLearningProgress";
+import { AgentAutoLearning } from "./learning/AgentAutoLearning";
+import { AgentLearningReports } from "../AgentLearningReports";
 
 interface LearningOptionsProps {
   showLearning: boolean;
@@ -28,6 +29,8 @@ export const LearningOptions: React.FC<LearningOptionsProps> = ({
       )}
       
       <AgentLearningProgress />
+      
+      {showAutoLearning && <AgentLearningReports />}
     </>
   );
 };
