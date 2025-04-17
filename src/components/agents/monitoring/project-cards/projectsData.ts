@@ -188,14 +188,14 @@ export const agentProjects = [
   {
     title: "Planificare Autonomă de Sarcini",
     description: "Sistem care permite agenților să-și planifice și prioritizeze automat sarcinile în funcție de obiectivele globale",
-    status: "planificat" as const,
+    status: "în progres" as const,
     priority: "înaltă" as const,
     timeframe: "săptămâni" as const,
-    timeUsed: 0,
+    timeUsed: 5,
     timeTotal: 25,
     icon: Calendar,
     tasks: [
-      { name: "Motor de prioritizare inteligentă", completed: false },
+      { name: "Motor de prioritizare inteligentă", completed: true },
       { name: "Algoritm de optimizare a resurselor", completed: false },
       { name: "Mecanism de adaptare dinamică", completed: false },
       { name: "Interfață de supervizare umană", completed: false }
@@ -204,15 +204,15 @@ export const agentProjects = [
   {
     title: "Execuție Autonomă de Proiecte",
     description: "Mecanism care permite agenților să execute autonom sarcinile planificate fără intervenție umană",
-    status: "planificat" as const,
+    status: "în progres" as const,
     priority: "înaltă" as const,
     timeframe: "luni" as const,
-    timeUsed: 0,
+    timeUsed: 10,
     timeTotal: 40,
     icon: PlaySquare,
     tasks: [
-      { name: "Framework de execuție independentă", completed: false },
-      { name: "Sistem de verificare a rezultatelor", completed: false },
+      { name: "Framework de execuție independentă", completed: true },
+      { name: "Sistem de verificare a rezultatelor", completed: true },
       { name: "Protocol de corectare automată", completed: false },
       { name: "Mecanism de raportare a progresului", completed: false }
     ]
@@ -220,15 +220,15 @@ export const agentProjects = [
   {
     title: "Monitorizare în Timp Real",
     description: "Dashboard interactiv care arată progresul și deciziile agenților în timp real",
-    status: "planificat" as const,
+    status: "în progres" as const,
     priority: "medie" as const,
     timeframe: "săptămâni" as const,
-    timeUsed: 0,
+    timeUsed: 8,
     timeTotal: 20,
     icon: Gauge,
     tasks: [
-      { name: "Vizualizări avansate de date", completed: false },
-      { name: "Alertare inteligentă pentru anomalii", completed: false },
+      { name: "Vizualizări avansate de date", completed: true },
+      { name: "Alertare inteligentă pentru anomalii", completed: true },
       { name: "Istoricul deciziilor agenților", completed: false },
       { name: "Metrici personalizabile de performanță", completed: false }
     ]
@@ -252,16 +252,16 @@ export const agentProjects = [
   {
     title: "Limitare și Siguranță",
     description: "Mecanisme care asigură că agenții autonomi operează în limite sigure și etice",
-    status: "planificat" as const,
+    status: "în progres" as const,
     priority: "înaltă" as const,
     timeframe: "săptămâni" as const,
-    timeUsed: 0,
+    timeUsed: 10,
     timeTotal: 15,
     icon: CircleSlash,
     tasks: [
-      { name: "Parametrii de siguranță configurabili", completed: false },
-      { name: "Mecanism de oprire de urgență", completed: false },
-      { name: "Verificare continuă a conformității", completed: false },
+      { name: "Parametrii de siguranță configurabili", completed: true },
+      { name: "Mecanism de oprire de urgență", completed: true },
+      { name: "Verificare continuă a conformității", completed: true },
       { name: "Protocol de revenire la control manual", completed: false }
     ]
   },
