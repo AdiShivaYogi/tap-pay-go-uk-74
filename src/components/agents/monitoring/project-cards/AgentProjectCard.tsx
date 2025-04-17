@@ -23,7 +23,7 @@ interface AgentProjectCardProps {
 
 export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) => {
   const IconComponent = project.icon;
-  const isAutonomyProject = project.title === "Noua Eră a Autonomiei";
+  const isAutonomyProject = project.id === "autonomy-era";
   const { toast } = useToast();
   const [isExecuting, setIsExecuting] = useState(false);
   const [executionComplete, setExecutionComplete] = useState(false);
@@ -36,9 +36,15 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
   const completedTasksCount = tasks.filter(task => task.completed).length;
   const totalTasks = tasks.length;
   const completionPercentage = totalTasks > 0 ? (completedTasksCount / totalTasks) * 100 : 0;
-  
-  // Verificați dacă toate taskurile sunt finalizate
   const allTasksCompleted = completedTasksCount === totalTasks;
+  
+  // Verificăm dacă este proiectul Noua Eră a Autonomiei și setăm starea completă manual
+  useEffect(() => {
+    if (isAutonomyProject || project.status === "completed") {
+      setExecutionComplete(true);
+      setTasks(project.tasks.map(task => ({ ...task, completed: true })));
+    }
+  }, [isAutonomyProject, project]);
   
   // Restaurăm starea de executare din baza de date la încărcarea componentei
   useEffect(() => {
@@ -182,8 +188,9 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
     <StyledCard 
       className={cn(
         "w-full h-full", 
-        isAutonomyProject ? "border-amber-300 shadow-amber-100/50 shadow-md" : "",
-        executionComplete && "border-green-300 shadow-green-100/50 shadow-md"
+        isAutonomyProject ? 
+          "border-green-300 shadow-green-100/50 shadow-md" : 
+          executionComplete && "border-green-300 shadow-green-100/50 shadow-md"
       )}
     >
       <StyledCardContent className="p-0">
@@ -193,12 +200,18 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
               <div className="flex items-center gap-2 mb-2">
                 <h3 className="text-lg font-medium">{project.title}</h3>
                 {isAutonomyProject && (
-                  <Badge className="bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs py-0.5 px-1.5 flex items-center gap-1">
-                    <Sparkles className="h-3 w-3" />
-                    Nouă Eră
-                  </Badge>
+                  <>
+                    <Badge className="bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs py-0.5 px-1.5 flex items-center gap-1">
+                      <Sparkles className="h-3 w-3" />
+                      Nouă Eră
+                    </Badge>
+                    <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs py-0.5 px-1.5 flex items-center gap-1">
+                      <CheckCircle2 className="h-3 w-3" />
+                      Implementat
+                    </Badge>
+                  </>
                 )}
-                {executionComplete && (
+                {executionComplete && !isAutonomyProject && (
                   <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs py-0.5 px-1.5 flex items-center gap-1">
                     <CheckCircle2 className="h-3 w-3" />
                     Implementat
@@ -213,15 +226,21 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
           </div>
           
           <div className="flex flex-wrap gap-2 mb-4">
-            <StatusBadge status={project.status} />
+            <StatusBadge status={isAutonomyProject ? "completed" : project.status} />
             <PriorityBadge priority={project.priority} />
             <TimeframeBadge timeframe={project.timeframe} />
             
             {project.integrationProgress !== undefined && (
               <IntegrationStatusBadge 
                 type="autonomy" 
-                progress={project.integrationProgress} 
+                progress={isAutonomyProject ? 100 : project.integrationProgress} 
               />
+            )}
+            
+            {isAutonomyProject && (
+              <Badge className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white">
+                Autonom
+              </Badge>
             )}
           </div>
         </div>
@@ -246,7 +265,11 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
                 </div>
               </div>
             ) : (
-              <ProgressBar timeUsed={project.timeUsed} timeTotal={project.timeTotal} />
+              <ProgressBar 
+                timeUsed={isAutonomyProject ? 30 : project.timeUsed} 
+                timeTotal={project.timeTotal} 
+                completed={isAutonomyProject || executionComplete}
+              />
             )}
           </div>
           <TaskList tasks={tasks} />
@@ -254,23 +277,23 @@ export const AgentProjectCard: React.FC<AgentProjectCardProps> = ({ project }) =
           {/* Buton de Autoexecuție */}
           <Button
             onClick={handleAutoExecution}
-            disabled={isExecuting || allTasksCompleted}
+            disabled={isExecuting || allTasksCompleted || isAutonomyProject}
             className={cn(
               "w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white gap-2",
               isExecuting && "animate-pulse",
-              executionComplete && "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
+              (executionComplete || isAutonomyProject) && "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
             )}
             size="sm"
           >
             {isExecuting ? (
               <Loader2 className="h-4 w-4 animate-spin text-white" />
-            ) : executionComplete ? (
+            ) : executionComplete || isAutonomyProject ? (
               <CheckCircle2 className="h-4 w-4 text-white" />
             ) : (
               <Zap className="h-4 w-4 text-white" />
             )}
             {isExecuting ? "Execuție automată..." : 
-             executionComplete ? "Toate taskurile implementate" : 
+             executionComplete || isAutonomyProject ? "Toate taskurile implementate" : 
              "Activează Autoexecuție"}
           </Button>
         </div>

@@ -1,4 +1,3 @@
-
 import { Layout, BrainCircuit, Network, Sparkles, Shield, LineChart, Gauge } from "lucide-react";
 import { AgentProject } from "../types";
 
@@ -12,16 +11,16 @@ export const AUTONOMY_PROJECTS: AgentProject[] = [
     tasks: [
       { name: "Activare mecanisme de auto-evoluție", completed: true },
       { name: "Implementare learning adaptiv", completed: true },
-      { name: "Sistem de decizie independent", completed: false },
-      { name: "Protocol de etică și auto-limitare", completed: false },
-      { name: "Mecanism de evaluare autonomă", completed: false },
+      { name: "Sistem de decizie independent", completed: true },
+      { name: "Protocol de etică și auto-limitare", completed: true },
+      { name: "Mecanism de evaluare autonomă", completed: true },
     ],
-    timeUsed: 15,
+    timeUsed: 30,
     timeTotal: 30,
-    status: "in-progress",
-    priority: "high",
+    status: "completed",
+    priority: "medium",
     timeframe: "weeks",
-    integrationProgress: 65
+    integrationProgress: 100
   },
   {
     id: "agent-communication",
