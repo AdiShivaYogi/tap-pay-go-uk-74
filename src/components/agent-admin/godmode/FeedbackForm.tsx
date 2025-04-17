@@ -1,11 +1,9 @@
-
 import React from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Loader2, CheckSquare, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { ModelSelector } from "./ModelSelector";
-import { FeedbackItem } from "@/hooks/agent-god-mode/types";
+import { ModelSelector } from "@/components/agent-admin/god-mode/ModelSelector";
 
 interface FeedbackFormProps {
   feedbackType: "submission" | "proposal" | null;

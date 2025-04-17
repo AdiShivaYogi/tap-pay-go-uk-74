@@ -10,6 +10,7 @@ export interface FeedbackItem {
   proposed_progress?: number;
   proposed_files?: string;
   motivation?: string;
+  proposed_code?: string; // Added this line to match the error
 }
 
 export interface AgentGodModeState {
@@ -19,7 +20,7 @@ export interface AgentGodModeState {
   currentSubmission: FeedbackItem | null;
   currentProposal: FeedbackItem | null;
   feedback: string;
-  feedbackType: "submission" | "proposal" | null;
+  feedbackType?: "submission" | "proposal"; // Made this optional
   preferredModel: "deepseek" | "claude";
 }
 

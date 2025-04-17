@@ -5,10 +5,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 interface ModelSelectorProps {
   value: string;
   onChange: (value: "deepseek" | "claude") => void;
-  disabled: boolean;
+  disabled?: boolean;
 }
 
-export const ModelSelector = ({ value, onChange, disabled }: ModelSelectorProps) => {
+export const ModelSelector = ({ value, onChange, disabled = false }: ModelSelectorProps) => {
   return (
     <Select 
       value={value} 
@@ -25,3 +25,4 @@ export const ModelSelector = ({ value, onChange, disabled }: ModelSelectorProps)
     </Select>
   );
 };
+
