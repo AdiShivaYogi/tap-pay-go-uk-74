@@ -1,17 +1,18 @@
+
 import { cn } from "@/lib/utils";
-import { NAVIGATION } from "@/config/navigation";
-import { NavLink } from "@/components/ui/themed-components";
+import { config } from "@/config/navigation";
+import { NavLink } from "@/components/ui/navigation/nav-link";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LogIn, CreditCard } from "lucide-react";
-import { useUserRole } from "@/hooks/useUserRole";
+import { useUserRole } from "@/hooks/use-user-role";
 import { useLocation } from "react-router-dom";
 import { Activity } from "lucide-react";
 
 interface MainNavigationProps {
   currentPath: string;
-  isVisible: (item: typeof NAVIGATION[0]) => boolean;
+  isVisible: (item: any) => boolean;
   user: any | null;
 }
 
@@ -28,7 +29,7 @@ export function MainNavigation({ currentPath, isVisible, user }: MainNavigationP
         .map((item) => {
           const isActive = pathname === item.href;
           return (
-            <NavLink
+            <Link
               key={item.href}
               to={item.href}
               className={cn(
@@ -40,13 +41,13 @@ export function MainNavigation({ currentPath, isVisible, user }: MainNavigationP
             >
               {item.icon && <item.icon className="mr-1 h-4 w-4" />}
               {item.title}
-            </NavLink>
+            </Link>
           );
         })}
       
       {/* Adăugare link nou doar pentru admini */}
       {isAdmin && (
-        <NavLink
+        <Link
           to="/agent-monitoring"
           className={cn(
             "flex items-center px-3 py-2 text-sm transition-colors hover:text-foreground",
@@ -57,33 +58,10 @@ export function MainNavigation({ currentPath, isVisible, user }: MainNavigationP
         >
           <Activity className="mr-1 h-4 w-4" />
           Monitorizare
-        </NavLink>
+        </Link>
       )}
       
-      {/* Afișează link-uri din config doar pentru admini dacă este necesar */}
-      {NAVIGATION.filter(item => !item.showWhenAuth || (item.showWhenAuth && user))
-        .filter(item => !item.hideWhenAuth || (item.hideWhenAuth && !user))
-        .filter(item => {
-          if (!user) return !item.adminOnly && !item.moderatorOnly && !item.superAdminOnly && !item.userOnly;
-          return isVisible(item);
-        })
-        .map((item) => (
-          <NavLink 
-            key={item.href} 
-            href={item.href}
-            icon={item.icon}
-            active={currentPath === item.href}
-          >
-            {item.label}
-            {item.label === "Cont" && user?.stripeConnected && (
-              <Badge variant="secondary" className="ml-2">
-                Stripe conectat
-              </Badge>
-            )}
-          </NavLink>
-        ))}
-
-      {/* Afișăm butonul de autentificare sau conectare Stripe pentru utilizatorii neautentificați */}
+      {/* Afișează butonul de autentificare sau conectare Stripe pentru utilizatorii neautentificați */}
       {!user && (
         <>
           <Link to="/auth">

@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { Menu, LogIn, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { NAVIGATION } from "@/config/navigation";
+import { config } from "@/config/navigation";
+import { useUserRole } from "@/hooks/use-user-role";
 import {
   Sheet,
   SheetContent,
@@ -15,11 +16,13 @@ import {
 
 interface MobileMenuProps {
   currentPath: string;
-  isVisible: (item: typeof NAVIGATION[0]) => boolean;
+  isVisible: (item: any) => boolean;
   user: any | null;
 }
 
 export function MobileMenu({ currentPath, isVisible, user }: MobileMenuProps) {
+  const { isAdmin } = useUserRole();
+  
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -36,12 +39,8 @@ export function MobileMenu({ currentPath, isVisible, user }: MobileMenuProps) {
           </SheetDescription>
         </SheetHeader>
         <nav className="flex flex-col space-y-1 mt-4">
-          {NAVIGATION.filter(item => !item.showWhenAuth || (item.showWhenAuth && user))
-            .filter(item => !item.hideWhenAuth || (item.hideWhenAuth && !user))
-            .filter(item => {
-              if (!user) return !item.adminOnly && !item.moderatorOnly && !item.superAdminOnly && !item.userOnly;
-              return isVisible(item);
-            })
+          {config.mainNav
+            .filter(item => !item.admin || (item.admin && isAdmin))
             .map((item) => (
               <Link
                 key={item.href}
@@ -53,13 +52,8 @@ export function MobileMenu({ currentPath, isVisible, user }: MobileMenuProps) {
                     : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                 )}
               >
-                <item.icon className="h-4 w-4" />
-                {item.label}
-                {item.label === "Cont" && user?.stripeConnected && (
-                  <Badge variant="secondary" className="ml-auto">
-                    Stripe conectat
-                  </Badge>
-                )}
+                {item.icon && <item.icon className="h-4 w-4" />}
+                {item.title}
               </Link>
             ))}
           

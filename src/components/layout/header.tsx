@@ -5,8 +5,7 @@ import { Logo } from "./navigation/Logo";
 import { MainNavigation } from "./navigation/MainNavigation";
 import { UserMenu } from "./navigation/UserMenu";
 import { MobileMenu } from "./navigation/MobileMenu";
-import { determineNavItemVisibility, checkSuperAdmin } from "./navigation/HeaderUtils";
-import { NavigationItem } from "@/config/navigation";
+import { config } from "@/config/navigation";
 
 export function Header() {
   const { signOut, user } = useAuth();
@@ -16,7 +15,7 @@ export function Header() {
   const isSuperAdmin = checkSuperAdmin(user?.email);
   
   // Function to determine if a navigation item should be visible
-  const isVisible = (item: NavigationItem) => {
+  const isVisible = (item: any) => {
     return determineNavItemVisibility(item, user, isAdmin, isModerator, isSuperAdmin);
   };
 
@@ -61,4 +60,28 @@ export function Header() {
       </div>
     </header>
   );
+}
+
+// Helper functions
+function checkSuperAdmin(email: string | undefined): boolean {
+  if (!email) return false;
+  const adminEmails = [
+    '114.adrian.gheorghe@gmail.com',
+    '727.adrian.gheorghe@gmail.com'
+  ];
+  return adminEmails.includes(email);
+}
+
+function determineNavItemVisibility(
+  item: any, 
+  user: any, 
+  isAdmin: boolean, 
+  isModerator: boolean, 
+  isSuperAdmin: boolean
+): boolean {
+  if (item.adminOnly && !isAdmin) return false;
+  if (item.moderatorOnly && !isModerator) return false;
+  if (item.superAdminOnly && !isSuperAdmin) return false;
+  if (item.userOnly && isAdmin) return false; // admin can see user items too
+  return true;
 }

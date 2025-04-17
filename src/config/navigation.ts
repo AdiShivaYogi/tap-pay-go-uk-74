@@ -1,3 +1,4 @@
+
 import { 
   LayoutDashboard, 
   Settings, 
@@ -6,13 +7,17 @@ import {
   Bot, 
   Activity,
 } from "lucide-react";
+import { ComponentType, SVGProps } from "react";
 
-interface NavItem {
+export interface NavigationItem {
   title: string;
   href: string;
-  icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  icon?: ComponentType<SVGProps<SVGSVGElement>>;
   admin?: boolean;
 }
+
+// For backward compatibility until all files are updated
+export const NAVIGATION: any[] = [];
 
 export const config = {
   mainNav: [
