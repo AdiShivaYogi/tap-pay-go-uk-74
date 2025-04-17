@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart4, ListFilter, FileText } from "lucide-react";
+import { BarChart4, ListFilter, FileText, BrainCircuit } from "lucide-react";
 import { AgentActivityChart } from "../AgentActivityChart";
 import { AgentActivityLog } from "../AgentActivityLog";
 import { AgentLearningReports } from "../AgentLearningReports";
@@ -35,8 +35,8 @@ export const ActivityTabs: React.FC<ActivityTabsProps> = ({
         </TabsTrigger>
         {showAutoLearning && (
           <TabsTrigger value="learning" className="flex items-center gap-1">
-            <FileText className="h-4 w-4" />
-            Rapoarte
+            <BrainCircuit className="h-4 w-4 text-amber-500" />
+            Auto-Îmbunătățire
           </TabsTrigger>
         )}
       </TabsList>
@@ -62,9 +62,10 @@ export const ActivityTabs: React.FC<ActivityTabsProps> = ({
       {showAutoLearning && (
         <TabsContent value="learning">
           <div className="mb-4">
-            <h3 className="text-lg font-medium mb-2">Rapoarte de învățare între agenți</h3>
+            <h3 className="text-lg font-medium mb-2">Sistem Auto-Îmbunătățire</h3>
             <p className="text-muted-foreground">
-              Vizualizați detalii despre procesele de învățare terminate între agenți și conceptele dobândite.
+              Rapoartele sistem de auto-îmbunătățire reflectă capacitatea agenților de a evolua prin învățare autonomă,
+              contribuind direct la creșterea nivelului lor de autonomie și eficiență operațională.
             </p>
           </div>
           <div className="h-[350px] overflow-y-auto pr-2">

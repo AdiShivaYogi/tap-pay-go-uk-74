@@ -1,9 +1,10 @@
 
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText } from "lucide-react";
+import { FileText, BrainCircuit } from "lucide-react";
 import { useAgentMonitoring } from "./hooks";
 import { ReportsList } from "./learning/ReportsList";
+import { StyledCard, StyledCardContent, StyledCardHeader, StyledCardTitle } from "@/components/ui/cards";
 
 export const AgentLearningReports: React.FC = () => {
   const { learningReports } = useAgentMonitoring();
@@ -20,20 +21,20 @@ export const AgentLearningReports: React.FC = () => {
   };
   
   return (
-    <Card className="mb-4">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-lg flex items-center gap-2">
-          <FileText className="h-5 w-5" />
-          Rapoarte de învățare ({learningReports.length})
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+    <StyledCard className="mb-4">
+      <StyledCardHeader className="pb-3">
+        <StyledCardTitle className="text-lg flex items-center gap-2">
+          <BrainCircuit className="h-5 w-5 text-amber-500" />
+          Rapoarte de Auto-Îmbunătățire ({learningReports.length})
+        </StyledCardTitle>
+      </StyledCardHeader>
+      <StyledCardContent>
         <ReportsList 
           reports={learningReports}
           expandedReports={expandedReports}
           onToggleExpand={toggleReportExpand}
         />
-      </CardContent>
-    </Card>
+      </StyledCardContent>
+    </StyledCard>
   );
 };

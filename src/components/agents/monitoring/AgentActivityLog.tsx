@@ -3,7 +3,8 @@ import React from "react";
 import { ActivityLog } from "./hooks";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
-import { CheckCircle, Circle, Clock, Code, MessageSquare, AlertTriangle } from "lucide-react";
+import { CheckCircle, Circle, Clock, Code, MessageSquare, AlertTriangle, Zap, Brain } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 interface AgentActivityLogProps {
   logs: ActivityLog[];
@@ -58,12 +59,24 @@ export const AgentActivityLog: React.FC<AgentActivityLogProps> = ({
       case 'proposal':
         return <Code className="h-4 w-4 text-green-500" />;
       case 'conversation':
-        return <MessageSquare className="h-4 w-4 text-amber-500" />;
+        return <MessageSquare className="h-4 w-4 text-blue-500" />;
       case 'monitoring':
         return <AlertTriangle className="h-4 w-4 text-blue-500" />;
+      case 'learning':
+        return <Brain className="h-4 w-4 text-amber-500" />;
+      case 'autonomy':
+        return <Zap className="h-4 w-4 text-amber-500" />;
       default:
         return <Circle className="h-4 w-4 text-muted-foreground" />;
     }
+  };
+  
+  // Determinăm dacă o activitate a fost executată autonom (simulare)
+  const isAutonomousAction = (log: ActivityLog) => {
+    // În mod real, acest lucru ar fi determinat de date reale din log
+    // Pentru demonstrație, presupunem că anumite categorii de activități sunt mai probabil autonome
+    return log.category === 'learning' || log.category === 'autonomy' || 
+      (log.category === 'task' && Math.random() > 0.5);
   };
 
   if (Object.entries(groupedLogs).length === 0) {
@@ -93,9 +106,17 @@ export const AgentActivityLog: React.FC<AgentActivityLogProps> = ({
             {hourLogs.map(log => (
               <div key={log.id} className="relative">
                 <div className="absolute -left-[17px] mt-1.5 w-3 h-3 rounded-full bg-background border-2 border-primary" />
-                <div className="mb-1 flex items-center gap-2">
-                  <span className="font-medium">{log.agentName}</span>
-                  <span className="text-xs text-muted-foreground">{log.agentId}</span>
+                <div className="mb-1 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">{log.agentName}</span>
+                    <span className="text-xs text-muted-foreground">{log.agentId}</span>
+                  </div>
+                  {isAutonomousAction(log) && (
+                    <Badge variant="outline" className="bg-amber-50 border-amber-200 text-amber-700 text-xs">
+                      <Zap className="h-3 w-3 mr-1" />
+                      Execuție autonomă
+                    </Badge>
+                  )}
                 </div>
                 <p className="text-sm">{log.description}</p>
                 <div className="mt-1 flex items-center gap-2">

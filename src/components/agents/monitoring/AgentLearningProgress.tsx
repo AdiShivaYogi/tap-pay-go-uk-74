@@ -1,12 +1,12 @@
 
 import React, { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useAgentMonitoring } from "./hooks";
-import { BrainCircuit, Clock, AlertTriangle } from "lucide-react";
+import { BrainCircuit, Clock, AlertTriangle, Zap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { formatDistance } from "date-fns";
 import { ro } from "date-fns/locale";
+import { StyledCard, StyledCardContent, StyledCardHeader, StyledCardTitle } from "@/components/ui/cards";
 
 export const AgentLearningProgress: React.FC = () => {
   const { learningProgress } = useAgentMonitoring();
@@ -27,14 +27,14 @@ export const AgentLearningProgress: React.FC = () => {
   }
   
   return (
-    <Card className="mb-4 bg-background/50 border-primary/20">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-lg flex items-center gap-2">
-          <BrainCircuit className="h-5 w-5 text-primary" />
-          Învățare activă între agenți
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <StyledCard className="mb-4 bg-amber-50/30 border-amber-200">
+      <StyledCardHeader className="pb-3">
+        <StyledCardTitle className="text-lg flex items-center gap-2">
+          <Zap className="h-5 w-5 text-amber-500" />
+          Procese de Auto-Îmbunătățire în Curs
+        </StyledCardTitle>
+      </StyledCardHeader>
+      <StyledCardContent className="space-y-4">
         {activeProgress.map((progress) => {
           const timeRemaining = progress.estimatedEndTime.getTime() - now.getTime();
           const timeOverdue = now.getTime() - progress.estimatedEndTime.getTime();
@@ -52,7 +52,7 @@ export const AgentLearningProgress: React.FC = () => {
                     {progress.sourceAgentId} → {progress.targetAgentId}
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    {progress.learningType}
+                    {progress.learningType} <span className="opacity-70">•</span> Impact Autonomie: <span className={progress.progress > 70 ? "text-green-600" : "text-amber-600"}>+{Math.round(progress.progress / 5)}%</span>
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -63,7 +63,7 @@ export const AgentLearningProgress: React.FC = () => {
                     {isOverdue ? <AlertTriangle className="h-3 w-3" /> : <Clock className="h-3 w-3" />}
                     {timeRemainingText}
                   </Badge>
-                  <Badge>{progress.progress}%</Badge>
+                  <Badge variant="default" className="bg-amber-500">{progress.progress}%</Badge>
                 </div>
               </div>
               <Progress 
@@ -73,7 +73,7 @@ export const AgentLearningProgress: React.FC = () => {
             </div>
           )
         })}
-      </CardContent>
-    </Card>
+      </StyledCardContent>
+    </StyledCard>
   );
 };
