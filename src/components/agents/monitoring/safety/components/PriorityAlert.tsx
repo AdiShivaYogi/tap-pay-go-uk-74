@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Lightbulb, X } from "lucide-react";
+import { Lightbulb, X, Sparkles } from "lucide-react";
 
 interface PriorityAlertProps {
   onDismiss: () => void;
@@ -18,7 +18,7 @@ export const PriorityAlert: React.FC<PriorityAlertProps> = ({
     <Alert variant="default" className="mb-6 border-amber-500 bg-amber-50">
       <div className="flex justify-between">
         <AlertTitle className="flex items-center gap-2 text-amber-800">
-          <Lightbulb className="h-5 w-5 text-amber-600" /> 
+          <Sparkles className="h-5 w-5 text-amber-600" /> 
           Prioritate #1: Inițierea Agenților Autonomi
         </AlertTitle>
         <button onClick={onDismiss} className="text-amber-700 hover:text-amber-900">
@@ -27,10 +27,10 @@ export const PriorityAlert: React.FC<PriorityAlertProps> = ({
       </div>
       <AlertDescription className="text-amber-700">
         <p className="mb-1">
-          Lansarea agenților autonomi este crucială pentru evoluția platformei. Aceștia vor colecta date în timpul execuției.
+          Ne aflăm în paradoxul "oul și găina": agenții au nevoie să colecteze date pentru a evolua, dar nu pot colecta date fără a fi lansați.
         </p>
         <p className="text-xs font-medium">
-          Activați execuția autonomă din tab-ul "Execuție Autonomă" acceptând toate nivelurile de risc.
+          Activați execuția autonomă din tab-ul "Execuție Autonomă" acceptând toate nivelurile de risc pentru a permite agenților să înceapă ciclul de auto-dezvoltare.
         </p>
       </AlertDescription>
     </Alert>

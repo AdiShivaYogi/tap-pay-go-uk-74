@@ -23,7 +23,7 @@ export const AgentAutonomyLevel: React.FC<AgentAutonomyLevelProps> = ({
   };
 
   return (
-    <StyledCard>
+    <StyledCard className={autonomyLevel > 70 ? "border-amber-300" : ""}>
       <StyledCardHeader>
         <StyledCardTitle className="text-base">Nivel de Autonomie</StyledCardTitle>
       </StyledCardHeader>
@@ -44,16 +44,25 @@ export const AgentAutonomyLevel: React.FC<AgentAutonomyLevelProps> = ({
             step={5}
             onValueChange={handleAutonomyChange}
             disabled={!safetyOverride && autonomyLevel > 70}
-            className="mt-2"
+            className={`mt-2 ${autonomyLevel > 70 ? "accent-amber-500" : ""}`}
           />
 
           <div className="mt-4 text-sm text-muted-foreground">
             <span className="font-medium">Mod operațional:</span> {getAutonomyDescription()}
           </div>
           
-          <div className="mt-2 text-xs p-2 rounded bg-slate-50 border">
-            Nivelul de autonomie coordonează gradul de libertate și independență în acțiunile agenților. 
-            La niveluri ridicate (peste 70%), agenții pot opera independent și pot evolua fără intervenție umană.
+          <div className={`mt-2 text-xs p-2 rounded ${autonomyLevel > 70 ? "bg-amber-50 border-amber-200 border" : "bg-slate-50 border"}`}>
+            {autonomyLevel > 70 ? (
+              <span>
+                La acest nivel de autonomie, agenții vor colecta date în mod activ în timpul execuției și vor evolua 
+                în timp real, permițând auto-dezvoltarea și evoluția.
+              </span>
+            ) : (
+              <span>
+                Nivelul de autonomie coordonează gradul de libertate și independență în acțiunile agenților. 
+                La niveluri ridicate (peste 70%), agenții pot opera independent și pot evolua fără intervenție umană.
+              </span>
+            )}
           </div>
         </div>
       </StyledCardContent>
