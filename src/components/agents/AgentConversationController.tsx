@@ -58,11 +58,9 @@ export const AgentConversationController: React.FC<AgentConversationControllerPr
         
         <TabsContent value="conversation" className="pt-2">
           <AgentConversation
-            agentId={activeAgentData.id}
-            agentName={activeAgentData.name}
-            agentType={activeAgentData.type}
+            agent={activeAgentData}
             isListening={isListening}
-            toggleListening={toggleListening}
+            setRef={undefined}
           />
         </TabsContent>
         

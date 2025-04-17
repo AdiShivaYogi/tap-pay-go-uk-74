@@ -5,13 +5,13 @@ import { MessageList } from "./conversation/MessageList";
 import { MessageInput } from "./conversation/MessageInput";
 import { useConversation } from "./conversation/useConversation";
 
-interface AgentConversationProps {
+export interface AgentConversationProps {
   agent: Agent;
   isListening: boolean;
   setRef?: (ref: any) => void;
 }
 
-export const AgentConversation = ({ agent, isListening, setRef }: AgentConversationProps) => {
+export const AgentConversation: React.FC<AgentConversationProps> = ({ agent, isListening, setRef }) => {
   const conversation = useConversation(agent, isListening);
   const { messages, typingIndicator, handleSendMessage, activeTask } = conversation;
   
