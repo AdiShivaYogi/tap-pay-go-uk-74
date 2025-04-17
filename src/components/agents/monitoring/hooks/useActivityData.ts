@@ -1,7 +1,5 @@
-
 import { useState, useCallback } from "react";
 import { extendedSupabase as supabase } from "@/integrations/supabase/extended-client";
-import { AgentMonitoringHook } from "./types/agent-monitoring.types";
 import { formatDistanceToNow } from "date-fns";
 import { ro } from "date-fns/locale";
 
@@ -11,7 +9,7 @@ export const useActivityData = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [categories, setCategories] = useState<string[]>([]);
   const [totalActivities, setTotalActivities] = useState(0);
-  const [lastRefresh, setLastRefresh] = useState<string | null>(null);
+  const [lastRefresh, setLastRefresh] = useState<Date | string | null>(null);
   const [autoExecutionStatus, setAutoExecutionStatus] = useState<Record<string, boolean>>({});
 
   // Fetch agent activity from Supabase
@@ -52,6 +50,13 @@ export const useActivityData = () => {
           "security-framework": false,
           "advanced-analytics": false
         });
+        
+        // Convert lastRefresh to Date if it's a string
+        const refreshTime = typeof lastRefresh === 'string' 
+          ? new Date() 
+          : lastRefresh;
+        
+        setLastRefresh(refreshTime);
         
         setIsLoading(false);
       }, 500);

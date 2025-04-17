@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { StyledCard, StyledCardContent } from "@/components/ui/cards";
 import { useAgentMonitoring } from "./hooks";
@@ -14,12 +13,6 @@ import { Rocket } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export const AgentActivityMonitor: React.FC = () => {
-  const [activeFilter, setActiveFilter] = useState<string | null>(null);
-  const [showTestTools, setShowTestTools] = useState(false);
-  const [showLearning, setShowLearning] = useState(false);
-  const [showAutoLearning, setShowAutoLearning] = useState(true); // Activat implicit
-  const { toast } = useToast();
-  
   const { 
     activityData, 
     activityLogs, 
@@ -32,6 +25,13 @@ export const AgentActivityMonitor: React.FC = () => {
     lastRefresh,
     executeAutoLearning
   } = useAgentMonitoring();
+
+  // Convert lastRefresh to Date if it's a string
+  const formattedLastRefresh = lastRefresh instanceof Date 
+    ? lastRefresh 
+    : lastRefresh 
+      ? new Date(lastRefresh) 
+      : null;
 
   // Inițiem auto-învățarea la încărcare
   useEffect(() => {
@@ -55,7 +55,7 @@ export const AgentActivityMonitor: React.FC = () => {
     <StyledCard className="w-full">
       <MonitorHeader 
         totalActivities={totalActivities}
-        lastRefresh={lastRefresh}
+        lastRefresh={formattedLastRefresh}
         autoRefresh={autoRefresh}
         toggleAutoRefresh={toggleAutoRefresh}
         showTestTools={showTestTools}

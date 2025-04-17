@@ -1,4 +1,3 @@
-
 export interface ActivityData {
   agentId: string;
   agentName: string;
@@ -80,7 +79,7 @@ export interface AgentMonitoringHook {
   logDetailedAgentActivity: (agentId: string, description: string, category?: string) => void;
   autoRefresh: boolean;
   toggleAutoRefresh: () => void;
-  lastRefresh: Date | string | null; // Actualizat pentru a accepta și string sau null
+  lastRefresh: Date | string | null; // Allow string, Date, or null
   logAgentInteraction: (sourceAgentId: string, targetAgentId: string, learningType: string) => AgentInteraction;
   learningRules: AgentLearningRule[];
   addLearningRule: (rule: Omit<AgentLearningRule, 'lastExecuted'>) => void;
