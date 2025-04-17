@@ -27,24 +27,31 @@ export const logAgentActivity = async (agentId: string, description: string, cat
 };
 
 /**
- * Transformă datele brute în structura ActivityData
+ * Transformă datele brute în structura ActivityData și returnează și categoriile unice
  */
-export const processActivityData = (rawData: any[]): ActivityData[] => {
+export const processActivityData = (rawData: any[]): { 
+  processedActivityData: ActivityData[],
+  uniqueCategories: Set<string>
+} => {
   // Grupăm activitățile după agentId și category
   const groupedData: Record<string, Record<string, any[]>> = {};
+  const uniqueCategories = new Set<string>();
   
   rawData.forEach(item => {
     const key = `${item.agent_id}:${item.agent_name}`;
+    const category = item.category;
+    
+    uniqueCategories.add(category);
     
     if (!groupedData[key]) {
       groupedData[key] = {};
     }
     
-    if (!groupedData[key][item.category]) {
-      groupedData[key][item.category] = [];
+    if (!groupedData[key][category]) {
+      groupedData[key][category] = [];
     }
     
-    groupedData[key][item.category].push(item);
+    groupedData[key][category].push(item);
   });
   
   // Convertim la formatul ActivityData
@@ -64,7 +71,10 @@ export const processActivityData = (rawData: any[]): ActivityData[] => {
     });
   });
   
-  return result;
+  return {
+    processedActivityData: result,
+    uniqueCategories
+  };
 };
 
 /**
