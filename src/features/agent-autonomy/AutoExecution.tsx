@@ -10,11 +10,15 @@ export const AutoExecution = () => {
   const { isRunning, startAgents } = useAutonomousEngine();
   const [lastActivityTime, setLastActivityTime] = useState<Date | null>(null);
   const [autonomyLevel, setAutonomyLevel] = useState<number>(80); // Nivel implicit de autonomie
+  const [apiChecked, setApiChecked] = useState<boolean>(false);
   
   // Verificare configurație API
   useEffect(() => {
     const checkApiConfigurations = async () => {
+      if (apiChecked) return;
+      
       try {
+        setApiChecked(true);
         // Verificăm dacă cheile API sunt configurate
         const { data: anthropicResult, error: anthropicError } = await supabase.functions.invoke("check-anthropic-key");
         const { data: openrouterResult, error: openrouterError } = await supabase.functions.invoke("check-openrouter-key");
@@ -26,6 +30,10 @@ export const AutoExecution = () => {
         
         if (anthropicResult?.hasKey && anthropicResult?.isValid) {
           generateActivity("anthropic-api", "Conexiune validată cu API-ul Anthropic Claude", "connection");
+          console.log("API Anthropic verificat cu succes:", anthropicResult);
+          
+          // Testăm modelul direct pentru a verifica funcționalitatea
+          testAnthropicModel();
         }
         
         if (openrouterResult?.hasKey && openrouterResult?.isValid) {
@@ -58,7 +66,42 @@ export const AutoExecution = () => {
     if (isRunning) {
       checkApiConfigurations();
     }
-  }, [isRunning, toast]);
+  }, [isRunning, toast, apiChecked]);
+  
+  // Test direct al modelului Anthropic pentru a verifica funcționalitatea
+  const testAnthropicModel = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-agent-response', {
+        body: {
+          message: "Verificare API Anthropic - Confirmă funcționalitatea modelului Claude",
+          model: "anthropic",
+          systemRole: "Agent de testare API",
+          isCodeProposal: false
+        }
+      });
+      
+      if (error) {
+        console.error("Eroare la testarea modelului Anthropic:", error);
+        toast({
+          title: "Eroare testare API Anthropic",
+          description: "Nu s-a putut genera un răspuns de la modelul Claude.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Înregistrăm activitatea de testare reușită
+      generateActivity("anthropic-test", `Test model Claude (Anthropic) reușit: ${data.model || 'Claude'}`, "api-test");
+      console.log("Test Anthropic reușit:", data);
+      
+      toast({
+        title: "API Anthropic funcțional",
+        description: "Testul de comunicare cu modelul Claude a fost realizat cu succes.",
+      });
+    } catch (err) {
+      console.error("Eroare la testarea Anthropic:", err);
+    }
+  };
   
   // Pornirea automată a agenților după încărcarea paginii
   useEffect(() => {
@@ -115,11 +158,11 @@ export const AutoExecution = () => {
       setLastActivityTime(new Date());
     };
     
-    // Inițiere interval pentru generare activitate periodică (la fiecare 30-60 secunde)
+    // Inițiere interval pentru generare activitate periodică (la fiecare 15-30 secunde)
     const activityInterval = setInterval(() => {
-      const randomInterval = 30000 + Math.random() * 30000; // 30-60 secunde
+      const randomInterval = 15000 + Math.random() * 15000; // 15-30 secunde
       setTimeout(generatePeriodicActivity, randomInterval);
-    }, 45000);
+    }, 20000);
     
     // Generăm prima activitate imediat
     generatePeriodicActivity();
@@ -131,34 +174,36 @@ export const AutoExecution = () => {
   useEffect(() => {
     if (!isRunning) return;
     
-    // Funcție pentru interogarea reală a API-urilor AI
+    // Funcție pentru interogarea reală a API-urilor AI la intervale regulate
     const queryAiModels = async () => {
       try {
-        // Alternăm între modele la fiecare interogare
-        const model = Math.random() > 0.5 ? 'claude' : 'anthropic';
+        // Folosim direct modelul Anthropic pentru a verifica funcționalitatea
+        const model = 'anthropic';
         
         // Mesaje simple pentru a minimiza costurile dar a genera activitate reală
         const messages = [
-          "Verificare funcționalitate sistem autonom",
-          "Test comunicare inter-agent",
-          "Monitorizare stare generală",
-          "Verificare capacitate decizională autonomă"
+          "Verificare funcționalitate API Anthropic",
+          "Test comunicare model Claude",
+          "Monitorizare stare conexiune API",
+          "Generare răspuns de test"
         ];
         
         const randomMessage = messages[Math.floor(Math.random() * messages.length)];
         
         // Interogare API reală
+        console.log(`[${new Date().toLocaleString()}] Testăm API-ul ${model}...`);
+        
         const { data, error } = await supabase.functions.invoke("generate-agent-response", {
           body: {
             message: randomMessage,
             model: model,
-            systemRole: "Agent autonom de monitorizare",
+            systemRole: "Agent de verificare API",
             isCodeProposal: false
           }
         });
         
         if (error) {
-          console.error("Eroare la interogarea modelului AI:", error);
+          console.error(`Eroare la interogarea modelului ${model}:`, error);
           return;
         }
         
@@ -168,6 +213,8 @@ export const AutoExecution = () => {
           `Interogare reușită model ${model === 'anthropic' ? 'Claude (Anthropic Direct)' : 'Claude (OpenRouter)'}`,
           "api-activity"
         );
+        
+        console.log(`[${new Date().toLocaleString()}] Test API ${model} reușit:`, data);
         
         // Afișăm toast doar prima dată pentru a nu deranja utilizatorul
         if (!lastActivityTime) {
@@ -183,19 +230,19 @@ export const AutoExecution = () => {
       }
     };
     
-    // Interogăm modelele AI la intervale mai mari (pentru a evita costuri excesive)
-    const apiQueryInterval = setInterval(() => {
-      queryAiModels();
-    }, 3 * 60 * 1000); // La fiecare 3 minute
-    
     // Prima interogare după un scurt delay
     const initialQueryTimer = setTimeout(() => {
       queryAiModels();
-    }, 15000);
+    }, 5000);
+    
+    // Interogăm modelele AI la intervale mai mari (pentru a evita costuri excesive)
+    const apiQueryInterval = setInterval(() => {
+      queryAiModels();
+    }, 60 * 1000); // La fiecare minut
     
     return () => {
-      clearInterval(apiQueryInterval);
       clearTimeout(initialQueryTimer);
+      clearInterval(apiQueryInterval);
     };
   }, [isRunning, lastActivityTime, toast]);
   

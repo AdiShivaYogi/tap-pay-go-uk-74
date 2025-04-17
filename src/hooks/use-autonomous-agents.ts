@@ -8,15 +8,58 @@ import { logAgentActivity } from "@/components/agents/monitoring/hooks/utils/act
 interface UseAutonomousAgentsOptions {
   autoStart?: boolean;
   interval?: number;
+  debugMode?: boolean;
 }
 
 export const useAutonomousAgents = (options: UseAutonomousAgentsOptions = {}) => {
   const [isRunning, setIsRunning] = useState(false);
   const [activeTasks, setActiveTasks] = useState<any[]>([]);
-  const [autonomyLevel, setAutonomyLevel] = useState(65);
+  const [autonomyLevel, setAutonomyLevel] = useState(85);
+  const [apiConnections, setApiConnections] = useState<{
+    anthropic: boolean; 
+    openrouter: boolean;
+    deepseek: boolean;
+  }>({
+    anthropic: false,
+    openrouter: false,
+    deepseek: false
+  });
   const { toast } = useToast();
   
-  const { autoStart = true, interval = 30000 } = options;
+  const { autoStart = true, interval = 30000, debugMode = true } = options;
+
+  // Verificare inițială a conexiunilor API
+  useEffect(() => {
+    const checkApiConnections = async () => {
+      try {
+        // Verificăm starea API-urilor
+        const [anthropicResult, openrouterResult, deepseekResult] = await Promise.all([
+          supabase.functions.invoke('check-anthropic-key'),
+          supabase.functions.invoke('check-openrouter-key'),
+          supabase.functions.invoke('check-deepseek-key')
+        ]);
+        
+        setApiConnections({
+          anthropic: !!(anthropicResult.data?.hasKey && anthropicResult.data?.isValid),
+          openrouter: !!(openrouterResult.data?.hasKey && openrouterResult.data?.isValid),
+          deepseek: !!(deepseekResult.data?.hasKey && deepseekResult.data?.isValid)
+        });
+        
+        if (debugMode) {
+          console.log("[UseAutonomousAgents] API Connections Status:", {
+            anthropic: anthropicResult.data,
+            openrouter: openrouterResult.data,
+            deepseek: deepseekResult.data
+          });
+        }
+        
+      } catch (error) {
+        console.error("[UseAutonomousAgents] Eroare la verificarea API-urilor:", error);
+      }
+    };
+    
+    checkApiConnections();
+  }, [debugMode]);
 
   // Pornirea automată a agenților
   useEffect(() => {
@@ -34,13 +77,34 @@ export const useAutonomousAgents = (options: UseAutonomousAgentsOptions = {}) =>
     if (isRunning) return;
     
     setIsRunning(true);
-    setAutonomyLevel(prev => Math.min(prev + 20, 100));
+    setAutonomyLevel(prev => Math.min(prev + 15, 100));
     
     toast({
       title: "Agenți autonomi activați",
       description: "Toți agenții au fost porniți și operează autonom",
       duration: 5000,
     });
+
+    // Verificăm din nou API-urile
+    try {
+      const { data: anthropicData } = await supabase.functions.invoke('check-anthropic-key');
+      const anthropicStatus = !!(anthropicData?.hasKey && anthropicData?.isValid);
+      
+      if (anthropicStatus) {
+        toast({
+          title: "API Anthropic disponibil",
+          description: `Model: ${anthropicData.model || 'Claude'} - Agenții pot comunica direct cu modelul Claude`,
+          duration: 4000,
+        });
+      }
+      
+      setApiConnections(prev => ({
+        ...prev,
+        anthropic: anthropicStatus
+      }));
+    } catch (error) {
+      console.error("[UseAutonomousAgents] Eroare la verificarea API Anthropic:", error);
+    }
 
     // Înregistrăm activarea în baza de date
     try {
@@ -63,8 +127,34 @@ export const useAutonomousAgents = (options: UseAutonomousAgentsOptions = {}) =>
             action: 'start'
           })
       ));
+      
+      // Testăm comunicarea cu API-ul Anthropic
+      if (apiConnections.anthropic) {
+        const { data, error } = await supabase.functions.invoke('generate-agent-response', {
+          body: {
+            message: "Testare comunicare Anthropic din use-autonomous-agents",
+            model: "anthropic",
+            systemRole: "Agent autonom de test",
+            isCodeProposal: false
+          }
+        });
+        
+        if (!error) {
+          logAgentActivity(
+            "anthropic-test",
+            `Test API Anthropic reușit: ${data?.model || 'Claude'}`,
+            "api-test"
+          );
+          
+          if (debugMode) {
+            console.log("[UseAutonomousAgents] Răspuns API Anthropic:", data);
+          }
+        } else {
+          console.error("[UseAutonomousAgents] Eroare API Anthropic:", error);
+        }
+      }
     } catch (error) {
-      console.error("Eroare la înregistrarea activării agenților:", error);
+      console.error("[UseAutonomousAgents] Eroare la înregistrarea activării agenților:", error);
     }
     
     // Pornim ciclul de activitate
@@ -122,11 +212,39 @@ export const useAutonomousAgents = (options: UseAutonomousAgentsOptions = {}) =>
           
           console.log(`Agent ${agent.name}: ${description} (${category})`);
         }
+        
+        // Ocazional testăm și API-ul Anthropic pentru a asigura funcționalitatea
+        if (apiConnections.anthropic && Math.random() > 0.7) {
+          try {
+            const { data, error } = await supabase.functions.invoke('generate-agent-response', {
+              body: {
+                message: "Testare periodică API Anthropic",
+                model: "anthropic",
+                systemRole: "Agent de monitorizare",
+                isCodeProposal: false
+              }
+            });
+            
+            if (!error) {
+              logAgentActivity(
+                "anthropic-periodic",
+                `Verificare API Anthropic reușită`,
+                "api-test"
+              );
+              
+              if (debugMode) {
+                console.log("[UseAutonomousAgents] Test periodic API Anthropic: OK");
+              }
+            }
+          } catch (apiError) {
+            console.error("[UseAutonomousAgents] Eroare test periodic API:", apiError);
+          }
+        }
       }, 8000);
       
       return () => clearInterval(interval);
     } catch (error) {
-      console.error("Eroare la generarea activității agenților:", error);
+      console.error("[UseAutonomousAgents] Eroare la generarea activității agenților:", error);
     }
   };
 
@@ -156,7 +274,7 @@ export const useAutonomousAgents = (options: UseAutonomousAgentsOptions = {}) =>
       
       return true;
     } catch (error) {
-      console.error("Eroare la asignarea task-ului:", error);
+      console.error("[UseAutonomousAgents] Eroare la asignarea task-ului:", error);
       return false;
     }
   };
@@ -165,6 +283,7 @@ export const useAutonomousAgents = (options: UseAutonomousAgentsOptions = {}) =>
     isRunning,
     autonomyLevel,
     activeTasks,
+    apiConnections,
     startAgents,
     stopAgents,
     assignTaskToAgent,
