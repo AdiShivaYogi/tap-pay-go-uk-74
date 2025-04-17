@@ -1,28 +1,14 @@
 
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { BrainCircuit, Share2, PlusCircle } from "lucide-react";
 import { useAgentMonitoring } from "./hooks";
-import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-
-const LEARNING_TYPES = [
-  "Algoritmi",
-  "Procesare limbaj",
-  "Reguli de afaceri",
-  "Răspunsuri utilizator",
-  "Optimizări",
-  "Concepte noi"
-];
-
-const TEST_AGENTS = [
-  { id: "agent-1", name: "CodeAssistant" },
-  { id: "agent-2", name: "DataAnalyst" },
-  { id: "agent-3", name: "UIDesigner" },
-  { id: "agent-4", name: "SecurityExpert" },
-];
+import { AgentSelector } from "./learning/AgentSelector";
+import { LearningTypeSelect } from "./learning/LearningTypeSelect";
+import { RecentInteractions } from "./learning/RecentInteractions";
+import { TEST_AGENTS, LEARNING_TYPES } from "./learning/constants";
 
 export const AgentLearningPanel = () => {
   const [sourceAgent, setSourceAgent] = useState(TEST_AGENTS[0].id);
@@ -74,57 +60,29 @@ export const AgentLearningPanel = () => {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-          <div>
-            <label className="text-xs mb-1 block">Agent care învață</label>
-            <Select value={sourceAgent} onValueChange={setSourceAgent}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Selectează agentul"/>
-              </SelectTrigger>
-              <SelectContent>
-                {TEST_AGENTS.map(agent => (
-                  <SelectItem key={`source-${agent.id}`} value={agent.id}>
-                    {agent.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <AgentSelector 
+            label="Agent care învață"
+            value={sourceAgent}
+            onValueChange={setSourceAgent}
+            agents={TEST_AGENTS}
+          />
           
           <div className="flex items-center justify-center">
             <Share2 className="h-5 w-5 text-muted-foreground" />
           </div>
           
-          <div>
-            <label className="text-xs mb-1 block">Agent care transmite cunoștințe</label>
-            <Select value={targetAgent} onValueChange={setTargetAgent}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Selectează agentul"/>
-              </SelectTrigger>
-              <SelectContent>
-                {TEST_AGENTS.map(agent => (
-                  <SelectItem key={`target-${agent.id}`} value={agent.id}>
-                    {agent.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <AgentSelector 
+            label="Agent care transmite cunoștințe"
+            value={targetAgent}
+            onValueChange={setTargetAgent}
+            agents={TEST_AGENTS}
+          />
           
-          <div>
-            <label className="text-xs mb-1 block">Tip de învățare</label>
-            <Select value={learningType} onValueChange={setLearningType}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Selectează tipul"/>
-              </SelectTrigger>
-              <SelectContent>
-                {LEARNING_TYPES.map(type => (
-                  <SelectItem key={type} value={type}>
-                    {type}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <LearningTypeSelect
+            value={learningType}
+            onValueChange={setLearningType}
+            learningTypes={LEARNING_TYPES}
+          />
         </div>
         
         <div className="flex justify-end">
@@ -137,23 +95,7 @@ export const AgentLearningPanel = () => {
           </Button>
         </div>
         
-        {recentInteractions.length > 0 && (
-          <div className="mt-4">
-            <h3 className="text-sm font-medium mb-2">Interacțiuni recente:</h3>
-            <div className="space-y-2">
-              {recentInteractions.map((interaction, index) => (
-                <div key={index} className="p-2 border rounded text-sm flex items-center">
-                  <span className="font-medium">{interaction.sourceName}</span>
-                  <span className="mx-2">învață de la</span>
-                  <span className="font-medium">{interaction.targetName}</span>
-                  <Badge variant="outline" className="ml-auto">
-                    {interaction.learningType}
-                  </Badge>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        <RecentInteractions interactions={recentInteractions} />
       </CardContent>
     </Card>
   );
