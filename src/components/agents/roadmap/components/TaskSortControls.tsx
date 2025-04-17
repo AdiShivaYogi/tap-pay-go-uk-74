@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { Badge } from "@/components/ui/badge";
 
 interface TaskSortControlsProps {
   sortBy: string;
@@ -9,37 +8,43 @@ interface TaskSortControlsProps {
 
 export const TaskSortControls: React.FC<TaskSortControlsProps> = ({ sortBy, onSortChange }) => {
   return (
-    <div className="mb-4 flex items-center gap-2">
-      <span className="text-sm font-medium">Sortează după:</span>
-      <div className="flex flex-wrap gap-1">
-        <Badge 
-          variant={sortBy === "recommended" ? "default" : "outline"}
-          className="cursor-pointer"
+    <div className="mb-4">
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-sm font-medium">Sortează după:</span>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        <button
+          className={`rounded-full px-4 py-1 text-sm ${
+            sortBy === "recommended" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-800"
+          }`}
           onClick={() => onSortChange("recommended")}
         >
           Recomandat
-        </Badge>
-        <Badge 
-          variant={sortBy === "difficulty" ? "default" : "outline"}
-          className="cursor-pointer"
+        </button>
+        <button
+          className={`rounded-full px-4 py-1 text-sm ${
+            sortBy === "difficulty" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-800"
+          }`}
           onClick={() => onSortChange("difficulty")}
         >
           Dificultate
-        </Badge>
-        <Badge 
-          variant={sortBy === "cost" ? "default" : "outline"}
-          className="cursor-pointer"
+        </button>
+        <button
+          className={`rounded-full px-4 py-1 text-sm ${
+            sortBy === "cost" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-800"
+          }`}
           onClick={() => onSortChange("cost")}
         >
           Cost
-        </Badge>
-        <Badge 
-          variant={sortBy === "progress" ? "default" : "outline"}
-          className="cursor-pointer"
+        </button>
+        <button
+          className={`rounded-full px-4 py-1 text-sm ${
+            sortBy === "progress" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-800"
+          }`}
           onClick={() => onSortChange("progress")}
         >
           Progres
-        </Badge>
+        </button>
       </div>
     </div>
   );

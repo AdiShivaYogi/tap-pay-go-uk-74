@@ -1,8 +1,7 @@
-
 import { useState, useEffect } from 'react';
 import { AgentTaskExtended, AgentTask } from '../types/task.types';
 import { supabase } from "@/integrations/supabase/types-extension";
-import { calculateDifficulty, calculateCost, calculateRecommendationScore } from '../utils/task-calculations';
+import { calculateDifficulty, calculateCost, calculateRecommendationScore, getAgentTypeFromId } from '../utils/task-calculations';
 import { useToast } from "@/hooks/use-toast";
 
 export const useAgentTasks = (agentId: string | null) => {
@@ -46,6 +45,10 @@ export const useAgentTasks = (agentId: string | null) => {
     
     fetchTasks();
   }, [agentId]);
+
+  useEffect(() => {
+    console.log("useAgentTasks: sortBy changed to", sortBy);
+  }, [sortBy]);
 
   const handleAssignTask = async (taskId: string, onSelectTask?: (taskId: string) => Promise<boolean>) => {
     if (!onSelectTask) return;
@@ -154,25 +157,16 @@ export const useAgentTasks = (agentId: string | null) => {
     }
   };
 
-  const getAgentTypeFromId = (id: string): string => {
-    const agentTypes = {
-      'payment-agent': 'Expert Plăți',
-      'support-agent': 'Asistență Clienți',
-      'analytics-agent': 'Expert Analiză Date',
-      'security-agent': 'Consultant Securitate',
-      'ai-assistant': 'Asistent AI General'
-    };
-    
-    return agentTypes[id as keyof typeof agentTypes] || 'Agent AI';
-  };
-
   return {
     tasks,
     loading,
     assigningTask,
     isCreatingTask,
     sortBy,
-    setSortBy,
+    setSortBy: (newSort: string) => {
+      console.log("Setting sort to:", newSort);
+      setSortBy(newSort);
+    },
     handleAssignTask,
     handleGenerateNewTaskProposal
   };

@@ -95,6 +95,8 @@ export const getAgentTypeFromId = (id: string): string => {
 };
 
 export const sortTasks = (tasks: AgentTaskExtended[], sortBy: string): AgentTaskExtended[] => {
+  console.log("Sorting tasks by:", sortBy, "Total tasks:", tasks.length);
+  
   return [...tasks].sort((a, b) => {
     switch (sortBy) {
       case "difficulty":

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AgentTaskExtended } from '../types/task.types';
 import { TaskItem } from './TaskItem';
 import { Loader2, Sparkles } from "lucide-react";
@@ -25,7 +25,16 @@ export const TasksList: React.FC<TasksListProps> = ({
   onAssignTask,
   onCreateTask
 }) => {
+  // Adăugăm un efect pentru a loga când se schimbă criteriul de sortare sau taskurile
+  useEffect(() => {
+    console.log("TasksList: sortBy changed to", sortBy);
+  }, [sortBy]);
+  
+  // Sortăm taskurile conform criteriului selectat
   const sortedTasks = sortTasks(tasks, sortBy);
+  
+  // Adăugăm un log pentru a verifica rezultatul sortării
+  console.log("Sorted tasks:", sortedTasks.map(t => `${t.title} (${t.progress}%, score: ${t.recommendationScore})`));
   
   if (loading) {
     return (
