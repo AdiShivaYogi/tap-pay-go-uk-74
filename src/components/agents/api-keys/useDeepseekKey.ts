@@ -1,100 +1,86 @@
 
 import { useState, useEffect } from "react";
-import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 export function useDeepseekKey() {
   const [isOpen, setIsOpen] = useState(false);
   const [apiKey, setApiKey] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
   const [hasKey, setHasKey] = useState(false);
   const [isChecking, setIsChecking] = useState(true);
   const { toast } = useToast();
 
-  // Verificăm dacă există deja o cheie API configurată
+  // Verifică cheia existentă la încărcarea componentei
   useEffect(() => {
     const checkExistingKey = async () => {
       try {
         setIsChecking(true);
-        const { data, error } = await supabase.functions.invoke("check-deepseek-key", {
-          body: {}
-        });
+        const { data, error } = await supabase.functions.invoke('check-deepseek-key');
 
-        if (!error && data?.hasKey) {
+        if (error) {
+          console.error('Error checking Deepseek key:', error);
+          return;
+        }
+
+        if (data?.hasKey) {
           setHasKey(true);
-          console.log("Există o cheie Deepseek configurată:", data.keyInfo);
-        } else {
-          setHasKey(false);
-          console.log("Nu există o cheie Deepseek configurată");
         }
       } catch (err) {
-        console.error("Eroare la verificarea cheii existente:", err);
-        setHasKey(false);
+        console.error('Exception in checking Deepseek key:', err);
       } finally {
         setIsChecking(false);
       }
     };
 
-    if (isOpen) {
-      checkExistingKey();
-    }
-  }, [isOpen]);
+    checkExistingKey();
+  }, []);
 
   const handleSaveApiKey = async () => {
-    // Validare de bază
     if (!apiKey.trim()) {
       toast({
         title: "Cheie invalidă",
-        description: "Te rugăm să introduci o cheie API validă",
+        description: "Vă rugăm să introduceți o cheie API validă",
         variant: "destructive",
       });
       return;
     }
 
-    try {
-      setIsSubmitting(true);
-      setStatus("loading");
-      setErrorMessage("");
+    setIsSubmitting(true);
+    setStatus('loading');
+    setErrorMessage('');
 
-      console.log("Se trimite cheia pentru salvare...");
-      const { data, error } = await supabase.functions.invoke("set-deepseek-key", {
-        body: { key: apiKey },
+    try {
+      const { data, error } = await supabase.functions.invoke('set-deepseek-key', {
+        body: { key: apiKey }
       });
 
       if (error) {
-        console.error("Eroare la setarea cheii API:", error);
-        setStatus("error");
-        setErrorMessage(error.message);
-        toast({
-          variant: "destructive",
-          title: "Eroare",
-          description: "Nu s-a putut salva cheia API. Verifică consola pentru detalii.",
-        });
-      } else {
-        setStatus("success");
+        throw new Error(error.message || 'A apărut o eroare la salvarea cheii API');
+      }
+
+      if (data?.validated) {
+        setStatus('success');
         setHasKey(true);
+        
         toast({
           title: "Cheie API salvată",
-          description: "Cheia API Deepseek a fost salvată cu succes",
+          description: "Cheia API Deepseek a fost configurată cu succes",
         });
-        
-        // Închide dialogul după o scurtă întârziere
-        setTimeout(() => {
-          setIsOpen(false);
-          setStatus("idle");
-          setApiKey("");
-        }, 2000);
+      } else {
+        throw new Error(data?.error || 'Validarea cheii a eșuat');
       }
     } catch (err) {
-      console.error("Excepție la setarea cheii API:", err);
-      setStatus("error");
-      setErrorMessage(err instanceof Error ? err.message : "Eroare necunoscută");
+      console.error('Error saving Deepseek key:', err);
+      setStatus('error');
+      setErrorMessage(err instanceof Error ? err.message : 'Eroare necunoscută');
+      
       toast({
-        variant: "destructive",
         title: "Eroare",
-        description: "Excepție la salvarea cheii API",
+        description: err instanceof Error ? err.message : 'Eroare la salvarea cheii API',
+        variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);
@@ -102,15 +88,15 @@ export function useDeepseekKey() {
   };
 
   return {
-    isOpen,
-    setIsOpen,
-    apiKey,
-    setApiKey,
-    isSubmitting,
-    status,
-    errorMessage,
-    hasKey,
-    isChecking,
+    isOpen, 
+    setIsOpen, 
+    apiKey, 
+    setApiKey, 
+    isSubmitting, 
+    status, 
+    errorMessage, 
+    hasKey, 
+    isChecking, 
     handleSaveApiKey
   };
 }

@@ -1,45 +1,45 @@
 
-import { CheckCircle2, AlertTriangle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle, CheckCircle2, KeyRound } from "lucide-react";
 
 interface DeepseekKeyAlertProps {
-  status: "idle" | "loading" | "success" | "error";
+  status: 'idle' | 'loading' | 'success' | 'error';
   hasKey: boolean;
   errorMessage?: string;
 }
 
 export function DeepseekKeyAlert({ status, hasKey, errorMessage }: DeepseekKeyAlertProps) {
-  if (status === "error") {
+  if (status === 'idle' && !hasKey) {
+    return (
+      <Alert variant="default" className="bg-slate-50 border-slate-200">
+        <KeyRound className="h-4 w-4 text-slate-500" />
+        <AlertTitle>Configurare inițială</AlertTitle>
+        <AlertDescription className="text-slate-600">
+          Introduceți o cheie API Deepseek pentru a accesa capacități avansate pentru agenți.
+        </AlertDescription>
+      </Alert>
+    );
+  }
+
+  if (status === 'error') {
     return (
       <Alert variant="destructive">
-        <AlertTriangle className="h-4 w-4" />
-        <AlertTitle>Eroare la salvarea cheii API</AlertTitle>
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Eroare de validare</AlertTitle>
         <AlertDescription>
-          {errorMessage || "Nu s-a putut salva cheia API. Te rugăm să încerci din nou."}
+          {errorMessage || 'A apărut o eroare la salvarea cheii API. Vă rugăm să încercați din nou.'}
         </AlertDescription>
       </Alert>
     );
   }
 
-  if (status === "success") {
+  if (status === 'success' || (status === 'idle' && hasKey)) {
     return (
       <Alert className="bg-green-50 border-green-200">
         <CheckCircle2 className="h-4 w-4 text-green-600" />
-        <AlertTitle className="text-green-800">Cheie API salvată cu succes</AlertTitle>
+        <AlertTitle className="text-green-800">API Configurat</AlertTitle>
         <AlertDescription className="text-green-700">
-          Agenții AI pot acum utiliza capacități avansate.
-        </AlertDescription>
-      </Alert>
-    );
-  }
-
-  if (hasKey && status !== "loading") {
-    return (
-      <Alert className="bg-green-50 border-green-200">
-        <CheckCircle2 className="h-4 w-4 text-green-600" />
-        <AlertTitle className="text-green-800">Cheie API configurată</AlertTitle>
-        <AlertDescription className="text-green-700">
-          Există deja o cheie API Deepseek configurată. Poți introduce o nouă cheie pentru a o înlocui.
+          Cheia API Deepseek este configurată și funcțională.
         </AlertDescription>
       </Alert>
     );

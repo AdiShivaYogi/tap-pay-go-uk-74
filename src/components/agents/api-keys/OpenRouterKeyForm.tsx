@@ -1,5 +1,8 @@
 
+import React from "react";
 import { Input } from "@/components/ui/input";
+import { FormDescription } from "@/components/ui/form";
+import { AlertCircle } from "lucide-react";
 
 interface OpenRouterKeyFormProps {
   apiKey: string;
@@ -7,35 +10,29 @@ interface OpenRouterKeyFormProps {
   disabled?: boolean;
 }
 
-export function OpenRouterKeyForm({ 
-  apiKey, 
-  onChange, 
-  disabled = false
-}: OpenRouterKeyFormProps) {
+export function OpenRouterKeyForm({ apiKey, onChange, disabled = false }: OpenRouterKeyFormProps) {
   return (
     <div className="space-y-2">
-      <div className="text-sm text-muted-foreground mb-2">
-        Introduceți cheia API OpenRouter pentru a folosi modelele Claude și alte modele AI
+      <div className="space-y-1">
+        <label htmlFor="api-key" className="text-sm font-medium">
+          Cheie API OpenRouter
+        </label>
+        <Input
+          id="api-key"
+          type="password"
+          autoComplete="off"
+          value={apiKey}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="Introduceți cheia API OpenRouter (începe cu sk_or_...)"
+          className="font-mono"
+          disabled={disabled}
+        />
       </div>
-      <Input
-        type="password"
-        value={apiKey}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder="sk_or_..."
-        className="font-mono text-sm"
-        disabled={disabled}
-      />
-      <div className="text-xs text-muted-foreground">
-        Puteți găsi cheia API în{" "}
-        <a 
-          href="https://openrouter.ai/keys" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="text-primary hover:underline"
-        >
-          Panoul de control OpenRouter
-        </a>
-      </div>
+      
+      <FormDescription className="flex items-center gap-2 text-xs">
+        <AlertCircle className="h-3 w-3" />
+        <span>Cheia API nu este stocată în browser, ci direct în Supabase Secrets.</span>
+      </FormDescription>
     </div>
   );
 }
