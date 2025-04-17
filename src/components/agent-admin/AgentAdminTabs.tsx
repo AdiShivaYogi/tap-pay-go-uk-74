@@ -1,5 +1,4 @@
-
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SubmissionsTab } from "./SubmissionsTab";
 import { CodeProposalsTab } from "./CodeProposalsTab";
@@ -10,10 +9,10 @@ import { useSubmissionHandlers } from "./handlers/submission-handlers";
 import { useCodeProposalHandlers } from "./handlers/code-proposal-handlers";
 import { AgentGodMode } from "./AgentGodMode";
 import { useToast } from "@/hooks/use-toast";
-import { FeedbackItem } from "@/hooks/agent-god-mode/types";
+import { extendedSupabase as supabase } from "@/integrations/supabase/extended-client";
 import { Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { supabase } from "@/integrations/supabase/client";
+import { FeedbackItem } from "@/hooks/agent-god-mode/types";
 
 interface AgentAdminTabsProps {
   submissions: any[];
@@ -35,6 +34,11 @@ export const AgentAdminTabs = ({
   loading = false
 }: AgentAdminTabsProps) => {
   const { toast } = useToast();
+  const [debugInfo, setDebugInfo] = useState({
+    submissionsTotal: submissions.length,
+    codeProposalsTotal: codeProposals.length,
+    lastRefreshTimestamp: new Date().toISOString()
+  });
   const { handleApproveSubmission, handleRejectSubmission } = useSubmissionHandlers({ 
     submissions, 
     setSubmissions 
@@ -221,11 +225,70 @@ export const AgentAdminTabs = ({
     setTimeout(refreshInitialData, 1000); // Întârziere pentru a permite încărcarea componentei
   }, []);
 
+  // Adăugăm un interval de refresh automat la fiecare 30 de secunde
+  useEffect(() => {
+    const refreshInterval = setInterval(async () => {
+      try {
+        // Reîncărcăm propunerile de task-uri
+        const { data: newSubmissions, error: submissionsError } = await supabase
+          .from('agent_task_submissions')
+          .select(`
+            *,
+            roadmap_tasks:task_id (*)
+          `)
+          .eq('approval_status', 'pending')
+          .order('created_at', { ascending: false });
+
+        // Reîncărcăm propunerile de cod
+        const { data: newCodeProposals, error: codeProposalsError } = await supabase
+          .from('code_proposals')
+          .select('*')
+          .eq('status', 'pending')
+          .order('created_at', { ascending: false });
+
+        if (submissionsError || codeProposalsError) {
+          console.error('Eroare la reîmprospătarea propunerilor:', { submissionsError, codeProposalsError });
+          return;
+        }
+
+        // Actualizăm starea și informațiile de debugging
+        setSubmissions(newSubmissions || []);
+        setCodeProposals(newCodeProposals || []);
+        setDebugInfo(prev => ({
+          ...prev,
+          submissionsTotal: newSubmissions?.length || 0,
+          codeProposalsTotal: newCodeProposals?.length || 0,
+          lastRefreshTimestamp: new Date().toISOString()
+        }));
+
+        console.log('[Agent Admin Tabs] Propuneri reîmprospătate:', {
+          submissions: newSubmissions?.length,
+          codeProposals: newCodeProposals?.length
+        });
+
+      } catch (err) {
+        console.error('Eroare la refresh propuneri:', err);
+      }
+    }, 30000);  // La fiecare 30 de secunde
+
+    return () => clearInterval(refreshInterval);
+  }, [setSubmissions, setCodeProposals]);
+
   return (
     <>
       <AgentGodMode 
         userId={userId} 
       />
+
+      {/* Debug Info Panel */}
+      <div className="bg-slate-50 p-3 rounded-lg mb-4 text-xs">
+        <h4 className="font-semibold mb-2">🕵️ Debug Proposals Info</h4>
+        <div className="grid grid-cols-3 gap-2">
+          <div>Total Submissions: {debugInfo.submissionsTotal}</div>
+          <div>Total Code Proposals: {debugInfo.codeProposalsTotal}</div>
+          <div>Last Refresh: {new Date(debugInfo.lastRefreshTimestamp).toLocaleString()}</div>
+        </div>
+      </div>
       
       <Tabs defaultValue="submissions" className="w-full">
         <TabsList className="grid grid-cols-4 mb-4">
