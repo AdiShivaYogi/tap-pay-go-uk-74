@@ -124,7 +124,7 @@ export const AutonomyEngine: React.FC = () => {
     // Generăm activitate pentru fiecare agent la intervale regulate
     const activityInterval = setInterval(() => {
       if (!isRunning) {
-        clearInterval(interval);
+        clearInterval(activityInterval);
         return;
       }
       
@@ -199,4 +199,3 @@ export const AutonomyEngine: React.FC = () => {
   // Componenta nu renderizează nimic vizibil - rulează doar în fundal
   return null;
 };
-
