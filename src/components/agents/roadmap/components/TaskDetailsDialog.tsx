@@ -11,7 +11,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { Brain, Zap, Clock, DollarSign, Check, Play, Loader2 } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Brain, Zap, Clock, DollarSign, Check, Play, Loader2, FileCode, MessageSquareText, LightbulbIcon } from "lucide-react";
 import { AgentTaskExtended } from '../types/task.types';
 import { 
   getTaskDifficultyLabel, 
@@ -37,12 +38,22 @@ export const TaskDetailsDialog: React.FC<TaskDetailsDialogProps> = ({
 }) => {
   if (!task) return null;
   
+  // Extragerea implementării din descriere, dacă există
+  const hasImplementationDetails = task.description?.includes("Implementare:");
+  const descriptionParts = hasImplementationDetails ? 
+    task.description.split(/Implementare:|Beneficii:/i) : 
+    [task.description];
+  
+  const mainDescription = descriptionParts[0]?.trim();
+  const benefits = descriptionParts[1]?.trim();
+  const implementation = descriptionParts[2]?.trim() || descriptionParts[1]?.includes("function") ? descriptionParts[1] : "";
+  
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] p-6 max-h-[90vh] overflow-auto">
+      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl">{task.title}</DialogTitle>
-          <DialogDescription className="flex items-center gap-2 mt-1">
+          <DialogTitle className="text-xl font-semibold">{task.title}</DialogTitle>
+          <DialogDescription className="flex items-center gap-2 mt-2">
             <Badge variant={
               task.status === "completed" ? "outline" : 
               task.status === "inProgress" ? "secondary" : "default"
@@ -61,8 +72,30 @@ export const TaskDetailsDialog: React.FC<TaskDetailsDialogProps> = ({
         <div className="py-4">
           <div className="mb-6">
             <h4 className="text-sm font-medium mb-2">Descriere</h4>
-            <p className="text-sm text-muted-foreground">{task.description}</p>
+            <p className="text-sm text-muted-foreground">{mainDescription}</p>
           </div>
+          
+          {benefits && (
+            <div className="mb-6">
+              <div className="flex items-center gap-2 mb-2">
+                <LightbulbIcon className="h-4 w-4 text-yellow-500" />
+                <h4 className="text-sm font-medium">Beneficii</h4>
+              </div>
+              <p className="text-sm text-muted-foreground">{benefits}</p>
+            </div>
+          )}
+          
+          {implementation && (
+            <div className="mb-6">
+              <div className="flex items-center gap-2 mb-2">
+                <FileCode className="h-4 w-4 text-blue-500" />
+                <h4 className="text-sm font-medium">Detalii Implementare</h4>
+              </div>
+              <div className="bg-muted p-3 rounded-md overflow-x-auto">
+                <pre className="text-xs font-mono whitespace-pre-wrap">{implementation}</pre>
+              </div>
+            </div>
+          )}
           
           <div className="mb-6">
             <h4 className="text-sm font-medium mb-2">Progres</h4>
@@ -108,28 +141,40 @@ export const TaskDetailsDialog: React.FC<TaskDetailsDialogProps> = ({
               {getTaskDifficultyLabel(task.progress || 0)}
             </Badge>
           </div>
+          
+          {task.notes && (
+            <div className="mb-6">
+              <div className="flex items-center gap-2 mb-1">
+                <MessageSquareText className="h-4 w-4 text-purple-500" />
+                <h4 className="text-sm font-medium">Note</h4>
+              </div>
+              <p className="text-sm text-muted-foreground">{task.notes}</p>
+            </div>
+          )}
         </div>
         
-        <DialogFooter>
+        <Separator />
+        
+        <DialogFooter className="mt-4">
           <Button 
             variant={task.assigned ? "outline" : "default"}
             disabled={isAssigning || task.assigned}
             onClick={() => onAssign(task.id)}
-            className="flex items-center gap-1"
+            className="flex items-center gap-2"
           >
             {isAssigning ? (
               <>
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                <Loader2 className="h-4 w-4 animate-spin" />
                 <span>Se atribuie...</span>
               </>
             ) : task.assigned ? (
               <>
-                <Check className="h-3.5 w-3.5" />
+                <Check className="h-4 w-4" />
                 <span>Atribuit</span>
               </>
             ) : (
               <>
-                <Play className="h-3.5 w-3.5" />
+                <Play className="h-4 w-4" />
                 <span>Atribuie task</span>
               </>
             )}

@@ -25,32 +25,32 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onAssign, isAssigning 
   return (
     <>
       <div 
-        className="border rounded-md p-3 hover:border-primary/50 transition-colors cursor-pointer"
+        className="border border-border rounded-lg p-4 hover:border-primary/50 transition-colors cursor-pointer shadow-sm hover:shadow-md"
         onClick={() => setIsDetailsOpen(true)}
       >
         <div className="flex justify-between items-start mb-2">
           <div>
-            <h4 className="font-medium">{task.title}</h4>
+            <h4 className="font-medium text-base">{task.title}</h4>
             <p className="text-sm text-muted-foreground line-clamp-2">{task.description}</p>
           </div>
           <Badge variant={
             task.status === "completed" ? "outline" : 
             task.status === "inProgress" ? "secondary" : "default"
-          }>
+          } className="ml-2 whitespace-nowrap">
             {task.status === "completed" ? "Finalizat" : 
              task.status === "inProgress" ? "În progres" : "Planificat"}
           </Badge>
         </div>
         
-        <div className="mt-2">
+        <div className="mt-3">
           <div className="flex justify-between items-center mb-1">
             <span className="text-xs text-muted-foreground">Progres</span>
             <span className="text-xs font-medium">{task.progress || 0}%</span>
           </div>
-          <Progress value={task.progress || 0} className="h-1" />
+          <Progress value={task.progress || 0} className="h-1.5" />
         </div>
         
-        <div className="mt-3 grid grid-cols-3 gap-2 mb-3">
+        <div className="mt-4 grid grid-cols-3 gap-2 mb-3">
           <div className="flex items-center gap-1 text-xs">
             <Zap className={`h-3.5 w-3.5 ${getDifficultyColor(task.difficulty)}`} />
             <span>Dificultate: <span className="font-medium">{task.difficulty}</span></span>
