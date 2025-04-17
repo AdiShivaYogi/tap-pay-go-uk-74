@@ -19,7 +19,7 @@ export const AutonomyVisualization: React.FC = () => {
   useEffect(() => {
     // Lansăm o notificare despre implementarea completă
     toast({
-      title: "Noua Eră a Autonomiei implementată",
+      title: "TapToGo Autonom implementat",
       description: "Cadrul de autonomie completă este acum funcțional și integrat în toate sistemele.",
       duration: 5000
     });
@@ -63,7 +63,7 @@ export const AutonomyVisualization: React.FC = () => {
         <Alert className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-300">
           <AlertTitle className="flex items-center gap-2">
             <CheckCircle2 className="h-5 w-5 text-green-500" />
-            Noua Eră a Autonomiei Finalizată
+            TapToGo Autonom Complet
           </AlertTitle>
           <AlertDescription>
             Toți agenții funcționează acum în mod complet autonom. Sistemul a evoluat pentru a gestiona toate aspectele operaționale fără intervenție umană.
@@ -103,7 +103,7 @@ export const AutonomyVisualization: React.FC = () => {
             <h3 className="text-lg font-medium">Vizualizare Rețea Autonomă 3D</h3>
           </div>
           <p className="text-muted-foreground mb-4">
-            Explorați conexiunile și relațiile dintre agenții autonomi. Interacționați direct cu vizualizarea pentru a examina diferitele niveluri de autonomie și legăturile funcționale.
+            Explorați conexiunile și relațiile dintre agenții autonomi TapToGo. Interacționați direct cu vizualizarea pentru a examina diferitele niveluri de autonomie și legăturile funcționale.
           </p>
           <div className="h-[500px] border rounded-lg overflow-hidden">
             <AgentNetworkGraph />

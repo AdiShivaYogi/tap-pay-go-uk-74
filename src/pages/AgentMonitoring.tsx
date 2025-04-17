@@ -4,6 +4,7 @@ import { BaseMonitoringPage } from "@/components/agents/monitoring/BaseMonitorin
 import { AutonomousEngineProvider } from "@/components/agents/autonomous-engine/AutonomousEngineProvider";
 import { useToast } from "@/hooks/use-toast";
 import { logAgentActivity } from "@/components/agents/monitoring/hooks/utils/activity-processing";
+import { AutonomyEngine } from "@/components/agents/monitoring/autonomy/AutonomyEngine";
 
 const AgentMonitoring = () => {
   const { toast } = useToast();
@@ -31,6 +32,8 @@ const AgentMonitoring = () => {
   return (
     <AutonomousEngineProvider>
       <BaseMonitoringPage tabs="unified" />
+      {/* Adăugăm motorul de autonomie pentru generare activitate autonomă reală */}
+      <AutonomyEngine />
     </AutonomousEngineProvider>
   );
 };
