@@ -1,6 +1,10 @@
 
 import { ReactNode } from "react";
-import { Lock, Unlock, Users, Brain, Lightbulb, Shield, HandCoins, Zap, Infinity, Globe, Eye, Network } from "lucide-react";
+import { 
+  Lock, Unlock, Users, Brain, Lightbulb, Shield, HandCoins, Zap, 
+  Infinity, Globe, Eye, Network, Calendar, PlaySquare, Gauge, 
+  BarChart3, CircleSlash, FileCode, HeartHandshake
+} from "lucide-react";
 
 export const agentProjects = [
   {
@@ -178,6 +182,119 @@ export const agentProjects = [
       { name: "Protocol de consens și decizie colectivă", completed: false },
       { name: "Sistem de specializare și diversificare", completed: false },
       { name: "Mecanisme de protecție împotriva eșecurilor", completed: false }
+    ]
+  },
+  // Noile proiecte pentru sistemul de auto-executare
+  {
+    title: "Planificare Autonomă de Sarcini",
+    description: "Sistem care permite agenților să-și planifice și prioritizeze automat sarcinile în funcție de obiectivele globale",
+    status: "planificat" as const,
+    priority: "înaltă" as const,
+    timeframe: "săptămâni" as const,
+    timeUsed: 0,
+    timeTotal: 25,
+    icon: Calendar,
+    tasks: [
+      { name: "Motor de prioritizare inteligentă", completed: false },
+      { name: "Algoritm de optimizare a resurselor", completed: false },
+      { name: "Mecanism de adaptare dinamică", completed: false },
+      { name: "Interfață de supervizare umană", completed: false }
+    ]
+  },
+  {
+    title: "Execuție Autonomă de Proiecte",
+    description: "Mecanism care permite agenților să execute autonom sarcinile planificate fără intervenție umană",
+    status: "planificat" as const,
+    priority: "înaltă" as const,
+    timeframe: "luni" as const,
+    timeUsed: 0,
+    timeTotal: 40,
+    icon: PlaySquare,
+    tasks: [
+      { name: "Framework de execuție independentă", completed: false },
+      { name: "Sistem de verificare a rezultatelor", completed: false },
+      { name: "Protocol de corectare automată", completed: false },
+      { name: "Mecanism de raportare a progresului", completed: false }
+    ]
+  },
+  {
+    title: "Monitorizare în Timp Real",
+    description: "Dashboard interactiv care arată progresul și deciziile agenților în timp real",
+    status: "planificat" as const,
+    priority: "medie" as const,
+    timeframe: "săptămâni" as const,
+    timeUsed: 0,
+    timeTotal: 20,
+    icon: Gauge,
+    tasks: [
+      { name: "Vizualizări avansate de date", completed: false },
+      { name: "Alertare inteligentă pentru anomalii", completed: false },
+      { name: "Istoricul deciziilor agenților", completed: false },
+      { name: "Metrici personalizabile de performanță", completed: false }
+    ]
+  },
+  {
+    title: "Analiză Predictivă a Performanței",
+    description: "Sistem care analizează și prezice performanța viitoare a agenților pe baza datelor istorice",
+    status: "planificat" as const,
+    priority: "medie" as const,
+    timeframe: "luni" as const,
+    timeUsed: 0,
+    timeTotal: 30,
+    icon: BarChart3,
+    tasks: [
+      { name: "Modele statistice avansate", completed: false },
+      { name: "Identificarea blocajelor de performanță", completed: false },
+      { name: "Recomandări automate de optimizare", completed: false },
+      { name: "Simulări de scenarii viitoare", completed: false }
+    ]
+  },
+  {
+    title: "Limitare și Siguranță",
+    description: "Mecanisme care asigură că agenții autonomi operează în limite sigure și etice",
+    status: "planificat" as const,
+    priority: "înaltă" as const,
+    timeframe: "săptămâni" as const,
+    timeUsed: 0,
+    timeTotal: 15,
+    icon: CircleSlash,
+    tasks: [
+      { name: "Parametrii de siguranță configurabili", completed: false },
+      { name: "Mecanism de oprire de urgență", completed: false },
+      { name: "Verificare continuă a conformității", completed: false },
+      { name: "Protocol de revenire la control manual", completed: false }
+    ]
+  },
+  {
+    title: "Codificare Automată",
+    description: "Sistem care permite agenților să-și scrie și modifice propriul cod pentru a se îmbunătăți",
+    status: "planificat" as const,
+    priority: "scăzută" as const,
+    timeframe: "luni" as const,
+    timeUsed: 0,
+    timeTotal: 50,
+    icon: FileCode,
+    tasks: [
+      { name: "Framework de auto-modificare sigură", completed: false },
+      { name: "Mediu de testare izolat", completed: false },
+      { name: "Analiză de calitate a codului", completed: false },
+      { name: "Mecanism de aprobare a modificărilor", completed: false }
+    ]
+  },
+  {
+    title: "Cooperare Agent-Om",
+    description: "Interfețe și protocoale care permit colaborarea eficientă între agenți autonomi și supervizori umani",
+    status: "planificat" as const,
+    priority: "medie" as const,
+    timeframe: "săptămâni" as const,
+    timeUsed: 0,
+    timeTotal: 25,
+    icon: HeartHandshake,
+    tasks: [
+      { name: "Interfețe intuitive de colaborare", completed: false },
+      { name: "Protocol de escaladare a deciziilor", completed: false },
+      { name: "Mecanism de feedback și învățare", completed: false },
+      { name: "Sistem de transfer fluid al controlului", completed: false }
     ]
   }
 ];
