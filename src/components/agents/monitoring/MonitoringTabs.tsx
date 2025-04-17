@@ -1,43 +1,36 @@
 
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Brain, Network, Shield, ChartPie, BarChart3, Rocket } from "lucide-react";
-import { 
-  AutonomyTab,
-  NetworkTab,
-  SafetyTab,
-  ActivityTab,
-  ProjectsTab,
-  InnerWorldTab
-} from "./tabs";
+import { AgentActivityMonitor } from "./AgentActivityMonitor";
+import { SafetyPanel } from "./safety/SafetyPanel";
+import { AutonomyTab } from "./autonomy/AutonomyTab";
+import { ProjectsTab } from "./tabs/ProjectsTab";
+import { AutoDebugPanel } from "./debug/AutoDebugPanel";
+import { Box, Brain, LayoutDashboard, Shield, Webhook } from "lucide-react";
 
-export const MonitoringTabs: React.FC = () => {
+export const MonitoringTabs = () => {
   return (
-    <Tabs defaultValue="autonomy" className="space-y-6">
-      <TabsList className="mb-4">
-        <TabsTrigger value="autonomy" className="flex items-center gap-1">
+    <Tabs defaultValue="autonomy" className="mt-4">
+      <TabsList className="grid grid-cols-5 mb-6">
+        <TabsTrigger value="autonomy" className="flex items-center gap-2">
           <Brain className="h-4 w-4" />
-          Autonomie & Execuție
+          <span>Autonomie</span>
         </TabsTrigger>
-        <TabsTrigger value="network" className="flex items-center gap-1">
-          <Network className="h-4 w-4" />
-          Rețea Agenți
+        <TabsTrigger value="monitoring" className="flex items-center gap-2">
+          <LayoutDashboard className="h-4 w-4" />
+          <span>Monitorizare</span>
         </TabsTrigger>
-        <TabsTrigger value="safety" className="flex items-center gap-1">
+        <TabsTrigger value="safety" className="flex items-center gap-2">
           <Shield className="h-4 w-4" />
-          Infrastructură de siguranță
+          <span>Siguranță</span>
         </TabsTrigger>
-        <TabsTrigger value="activity" className="flex items-center gap-1">
-          <ChartPie className="h-4 w-4" />
-          Activitate în timp real
+        <TabsTrigger value="projects" className="flex items-center gap-2">
+          <Box className="h-4 w-4" />
+          <span>Proiecte</span>
         </TabsTrigger>
-        <TabsTrigger value="projects" className="flex items-center gap-1">
-          <BarChart3 className="h-4 w-4" />
-          Proiecte agenți
-        </TabsTrigger>
-        <TabsTrigger value="inner-world" className="flex items-center gap-1">
-          <Rocket className="h-4 w-4" />
-          Lumea Interioară
+        <TabsTrigger value="debugging" className="flex items-center gap-2">
+          <Webhook className="h-4 w-4" />
+          <span>Auto-Debug</span>
         </TabsTrigger>
       </TabsList>
       
@@ -45,24 +38,20 @@ export const MonitoringTabs: React.FC = () => {
         <AutonomyTab />
       </TabsContent>
       
-      <TabsContent value="network">
-        <NetworkTab />
+      <TabsContent value="monitoring">
+        <AgentActivityMonitor />
       </TabsContent>
       
       <TabsContent value="safety">
-        <SafetyTab />
-      </TabsContent>
-      
-      <TabsContent value="activity">
-        <ActivityTab />
+        <SafetyPanel />
       </TabsContent>
       
       <TabsContent value="projects">
         <ProjectsTab />
       </TabsContent>
       
-      <TabsContent value="inner-world">
-        <InnerWorldTab />
+      <TabsContent value="debugging">
+        <AutoDebugPanel />
       </TabsContent>
     </Tabs>
   );

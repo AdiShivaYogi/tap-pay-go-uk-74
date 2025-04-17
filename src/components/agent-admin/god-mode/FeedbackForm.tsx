@@ -6,6 +6,8 @@ import { FeedbackItem } from "@/hooks/agent-god-mode/types";
 import { FeedbackFormHeader } from "./FeedbackFormHeader";
 import { FeedbackFormActions } from "./FeedbackFormActions";
 import { ModelSelector } from "./ModelSelector";
+import { Badge } from "@/components/ui/badge";
+import { Brain } from "lucide-react";
 
 interface FeedbackFormProps {
   feedbackType: "submission" | "proposal" | undefined;
@@ -38,6 +40,23 @@ export const FeedbackForm = ({
 }: FeedbackFormProps) => {
   const currentItem = currentSubmission || currentProposal;
   if (!currentItem) return null;
+  
+  // Calculează complexitatea și valoarea de învățare a feedback-ului actual
+  const calculateLearningValue = () => {
+    if (!feedback) return 0;
+    
+    // Factori de complexitate
+    const lengthFactor = Math.min(feedback.length / 300, 1);
+    const wordCountFactor = Math.min(feedback.split(' ').length / 60, 1);
+    const complexityFactor = (feedback.includes('optimizare') || 
+                            feedback.includes('refactorizare') ||
+                            feedback.includes('arhitectură')) ? 1.2 : 1;
+    
+    // Calculul valorii de învățare
+    return Math.round(((lengthFactor * 0.4) + (wordCountFactor * 0.6)) * complexityFactor * 100);
+  };
+  
+  const learningValue = calculateLearningValue();
 
   return (
     <Card className="p-4 mt-4">
@@ -66,6 +85,37 @@ export const FeedbackForm = ({
           onChange={(e) => onFeedbackChange(e.target.value)}
           disabled={isGeneratingFeedback || isProcessing}
         />
+        
+        {feedback && feedback.length > 0 && (
+          <div className="mt-2 p-2 bg-amber-50/40 border border-amber-100 rounded text-sm">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5">
+                <Brain className="h-4 w-4 text-amber-600" />
+                <span className="font-medium">Auto-Debugging & Evoluție:</span>
+              </div>
+              <Badge 
+                variant="outline" 
+                className={`${
+                  learningValue > 75 ? "bg-green-50 text-green-700 border-green-200" : 
+                  learningValue > 40 ? "bg-amber-50 text-amber-700 border-amber-200" : 
+                  "bg-blue-50 text-blue-700 border-blue-200"
+                }`}
+              >
+                {learningValue}% valoare învățare
+              </Badge>
+            </div>
+            
+            <div className="mt-1 text-xs text-muted-foreground">
+              {learningValue > 75 ? (
+                "Feedback complex și detaliat care va accelera semnificativ evoluția sistemului autonom"
+              ) : learningValue > 40 ? (
+                "Feedback util cu informații concrete pentru îmbunătățirea sistemului autonom"
+              ) : (
+                "Feedback de bază care va contribui la menținerea performanței sistemului"
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       <FeedbackFormActions
