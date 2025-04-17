@@ -25,6 +25,15 @@ export interface AgentInteraction {
   timestamp: Date;
 }
 
+export interface AgentLearningRule {
+  sourceAgentId: string;
+  targetAgentId: string;
+  learningTypes: string[];
+  interval: number; // în minute
+  isActive: boolean;
+  lastExecuted?: Date;
+}
+
 export interface AgentMonitoringState {
   activityData: ActivityData[];
   activityLogs: ActivityLog[];
@@ -33,6 +42,7 @@ export interface AgentMonitoringState {
   totalActivities: number;
   autoRefresh: boolean;
   lastRefresh: Date;
+  learningRules: AgentLearningRule[];
 }
 
 export interface AgentMonitoringHook extends AgentMonitoringState {
@@ -40,4 +50,7 @@ export interface AgentMonitoringHook extends AgentMonitoringState {
   logDetailedAgentActivity: (agentId: string, description: string, category?: string) => void;
   toggleAutoRefresh: () => void;
   logAgentInteraction: (sourceAgentId: string, targetAgentId: string, learningType: string) => AgentInteraction;
+  addLearningRule: (rule: Omit<AgentLearningRule, 'lastExecuted'>) => void;
+  removeLearningRule: (sourceId: string, targetId: string) => void;
+  toggleLearningRule: (sourceId: string, targetId: string) => void;
 }

@@ -12,6 +12,7 @@ import { TestAgentActivity } from "./TestAgentActivity";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { AgentLearningPanel } from "./AgentLearningPanel";
+import { AgentAutoLearning } from "./AgentAutoLearning";
 import { formatDistanceToNow } from "date-fns";
 import { ro } from "date-fns/locale";
 
@@ -19,6 +20,7 @@ export const AgentActivityMonitor: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const [showTestTools, setShowTestTools] = useState(false);
   const [showLearning, setShowLearning] = useState(false);
+  const [showAutoLearning, setShowAutoLearning] = useState(false);
   const { 
     activityData, 
     activityLogs, 
@@ -85,7 +87,19 @@ export const AgentActivityMonitor: React.FC = () => {
             />
             <Label htmlFor="learning-mode" className="text-xs flex items-center gap-1">
               <BrainCircuit size={14} />
-              Învățare între agenți
+              Învățare manuală
+            </Label>
+          </div>
+          
+          <div className="flex items-center gap-2 mr-4">
+            <Switch 
+              id="auto-learning-mode"
+              checked={showAutoLearning}
+              onCheckedChange={setShowAutoLearning}
+            />
+            <Label htmlFor="auto-learning-mode" className="text-xs flex items-center gap-1">
+              <BrainCircuit size={14} />
+              Auto-învățare
             </Label>
           </div>
           
@@ -134,6 +148,12 @@ export const AgentActivityMonitor: React.FC = () => {
         {showLearning && (
           <div className="mb-6">
             <AgentLearningPanel />
+          </div>
+        )}
+        
+        {showAutoLearning && (
+          <div className="mb-6">
+            <AgentAutoLearning />
           </div>
         )}
 
