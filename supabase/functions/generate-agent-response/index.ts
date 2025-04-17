@@ -147,10 +147,17 @@ function calculateTokenCost(inputTokens, outputTokens, isCacheHit = false) {
  * @param {number} responseTime - Response time in seconds
  * @param {string} promptType - Type of prompt used
  * @param {boolean} isCacheHit - Whether the input tokens were served from cache
+ * @param {string} model - The model used (deepseek or claude)
  */
-async function recordTokenUsage(supabase, inputTokens, outputTokens, responseTime, promptType, isCacheHit = false) {
+async function recordTokenUsage(supabase, inputTokens, outputTokens, responseTime, promptType, isCacheHit = false, model = 'deepseek') {
   try {
-    const costDetails = calculateTokenCost(inputTokens, outputTokens, isCacheHit);
+    // Only calculate costs for DeepSeek models
+    const costDetails = model === 'deepseek' ? calculateTokenCost(inputTokens, outputTokens, isCacheHit) : {
+      inputCost: 0,
+      outputCost: 0,
+      totalCost: 0,
+      timePeriod: 'unknown'
+    };
     
     const { error } = await supabase.from('deepseek_api_usage').insert({
       input_tokens: inputTokens,
@@ -162,7 +169,8 @@ async function recordTokenUsage(supabase, inputTokens, outputTokens, responseTim
       response_time_seconds: responseTime,
       prompt_type: promptType,
       time_period: costDetails.timePeriod,
-      is_cache_hit: isCacheHit
+      is_cache_hit: isCacheHit,
+      model: model
     });
 
     if (error) {
@@ -251,6 +259,34 @@ async function callDeepseekAPI(systemPrompt, message, apiKey) {
 }
 
 /**
+ * Calls the OpenRouter API to access Claude models
+ * @param {string} systemPrompt - The system prompt to send to the API
+ * @param {string} message - The user message to send to the API
+ * @param {string} apiKey - The OpenRouter API key
+ * @returns {Promise<Object>} The API response
+ */
+async function callClaudeAPI(systemPrompt, message, apiKey) {
+  return await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+      'HTTP-Referer': Deno.env.get('SUPABASE_URL') || 'https://utraomhphgnnrpyfwwla.supabase.co',
+      'X-Title': 'TapPayGo Platform'
+    },
+    body: JSON.stringify({
+      model: 'anthropic/claude-3-opus:2024-05-16',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: message }
+      ],
+      temperature: 0.7,
+      max_tokens: 1500
+    })
+  });
+}
+
+/**
  * Main handler function for the Supabase Edge Function
  */
 serve(async (req) => {
@@ -269,7 +305,10 @@ serve(async (req) => {
     }
 
     const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+    
+    // Get API keys from environment
     const deepseekApiKey = Deno.env.get("DEEPSEEK_API_KEY") || "";
+    const openrouterApiKey = Deno.env.get("OPENROUTER_API_KEY") || "";
 
     // Parse request body
     const params = await req.json();
@@ -284,20 +323,54 @@ serve(async (req) => {
       );
     }
 
+    // Determine which model to use (default to deepseek if not specified)
+    const modelToUse = params.model?.toLowerCase() === 'claude' ? 'claude' : 'deepseek';
+    
+    // Check if the required API key is available
+    if (modelToUse === 'claude' && !openrouterApiKey) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Cheia API OpenRouter nu este configurată',
+          details: 'Pentru a utiliza modelele Claude, configurați o cheie API OpenRouter în setările aplicației.' 
+        }), 
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 400
+        }
+      );
+    } else if (modelToUse === 'deepseek' && !deepseekApiKey) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Cheia API Deepseek nu este configurată',
+          details: 'Pentru a utiliza modelele Deepseek, configurați o cheie API Deepseek în setările aplicației.' 
+        }), 
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 400
+        }
+      );
+    }
+
     // Create system prompt and determine prompt type
     const systemPrompt = createSystemPrompt(params);
     const promptType = determinePromptType(params);
 
-    console.log('Se trimite cererea la Deepseek API...');
+    console.log(`Se trimite cererea la ${modelToUse === 'claude' ? 'Claude (OpenRouter)' : 'Deepseek'} API...`);
     const startTime = Date.now();
     
-    // Call Deepseek API
-    const response = await callDeepseekAPI(systemPrompt, params.message, deepseekApiKey);
+    // Call appropriate API based on model
+    let response, data;
+    if (modelToUse === 'claude') {
+      response = await callClaudeAPI(systemPrompt, params.message, openrouterApiKey);
+      data = await response.json();
+    } else {
+      response = await callDeepseekAPI(systemPrompt, params.message, deepseekApiKey);
+      data = await response.json();
+    }
+    
     const responseTime = (Date.now() - startTime) / 1000; // Convert to seconds
     
-    const data = await response.json();
-    
-    // Extract token usage information
+    // Extract token usage information (with fallbacks since different APIs may have different response formats)
     const inputTokens = data.usage?.prompt_tokens || 0;
     const outputTokens = data.usage?.completion_tokens || 0;
     
@@ -312,15 +385,27 @@ serve(async (req) => {
       outputTokens, 
       responseTime,
       promptType,
-      isCacheHit
+      isCacheHit,
+      modelToUse
     );
 
-    const generatedResponse = data.choices?.[0]?.message?.content || "Nu am putut genera un răspuns.";
+    // Extract the generated response based on API format
+    let generatedResponse = '';
+    
+    if (modelToUse === 'claude') {
+      generatedResponse = data.choices?.[0]?.message?.content || 
+                         data.choices?.[0]?.content || 
+                         "Nu am putut genera un răspuns cu Claude.";
+    } else {
+      generatedResponse = data.choices?.[0]?.message?.content || 
+                         "Nu am putut genera un răspuns.";
+    }
 
     // Return the response
     return new Response(JSON.stringify({ 
       response: generatedResponse,
       isCodeProposal: params.isCodeProposal,
+      model: modelToUse,
       usage: {
         inputTokens,
         outputTokens,
@@ -343,4 +428,3 @@ serve(async (req) => {
     });
   }
 });
-

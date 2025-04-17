@@ -4,7 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Loader2, CheckSquare, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ModelSelector } from "./ModelSelector";
 import { FeedbackItem } from "@/hooks/agent-god-mode/types";
 
 interface FeedbackFormProps {
@@ -15,7 +15,9 @@ interface FeedbackFormProps {
   isGeneratingFeedback: boolean;
   isProcessing: boolean;
   isGodModeEnabled: boolean;
+  selectedModel: "deepseek" | "claude";
   onFeedbackChange: (feedback: string) => void;
+  onModelChange: (model: "deepseek" | "claude") => void;
   onSubmit: () => Promise<void>;
   onCancel: () => void;
 }
@@ -28,12 +30,12 @@ export const FeedbackForm = ({
   isGeneratingFeedback,
   isProcessing,
   isGodModeEnabled,
+  selectedModel,
   onFeedbackChange,
+  onModelChange,
   onSubmit,
   onCancel
 }: FeedbackFormProps) => {
-  const [preferredModel, setPreferredModel] = React.useState<string>("deepseek");
-  
   const currentItem = currentSubmission || currentProposal;
   if (!currentItem) return null;
 
@@ -74,19 +76,11 @@ export const FeedbackForm = ({
           <label htmlFor="feedback" className="block text-sm font-medium">
             {isGeneratingFeedback ? "Se generează feedback..." : "Feedback pentru agent:"}
           </label>
-          <Select 
-            value={preferredModel} 
-            onValueChange={setPreferredModel}
+          <ModelSelector 
+            value={selectedModel}
+            onChange={onModelChange}
             disabled={isGeneratingFeedback || isProcessing}
-          >
-            <SelectTrigger className="w-[180px] h-8">
-              <SelectValue placeholder="Model AI" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="deepseek">DeepSeek Chat</SelectItem>
-              <SelectItem value="claude">Claude (OpenRouter)</SelectItem>
-            </SelectContent>
-          </Select>
+          />
         </div>
         <Textarea
           id="feedback"
