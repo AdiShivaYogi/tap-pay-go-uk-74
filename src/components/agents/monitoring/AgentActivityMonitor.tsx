@@ -33,12 +33,16 @@ export const AgentActivityMonitor: React.FC = () => {
     executeAutoLearning
   } = useAgentMonitoring();
 
-  // Convert lastRefresh to Date if it's a string
-  const formattedLastRefresh = lastRefresh instanceof Date 
-    ? lastRefresh 
-    : lastRefresh 
-      ? new Date(lastRefresh) 
-      : null;
+  // Ensure lastRefresh is a valid Date object or null
+  const formattedLastRefresh = React.useMemo(() => {
+    if (!lastRefresh) return null;
+    if (lastRefresh instanceof Date) return lastRefresh;
+    
+    // If it's a string, try to convert to Date
+    const parsedDate = new Date(lastRefresh);
+    // Check if the parsed date is valid
+    return !isNaN(parsedDate.getTime()) ? parsedDate : null;
+  }, [lastRefresh]);
 
   // Inițiem auto-învățarea la încărcare
   useEffect(() => {

@@ -1,3 +1,4 @@
+
 import { useState, useCallback } from "react";
 import { extendedSupabase as supabase } from "@/integrations/supabase/extended-client";
 import { formatDistanceToNow } from "date-fns";
@@ -9,7 +10,7 @@ export const useActivityData = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [categories, setCategories] = useState<string[]>([]);
   const [totalActivities, setTotalActivities] = useState(0);
-  const [lastRefresh, setLastRefresh] = useState<Date | string | null>(null);
+  const [lastRefresh, setLastRefresh] = useState<Date | null>(new Date()); // Initialize with current date
   const [autoExecutionStatus, setAutoExecutionStatus] = useState<Record<string, boolean>>({});
 
   // Fetch agent activity from Supabase
@@ -40,7 +41,9 @@ export const useActivityData = () => {
         setActivityLogs(mockActivityLogs);
         setCategories(mockCategories);
         setTotalActivities(mockTotalActivities);
-        setLastRefresh(formatDistanceToNow(new Date(), { addSuffix: true, locale: ro }));
+        
+        // Always set a valid Date object for lastRefresh
+        setLastRefresh(new Date());
         
         // Simulăm starea de auto-execuție din baza de date
         setAutoExecutionStatus({
@@ -50,13 +53,6 @@ export const useActivityData = () => {
           "security-framework": false,
           "advanced-analytics": false
         });
-        
-        // Convert lastRefresh to Date if it's a string
-        const refreshTime = typeof lastRefresh === 'string' 
-          ? new Date() 
-          : lastRefresh;
-        
-        setLastRefresh(refreshTime);
         
         setIsLoading(false);
       }, 500);

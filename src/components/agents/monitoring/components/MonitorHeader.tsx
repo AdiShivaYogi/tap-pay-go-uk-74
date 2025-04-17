@@ -10,7 +10,7 @@ import { ro } from "date-fns/locale";
 
 interface MonitorHeaderProps {
   totalActivities: number;
-  lastRefresh: Date;
+  lastRefresh: Date | null;
   autoRefresh: boolean;
   toggleAutoRefresh: () => void;
   showTestTools: boolean;
@@ -37,10 +37,13 @@ export const MonitorHeader: React.FC<MonitorHeaderProps> = ({
   refreshData,
   isLoading
 }) => {
-  const lastRefreshText = formatDistanceToNow(lastRefresh, { 
-    addSuffix: true,
-    locale: ro 
-  });
+  // Make sure lastRefresh is a valid Date object before calling formatDistanceToNow
+  const lastRefreshText = lastRefresh && lastRefresh instanceof Date && !isNaN(lastRefresh.getTime())
+    ? formatDistanceToNow(lastRefresh, { 
+        addSuffix: true,
+        locale: ro 
+      })
+    : "just now";
 
   return (
     <StyledCardHeader className="flex flex-row items-center justify-between">
