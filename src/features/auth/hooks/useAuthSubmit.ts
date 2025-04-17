@@ -67,11 +67,14 @@ export const useAuthSubmit = () => {
           console.error("Eroare la autentificare:", error);
           
           // Incrementăm contorul de încercări eșuate
-          const { data: lockStatus } = await supabase.rpc('record_failed_attempt', {
+          const { data } = await supabase.rpc('record_failed_attempt', {
             p_email: email
           });
           
-          if (lockStatus && lockStatus.is_locked) {
+          // Verificăm datele returnate de procedura stocată
+          const lockStatus = data ? data : { is_locked: false, minutes_left: 0 };
+          
+          if (lockStatus.is_locked) {
             setErrorMessage(`Cont blocat temporar. Încercați din nou în ${lockStatus.minutes_left} minute.`);
             toast({
               title: "Cont blocat temporar",
