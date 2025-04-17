@@ -3,16 +3,10 @@ import React from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { User2 } from "lucide-react";
 import { Agent } from "../agents-data";
-
-export interface Message {
-  id: string;
-  text: string;
-  sender: "user" | "agent";
-  timestamp: Date;
-}
+import { ConversationMessage } from "./useConversation";
 
 interface MessageItemProps {
-  message: Message;
+  message: ConversationMessage;
   agent: Agent;
 }
 

@@ -1,10 +1,10 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Agent } from "../../agents-data";
-import { Message } from "../useConversation";
+import { ConversationMessage } from "../useConversation";
 
 export const useAgentMessages = (agent: Agent) => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<ConversationMessage[]>([]);
   
   // Mesaj inițial de întâmpinare
   useEffect(() => {

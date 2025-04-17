@@ -28,7 +28,7 @@ export const useConversation = (agent: Agent, isListening: boolean) => {
       setMessages([
         {
           id: "welcome-1",
-          text: `Bună! Sunt ${agent.name}, sunt aici să te ajut cu ${agent.specialization}.`,
+          text: `Bună! Sunt ${agent.name}, sunt aici să te ajut cu ${agent.description}.`,
           sender: "agent",
           timestamp: new Date(),
         }

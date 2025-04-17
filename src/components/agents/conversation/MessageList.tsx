@@ -1,12 +1,13 @@
 
 import React, { useRef, useEffect } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { MessageItem, Message } from "./MessageItem";
+import { MessageItem } from "./MessageItem";
 import { TypingIndicator } from "./TypingIndicator";
 import { Agent } from "../agents-data";
+import { ConversationMessage } from "./useConversation";
 
 interface MessageListProps {
-  messages: Message[];
+  messages: ConversationMessage[];
   agent: Agent;
   typingIndicator: boolean;
 }
