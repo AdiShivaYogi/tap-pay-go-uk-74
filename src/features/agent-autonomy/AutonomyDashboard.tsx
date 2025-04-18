@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { StyledCard, StyledCardHeader, StyledCardTitle, StyledCardContent } from '@/components/ui/cards';
 import { supabase } from "@/integrations/supabase/client";
