@@ -28,6 +28,7 @@ import BillingSettings from "./pages/BillingSettings";
 import NotificationSettings from "./pages/NotificationSettings";
 import Agents from "./pages/Agents";
 import AgentCentralCommand from "./pages/AgentCentralCommand";
+import UnifiedAgentManagement from "./pages/UnifiedAgentManagement";
 
 function App() {
   return (
@@ -66,7 +67,7 @@ function App() {
       <Route path="/agent-admin" element={<AgentCentralCommand />} />
       <Route path="/agent-monitoring" element={<AgentCentralCommand />} />
       <Route path="/agent-management" element={<AgentCentralCommand />} />
-      <Route path="/unified-agent-management" element={<AgentCentralCommand />} />
+      <Route path="/unified-agent-management" element={<UnifiedAgentManagement />} />
       
       <Route path="*" element={<NotFound />} />
     </Routes>

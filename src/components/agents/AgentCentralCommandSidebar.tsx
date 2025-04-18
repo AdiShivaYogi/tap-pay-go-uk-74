@@ -17,7 +17,10 @@ import {
   Server,
   Sparkles,
   BrainCircuit,
-  Activity
+  Activity,
+  ListTodo,
+  BarChart,
+  Settings
 } from "lucide-react";
 
 const sidebarItems = [
@@ -99,6 +102,50 @@ export function AgentCentralCommandSidebar({
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        
+        <SidebarGroup className="mt-4">
+          <SidebarGroupLabel className="text-sm font-medium text-slate-500">Funcționalități</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  className="flex items-center gap-2.5 px-2 text-slate-700"
+                  onClick={() => onTabChange("tasks")}
+                >
+                  <ListTodo className="h-4.5 w-4.5 text-slate-500" />
+                  <span>Gestionare Sarcini</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  className="flex items-center gap-2.5 px-2 text-slate-700"
+                  onClick={() => onTabChange("reports")}
+                >
+                  <BarChart className="h-4.5 w-4.5 text-slate-500" />
+                  <span>Rapoarte & Analize</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  className="flex items-center gap-2.5 px-2 text-slate-700"
+                  onClick={() => onTabChange("settings")}
+                >
+                  <Settings className="h-4.5 w-4.5 text-slate-500" />
+                  <span>Setări Avansate</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  className="flex items-center gap-2.5 px-2 text-slate-700"
+                  onClick={() => onTabChange("security")}
+                >
+                  <ShieldCheck className="h-4.5 w-4.5 text-slate-500" />
+                  <span>Securitate & Control</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
