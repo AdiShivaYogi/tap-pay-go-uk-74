@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Compass, Target, TrendingUp, ShieldCheck, CpuChip } from 'lucide-react';
+import { Compass, Target, TrendingUp, ShieldCheck, Cpu } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { logAgentActivity } from "@/components/agents/monitoring/hooks/utils/activity-processing";
@@ -59,7 +59,7 @@ export const StrategicControl = () => {
       id: "autonomy",
       name: "Autonomie Avansată",
       description: "Îndreaptă agenții către dezvoltarea unui grad mai mare de autonomie",
-      icon: <CpuChip className="h-5 w-5" />,
+      icon: <Cpu className="h-5 w-5" />,
       color: "bg-red-500"
     }
   ];

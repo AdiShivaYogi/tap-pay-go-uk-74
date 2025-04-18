@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { StyledCard, StyledCardHeader, StyledCardTitle, StyledCardContent } from '@/components/ui/cards';
 import { supabase } from "@/integrations/supabase/client";
@@ -55,8 +54,8 @@ export const AutonomyDashboard = () => {
   
   // Pregătim datele pentru grafic
   const chartData = [
-    { name: 'Propuneri Task', Total: stats.taskStats.totalCount || 0, Aprobate: stats.taskStats.approvedCount || 0, 'În Așteptare': stats.taskStats.pendingCount || 0 },
-    { name: 'Propuneri Cod', Total: stats.codeStats.totalCount || 0, Aprobate: stats.codeStats.approvedCount || 0, 'În Așteptare': stats.codeStats.pendingCount || 0 }
+    { name: 'Propuneri Task', Total: stats.taskStats.totalCount || 0, Aprobate: stats.taskStats.approvedCount || 0, "În Așteptare": stats.taskStats.pendingCount || 0 },
+    { name: 'Propuneri Cod', Total: stats.codeStats.totalCount || 0, Aprobate: stats.codeStats.approvedCount || 0, "În Așteptare": stats.codeStats.pendingCount || 0 }
   ];
   
   const statCards = [

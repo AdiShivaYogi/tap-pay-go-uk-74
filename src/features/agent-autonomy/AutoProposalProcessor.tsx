@@ -22,15 +22,16 @@ export const AutoProposalProcessor = () => {
     
     try {
       setProcessing(true);
+      console.log('[AutoProposalProcessor] Începem procesarea propunerilor...');
       
       // Pas 1: Procesăm propunerile existente
-      console.log('Procesare propuneri existente...');
+      console.log('[AutoProposalProcessor] Procesare propuneri existente...');
       const { data: processingResult, error: processingError } = await supabase.functions.invoke('monitor-agent-proposals', {
         body: { action: 'processProposals' }
       });
       
       if (processingError) {
-        console.error('Eroare la procesarea propunerilor:', processingError);
+        console.error('[AutoProposalProcessor] Eroare la procesarea propunerilor:', processingError);
         toast({
           title: "Eroare la procesarea propunerilor",
           description: "Nu s-au putut procesa propunerile existente",
@@ -39,6 +40,8 @@ export const AutoProposalProcessor = () => {
         setProcessing(false);
         return;
       }
+      
+      console.log('[AutoProposalProcessor] Rezultat procesare:', processingResult);
       
       // Înregistrăm statisticile despre propunerile procesate
       if (processingResult?.processed) {
@@ -56,11 +59,24 @@ export const AutoProposalProcessor = () => {
             `Procesare automată: ${processingResult.processed.vitalTasks} propuneri de task și ${processingResult.processed.vitalCode} propuneri de cod`,
             'auto-processing'
           );
+          
+          // Notificăm utilizatorul despre procesarea propunerilor
+          toast({
+            title: "Propuneri procesate automat",
+            description: `${processingResult.processed.vitalTasks + processingResult.processed.vitalCode} propuneri procesate automat`,
+            duration: 4000,
+          });
+          
+          // Declanșăm un eveniment pentru reîmprospătarea listelor de propuneri
+          const refreshEvent = new CustomEvent('refresh-proposals', { 
+            detail: { timestamp: new Date().getTime() } 
+          });
+          window.dispatchEvent(refreshEvent);
         }
       }
       
       // Pas 2: Generăm noi propuneri
-      console.log('Generare noi propuneri...');
+      console.log('[AutoProposalProcessor] Generare noi propuneri...');
       const { data: generationResult, error: generationError } = await supabase.functions.invoke('generate-agent-proposals', {
         body: { 
           action: 'generate',
@@ -71,7 +87,7 @@ export const AutoProposalProcessor = () => {
       });
       
       if (generationError) {
-        console.error('Eroare la generarea propunerilor:', generationError);
+        console.error('[AutoProposalProcessor] Eroare la generarea propunerilor:', generationError);
         toast({
           title: "Eroare la generarea propunerilor",
           description: "Nu s-au putut genera noi propuneri",
@@ -79,6 +95,7 @@ export const AutoProposalProcessor = () => {
         });
       } else if (generationResult?.count > 0) {
         // Doar dacă am generat propuneri, afișăm un toast și înregistrăm activitatea
+        console.log('[AutoProposalProcessor] Propuneri generate:', generationResult);
         toast({
           title: "Propuneri generate automat",
           description: `${generationResult.count} noi propuneri generate pentru evoluția ecosistemului`,
@@ -96,14 +113,20 @@ export const AutoProposalProcessor = () => {
         });
         
         if (!statsError && statsData) {
-          console.log('Statistici propuneri actualizate:', statsData);
+          console.log('[AutoProposalProcessor] Statistici propuneri actualizate:', statsData);
         }
+        
+        // Declanșăm un eveniment pentru reîmprospătarea listelor de propuneri
+        const refreshEvent = new CustomEvent('refresh-proposals', { 
+          detail: { timestamp: new Date().getTime() } 
+        });
+        window.dispatchEvent(refreshEvent);
       }
       
       setLastProcessingTime(new Date());
       setProcessing(false);
     } catch (error) {
-      console.error('Eroare în timpul procesării și generării propunerilor:', error);
+      console.error('[AutoProposalProcessor] Eroare în timpul procesării și generării propunerilor:', error);
       setProcessing(false);
     }
   };

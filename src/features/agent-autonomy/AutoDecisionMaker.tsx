@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { logAgentActivity } from "@/components/agents/monitoring/hooks/utils/activity-processing";
@@ -8,94 +8,90 @@ import { useAutonomousEngine } from "@/components/agents/autonomous-engine/Auton
 export const AutoDecisionMaker = () => {
   const { toast } = useToast();
   const { isRunning, autonomyLevel } = useAutonomousEngine();
-  const [lastDecisionTime, setLastDecisionTime] = useState<Date | null>(null);
+  const [lastDecision, setLastDecision] = useState<Date | null>(null);
   
   // Funcția pentru luarea deciziilor automate
-  const makeAutonomousDecisions = async () => {
-    if (!isRunning || autonomyLevel < 70) return;
+  const makeAutonomousDecision = async () => {
+    if (!isRunning || autonomyLevel < 60) return;
     
     try {
-      // Tipuri de decizii autonome pe care le poate lua
-      const decisionTypes = [
-        'resource-allocation',
-        'task-prioritization',
-        'system-optimization',
-        'learning-focus',
-        'integration-strategy'
-      ];
-      
-      // Alegem un tip de decizie aleatoriu
-      const randomDecisionType = decisionTypes[Math.floor(Math.random() * decisionTypes.length)];
-      
-      // Simulăm un proces de decizie și generăm o descriere
-      let decisionDescription = '';
-      let category = 'autonomous-decision';
-      
-      switch (randomDecisionType) {
-        case 'resource-allocation':
-          decisionDescription = 'Alocare resurse optimizată pentru funcționalitățile prioritare ale sistemului';
-          category = 'resource-management';
-          break;
-        case 'task-prioritization':
-          decisionDescription = 'Reprioritizare task-uri în funcție de importanța pentru evoluția sistemului';
-          category = 'task-management';
-          break;
-        case 'system-optimization':
-          decisionDescription = 'Optimizare fluxuri de procesare pentru performanță maximă';
-          category = 'system-optimization';
-          break;
-        case 'learning-focus':
-          decisionDescription = 'Redirecționare focus învățare către aspecte critice ale ecosistemului';
-          category = 'learning';
-          break;
-        case 'integration-strategy':
-          decisionDescription = 'Strategie de integrare adaptată pentru noile componente autonome';
-          category = 'integration';
-          break;
-      }
-      
-      // Înregistrăm decizia ca activitate
+      // Înregistrăm activitatea de decizie
       logAgentActivity(
-        'decision-agent',
-        `Decizie autonomă: ${decisionDescription}`,
-        category
+        'decision-maker',
+        `Decizie autonomă luată pentru direcționarea propunerilor`,
+        'decision'
       );
       
-      console.log(`[${new Date().toISOString()}] Decizie autonomă luată: ${decisionDescription}`);
+      // Obținem direcția strategică curentă
+      const { data: stats, error: statsError } = await supabase.functions.invoke('monitor-agent-proposals', {
+        body: { action: 'getStats' }
+      });
       
-      // Actualizăm timestampul ultimei decizii
-      setLastDecisionTime(new Date());
-      
-      // La fiecare 5 decizii, afișăm un toast pentru a informa utilizatorul
-      if (Math.random() < 0.2) { // 20% șansă
-        toast({
-          title: "Decizie autonomă luată",
-          description: decisionDescription,
-          duration: 4000,
-        });
+      if (statsError) {
+        console.error('Eroare la obținerea statisticilor:', statsError);
+        return;
       }
       
+      const currentDirection = stats?.data?.strategicInfo?.currentDirection || 'optimization';
+      console.log(`Direcția curentă: ${currentDirection}`);
+      
+      // Evaluăm dacă trebuie să schimbăm direcția
+      // Implementăm o logică simplă pentru început - schimbăm direcția la fiecare 10 minute
+      if (lastDecision && (new Date().getTime() - lastDecision.getTime() > 10 * 60 * 1000)) {
+        // Alegem o nouă direcție diferită de cea curentă
+        const directions = ["optimization", "innovation", "integration", "security", "autonomy"];
+        const filteredDirections = directions.filter(d => d !== currentDirection);
+        const newDirection = filteredDirections[Math.floor(Math.random() * filteredDirections.length)];
+        
+        // Actualizăm direcția
+        const { error: updateError } = await supabase.functions.invoke('monitor-agent-proposals', {
+          body: { 
+            action: 'updateStrategy',
+            direction: newDirection
+          }
+        });
+        
+        if (updateError) {
+          console.error('Eroare la actualizarea direcției:', updateError);
+        } else {
+          toast({
+            title: "Schimbare automată de direcție",
+            description: `Sistemul a decis să schimbe direcția strategică la: ${newDirection}`,
+            duration: 5000,
+          });
+          
+          // Înregistrăm decizia
+          logAgentActivity(
+            'decision-maker',
+            `Schimbare automată de direcție strategică la: ${newDirection}`,
+            'strategic-decision'
+          );
+        }
+      }
+      
+      setLastDecision(new Date());
     } catch (error) {
-      console.error('Eroare în procesul de luare a deciziilor:', error);
+      console.error('Eroare în timpul procesului decizional:', error);
     }
   };
   
-  // Efect pentru inițierea procesului de luare a deciziilor la pornirea sistemului
+  // Planificăm deciziile la intervale regulate
   useEffect(() => {
     if (!isRunning) return;
     
-    // Prima decizie după un scurt delay
+    // Prima decizie după 5 minute
     const initialTimer = setTimeout(() => {
-      makeAutonomousDecisions();
-    }, 5000);
+      makeAutonomousDecision();
+    }, 5 * 60 * 1000);
     
-    // Decizii periodice la intervale aleatorii între 30-90 secunde
+    // Decizii la fiecare 4-6 minute
     const decisionInterval = setInterval(() => {
-      const randomDelay = Math.floor(Math.random() * 60000) + 30000; // 30-90 secunde
+      const randomDelay = Math.floor(Math.random() * 2 * 60 * 1000); // 0-2 minute delay aleatoriu
+      
       setTimeout(() => {
-        makeAutonomousDecisions();
+        makeAutonomousDecision();
       }, randomDelay);
-    }, 45000); // Interval de bază: 45 secunde
+    }, 4 * 60 * 1000); // Interval de bază: 4 minute
     
     return () => {
       clearTimeout(initialTimer);
