@@ -13,6 +13,7 @@ import { AccessRestrictionAlert } from "@/features/roadmap/components/AccessRest
 import { AutonomousEngineProvider } from '@/components/agents/autonomous-engine/AutonomousEngineProvider';
 import { AutonomyEngine } from '@/components/agents/monitoring/autonomy/AutonomyEngine';
 import { Agent } from "@/components/agents/agents-data";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 const AgentCentralCommand = () => {
   const { user } = useAuth();
@@ -68,31 +69,33 @@ const AgentCentralCommand = () => {
 
   return (
     <AutonomousEngineProvider>
-      <div className="flex h-screen">
-        <AgentCentralCommandSidebar 
-          activeTab={activeTab} 
-          onTabChange={setActiveTab} 
-        />
-        
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <div className="flex-1 flex">
-            <div className="flex-1 overflow-auto">
-              <Layout>
-                <Section>{renderContent()}</Section>
-              </Layout>
-            </div>
-            
-            {/* Chat Panel */}
-            <div className="w-[400px] border-l border-slate-200 bg-white flex flex-col h-full">
-              <AgentConversationController
-                activeAgentData={activeAgent}
-                isListening={isListening}
-                toggleListening={() => setIsListening(!isListening)}
-              />
+      <SidebarProvider>
+        <div className="flex h-screen w-full">
+          <AgentCentralCommandSidebar 
+            activeTab={activeTab} 
+            onTabChange={setActiveTab} 
+          />
+          
+          <div className="flex-1 flex flex-col overflow-hidden">
+            <div className="flex-1 flex">
+              <div className="flex-1 overflow-auto">
+                <Layout>
+                  <Section>{renderContent()}</Section>
+                </Layout>
+              </div>
+              
+              {/* Chat Panel */}
+              <div className="w-[400px] border-l border-slate-200 bg-white flex flex-col h-full">
+                <AgentConversationController
+                  activeAgentData={activeAgent}
+                  isListening={isListening}
+                  toggleListening={() => setIsListening(!isListening)}
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </SidebarProvider>
       <AutonomyEngine />
     </AutonomousEngineProvider>
   );
