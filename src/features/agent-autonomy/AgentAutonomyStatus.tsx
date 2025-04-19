@@ -6,10 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { agents } from "@/components/agents/agents-data";
 import { useAutonomousEngine } from "@/components/agents/autonomous-engine/AutonomousEngineProvider";
 import { Activity, Brain, Shield, Zap } from "lucide-react";
+import { Agent } from "@/components/agents/agents-data"; // Ensure Agent type is imported
 
 export const AgentAutonomyStatus = () => {
   const { isRunning, autonomyLevel } = useAutonomousEngine();
-  const [sortedAgents, setSortedAgents] = useState([...agents]);
+  const [sortedAgents, setSortedAgents] = useState<Agent[]>([...agents]);
   
   // Actualizăm valorile de autonomie ale agenților în funcție de nivelul global
   useEffect(() => {
@@ -25,10 +26,13 @@ export const AgentAutonomyStatus = () => {
       // Asigurăm că valoarea rămâne între 0-100
       newAutonomyLevel = Math.max(0, Math.min(100, newAutonomyLevel));
       
+      // Fixed: Ensure status is one of the allowed values: "online", "offline", or "busy"
+      const newStatus = isRunning ? "online" : "offline";
+      
       return {
         ...agent,
         autonomyLevel: newAutonomyLevel,
-        status: isRunning ? "online" : "offline"
+        status: newStatus as "online" | "offline" | "busy" // Type casting to ensure compatibility
       };
     });
     
@@ -110,8 +114,7 @@ export const AgentAutonomyStatus = () => {
                 <Progress 
                   value={agent.autonomyLevel || 0} 
                   max={100}
-                  className={`h-2 ${!isRunning ? 'opacity-60' : ''}`}
-                  indicatorClassName={getProgressColor(agent.autonomyLevel || 0)}
+                  className={`h-2 ${!isRunning ? 'opacity-60' : ''} ${getProgressColor(agent.autonomyLevel || 0)}`}
                 />
               </div>
             </div>

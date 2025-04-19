@@ -93,7 +93,8 @@ export const AutonomyVisualization: React.FC = () => {
       </div>
       
       <div className="mb-6">
-        <AutoExecutionButton completed={true} disabled={true} />
+        {/* Fixed: Removed props that don't exist in the component */}
+        <AutoExecutionButton />
       </div>
       
       <StyledCard>
