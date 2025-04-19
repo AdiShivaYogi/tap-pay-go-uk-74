@@ -109,3 +109,5 @@ export const AgentNetworkGraph: React.FC = () => {
     </Canvas>
   );
 };
+
+export default AgentNetworkGraph;

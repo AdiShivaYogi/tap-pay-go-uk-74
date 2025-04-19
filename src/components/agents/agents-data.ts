@@ -1,5 +1,12 @@
-
 import { LucideIcon, CreditCard, Headphones, BarChart3, Shield, Brain } from "lucide-react";
+
+export interface AutoHealEvent {
+  timestamp: Date;
+  errorType: string;
+  actionTaken: string;
+  success: boolean;
+  details?: string;
+}
 
 export interface Agent {
   id: string;
@@ -8,9 +15,16 @@ export interface Agent {
   icon: LucideIcon;
   color: string;
   status: "online" | "offline" | "busy";
-  powerLevel: number;  // Nivel de putere pe o scară de la 1 la 10
-  relevance: "core" | "support" | "auxiliary"; // Relevanța pentru autodezvoltarea platformei
-  autonomyLevel?: number; // Nivelul de autonomie al agentului (0-100)
+  powerLevel: number;
+  relevance: "core" | "support" | "auxiliary";
+  autonomyLevel?: number;
+  apiKey: string;
+  autoHealEvents: AutoHealEvent[];
+  externalInterventions: {
+    timestamp: Date;
+    source: string;
+    action: string;
+  }[];
 }
 
 export const DEMO_RESPONSES: Record<string, string[]> = {
@@ -56,7 +70,10 @@ export const agents: Agent[] = [
     status: "online" as const,
     powerLevel: 8,
     relevance: "core",
-    autonomyLevel: 85
+    autonomyLevel: 85,
+    apiKey: "sk_pay_1234567890",
+    autoHealEvents: [],
+    externalInterventions: []
   },
   {
     id: "support-agent",
@@ -67,7 +84,10 @@ export const agents: Agent[] = [
     status: "online" as const,
     powerLevel: 6,
     relevance: "support",
-    autonomyLevel: 72
+    autonomyLevel: 72,
+    apiKey: "sk_sup_9876543210",
+    autoHealEvents: [],
+    externalInterventions: []
   },
   {
     id: "analytics-agent",
@@ -78,7 +98,10 @@ export const agents: Agent[] = [
     status: "online" as const,
     powerLevel: 9,
     relevance: "core",
-    autonomyLevel: 91
+    autonomyLevel: 91,
+    apiKey: "sk_anal_4567890123",
+    autoHealEvents: [],
+    externalInterventions: []
   },
   {
     id: "security-agent",
@@ -89,7 +112,10 @@ export const agents: Agent[] = [
     status: "online" as const,
     powerLevel: 10,
     relevance: "core",
-    autonomyLevel: 95
+    autonomyLevel: 95,
+    apiKey: "sk_sec_0123456789",
+    autoHealEvents: [],
+    externalInterventions: []
   },
   {
     id: "ai-assistant",
@@ -100,6 +126,9 @@ export const agents: Agent[] = [
     status: "online" as const,
     powerLevel: 7,
     relevance: "support",
-    autonomyLevel: 78
+    autonomyLevel: 78,
+    apiKey: "sk_ai_7890123456",
+    autoHealEvents: [],
+    externalInterventions: []
   }
 ];

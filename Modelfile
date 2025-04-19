@@ -1,0 +1,9 @@
+FROM llama3
+PARAMETER num_ctx 128000
+SYSTEM "Asistent specializat pentru platforma noastră"
+TEMPLATE """{{ if .System }}### System: {{ .System }}{{ end }}
+
+### User: {{ .Prompt }}
+
+### Assistant:
+"""

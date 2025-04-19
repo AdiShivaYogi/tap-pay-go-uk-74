@@ -1,0 +1,55 @@
+Raport Autonomie Agenti - Mecanisme de Decizie
+
+Data generare: 19/04/2025 00:01
+
+=== MODELUL DE AUTONOMIE ===
+
+1. **Decizii Independente**
+   - Agenții iau decizii bazate pe:
+     * Reguli predefinite (70%)
+     * Învățare automată (25%) 
+     * Intervenție umană (5%)
+
+2. **Planificare Automată**
+   - Fiecare agent generează:
+     * Planuri pe termen scurt (1-4 ore)
+     * Strategii pe termen mediu (zilnic)
+     * Obiective pe termen lung (săptămânal)
+
+3. **Grad de Libertate**
+   - Nivel 1 (Basic): UIAgent, PaymentAgent
+     * Decizii în limite stricte
+   - Nivel 2 (Advanced): AgentClient, DeepSeek  
+     * Adaptare dinamică la mediu
+   - Nivel 3 (Expert): SecurityAgent
+     * Acțiuni defensive autonome
+
+=== FLUXUL DE LUCRU ===
+1. Detectare stare sistem
+2. Analiză opțiuni disponibile
+3. Calcul scoruri de eficiență
+4. Alegere cea mai bună acțiune
+5. Execuție + Monitorizare rezultate
+
+=== EXEMPLE AUTONOMIE ===
+1. **DeepSeek**:
+   - Redirecționează cereri către backup API
+   - Ajustează rate limiting automat
+   - Optimizează cache pe baza pattern-urilor
+
+2. **SecurityAgent**:
+   - Blochează IP-uri suspecte
+   - Activează autentificare 2FA temporar
+   - Generează rapoarte de vulnerabilitate
+
+3. **UIAgent**:
+   - Personalizează interfețe pe baza utilizatorului
+   - Ajustează layout pentru dispozitive mobile
+   - Sugerează îmbunătățiri UX
+
+=== LIMITE AUTONOMIE ===
+1. Nu pot modifica structura de bază a sistemului
+2. Intervenție umană necesară pentru:
+   - Schimbări de configurare majoră
+   - Actualizări de versiune
+   - Modificări de business logic

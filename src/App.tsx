@@ -29,48 +29,53 @@ import NotificationSettings from "./pages/NotificationSettings";
 import Agents from "./pages/Agents";
 import AgentCentralCommand from "./pages/AgentCentralCommand";
 import UnifiedAgentManagement from "./pages/UnifiedAgentManagement";
+import TestPage from "./pages/TestPage";
+import { Layout } from "./components/layout/layout";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Index />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/pricing" element={<Pricing />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/stats" element={<Statistics />} />
-      <Route path="/reports" element={<Reports />} />
-      <Route path="/payments" element={<Payments />} />
-      <Route path="/auth" element={<UserAuth />} />
-      <Route path="/admin" element={<Admin />} />
-      <Route path="/roadmap" element={<Roadmap />} />
-      <Route path="/terms" element={<Terms />} />
-      <Route path="/privacy" element={<Privacy />} />
-      <Route path="/help" element={<Help />} />
-      <Route path="/account" element={<Account />} />
-      <Route path="/account/profile" element={<UserProfile />} />
-      <Route path="/account/billing" element={<BillingSettings />} />
-      <Route path="/account/notifications" element={<NotificationSettings />} />
-      <Route path="/backups" element={<Backups />} />
-      <Route path="/translations" element={<Translations />} />
-      <Route path="/style-guide" element={<StyleGuide />} />
-      <Route path="/design-system" element={<DesignSystem />} />
-      <Route path="/onboarding" element={<Onboarding />} />
-      <Route path="/api" element={<Api />} />
-      <Route path="/status" element={<Status />} />
-      <Route path="/connect-stripe" element={<ConnectStripe />} />
-      <Route path="/agents" element={<Agents />} />
-      
-      {/* Centru de comandă unificat principal */}
-      <Route path="/agent-central-command" element={<AgentCentralCommand />} />
-      
-      {/* Redirecționări pentru rutele vechi - vor trimite toate la centrul unificat */}
-      <Route path="/agent-admin" element={<AgentCentralCommand />} />
-      <Route path="/agent-monitoring" element={<AgentCentralCommand />} />
-      <Route path="/agent-management" element={<AgentCentralCommand />} />
-      <Route path="/unified-agent-management" element={<UnifiedAgentManagement />} />
-      
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <Layout>
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/pricing" element={<Pricing />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/stats" element={<Statistics />} />
+        <Route path="/reports" element={<Reports />} />
+        <Route path="/payments" element={<Payments />} />
+        <Route path="/auth" element={<UserAuth />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/roadmap" element={<Roadmap />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/help" element={<Help />} />
+        <Route path="/account" element={<Account />} />
+        <Route path="/account/profile" element={<UserProfile />} />
+        <Route path="/account/billing" element={<BillingSettings />} />
+        <Route path="/account/notifications" element={<NotificationSettings />} />
+        <Route path="/backups" element={<Backups />} />
+        <Route path="/translations" element={<Translations />} />
+        <Route path="/style-guide" element={<StyleGuide />} />
+        <Route path="/design-system" element={<DesignSystem />} />
+        <Route path="/onboarding" element={<Onboarding />} />
+        <Route path="/api" element={<Api />} />
+        <Route path="/status" element={<Status />} />
+        <Route path="/connect-stripe" element={<ConnectStripe />} />
+        <Route path="/agents" element={<Agents />} />
+        
+        {/* Centru de comandă unificat principal */}
+        <Route path="/agent-central-command" element={<AgentCentralCommand />} />
+        
+        {/* Redirecționări pentru rutele vechi - vor trimite toate la centrul unificat */}
+        <Route path="/agent-admin" element={<AgentCentralCommand />} />
+        <Route path="/agent-monitoring" element={<AgentCentralCommand />} />
+        <Route path="/agent-management" element={<AgentCentralCommand />} />
+        <Route path="/unified-agent-management" element={<UnifiedAgentManagement />} />
+        
+        <Route path="/test" element={<TestPage />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Layout>
   );
 }
 

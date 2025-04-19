@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Minimal React App</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import React from 'react';
+      import ReactDOM from 'react-dom/client';
+      
+      // Simple React component
+      const App = () => {
+        return React.createElement('div', {
+          style: { padding: '20px', fontFamily: 'Arial, sans-serif' }
+        }, [
+          React.createElement('h1', { style: { color: '#333' } }, 'Minimal React App'),
+          React.createElement('p', { style: { color: '#666' } }, 
+            'This is a minimal React application without any 3D visualizations.')
+        ]);
+      };
+      
+      // Render the app
+      const container = document.getElementById('root');
+      const root = ReactDOM.createRoot(container);
+      root.render(React.createElement(App));
+    </script>
+  </body>
+</html>

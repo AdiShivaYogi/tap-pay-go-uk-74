@@ -70,6 +70,12 @@ export const config = {
       icon: Bot,
     },
     {
+      title: "Agent Dashboard",
+      href: "/agent-dashboard", 
+      icon: BrainCircuit,
+      admin: true,
+    },
+    {
       title: "Centru de Comandă Agenți",
       href: "/agent-central-command",
       icon: BrainCircuit,

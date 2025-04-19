@@ -1,6 +1,6 @@
 
 import React from "react";
-import { AgentNetworkGraph } from '@/components/3d-visualizations/AgentNetworkGraph';
+import { LazyLoadAgentNetwork } from '@/components/3d-visualizations/LazyLoad3DComponents';
 
 export const NetworkTab: React.FC = () => {
   return (
@@ -13,7 +13,7 @@ export const NetworkTab: React.FC = () => {
         </p>
       </div>
       <div className="h-[500px] border rounded-lg overflow-hidden">
-        <AgentNetworkGraph />
+        <LazyLoadAgentNetwork />
       </div>
     </>
   );

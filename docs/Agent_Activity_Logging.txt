@@ -1,0 +1,62 @@
+Configurație Înregistrare Activități Agenti Autonomi
+
+Data generare: 19/04/2025 00:03
+
+=== POLITICA DE LOGGING ===
+
+1. **Durată înregistrări**:
+   - Date brute: 7 zile
+   - Date agregate: 30 zile
+   - Rapoarte analitice: 1 an
+
+2. **Frecvență înregistrare**:
+   - Evenimente critice: imediat
+   - Acțiuni autonome: la 5 minute
+   - Metrici performanță: la 15 minute
+
+3. **Tipuri de activități înregistrate**:
+   - Decizii autonome (100%)
+   - Intervenții umane (100%)
+   - Erori și corecții (100%)
+   - Utilizare resurse (95%)
+
+=== MECANISME DE STOCARE ===
+1. **Logs brut**:
+   - Format: JSON
+   - Dimensiune maximă: 1GB/agent/zi
+   - Rotire automată după 7 zile
+
+2. **Date agregate**:
+   - Procesate zilnic
+   - Stocate în baza de date
+   - Indexate pentru căutare rapidă
+
+3. **Backup-uri**:
+   - Zilnic pe storage extern
+   - Săptămânal pe cloud
+
+=== ACCES LOG-URI ===
+1. **Interfață admin**:
+   - Ultimele 1000 de evenimente
+   - Filtre complexe
+   - Export CSV/JSON
+
+2. **API monitoring**:
+   - Acces programatic
+   - Webhooks pentru evenimente
+
+=== EXEMPLE DATE ÎNREGISTRATE ===
+1. UIAgent:
+   - Schimbări UI detectate
+   - Timp răspuns componente
+   - Erori de randare
+
+2. SecurityAgent:
+   - Încercări de acces
+   - Scanări vulnerabilități
+   - Acțiuni defensive
+
+3. PaymentAgent:
+   - Tranzacții procesate
+   - Detectări fraudă
+   - Timpi de procesare
