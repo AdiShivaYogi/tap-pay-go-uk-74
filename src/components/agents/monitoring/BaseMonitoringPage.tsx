@@ -19,27 +19,26 @@ import { MonitoringTabs } from "@/components/agents/monitoring/MonitoringTabs";
 interface BaseMonitoringPageProps {
   tabs?: 'default' | 'unified';
   title?: string;
+  isEmbedded?: boolean;
 }
 
 export const BaseMonitoringPage: React.FC<BaseMonitoringPageProps> = ({ 
   tabs = 'default', 
-  title = "Monitorizare Agenți" 
+  title = "Monitorizare Agenți",
+  isEmbedded = false
 }) => {
   const { user } = useAuth();
   const { isAdmin } = useUserRole();
   const { toast } = useToast();
   const [showAutonomyAlert, setShowAutonomyAlert] = useState(true);
   
-  // Asiguram conversia explicită la tipul number pentru a evita erori TypeScript
+  // Safe type conversion
   const safetyPanelData = useSafetyPanel();
-  // Utilizăm un număr implicit (0) dacă autonomyLevel sau agentsRunning este boolean sau undefined
   const autonomyLevel: number = typeof safetyPanelData.autonomyLevel === 'number' 
-    ? safetyPanelData.autonomyLevel 
-    : 0;
+    ? safetyPanelData.autonomyLevel : 0;
     
   const agentsRunning: number = typeof safetyPanelData.agentsRunning === 'number'
-    ? safetyPanelData.agentsRunning
-    : 0;
+    ? safetyPanelData.agentsRunning : 0;
   
   const { submissions, progressHistory, codeProposals, loading } = useAgentAdminData(!!isAdmin);
   const [submissionsState, setSubmissionsState] = useState<any[]>([]);
@@ -55,7 +54,6 @@ export const BaseMonitoringPage: React.FC<BaseMonitoringPageProps> = ({
     setProposals: setCodeProposalsState 
   });
 
-  // When data is loaded from the hook, update our state
   useEffect(() => {
     if (!loading) {
       setSubmissionsState(submissions);
@@ -63,17 +61,20 @@ export const BaseMonitoringPage: React.FC<BaseMonitoringPageProps> = ({
     }
   }, [submissions, codeProposals, loading]);
 
+  // Only show the toast when not embedded in another page
   useEffect(() => {
-    const timer = setTimeout(() => {
-      toast({
-        title: "Lansare automată inițiată pentru toți agenții",
-        description: "Toți agenții autonomi vor fi lansați automat în câteva secunde pentru operațiuni complete.",
-        duration: 6000,
-      });
-    }, 500);
-    
-    return () => clearTimeout(timer);
-  }, [toast]);
+    if (!isEmbedded) {
+      const timer = setTimeout(() => {
+        toast({
+          title: "Lansare automată inițiată pentru toți agenții",
+          description: "Toți agenții autonomi vor fi lansați automat în câteva secunde pentru operațiuni complete.",
+          duration: 6000,
+        });
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [toast, isEmbedded]);
 
   if (!user) {
     return (
@@ -95,38 +96,53 @@ export const BaseMonitoringPage: React.FC<BaseMonitoringPageProps> = ({
     );
   }
 
-  return (
-    <Layout>
-      <Section>
-        <MonitoringHeader agentsRunning={agentsRunning} />
+  // When used inside UnifiedAgentManagement, render without the outer Layout and Section
+  const content = (
+    <>
+      {!isEmbedded && <MonitoringHeader agentsRunning={agentsRunning} />}
 
+      {showAutonomyAlert && !isEmbedded && (
         <AutonomyAlert 
           showAutonomyAlert={showAutonomyAlert} 
           setShowAutonomyAlert={setShowAutonomyAlert} 
         />
+      )}
 
+      {!isEmbedded && (
         <AutonomyOverviewSection 
           autonomyLevel={autonomyLevel}
           agentsRunning={agentsRunning}
         />
-        
-        {tabs === 'default' ? (
-          <MonitoringTabs />
-        ) : (
-          <UnifiedMonitoringTabs 
-            submissions={submissionsState}
-            codeProposals={codeProposalsState}
-            progressHistory={progressHistory}
-            userId={user?.id}
-            setSubmissions={setSubmissionsState}
-            setCodeProposals={setCodeProposalsState}
-            loading={loading}
-            onApproveSubmission={handleApproveSubmission}
-            onRejectSubmission={handleRejectSubmission}
-            onApproveProposal={handleApproveProposal}
-            onRejectProposal={handleRejectProposal}
-          />
-        )}
+      )}
+      
+      {tabs === 'default' ? (
+        <MonitoringTabs />
+      ) : (
+        <UnifiedMonitoringTabs 
+          submissions={submissionsState}
+          codeProposals={codeProposalsState}
+          progressHistory={progressHistory}
+          userId={user?.id}
+          setSubmissions={setSubmissionsState}
+          setCodeProposals={setCodeProposalsState}
+          loading={loading}
+          onApproveSubmission={handleApproveSubmission}
+          onRejectSubmission={handleRejectSubmission}
+          onApproveProposal={handleApproveProposal}
+          onRejectProposal={handleRejectProposal}
+        />
+      )}
+    </>
+  );
+
+  if (isEmbedded) {
+    return content;
+  }
+
+  return (
+    <Layout>
+      <Section>
+        {content}
       </Section>
     </Layout>
   );

@@ -12,19 +12,20 @@ import { useUserRole } from "@/hooks/use-user-role";
 import { AccessRestrictionAlert } from "@/features/roadmap/components/AccessRestrictionAlert";
 import { AutonomousEngineProvider } from '@/components/agents/autonomous-engine/AutonomousEngineProvider';
 import { AutonomyEngine } from '@/components/agents/monitoring/autonomy/AutonomyEngine';
-import { Agent } from "@/components/agents/agents-data";
+import { Agent, agents } from "@/components/agents/agents-data";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { AutonomyDashboard } from "@/features/agent-autonomy/AutonomyDashboard";
 import { AgentTasksPanel } from "@/features/agent-tasks/AgentTasksPanel";
 import { Activity, Brain, ListTodo, BarChart, Settings } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const AgentCentralCommand = () => {
   const { user } = useAuth();
   const { isAdmin } = useUserRole();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [activeSidebarItem, setActiveSidebarItem] = useState("monitoring");
-  const [activeAgent, setActiveAgent] = useState<Agent | null>(null);
+  const [activeAgent, setActiveAgent] = useState<Agent | null>(agents[0]); // Default to first agent
   const [isListening, setIsListening] = useState(false);
   
   const { submissions, progressHistory, codeProposals, loading } = useAgentAdminData(!!isAdmin);
@@ -53,7 +54,7 @@ const AgentCentralCommand = () => {
     switch (activeSidebarItem) {
       case "monitoring":
         return (
-          <Tabs defaultValue="dashboard" value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs defaultValue="dashboard" value={activeTab} onValueChange={setActiveTab} className="w-full h-full flex flex-col">
             <TabsList className="mb-4 grid grid-cols-4">
               <TabsTrigger value="dashboard" className="flex items-center gap-1">
                 <Brain className="h-4 w-4" />
@@ -73,44 +74,72 @@ const AgentCentralCommand = () => {
               </TabsTrigger>
             </TabsList>
             
-            <TabsContent value="dashboard">
-              <AutonomyDashboard />
-            </TabsContent>
-            
-            <TabsContent value="monitoring">
-              <BaseMonitoringPage tabs="unified" />
-            </TabsContent>
+            <div className="flex-1 overflow-hidden">
+              <TabsContent value="dashboard" className="h-full">
+                <ScrollArea className="h-full pr-4">
+                  <div className="pb-6">
+                    <AutonomyDashboard />
+                  </div>
+                </ScrollArea>
+              </TabsContent>
+              
+              <TabsContent value="monitoring" className="h-full">
+                <ScrollArea className="h-full pr-4">
+                  <div className="pb-6">
+                    <BaseMonitoringPage tabs="unified" isEmbedded={true} />
+                  </div>
+                </ScrollArea>
+              </TabsContent>
 
-            <TabsContent value="tasks">
-              <AgentTasksPanel />
-            </TabsContent>
-            
-            <TabsContent value="reports">
-              <h2 className="text-2xl font-bold mb-4">Rapoarte și Analize</h2>
-              <div className="bg-slate-50 p-6 rounded-lg border text-center">
-                <BarChart className="h-12 w-12 mx-auto text-slate-400 mb-3" />
-                <h3 className="text-lg font-medium mb-2">Secțiune în dezvoltare</h3>
-                <p className="text-slate-500">
-                  Platforma va genera rapoarte bazate pe activitatea agenților în curând.
-                </p>
-              </div>
-            </TabsContent>
+              <TabsContent value="tasks" className="h-full">
+                <ScrollArea className="h-full pr-4">
+                  <div className="pb-6">
+                    <AgentTasksPanel />
+                  </div>
+                </ScrollArea>
+              </TabsContent>
+              
+              <TabsContent value="reports" className="h-full">
+                <ScrollArea className="h-full pr-4">
+                  <div className="pb-6">
+                    <h2 className="text-2xl font-bold mb-4">Rapoarte și Analize</h2>
+                    <div className="bg-slate-50 p-6 rounded-lg border text-center">
+                      <BarChart className="h-12 w-12 mx-auto text-slate-400 mb-3" />
+                      <h3 className="text-lg font-medium mb-2">Secțiune în dezvoltare</h3>
+                      <p className="text-slate-500">
+                        Platforma va genera rapoarte bazate pe activitatea agenților în curând.
+                      </p>
+                    </div>
+                  </div>
+                </ScrollArea>
+              </TabsContent>
+            </div>
           </Tabs>
         );
       case "admin":
         return (
-          <AgentAdminTabs 
-            submissions={submissions}
-            codeProposals={codeProposals}
-            progressHistory={progressHistory}
-            userId={user.id}
-            setSubmissions={() => {}}
-            setCodeProposals={() => {}}
-            loading={loading}
-          />
+          <ScrollArea className="h-full pr-4">
+            <div className="pb-6">
+              <AgentAdminTabs 
+                submissions={submissions}
+                codeProposals={codeProposals}
+                progressHistory={progressHistory}
+                userId={user.id}
+                setSubmissions={() => {}}
+                setCodeProposals={() => {}}
+                loading={loading}
+              />
+            </div>
+          </ScrollArea>
         );
       case "unified":
-        return <BaseMonitoringPage tabs="unified" />;
+        return (
+          <ScrollArea className="h-full pr-4">
+            <div className="pb-6">
+              <BaseMonitoringPage tabs="unified" isEmbedded={true} />
+            </div>
+          </ScrollArea>
+        );
       default:
         return null;
     }
@@ -127,9 +156,9 @@ const AgentCentralCommand = () => {
           
           <div className="flex-1 flex flex-col overflow-hidden">
             <div className="flex-1 flex">
-              <div className="flex-1 overflow-auto">
+              <div className="flex-1 overflow-hidden">
                 <Layout>
-                  <Section>{renderSidebarContent()}</Section>
+                  <Section className="h-full">{renderSidebarContent()}</Section>
                 </Layout>
               </div>
               

@@ -7,6 +7,7 @@ import { agents } from "@/components/agents/agents-data";
 import { useAutonomousEngine } from "@/components/agents/autonomous-engine/AutonomousEngineProvider";
 import { Activity, Brain, Shield, Zap } from "lucide-react";
 import { Agent } from "@/components/agents/agents-data";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export const AgentAutonomyStatus = () => {
   const { isRunning, autonomyLevel } = useAutonomousEngine();
@@ -31,41 +32,46 @@ export const AgentAutonomyStatus = () => {
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
-        <div className="divide-y divide-slate-100">
-          {sortedAgents.map(agent => (
-            <div key={agent.id} className="p-3 flex items-center gap-4">
-              <div className="p-1.5 rounded-full bg-slate-100">
-                <agent.icon className={`h-4 w-4 ${agent.color}`} />
-              </div>
-              
-              <div className="flex-1 min-w-0">
-                <p className="font-medium text-sm truncate">{agent.name}</p>
-                <div className="flex items-center gap-2 mt-0.5">
-                  <Badge variant={agent.status === "online" ? "success" : "secondary"} className="text-xs">
-                    {agent.status === "online" ? "Activ" : "Inactiv"}
-                  </Badge>
-                  {agent.relevance === "core" && (
-                    <span className="text-xs text-slate-500 flex items-center gap-1">
-                      <Shield className="h-3 w-3" /> Core
+        <ScrollArea className="max-h-80">
+          <div className="divide-y divide-slate-100">
+            {sortedAgents.map(agent => (
+              <div key={agent.id} className="p-3 flex items-center gap-3">
+                <div className="p-1.5 rounded-full bg-slate-100">
+                  <agent.icon className={`h-4 w-4 ${agent.color}`} />
+                </div>
+                
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-sm truncate">{agent.name}</p>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <Badge 
+                      variant={agent.status === "online" ? "success" : "secondary"}
+                      className="text-xs h-5 px-1.5"
+                    >
+                      {agent.status === "online" ? "Activ" : "Inactiv"}
+                    </Badge>
+                    {agent.relevance === "core" && (
+                      <span className="text-xs text-slate-500 flex items-center gap-1">
+                        <Shield className="h-3 w-3" /> Core
+                      </span>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="w-24">
+                  <div className="flex justify-between mb-1">
+                    <span className="text-xs font-medium">
+                      {agent.autonomyLevel}%
                     </span>
-                  )}
+                  </div>
+                  <Progress 
+                    value={agent.autonomyLevel} 
+                    className="h-1.5"
+                  />
                 </div>
               </div>
-              
-              <div className="w-1/3">
-                <div className="flex justify-between mb-1">
-                  <span className="text-xs font-medium">
-                    {agent.autonomyLevel}%
-                  </span>
-                </div>
-                <Progress 
-                  value={agent.autonomyLevel} 
-                  className="h-1.5"
-                />
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </ScrollArea>
       </CardContent>
     </Card>
   );

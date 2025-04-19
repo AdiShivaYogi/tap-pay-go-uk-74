@@ -7,11 +7,12 @@ import { AutonomyTab } from "./autonomy/AutonomyTab";
 import { ProjectsTab } from "./tabs/ProjectsTab";
 import { AutoDebugPanel } from "./debug/AutoDebugPanel";
 import { Box, Brain, LayoutDashboard, Shield, Webhook } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export const MonitoringTabs = () => {
   return (
     <Tabs defaultValue="autonomy" className="mt-4">
-      <TabsList className="grid grid-cols-5 mb-6 bg-slate-100/80 p-1 rounded-lg">
+      <TabsList className="grid grid-cols-5 mb-6 bg-slate-100/80 p-1 rounded-lg sticky top-0 z-10">
         <TabsTrigger 
           value="autonomy" 
           className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-purple-700 data-[state=active]:shadow-sm"
@@ -49,25 +50,27 @@ export const MonitoringTabs = () => {
         </TabsTrigger>
       </TabsList>
       
-      <TabsContent value="autonomy">
-        <AutonomyTab />
-      </TabsContent>
-      
-      <TabsContent value="monitoring">
-        <AgentActivityMonitor />
-      </TabsContent>
-      
-      <TabsContent value="safety">
-        <SafetyPanel />
-      </TabsContent>
-      
-      <TabsContent value="projects">
-        <ProjectsTab />
-      </TabsContent>
-      
-      <TabsContent value="debugging">
-        <AutoDebugPanel />
-      </TabsContent>
+      <ScrollArea className="h-[calc(100vh-220px)]">
+        <TabsContent value="autonomy">
+          <AutonomyTab />
+        </TabsContent>
+        
+        <TabsContent value="monitoring">
+          <AgentActivityMonitor />
+        </TabsContent>
+        
+        <TabsContent value="safety">
+          <SafetyPanel />
+        </TabsContent>
+        
+        <TabsContent value="projects">
+          <ProjectsTab />
+        </TabsContent>
+        
+        <TabsContent value="debugging">
+          <AutoDebugPanel />
+        </TabsContent>
+      </ScrollArea>
     </Tabs>
   );
 };

@@ -9,6 +9,7 @@ import { Section } from "@/components/ui/layout/section";
 import { Layout } from "@/components/layout/layout";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Activity, Brain, ListTodo } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const UnifiedAgentManagement = () => {
   return (
@@ -41,16 +42,28 @@ const UnifiedAgentManagement = () => {
             </TabsList>
             
             <div className="flex-1 overflow-hidden">
-              <TabsContent value="dashboard" className="h-full overflow-auto px-1">
-                <AutonomyDashboard />
+              <TabsContent value="dashboard" className="h-full">
+                <ScrollArea className="h-full pr-4">
+                  <div className="pb-6">
+                    <AutonomyDashboard />
+                  </div>
+                </ScrollArea>
               </TabsContent>
               
-              <TabsContent value="monitoring" className="h-full overflow-auto px-1">
-                <BaseMonitoringPage tabs="unified" />
+              <TabsContent value="monitoring" className="h-full">
+                <ScrollArea className="h-full pr-4">
+                  <div className="pb-6">
+                    <BaseMonitoringPage tabs="unified" />
+                  </div>
+                </ScrollArea>
               </TabsContent>
 
-              <TabsContent value="tasks" className="h-full overflow-auto px-1">
-                <AgentTasksPanel />
+              <TabsContent value="tasks" className="h-full">
+                <ScrollArea className="h-full pr-4">
+                  <div className="pb-6">
+                    <AgentTasksPanel />
+                  </div>
+                </ScrollArea>
               </TabsContent>
             </div>
           </Tabs>
