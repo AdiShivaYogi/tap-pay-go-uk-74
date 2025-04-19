@@ -8,11 +8,14 @@ type AutonomousEngineContextType = {
   agentsCount: number;
   activeAgents: string[];
   autonomyLevel: number;
+  maxAutonomyAllowed: number;
   startAgents: () => void;
   stopAgents: () => void;
   updateAutonomyLevel: (level: number) => void;
   registerAgent: (agentId: string) => void;
   unregisterAgent: (agentId: string) => void;
+  boostAutonomy: () => void; // Nouă funcție pentru creșterea rapidă a autonomiei
+  enableFullAutonomy: () => void; // Nouă funcție pentru activarea autonomiei complete
 };
 
 const AutonomousEngineContext = createContext<AutonomousEngineContextType | undefined>(undefined);
@@ -20,7 +23,8 @@ const AutonomousEngineContext = createContext<AutonomousEngineContextType | unde
 export const AutonomousEngineProvider = ({ children }: { children: React.ReactNode }) => {
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [activeAgents, setActiveAgents] = useState<string[]>([]);
-  const [autonomyLevel, setAutonomyLevel] = useState<number>(80); // Nivel implicit de autonomie
+  const [autonomyLevel, setAutonomyLevel] = useState<number>(85); // Nivel implicit de autonomie crescut
+  const [maxAutonomyAllowed, setMaxAutonomyAllowed] = useState<number>(100); // Limită maximă configurabilă
   const { toast } = useToast();
   
   // Când componenta se montează, verificăm dacă avem o stare salvată
@@ -31,7 +35,8 @@ export const AutonomousEngineProvider = ({ children }: { children: React.ReactNo
         const parsedState = JSON.parse(savedState);
         setIsRunning(parsedState.isRunning || false);
         setActiveAgents(parsedState.activeAgents || []);
-        setAutonomyLevel(parsedState.autonomyLevel || 80);
+        setAutonomyLevel(parsedState.autonomyLevel || 85);
+        setMaxAutonomyAllowed(parsedState.maxAutonomyAllowed || 100);
       } catch (error) {
         console.error('Eroare la restaurarea stării motorului autonom:', error);
       }
@@ -43,17 +48,18 @@ export const AutonomousEngineProvider = ({ children }: { children: React.ReactNo
     const stateToSave = {
       isRunning,
       activeAgents,
-      autonomyLevel
+      autonomyLevel,
+      maxAutonomyAllowed
     };
     localStorage.setItem('autonomousEngineState', JSON.stringify(stateToSave));
-  }, [isRunning, activeAgents, autonomyLevel]);
+  }, [isRunning, activeAgents, autonomyLevel, maxAutonomyAllowed]);
 
   // Pornește toți agenții
   const startAgents = () => {
     setIsRunning(true);
     
-    // Înregistrare agenți de bază
-    const baseAgents = ['monitoring', 'learning', 'decision', 'analysis'];
+    // Înregistrare agenți de bază și avansați
+    const baseAgents = ['monitoring', 'learning', 'decision', 'analysis', 'optimization', 'innovation'];
     setActiveAgents(baseAgents);
     
     toast({
@@ -75,7 +81,48 @@ export const AutonomousEngineProvider = ({ children }: { children: React.ReactNo
 
   // Actualizează nivelul de autonomie
   const updateAutonomyLevel = (level: number) => {
-    setAutonomyLevel(level);
+    const boundedLevel = Math.min(level, maxAutonomyAllowed);
+    setAutonomyLevel(boundedLevel);
+    
+    if (level > boundedLevel) {
+      toast({
+        title: "Limitare autonomie",
+        description: `Nivelul de autonomie a fost limitat la ${maxAutonomyAllowed}%. Pentru autonomie completă, activați modul de autonomie avansată.`,
+        variant: "warning",
+      });
+    }
+  };
+  
+  // Boost rapid al autonomiei (+15%)
+  const boostAutonomy = () => {
+    const newLevel = Math.min(autonomyLevel + 15, maxAutonomyAllowed);
+    setAutonomyLevel(newLevel);
+    
+    toast({
+      title: "Autonomie accelerată",
+      description: `Nivelul de autonomie a fost crescut la ${newLevel}%`,
+    });
+  };
+  
+  // Activare autonomie completă (100%)
+  const enableFullAutonomy = () => {
+    setMaxAutonomyAllowed(100);
+    setAutonomyLevel(100);
+    
+    // Lansăm și agenți avansați
+    const allAgents = [
+      'monitoring', 'learning', 'decision', 'analysis', 
+      'optimization', 'innovation', 'security', 'evolution',
+      'self-improvement', 'integration', 'coordination'
+    ];
+    setActiveAgents(allAgents);
+    setIsRunning(true);
+    
+    toast({
+      title: "Autonomie completă activată",
+      description: "Toți agenții operează acum cu autonomie maximă (100%) și pot evolua independent",
+      duration: 5000,
+    });
   };
 
   // Înregistrează un nou agent
@@ -98,11 +145,14 @@ export const AutonomousEngineProvider = ({ children }: { children: React.ReactNo
         agentsCount: activeAgents.length,
         activeAgents,
         autonomyLevel,
+        maxAutonomyAllowed,
         startAgents,
         stopAgents,
         updateAutonomyLevel,
         registerAgent,
         unregisterAgent,
+        boostAutonomy,
+        enableFullAutonomy
       }}
     >
       {children}

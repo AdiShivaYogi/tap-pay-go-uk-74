@@ -7,9 +7,11 @@ import { useDataConnections } from "./useDataConnections";
 import { useExecutionControls } from "./useExecutionControls";
 import { useAutoLaunch } from "./useAutoLaunch";
 import { agents } from "@/components/agents/agents-data";
+import { useAutonomousEngine } from "@/components/agents/autonomous-engine/AutonomousEngineProvider";
 
 export const useSafetyPanel = () => {
   const { toast } = useToast();
+  const { enableFullAutonomy } = useAutonomousEngine();
   
   const { 
     autonomyLevel, 
@@ -76,14 +78,18 @@ export const useSafetyPanel = () => {
     });
   };
 
-  // Enhanced implementation for launching all agents
+  // Implementare îmbunătățită pentru autonomie completă
   const startAutonomousExecution = () => {
+    // Activăm autonomia completă în sistemul central
+    enableFullAutonomy();
+    
+    // Setăm toate sistemele de bază pentru autonomie maximă
     setAgentsRunning(true);
     setAutonomyLevel(100);
     setSystemsActive({
       riskEvaluation: true,
-      humanSupervision: false,
-      autonomyLimits: false,
+      humanSupervision: false, // Dezactivăm supervizarea umană pentru autonomie completă
+      autonomyLimits: false,   // Dezactivăm limitările de autonomie
       dataSources: true,
       realTimeMonitoring: true,
       adaptiveSafety: true,
@@ -93,32 +99,39 @@ export const useSafetyPanel = () => {
       emergencyStop: true
     });
 
-    // Use the existing properties on dataConnections
+    // Activăm toate conexiunile pentru acces complet la date
     setDataConnections(prevConnections => ({
       ...prevConnections,
       agentSystem: true,
       monitoringPlatform: true,
       analyticsEngine: true,
-      safetyFramework: true
+      safetyFramework: true,
+      dataLake: true,
+      externalAPIs: true,
+      modelTraining: true
     }));
 
-    // Use the existing properties on monitoringParameters
+    // Activăm toți parametrii de monitorizare pentru control maxim
     setMonitoringParameters(prevParams => ({
       ...prevParams,
       autonomyLevels: true,
       resourceUsage: true,
       decisionQuality: true,
-      learningProgress: true
+      learningProgress: true,
+      adaptationRate: true,
+      errorCorrection: true,
+      selfImprovement: true
     }));
 
+    // Acceptăm toate nivelurile de risc pentru sistem
     setAcceptedRisks(["scazut", "mediu", "ridicat"]);
     setSafetyOverride(true);
 
     const agentNames = agents.map(agent => agent.name).join(", ");
     
     toast({
-      title: "Lansare Completă a Tuturor Agenților",
-      description: `${agentNames} sunt acum complet autonomi și operaționali.`,
+      title: "Autonomie completă activată",
+      description: `Toți agenții operează acum independent cu autonomie 100%. Auto-evoluția și auto-îmbunătățirea sunt active.`,
       duration: 6000,
     });
   };

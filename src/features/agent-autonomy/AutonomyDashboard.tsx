@@ -1,149 +1,75 @@
 
-import React, { useState, useEffect } from 'react';
-import { StyledCard, StyledCardHeader, StyledCardTitle, StyledCardContent } from '@/components/ui/cards';
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { Rocket, Activity, Code, CheckCircle, Clock, ServerCrash } from 'lucide-react';
+import React from 'react';
+import { AdvancedAutonomyControls } from './AdvancedAutonomyControls';
+import { AgentAutonomyStatus } from './AgentAutonomyStatus';
 import { AutoExecutionButton } from '@/components/agents/monitoring/autonomy/AutoExecutionButton';
-import { StrategicControl } from './StrategicControl';
+import { useAutonomousEngine } from '@/components/agents/autonomous-engine/AutonomousEngineProvider';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Brain, Info, Zap, AlertTriangle } from "lucide-react";
 
 export const AutonomyDashboard = () => {
-  const { toast } = useToast();
-  const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState<any>({
-    taskStats: { totalCount: 0, pendingCount: 0, approvedCount: 0, rejectedCount: 0 },
-    codeStats: { totalCount: 0, pendingCount: 0, approvedCount: 0, rejectedCount: 0 }
-  });
-  
-  // Încărcăm statisticile inițiale
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        setLoading(true);
-        const { data, error } = await supabase.functions.invoke('monitor-agent-proposals', {
-          body: { action: 'getStats' }
-        });
-        
-        if (error) {
-          console.error('Eroare la obținerea statisticilor:', error);
-          toast({
-            title: "Eroare la încărcarea datelor",
-            description: "Nu s-au putut obține statisticile propunerilor",
-            variant: "destructive",
-          });
-          return;
-        }
-        
-        if (data?.data) {
-          setStats(data.data);
-        }
-      } catch (error) {
-        console.error('Excepție la obținerea statisticilor:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchStats();
-    
-    // Actualizăm statisticile la fiecare 30 secunde
-    const statsInterval = setInterval(fetchStats, 30000);
-    
-    return () => clearInterval(statsInterval);
-  }, [toast]);
-  
-  // Pregătim datele pentru grafic
-  const chartData = [
-    { name: 'Propuneri Task', Total: stats.taskStats.totalCount || 0, Aprobate: stats.taskStats.approvedCount || 0, "În Așteptare": stats.taskStats.pendingCount || 0 },
-    { name: 'Propuneri Cod', Total: stats.codeStats.totalCount || 0, Aprobate: stats.codeStats.approvedCount || 0, "În Așteptare": stats.codeStats.pendingCount || 0 }
-  ];
-  
-  const statCards = [
-    {
-      title: "Propuneri Task",
-      value: stats.taskStats.totalCount || 0,
-      icon: <Activity className="h-5 w-5 text-blue-500" />,
-      secondaryText: `${stats.taskStats.approvedCount || 0} aprobate`
-    },
-    {
-      title: "Propuneri Cod",
-      value: stats.codeStats.totalCount || 0,
-      icon: <Code className="h-5 w-5 text-green-500" />,
-      secondaryText: `${stats.codeStats.approvedCount || 0} aprobate`
-    },
-    {
-      title: "Total Aprobate",
-      value: (stats.taskStats.approvedCount || 0) + (stats.codeStats.approvedCount || 0),
-      icon: <CheckCircle className="h-5 w-5 text-emerald-500" />,
-      secondaryText: "Procese automate"
-    },
-    {
-      title: "În Așteptare",
-      value: (stats.taskStats.pendingCount || 0) + (stats.codeStats.pendingCount || 0),
-      icon: <Clock className="h-5 w-5 text-amber-500" />,
-      secondaryText: "Pentru aprobare"
-    }
-  ];
+  const { isRunning, autonomyLevel } = useAutonomousEngine();
   
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">Panou Control Autonomie</h2>
-          <p className="text-muted-foreground">Activitatea sistemului de agenți autonomi care evoluează independent</p>
-        </div>
-        <AutoExecutionButton variant="header" />
-      </div>
-      
-      {/* Control Strategic - noul component adăugat */}
+    <div>
       <div className="mb-6">
-        <StrategicControl />
+        <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+          <Brain className="h-6 w-6 text-purple-700" />
+          Dashboard Autonomie Agenți
+        </h1>
+        <p className="text-muted-foreground mt-1">
+          Control și monitorizare pentru ecosistemul autonom de agenți AI
+        </p>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {statCards.map((card, index) => (
-          <StyledCard key={index} className="relative overflow-hidden">
-            <StyledCardHeader className="flex flex-row items-center justify-between pb-2">
-              <StyledCardTitle className="text-sm font-medium">{card.title}</StyledCardTitle>
-              {card.icon}
-            </StyledCardHeader>
-            <StyledCardContent>
-              <div className="text-2xl font-bold">{card.value}</div>
-              <p className="text-xs text-muted-foreground">{card.secondaryText}</p>
-            </StyledCardContent>
-          </StyledCard>
-        ))}
-      </div>
+      {autonomyLevel < 50 && (
+        <Alert className="mb-4">
+          <Info className="h-4 w-4" />
+          <AlertTitle>Autonomie limitată</AlertTitle>
+          <AlertDescription>
+            Nivelul curent de autonomie este sub 50%. Agenții necesită aprobare manuală pentru majoritatea acțiunilor.
+            Folosiți controalele de mai jos pentru a crește gradul de autonomie.
+          </AlertDescription>
+        </Alert>
+      )}
       
-      <StyledCard>
-        <StyledCardHeader>
-          <StyledCardTitle className="flex items-center gap-2">
-            <Rocket className="h-5 w-5 text-amber-500" />
-            Evoluția Propunerilor Autonome
-          </StyledCardTitle>
-        </StyledCardHeader>
-        <StyledCardContent>
-          <div className="h-[250px] mt-4">
-            {loading ? (
-              <div className="h-full w-full flex items-center justify-center">
-                <ServerCrash className="h-8 w-8 text-muted-foreground animate-pulse" />
-              </div>
-            ) : (
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="Total" fill="#8884d8" />
-                  <Bar dataKey="Aprobate" fill="#82ca9d" />
-                  <Bar dataKey="În Așteptare" fill="#ffc658" />
-                </BarChart>
-              </ResponsiveContainer>
-            )}
+      {autonomyLevel >= 95 && (
+        <Alert className="mb-4 border-amber-300 bg-amber-50">
+          <AlertTriangle className="h-4 w-4 text-amber-600" />
+          <AlertTitle className="text-amber-800">Autonomie maximă activată</AlertTitle>
+          <AlertDescription className="text-amber-700">
+            Agenții operează cu autonomie aproape completă. Sistemul evoluează și învață independent,
+            cu intervenție umană minimă. Monitorizați atent performanța.
+          </AlertDescription>
+        </Alert>
+      )}
+      
+      {!isRunning && (
+        <Alert className="mb-4 border-blue-300 bg-blue-50">
+          <Info className="h-4 w-4 text-blue-600" />
+          <AlertTitle className="text-blue-800">Sistem în așteptare</AlertTitle>
+          <AlertDescription className="text-blue-700">
+            Sistemul de agenți este în prezent inactiv. Utilizați butonul "Lansare totală autonomie"
+            pentru a activa ecosistemul complet de agenți autonomi.
+          </AlertDescription>
+        </Alert>
+      )}
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <div className="md:col-span-2">
+          <AgentAutonomyStatus />
+        </div>
+        <div>
+          <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 mb-4">
+            <h3 className="text-sm font-medium mb-3 flex items-center gap-1.5">
+              <Zap className="h-4 w-4 text-amber-600" />
+              Acțiuni rapide
+            </h3>
+            <AutoExecutionButton />
           </div>
-        </StyledCardContent>
-      </StyledCard>
+          <AdvancedAutonomyControls />
+        </div>
+      </div>
     </div>
   );
 };
